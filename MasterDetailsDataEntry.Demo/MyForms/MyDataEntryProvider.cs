@@ -68,7 +68,9 @@ namespace MasterDetailsDataEntry.Demo
 
         public Tuple<object, IList> GetModelData(IMultiModelDefinitionForm form, int Id)
         {
-            throw new NotImplementedException();
+            var d1 = new Order { ClientName = "New Client", OrderDate = DateTime.Now, OrderId = 1 };
+            var d2 = new OrderItem[] { new OrderItem { OrderId = 1, OrderItemId = 1, Name = "Lola" }, new OrderItem { OrderId = 1, OrderItemId = 2, Name = "Pola" } };
+            return new Tuple<object, IList>(d1, d2);
         }
     }
 }

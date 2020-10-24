@@ -1,17 +1,16 @@
-﻿@page "/counter"
+﻿@page "/masterDetails"
 @using MasterDetailsDataEntry.Demo.MyForms
 @using MasterDetailsDataEntry.Shared.Forms
 
 @inject IDataEntryProvider _dataEntryProvider
 
-<h1>Counter</h1>
+<h1>Master Details</h1>
 
+@*<SingleDataControl Field="@Field" State="@(new FieldState(Field))" ModelValueChanged="@ModelChanged" />
 
-@*<MasterFormControl MasterForm="typeof(MyMultiForm)"></MasterFormControl>*@
+<RepeaterDataControl ModelItems="@ModelItems" Fields="@Fields" ModelValueChanged="@ModelChanged" />*@
 
-<SingleDataControl Field="@Field" State="@(new FieldState(Field))" ModelValueChanged="@ModelChanged" />
-
-<RepeaterDataControl ModelItems="@ModelItems" Fields="@Fields" ModelValueChanged="@ModelChanged" />
+<MasterDetailsFormControl FormType="@typeof(MyMultiForm)" MasterPk="1"/>
 
 @code {
 

@@ -22,6 +22,8 @@ namespace MasterDetailsDataEntry.Demo.MyForms
                 // items
                 .ForeignKey(d => d.OrderId)
                 .Field(d => d.OrderItemId, new Field { Hidden = true })
+                .Field(d => d.Name, new Field { Required = true, ControlType = typeof(TextEdit) })
+                .Field(d => d.Qty, new Field { Required = true, ControlType = typeof(TextEdit) })
                 ;
         }
     }

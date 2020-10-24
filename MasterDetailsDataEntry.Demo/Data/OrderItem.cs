@@ -9,5 +9,7 @@ namespace MasterDetailsDataEntry.Demo.Data
     {
         public int OrderItemId { get; set; }
         public int OrderId { get; set; }
+        public string Name { get; set; }
+        public int Qty { get; set; }
     }
 }
