@@ -25,6 +25,7 @@ namespace MasterDetailsDataEntry.Demo
         public Tuple<IEnumerable<DataField>, IEnumerable<DataField>> GetFormFields(IMultiModelDefinitionForm form)
         {
             var fieldsSet = form.GetFields();
+            return fieldsSet;
 
             var masterType = form.GetType().GetGenericArguments()[0];
             var detailsType = form.GetType().GetGenericArguments()[1];

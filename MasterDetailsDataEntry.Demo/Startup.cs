@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MasterDetailsDataEntry.Demo.Data;
 using MasterDetailsDataEntry.Blazor;
+using MasterDetailsDataEntry.Shared;
 
 namespace MasterDetailsDataEntry.Demo
 {
@@ -30,6 +31,7 @@ namespace MasterDetailsDataEntry.Demo
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             services.AddMasterDetailsDataEntryBlazor();
+            services.AddSingleton<IDataEntryProvider, MyDataEntryProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

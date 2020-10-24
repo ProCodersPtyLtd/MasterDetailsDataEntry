@@ -35,7 +35,9 @@
                             continue;
                         }
 
-                        <SingleDataControl Field="@field" State="@CreateFieldState(field, rowIndex)" ModelValueChanged="@LocalModelValueChanged" />
+                        <td>
+                            <SingleDataControl Field="@field" State="@CreateFieldState(field, rowIndex)" ModelValueChanged="@LocalModelValueChanged" />
+                        </td>
                     }
                 </tr>
 
@@ -71,11 +73,14 @@
 
     private object GetItemValue(DataField field, int row)
     {
-        return 22;
+        var item = ModelItems[row];
+        var result = item.GetPropertyValue(field.BindingProperty);
+        return result;
     }
 
     private void SetItemValue(DataField field, FieldState state)
     {
-        
+        var item = ModelItems[state.RowIndex];
+        item.SetPropertyValue(field.BindingProperty, state.Value);
     }
 }

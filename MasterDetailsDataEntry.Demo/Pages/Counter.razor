@@ -11,7 +11,7 @@
 
 <SingleDataControl Field="@Field" State="@(new FieldState(Field))" ModelValueChanged="@ModelChanged" />
 
-<RepeaterDataControl  />
+<RepeaterDataControl ModelItems="@ModelItems" Fields="@Fields" ModelValueChanged="@ModelChanged" />
 
 @code {
 
@@ -22,15 +22,17 @@
 
     private async Task ModelChanged(ValueChangedArgs args)
     {
-        var myForm = new MyMultiForm();
-        var data = _dataEntryProvider.GetFormFields(myForm);
-        Fields = data.Item1;
-        ModelItems = _dataEntryProvider.GetModelData(myForm);
+
     }
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
+
+        var myForm = new MyMultiForm();
+        var data = myForm.GetFields(); //_dataEntryProvider.GetFormFields(myForm);
+        Fields = data.Item1;
+        ModelItems = _dataEntryProvider.GetModelData(myForm);
     }
 
 }

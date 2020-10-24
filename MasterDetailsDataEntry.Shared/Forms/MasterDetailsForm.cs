@@ -4,7 +4,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using MasterDetailsDataEntry.Shared.Controls;
-using MasterDetailsDataEntry.Shared.Helpers;
 
 namespace MasterDetailsDataEntry.Shared.Forms
 {
@@ -64,11 +63,13 @@ namespace MasterDetailsDataEntry.Shared.Forms
         // Use Include or Exclude approach, don't use both
         public MasterDetailsForm<M, D> IncludeField<TKey>(Expression<Func<D, TKey>> selector)
         {
+            throw new NotImplementedException();
             return this;
         }
 
         public MasterDetailsForm<M, D> ExcludeField<TKey>(Expression<Func<D, TKey>> selector)
         {
+            throw new NotImplementedException();
             return this;
         }
 
@@ -86,13 +87,13 @@ namespace MasterDetailsDataEntry.Shared.Forms
             return this;
         }
 
-        public Tuple<List<DataField>, List<DataField>> GetFields()
+        public Tuple<IEnumerable<DataField>, IEnumerable<DataField>> GetFields()
         {
             _fields = new Dictionary<string, DataField>();
             _masterFields = new Dictionary<string, DataField>();
             Define();
 
-            return new Tuple<List<DataField>, List<DataField>>(
+            return new Tuple<IEnumerable<DataField>, IEnumerable<DataField>>(
                 PrepareFields(_masterFields.Values.ToList(), typeof(M)), 
                 PrepareFields(_fields.Values.ToList(), typeof(D)));
         }
@@ -101,34 +102,48 @@ namespace MasterDetailsDataEntry.Shared.Forms
         {
             foreach (var field in list)
             {
-                var property = type.GetProperty(field.BindingProperty);
-                field.DataType = property.PropertyType;
-
-                if (field.ControlType == null)
-                {
-                    var dataTypeName = field.DataType.Name;
-
-                    if (field.DataType.Name == "Nullable`1")
-                    {
-                        dataTypeName = Nullable.GetUnderlyingType(field.DataType).Name;
-                    }
-
-                    switch (dataTypeName)
-                    {
-                        case "Boolean":
-                            field.ControlType = typeof(DefaultCheckboxControl);
-                            break;
-                        case "DateTime":
-                            field.ControlType = typeof(DefaultDateEditControl);
-                            break;
-                        default:
-                            field.ControlType = typeof(DefaultTextEditControl);
-                            break;
-                    }
-                }
+                ResolveControlType(type, field);
+                ResolveLabel(type, field);
             }
 
             return list;
+        }
+
+        private static void ResolveLabel(Type type, DataField field)
+        {
+            if (field.Label == null)
+            {
+                field.Label = field.BindingProperty;
+            }
+        }
+
+        private static void ResolveControlType(Type type, DataField field)
+        {
+            var property = type.GetProperty(field.BindingProperty);
+            field.DataType = property.PropertyType;
+
+            if (field.ControlType == null)
+            {
+                var dataTypeName = field.DataType.Name;
+
+                if (field.DataType.Name == "Nullable`1")
+                {
+                    dataTypeName = Nullable.GetUnderlyingType(field.DataType).Name;
+                }
+
+                switch (dataTypeName)
+                {
+                    case "Boolean":
+                        field.ControlType = typeof(DefaultCheckboxControl);
+                        break;
+                    case "DateTime":
+                        field.ControlType = typeof(DefaultDateEditControl);
+                        break;
+                    default:
+                        field.ControlType = typeof(DefaultTextEditControl);
+                        break;
+                }
+            }
         }
     }
 
