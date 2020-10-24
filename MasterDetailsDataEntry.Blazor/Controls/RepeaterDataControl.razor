@@ -1,0 +1,86 @@
+﻿@inject IComponentTypeResolver _componentResolverService
+
+<div class="RepeaterDataControl">
+    <table mat-table>
+        <tr class="jsgrid-grid-header">
+            @foreach (var field in Fields)
+            {
+                @if (field.Hidden)
+                {
+                    continue;
+                }
+
+                @if (field.Required)
+                {
+                    <th>@(field.Label)*</th>
+                }
+                else
+                {
+                    <th>@field.Label</th>
+                }
+            }
+        </tr>
+
+        @{
+            var row = 0;
+
+            @*@foreach (var item in ModelItems)*@
+            @for (int rowIndex = 0; rowIndex < ModelItems.Count; rowIndex++)
+            {
+                <tr class="jsgrid-row-item">
+                    @foreach (var field in Fields)
+                    {
+                        @if (field.Hidden)
+                        {
+                            continue;
+                        }
+
+                        <td>
+                            <SingleDataControl Field="@field" State="@CreateFieldState(field, rowIndex)" ModelValueChanged="@LocalModelValueChanged" />
+                        </td>
+                    }
+                </tr>
+
+                row++;
+            }
+        }
+    </table>
+</div>
+
+@code
+{
+    [Parameter]
+    public IEnumerable<DataField> Fields { get; set; }
+
+    [Parameter]
+    public System.Collections.IList ModelItems { get; set; }
+
+    [Parameter]
+    public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }
+
+    private async Task LocalModelValueChanged(ValueChangedArgs args)
+    {
+        SetItemValue(args.Field, args.State);
+        await ModelValueChanged.InvokeAsync(args);
+    }
+
+    private FieldState CreateFieldState(DataField field, int row)
+    {
+        var result = new FieldState(field, row);
+        result.Value = GetItemValue(field, row);
+        return result;
+    }
+
+    private object GetItemValue(DataField field, int row)
+    {
+        var item = ModelItems[row];
+        var result = item.GetPropertyValue(field.BindingProperty);
+        return result;
+    }
+
+    private void SetItemValue(DataField field, FieldState state)
+    {
+        var item = ModelItems[state.RowIndex];
+        item.SetPropertyValue(field.BindingProperty, state.Value);
+    }
+}

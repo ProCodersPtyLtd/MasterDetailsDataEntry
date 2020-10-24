@@ -1,0 +1,37 @@
+﻿@page "/masterDetails"
+@using MasterDetailsDataEntry.Demo.MyForms
+@using MasterDetailsDataEntry.Shared.Forms
+
+@inject IDataEntryProvider _dataEntryProvider
+
+<h1>Master Details</h1>
+
+@*<SingleDataControl Field="@Field" State="@(new FieldState(Field))" ModelValueChanged="@ModelChanged" />
+
+<RepeaterDataControl ModelItems="@ModelItems" Fields="@Fields" ModelValueChanged="@ModelChanged" />*@
+
+<MasterDetailsFormControl FormType="@typeof(MyMultiForm)" MasterPk="1"/>
+
+@code {
+
+    private DataField Field = new DataField { ControlType = typeof(TextEdit), BindingProperty = "ClientName", Label = "Client Name" };
+
+    private IEnumerable<DataField> Fields { get; set; }
+    private System.Collections.IList ModelItems { get; set; }
+
+    private async Task ModelChanged(ValueChangedArgs args)
+    {
+
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        var myForm = new MyMultiForm();
+        var data = myForm.GetFields(); //_dataEntryProvider.GetFormFields(myForm);
+        Fields = data.Item1;
+        ModelItems = _dataEntryProvider.GetModelData(myForm);
+    }
+
+}

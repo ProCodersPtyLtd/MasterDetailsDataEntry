@@ -1,0 +1,43 @@
+﻿@inject IDataEntryProvider _dataEntryProvider
+
+<div class="MasterDetailsFormControl">
+    @*MasterControl*@
+    <RepeaterDataControl ModelItems="@MasterModelItems" Fields="@MasterFields" ModelValueChanged="@ModelChanged" />
+
+    @*DetailsControl*@
+    <RepeaterDataControl ModelItems="@ModelItems" Fields="@Fields" ModelValueChanged="@ModelChanged" />
+</div>
+
+@code
+{
+    [Parameter]
+    public Type FormType { get; set; }
+
+    [Parameter]
+    public int MasterPk { get; set; }
+
+    public IEnumerable<DataField> MasterFields { get; set; }
+    public IEnumerable<DataField> Fields { get; set; }
+
+    public System.Collections.IList MasterModelItems { get; set; }
+    public System.Collections.IList ModelItems { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        var form = Activator.CreateInstance(FormType) as IMultiModelDefinitionForm;
+        var fieldData = _dataEntryProvider.GetFormFields(form);
+        MasterFields = fieldData.Item1;
+        Fields = fieldData.Item2;
+
+        var data = _dataEntryProvider.GetModelData(form, MasterPk);
+        MasterModelItems = new object[] { data.Item1 };
+        ModelItems = data.Item2;
+    }
+
+    private async Task ModelChanged(ValueChangedArgs args)
+    {
+
+    }
+}

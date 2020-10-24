@@ -1,0 +1,33 @@
+﻿@namespace MasterDetailsDataEntry.Blazor
+
+<div class="TextControl">
+    @*@if (Field.Required)
+    {
+        <div>@(Field.Label)*</div>
+    }
+    else
+    {
+        <div>@Field.Label</div>
+    }*@
+
+    <input value="@State.Value" @onchange="@(a => ValueChanged(a))" required="@Field.Required" />
+</div>
+
+@code
+{
+    [Parameter]
+    public DataField Field { get; set; }
+
+    [Parameter]
+    public FieldState State { get; set; }
+
+    [Parameter]
+    public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }
+
+    private async Task ValueChanged(ChangeEventArgs a)
+    {
+        State.Value = a.Value;
+        var args = new ValueChangedArgs { Field = Field, State = State, NewValue = a.Value };
+        await ModelValueChanged.InvokeAsync(args);
+    }
+}

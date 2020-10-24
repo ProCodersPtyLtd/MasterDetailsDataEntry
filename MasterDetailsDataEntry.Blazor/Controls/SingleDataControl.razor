@@ -1,0 +1,36 @@
+﻿@inject IComponentTypeResolver _componentResolverService
+
+<div class="SingleDataControl">
+    @*@switch (Field.ControlType?.FullName)
+        {
+            case "":
+                break;
+        }*@
+    @{
+        var component = _componentResolverService.GetComponentTypeByName(Field.ControlType?.FullName);
+        RenderFragment renderFragment = (builder) =>
+        {
+            builder.OpenComponent(0, component);
+            builder.AddAttribute(0, "Field", Field);
+            builder.AddAttribute(0, "State", State);
+            builder.AddAttribute(0, "ModelValueChanged", ModelValueChanged);
+            builder.CloseComponent();
+        };
+        <div>
+            @renderFragment
+        </div>
+    }
+
+</div>
+
+@code
+{
+    [Parameter]
+    public DataField Field { get; set; }
+
+    [Parameter]
+    public FieldState State { get; set; }
+
+    [Parameter]
+    public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }
+}

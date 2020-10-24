@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MasterDetailsDataEntry.Blazor\MasterDetailsDataEntry.Blazor.csproj" />
+    <ProjectReference Include="..\MasterDetailsDataEntry.Shared\MasterDetailsDataEntry.Shared.csproj" />
+    <ProjectReference Include="..\MasterDetailsDataEntry\MasterDetailsDataEntry.csproj" />
+  </ItemGroup>
+
+</Project>

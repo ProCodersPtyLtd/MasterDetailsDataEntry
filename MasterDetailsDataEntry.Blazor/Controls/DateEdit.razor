@@ -1,0 +1,34 @@
+﻿@namespace MasterDetailsDataEntry.Blazor
+
+<div class="TextControl">
+    <input type="date" value="@GetValue()" @onchange="@(a => ValueChanged(a))" required="@Field.Required" />
+</div>
+
+@code
+{
+    [Parameter]
+    public DataField Field { get; set; }
+
+    [Parameter]
+    public FieldState State { get; set; }
+
+    [Parameter]
+    public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }
+
+    private async Task ValueChanged(ChangeEventArgs a)
+    {
+        DateTime date;
+        var dateValue = DateTime.TryParse(a.Value?.ToString(), out date) ? date : (DateTime?)null;
+
+        // we store proper type in State independently what underlying type is used in a blazor control
+        State.Value = dateValue;
+        var args = new ValueChangedArgs { Field = Field, State = State, NewValue = dateValue };
+        await ModelValueChanged.InvokeAsync(args);
+    }
+
+    private string GetValue()
+    {
+        var date = (DateTime?)State.Value;
+        return date?.ToString("yyyy-MM-dd");
+    }
+}
