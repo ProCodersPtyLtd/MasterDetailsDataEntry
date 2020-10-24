@@ -6,6 +6,9 @@ namespace MasterDetailsDataEntry.Shared
 {
     public interface IMultiModelDefinitionForm : IModelDefinitionForm
     {
-        public Tuple<IEnumerable<DataField>, IEnumerable<DataField>> GetFields();
+        Tuple<IEnumerable<DataField>, IEnumerable<DataField>> GetFields();
+        Type GetDbContextType();
+        Type GetMasterType();
+        Type GetDetailsType();
     }
 }

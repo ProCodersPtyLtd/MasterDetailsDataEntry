@@ -5,13 +5,15 @@ VisualStudioVersion = 16.0.30611.23
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MasterDetailsDataEntry.Demo", "MasterDetailsDataEntry.Demo\MasterDetailsDataEntry.Demo.csproj", "{B3E89103-CE1A-4604-9F04-B6F362F01FD3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterDetailsDataEntry.Blazor", "MasterDetailsDataEntry.Blazor\MasterDetailsDataEntry.Blazor.csproj", "{1796EDCC-45A2-4213-A5D6-33015F4DEC4C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MasterDetailsDataEntry.Blazor", "MasterDetailsDataEntry.Blazor\MasterDetailsDataEntry.Blazor.csproj", "{1796EDCC-45A2-4213-A5D6-33015F4DEC4C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterDetailsDataEntry.Shared", "MasterDetailsDataEntry.Shared\MasterDetailsDataEntry.Shared.csproj", "{70F6BEF8-597D-4CA0-B01F-92B3A012606E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MasterDetailsDataEntry.Shared", "MasterDetailsDataEntry.Shared\MasterDetailsDataEntry.Shared.csproj", "{70F6BEF8-597D-4CA0-B01F-92B3A012606E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterDetailsDataEntry", "MasterDetailsDataEntry\MasterDetailsDataEntry.csproj", "{0F30A083-47CD-4742-BE4F-154D9447B148}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MasterDetailsDataEntry", "MasterDetailsDataEntry\MasterDetailsDataEntry.csproj", "{0F30A083-47CD-4742-BE4F-154D9447B148}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterDetailsDataEntry.Tests", "MasterDetailsDataEntry.Tests\MasterDetailsDataEntry.Tests.csproj", "{D79D130E-B462-4BB8-867F-B13F89808127}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MasterDetailsDataEntry.Tests", "MasterDetailsDataEntry.Tests\MasterDetailsDataEntry.Tests.csproj", "{D79D130E-B462-4BB8-867F-B13F89808127}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterDetailsDataEntry.Demo.Database", "MasterDetailsDataEntry.Demo.Database\MasterDetailsDataEntry.Demo.Database.csproj", "{3C9818AD-FCB1-4C28-9F82-98454959CCF4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{D79D130E-B462-4BB8-867F-B13F89808127}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D79D130E-B462-4BB8-867F-B13F89808127}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D79D130E-B462-4BB8-867F-B13F89808127}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C9818AD-FCB1-4C28-9F82-98454959CCF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C9818AD-FCB1-4C28-9F82-98454959CCF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C9818AD-FCB1-4C28-9F82-98454959CCF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C9818AD-FCB1-4C28-9F82-98454959CCF4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

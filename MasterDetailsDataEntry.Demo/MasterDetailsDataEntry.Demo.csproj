@@ -5,7 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.9">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MasterDetailsDataEntry.Blazor\MasterDetailsDataEntry.Blazor.csproj" />
+    <ProjectReference Include="..\MasterDetailsDataEntry.Demo.Database\MasterDetailsDataEntry.Demo.Database.csproj" />
     <ProjectReference Include="..\MasterDetailsDataEntry.Shared\MasterDetailsDataEntry.Shared.csproj" />
     <ProjectReference Include="..\MasterDetailsDataEntry\MasterDetailsDataEntry.csproj" />
   </ItemGroup>

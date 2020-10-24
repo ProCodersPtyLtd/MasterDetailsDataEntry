@@ -15,8 +15,15 @@ namespace MasterDetailsDataEntry.Shared.Forms
         // private string _foreignKeyField;
         private Dictionary<string, DataField> _fields;
         private Dictionary<string, DataField> _masterFields;
+        private Type _contextType;
 
         protected abstract void Define();
+
+        public MasterDetailsForm<M, D> Use<TContext>()
+        {
+            _contextType = typeof(TContext);
+            return this;
+        }
 
         public MasterDetailsForm<M, D> PrimaryKey<TKey>(Expression<Func<M, TKey>> selector) 
         {
@@ -98,7 +105,22 @@ namespace MasterDetailsDataEntry.Shared.Forms
                 PrepareFields(_fields.Values.ToList(), typeof(D)));
         }
 
-        public static List<DataField> PrepareFields(List<DataField> list, Type type)
+        public Type GetDbContextType()
+        {
+            return _contextType;
+        }
+
+        public Type GetMasterType()
+        {
+            return typeof(M);
+        }
+        
+        public Type GetDetailsType()
+        {
+            return typeof(D);
+        }
+
+        private static List<DataField> PrepareFields(List<DataField> list, Type type)
         {
             foreach (var field in list)
             {

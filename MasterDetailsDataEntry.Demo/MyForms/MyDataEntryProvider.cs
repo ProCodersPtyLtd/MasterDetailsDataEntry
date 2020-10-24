@@ -1,9 +1,12 @@
 ﻿using MasterDetailsDataEntry.Demo.Data;
+using MasterDetailsDataEntry.Demo.Database.Model;
 using MasterDetailsDataEntry.Shared;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -58,7 +61,7 @@ namespace MasterDetailsDataEntry.Demo
         // read data
         public IList GetModelData(IModelDefinitionForm form)
         {
-            return new Order[] { new Order { ClientName = "New Client", OrderDate = DateTime.Now, OrderId = 1 } };
+            return new Order[] { new Order { ClientName = "New Client", CreateDate = DateTime.Now, Id = 1 } };
         }
 
         public object GetModelData(IModelDefinitionForm form, int Id)
@@ -66,11 +69,30 @@ namespace MasterDetailsDataEntry.Demo
             throw new NotImplementedException();
         }
 
-        public Tuple<object, IList> GetModelData(IMultiModelDefinitionForm form, int Id)
+        public Tuple<object, IList> GetModelData(IMultiModelDefinitionForm form, int id)
         {
-            var d1 = new Order { ClientName = "New Client", OrderDate = DateTime.Now, OrderId = 1 };
-            var d2 = new OrderItem[] { new OrderItem { OrderId = 1, OrderItemId = 1, Name = "Lola" }, new OrderItem { OrderId = 1, OrderItemId = 2, Name = "Pola" } };
-            return new Tuple<object, IList>(d1, d2);
+            using (var db = GetDbContext(form))
+            {
+                var masterType = form.GetMasterType();
+                var detailsType = form.GetDetailsType();
+
+                var master = db.Find(masterType, id);
+                var navigation = db.Entry(master).Navigations.FirstOrDefault(n => n.Metadata.Name == detailsType.Name);
+                navigation.Load();
+                var details = (navigation.CurrentValue as IEnumerable).Cast<object>().ToList();
+                return new Tuple<object, IList>(master, details);
+            }
+                
+            //var d1 = new Order { ClientName = "New Client", CreateDate = DateTime.Now, Id = 1 };
+            //var d2 = new OrderItem[] { new OrderItem { OrderId = 1, Id = 1, ItemName = "Lola" }, new OrderItem { OrderId = 1, Id = 2, ItemName = "Pola" } };
+            //return new Tuple<object, IList>(d1, d2);
+        }
+
+        private DbContext GetDbContext(IMultiModelDefinitionForm form)
+        {
+            var type = form.GetDbContextType();
+            var context = Activator.CreateInstance(type) as DbContext;
+            return context;
         }
     }
 }
