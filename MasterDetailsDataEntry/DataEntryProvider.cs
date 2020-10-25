@@ -15,7 +15,8 @@ namespace MasterDetailsDataEntry
         // read fields
         public IEnumerable<DataField> GetFormFields(IModelDefinitionForm form)
         {
-            throw new NotImplementedException();
+            var fieldsSet = form.GetDetailsFields();
+            return fieldsSet;
         }
 
         public IEnumerable<DataField> GetFormFields(Type formType)

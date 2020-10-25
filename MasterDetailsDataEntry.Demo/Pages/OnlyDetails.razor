@@ -1,18 +1,24 @@
-﻿@page "/masterDetails"
+﻿@page "/OnlyDetails"
 @using MasterDetailsDataEntry.Demo.MyForms
 @using MasterDetailsDataEntry.Shared.Forms
 
 @inject IDataEntryProvider _dataEntryProvider
 
-<h1>Master Details</h1>
+<h1>Only Details</h1>
+
+<div>Order ID</div>
+<div>
+    <input value="@OrderId" @onchange="@(a => OrderIdValueChanged(a))" />
+</div>
 
 @*<SingleDataControl Field="@Field" State="@(new FieldState(Field))" ModelValueChanged="@ModelChanged" />
 
 <RepeaterDataControl ModelItems="@ModelItems" Fields="@Fields" ModelValueChanged="@ModelChanged" />*@
 
-<MasterDetailsFormControl FormType="@typeof(MyMultiForm)" MasterPk="1"/>
+<DetailsFormControl FormType="@typeof(MyDetailsForm)" FilterValue="@OrderId"/>
 
 @code {
+    private int? OrderId { get; set; } = 1;
 
     private DataField Field = new DataField { ControlType = typeof(TextEdit), BindingProperty = "ClientName", Label = "Client Name" };
 
@@ -24,14 +30,16 @@
 
     }
 
+    private void OrderIdValueChanged(ChangeEventArgs a)
+    {
+        int value;
+        OrderId = int.TryParse(a.Value.ToString(), out value) ? value: (int?)null;
+        StateHasChanged();
+    }
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
-
-        var myForm = new MyMultiForm();
-        var data = myForm.GetFields(); //_dataEntryProvider.GetFormFields(myForm);
-        Fields = data.Item1;
-        ModelItems = _dataEntryProvider.GetModelData(myForm);
     }
 
 }
