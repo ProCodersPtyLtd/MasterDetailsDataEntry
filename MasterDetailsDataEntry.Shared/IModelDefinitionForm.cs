@@ -6,5 +6,8 @@ namespace MasterDetailsDataEntry.Shared
 {
     public interface IModelDefinitionForm
     {
+        Type GetDbContextType();
+        Type GetDetailsType();
+        IEnumerable<DataField> GetDetailsFields();
     }
 }

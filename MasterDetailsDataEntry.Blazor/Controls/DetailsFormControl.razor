@@ -1,0 +1,43 @@
+﻿@inject IDataEntryProvider _dataEntryProvider
+
+<div class="DetailsFormControl">
+    @*DetailsControl*@
+    <RepeaterDataControl ModelItems="@ModelItems" Fields="@Fields" ModelValueChanged="@ModelChanged" />
+</div>
+
+@code
+{
+    [Parameter]
+    public Type FormType { get; set; }
+
+    [Parameter]
+    public int? FilterValue { get; set; }
+
+    public IEnumerable<DataField> Fields { get; set; }
+
+    public System.Collections.IList ModelItems { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        LoadForm();
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        LoadForm();
+    }
+
+    private void LoadForm()
+    {
+        var form = Activator.CreateInstance(FormType) as IModelDefinitionForm;
+        Fields = _dataEntryProvider.GetFormFields(form);
+        ModelItems = _dataEntryProvider.GetFilteredModelData(form, FilterValue);
+    }
+
+    private async Task ModelChanged(ValueChangedArgs args)
+    {
+
+    }
+}

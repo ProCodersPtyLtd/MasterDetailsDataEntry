@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using MasterDetailsDataEntry.Shared.Controls;
+using Microsoft.EntityFrameworkCore;
 
 namespace MasterDetailsDataEntry.Shared.Forms
 {
@@ -20,6 +21,7 @@ namespace MasterDetailsDataEntry.Shared.Forms
         protected abstract void Define();
 
         public MasterDetailsForm<M, D> Use<TContext>()
+            where TContext: DbContext
         {
             _contextType = typeof(TContext);
             return this;
@@ -166,6 +168,12 @@ namespace MasterDetailsDataEntry.Shared.Forms
                         break;
                 }
             }
+        }
+
+        public IEnumerable<DataField> GetDetailsFields()
+        {
+            var fields = PrepareFields(_fields.Values.ToList(), typeof(D));
+            return fields;
         }
     }
 

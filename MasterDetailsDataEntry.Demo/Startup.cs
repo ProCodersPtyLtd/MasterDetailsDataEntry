@@ -31,7 +31,7 @@ namespace MasterDetailsDataEntry.Demo
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             services.AddMasterDetailsDataEntryBlazor();
-            services.AddSingleton<IDataEntryProvider, MyDataEntryProvider>();
+            services.AddSingleton<IDataEntryProvider, DataEntryProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

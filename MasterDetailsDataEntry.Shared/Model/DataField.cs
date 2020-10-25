@@ -9,6 +9,7 @@ namespace MasterDetailsDataEntry.Shared
         public string BindingProperty { get; set; }
         public bool PrimaryKey { get; set; }
         public bool ForeignKey { get; set; }
+        public string FilterProperty { get; set; }
 
         public DataField()
         { }
