@@ -79,6 +79,16 @@ namespace MasterDetailsDataEntry
             }
         }
 
+        public System.Collections.IList GetEntityData(IModelDefinitionForm form, Type entity)
+        {
+            using (var db = GetDbContext(form))
+            {
+                var result = db.FindSet(entity).ToDynamicList<object>();
+                return result;
+            }
+        }
+
+        // CRUD
         public void DeleteItem(IModelDefinitionForm form, object item)
         {
             using (var db = GetDbContext(form))

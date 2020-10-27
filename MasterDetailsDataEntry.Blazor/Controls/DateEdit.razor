@@ -1,7 +1,7 @@
 ﻿@namespace MasterDetailsDataEntry.Blazor
 
 <div class="TextControl">
-    <input type="date" value="@GetValue()" @onchange="@(a => ValueChanged(a))" required="@Field.Required" />
+    <input class="form-control" type="date" value="@GetValue()" @onchange="@(a => ValueChanged(a))" required="@Field.Required" />
 </div>
 
 @code

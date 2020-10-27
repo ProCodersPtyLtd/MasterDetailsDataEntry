@@ -17,11 +17,27 @@ namespace MasterDetailsDataEntry.Tests.FormDefinition
         }
 
         public int Id { get; set; }
-        public string ClientName { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime? ExecuteDate { get; set; }
+        public int ClientId { get; set; }
 
+        public virtual TestClient Client { get; set; }
         public virtual ICollection<TestOrderItem> OrderItem { get; set; }
+    }
+
+    public partial class TestClient
+    {
+        public TestClient()
+        {
+            Order = new HashSet<TestOrder>();
+        }
+
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Name { get; set; }
+
+        public virtual ICollection<TestOrder> Order { get; set; }
     }
 
     public partial class TestOrderItem

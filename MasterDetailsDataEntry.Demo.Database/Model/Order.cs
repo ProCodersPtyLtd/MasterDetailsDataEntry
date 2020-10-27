@@ -14,7 +14,9 @@ namespace MasterDetailsDataEntry.Demo.Database.Model
         public string ClientName { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime? ExecuteDate { get; set; }
+        public int ClientId { get; set; }
 
+        public virtual Client Client { get; set; }
         public virtual ICollection<OrderItem> OrderItem { get; set; }
     }
 }

@@ -5,19 +5,19 @@
 
 <div class="DetailsFormControl">
     @*DetailsControl*@
-    <RepeaterDataControl ModelType="@ModelType" ModelItems="@ModelItems" Fields="@Fields" ModelValueChanged="@ModelChanged" ItemsChanged="@ItemsChanged" />
+    <RepeaterDataControl Form="@_form" ModelType="@ModelType" ModelItems="@ModelItems" Fields="@Fields" ModelValueChanged="@ModelChanged" ItemsChanged="@ItemsChanged" />
 </div>
 
 @code
 {
-        [Parameter]
-        public Type FormType { get; set; }
+    [Parameter]
+    public Type FormType { get; set; }
 
-        [Parameter]
-        public int? ForeignKeyValue { get; set; }
+    [Parameter]
+    public int? ForeignKeyValue { get; set; }
 
-        [Parameter]
-        public int? FilterValue { get; set; }
+    [Parameter]
+    public int? FilterValue { get; set; }
 
     public IEnumerable<DataField> Fields { get; set; }
 

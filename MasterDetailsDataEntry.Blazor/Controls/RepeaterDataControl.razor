@@ -38,7 +38,7 @@
                         }
 
                         <td>
-                            <SingleDataControl Field="@field" IsEditing="GetRowState(rowIndex).IsEditing" State="@CreateFieldState(field, rowIndex)"
+                            <SingleDataControl Form="@Form" Field="@field" IsEditing="GetRowState(rowIndex).IsEditing" State="@CreateFieldState(field, rowIndex)"
                                                ModelValueChanged="@LocalModelValueChanged" />
                         </td>
                     }
@@ -60,6 +60,9 @@
 @code
 {
     [Parameter]
+    public IModelDefinitionForm Form { get; set; }
+
+    [Parameter]
     public Type ModelType { get; set; }
 
     [Parameter]
@@ -77,11 +80,17 @@
     private object _modelItemReserveCopy;
     private bool _isEditing;
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        _isEditing = false;
+        _modelItemReserveCopy = null;
+    }
+
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        _isEditing = false;
-        _modelItemReserveCopy = null;
     }
 
     private EditModes GetEditMode()

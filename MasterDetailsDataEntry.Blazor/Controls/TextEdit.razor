@@ -10,7 +10,7 @@
         <div>@Field.Label</div>
     }*@
 
-    <input value="@State.Value" @onchange="@(a => ValueChanged(a))" required="@Field.Required" />
+    <input class="form-control" value="@State.Value" @onchange="@(a => ValueChanged(a))" required="@Field.Required" />
 </div>
 
 @code

@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Internal;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
+using System.Reflection;
 
 namespace MasterDetailsDataEntry.Shared
 {
@@ -47,6 +50,14 @@ namespace MasterDetailsDataEntry.Shared
         {
             var property = target.GetType().GetProperty(bindingProperty);
             var result = property.GetValue(target);
+            return result;
+        }
+
+        public static bool DefinesComponentParameter(this Type component, string prop, Type attr)
+        {
+            var result = (component.GetProperties().Any(p => p.Name == prop) &&
+                component.GetProperty(prop).GetCustomAttributes(attr).Any());
+
             return result;
         }
     }

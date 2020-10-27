@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MasterDetailsDataEntry.Demo.MyForms
 {
-    public class MyDetailsForm : DetailsForm<OrderItem>
+    public class OrderDetailsForm : DetailsForm<Order>
     {
         protected override void Define()
         {
@@ -19,14 +19,12 @@ namespace MasterDetailsDataEntry.Demo.MyForms
                 .Use<TestContext>()
                 // keys
                 .PrimaryKey(m => m.Id)
-                .FilterBy(m => m.OrderId)
-                .ForeignKey(d => d.OrderId)
                 // fields
-                .Field(d => d.Id, new Field { ControlType = typeof(DefaultFormattedViewControl) })
-                .Field(d => d.OrderId, new Field { ControlType = typeof(DefaultFormattedViewControl) })
-                .Field(d => d.ItemName, new Field { Required = true, ControlType = typeof(TextEdit) })
-                .Field(d => d.Qty, new Field { Required = true, ControlType = typeof(TextEdit) })
-                .Field(d => d.AvailableFrom, new Field { Required = true })
+                .Field(m => m.Id, new Field { Hidden = true })
+                .Field(m => m.ClientName, new Field { Required = true, ControlType = typeof(TextEdit) })
+                .Field(m => m.CreateDate, new Field { Required = true })
+                .Field(m => m.ExecuteDate, new Field { })
+                .AddDropdown<Client>().Field(m => m.ClientId, c => c.Id, c => c.Name)
                 ;
         }
     }

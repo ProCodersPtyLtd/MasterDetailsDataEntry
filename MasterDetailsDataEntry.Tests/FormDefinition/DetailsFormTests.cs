@@ -1,4 +1,5 @@
-﻿using MasterDetailsDataEntry.Shared.Forms;
+﻿using MasterDetailsDataEntry.Shared.Controls;
+using MasterDetailsDataEntry.Shared.Forms;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Collections.Generic;
@@ -36,6 +37,20 @@ namespace MasterDetailsDataEntry.Tests.FormDefinition
             Assert.Equal("Id", fields.FirstOrDefault(x => x.PrimaryKey)?.BindingProperty);
         }
 
+        [Fact]
+        public void DefineDropdownTest()
+        {
+            var f = new FormWithDropdown();
+            var fields = f.GetFields();
+            Assert.NotEmpty(fields);
+            Assert.Contains(fields, x => x.SelectEntityType != null);
+            var df = fields.Single(x => x.SelectEntityType != null);
+            Assert.Equal(typeof(TestClient), df.SelectEntityType);
+            Assert.Equal("Id", df.SelectIdProperty);
+            Assert.Equal("Name", df.SelectNameProperty);
+            Assert.Equal(typeof(DefaultDropdownControl), df.ControlType);
+        }
+
         #region test forms
         public class FormEmpty: DetailsForm<TestOrder>
         {
@@ -60,6 +75,19 @@ namespace MasterDetailsDataEntry.Tests.FormDefinition
                 this
                     .Use<TestModelsContext>()
                     .PrimaryKey(x => x.Id)
+                    ;
+            }
+        }
+
+        public class FormWithDropdown : DetailsForm<TestOrder>
+        {
+            protected override void Define()
+            {
+                this
+                    .Use<TestModelsContext>()
+                    .PrimaryKey(x => x.Id)
+                    .AddDropdown<TestClient>().Field(o => o.ClientId, c => c.Id, c => c.Name)
+                    .Field(o => o.CreateDate, new Shared.Field { Hidden = true })
                     ;
             }
         }

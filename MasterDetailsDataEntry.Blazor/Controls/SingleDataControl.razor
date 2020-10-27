@@ -7,13 +7,19 @@
                 break;
         }*@
     @{
-        var component = IsEditing 
+        var component = IsEditing
             ? _componentResolverService.GetComponentTypeByName(Field.ControlType?.FullName)
             : _componentResolverService.GetComponentTypeByName(Field.ViewModeControlType?.FullName);
 
         RenderFragment renderFragment = (builder) =>
         {
             builder.OpenComponent(0, component);
+
+            if (component.DefinesComponentParameter("Form", typeof(ParameterAttribute)))
+            {
+                builder.AddAttribute(0, "Form", Form);
+            }
+
             builder.AddAttribute(0, "Field", Field);
             builder.AddAttribute(0, "State", State);
             builder.AddAttribute(0, "ModelValueChanged", ModelValueChanged);
@@ -28,6 +34,9 @@
 
 @code
 {
+    [Parameter]
+    public IModelDefinitionForm Form { get; set; }
+
     [Parameter]
     public DataField Field { get; set; }
 

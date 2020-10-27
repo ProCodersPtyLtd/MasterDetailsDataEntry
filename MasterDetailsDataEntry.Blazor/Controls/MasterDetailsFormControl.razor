@@ -25,7 +25,17 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
+        LoadForm();
+    }
 
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        LoadForm();
+    }
+
+    private void LoadForm()
+    {
         var form = Activator.CreateInstance(FormType) as IMultiModelDefinitionForm;
         var fieldData = _dataEntryProvider.GetFormFields(form);
         MasterFields = fieldData.Item1;
