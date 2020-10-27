@@ -14,6 +14,8 @@ namespace MasterDetailsDataEntry.Blazor
             { typeof(DefaultTextEditControl).FullName, typeof(TextEdit) },
             { typeof(DefaultDateEditControl).FullName, typeof(DateEdit) },
             { typeof(DefaultCheckboxControl).FullName, typeof(TextEdit) },
+            { typeof(DefaultFormattedViewControl).FullName, typeof(FormattedView) },
+            { typeof(DefaultReadonlyCheckboxControl).FullName, typeof(FormattedView) },
 
             // extended controls
             { typeof(TextEdit).FullName, typeof(TextEdit) }

@@ -19,14 +19,16 @@
                     <th>@field.Label</th>
                 }
             }
+
+            <th></th>
         </tr>
 
         @{
-            var row = 0;
-
             @*@foreach (var item in ModelItems)*@
             @for (int rowIndex = 0; rowIndex < ModelItems.Count; rowIndex++)
             {
+                var row = rowIndex;
+
                 <tr class="jsgrid-row-item">
                     @foreach (var field in Fields)
                     {
@@ -36,19 +38,30 @@
                         }
 
                         <td>
-                            <SingleDataControl Field="@field" State="@CreateFieldState(field, rowIndex)" ModelValueChanged="@LocalModelValueChanged" />
+                            <SingleDataControl Field="@field" IsEditing="GetRowState(rowIndex).IsEditing" State="@CreateFieldState(field, rowIndex)"
+                                               ModelValueChanged="@LocalModelValueChanged" />
                         </td>
                     }
-                </tr>
 
-                row++;
+                    <td>
+                        <button @onclick="@((args) => EditClick(args, row))" hidden="@(GetRowState(rowIndex).IsEditing)" disabled="@_isEditing">Edit</button>
+                        <button @onclick="@((args) => DeleteClick(args, row))" hidden="@(GetRowState(rowIndex).IsEditing)" disabled="@_isEditing">Delete</button>
+                        <button @onclick="@((args) => ApplyClick(args, row))" hidden="@(!GetRowState(rowIndex).IsEditing)">Apply</button>
+                        <button @onclick="@((args) => CancelClick(args, row))" hidden="@(!GetRowState(rowIndex).IsEditing)">Cancel</button>
+                    </td>
+                </tr>
             }
         }
     </table>
+
+    <button @onclick="@((args) => AddClick(args))" disabled="@_isEditing">Add</button>
 </div>
 
 @code
 {
+    [Parameter]
+    public Type ModelType { get; set; }
+
     [Parameter]
     public IEnumerable<DataField> Fields { get; set; }
 
@@ -57,6 +70,24 @@
 
     [Parameter]
     public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<ItemsChangedArgs> ItemsChanged { get; set; }
+
+    private object _modelItemReserveCopy;
+    private bool _isEditing;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        _isEditing = false;
+        _modelItemReserveCopy = null;
+    }
+
+    private EditModes GetEditMode()
+    {
+        return EditModes.SingleRecord;
+    }
 
     private async Task LocalModelValueChanged(ValueChangedArgs args)
     {
@@ -83,4 +114,55 @@
         var item = ModelItems[state.RowIndex];
         item.SetPropertyValue(field.BindingProperty, state.Value);
     }
+
+    private RowState GetRowState(int rowIndex)
+    {
+        return ModelItems[rowIndex].GetBag<RowState>();
+    }
+
+    private void EditClick(MouseEventArgs e, int rowIndex)
+    {
+        _isEditing = true;
+        ModelItems[rowIndex].GetBag<RowState>().IsEditing = true;
+        _modelItemReserveCopy = ModelItems[rowIndex].GetCopy();
+        StateHasChanged();
+    }
+
+    private void DeleteClick(MouseEventArgs e, int rowIndex)
+    {
+        var args = new ItemsChangedArgs { Operation = ItemOperations.Delete, RowIndex = rowIndex };
+        ItemsChanged.InvokeAsync(args);
+    }
+
+    private void ApplyClick(MouseEventArgs e, int rowIndex)
+    {
+        var args = new ItemsChangedArgs { Operation = ItemOperations.Update, RowIndex = rowIndex };
+        ItemsChanged.InvokeAsync(args);
+
+        ModelItems[rowIndex].GetBag<RowState>().IsEditing = false;
+        ModelItems[rowIndex].GetBag<RowState>().IsNew = false;
+        _isEditing = false;
+    }
+
+    private void CancelClick(MouseEventArgs e, int rowIndex)
+    {
+        _modelItemReserveCopy.CopyTo(ModelItems[rowIndex]);
+        ModelItems[rowIndex].GetBag<RowState>().IsEditing = false;
+        _isEditing = false;
+
+        if (ModelItems[ModelItems.Count - 1].GetBag<RowState>().IsNew)
+        {
+            ModelItems.RemoveAt(ModelItems.Count - 1);
+        }
+    }
+
+    private void AddClick(MouseEventArgs e)
+    {
+        var item = Activator.CreateInstance(ModelType);
+        ModelItems.Add(item);
+        EditClick(null, ModelItems.Count-1);
+        ModelItems[ModelItems.Count - 1].GetBag<RowState>().IsNew = true;
+    }
+
+
 }

@@ -26,6 +26,7 @@ namespace MasterDetailsDataEntry.Shared
         {
             DataType = source.DataType;
             ControlType = source.ControlType;
+            ViewModeControlType = source.ViewModeControlType;
             Label = source.Label;
             Required = source.Required;
             Hidden = source.Hidden;

@@ -17,6 +17,7 @@ CREATE TABLE [dbo].[order_item](
 	[qty] [int] NOT NULL,
 	[is_major] [bit] NULL,
 	[price] [decimal](12, 2) NOT NULL,
+	[available_from] [date] NULL,
  CONSTRAINT [PK_order_item] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC

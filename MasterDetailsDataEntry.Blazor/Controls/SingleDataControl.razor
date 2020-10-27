@@ -7,7 +7,10 @@
                 break;
         }*@
     @{
-        var component = _componentResolverService.GetComponentTypeByName(Field.ControlType?.FullName);
+        var component = IsEditing 
+            ? _componentResolverService.GetComponentTypeByName(Field.ControlType?.FullName)
+            : _componentResolverService.GetComponentTypeByName(Field.ViewModeControlType?.FullName);
+
         RenderFragment renderFragment = (builder) =>
         {
             builder.OpenComponent(0, component);
@@ -30,6 +33,9 @@
 
     [Parameter]
     public FieldState State { get; set; }
+
+    [Parameter]
+    public bool IsEditing { get; set; }
 
     [Parameter]
     public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }

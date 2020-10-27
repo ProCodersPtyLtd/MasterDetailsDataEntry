@@ -68,6 +68,10 @@ namespace MasterDetailsDataEntry.Demo.Database.Model
                     .HasColumnName("price")
                     .HasColumnType("decimal(12, 2)");
 
+                entity.Property(e => e.AvailableFrom)
+                    .HasColumnName("available_from")
+                    .HasColumnType("date");
+
                 entity.Property(e => e.Qty).HasColumnName("qty");
 
                 entity.HasOne(d => d.Order)

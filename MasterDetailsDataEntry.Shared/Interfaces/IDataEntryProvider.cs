@@ -17,5 +17,10 @@ namespace MasterDetailsDataEntry.Shared
         System.Collections.IList GetFilteredModelData(IModelDefinitionForm form, int? filterValue);
         object GetModelData(IModelDefinitionForm form, int Id);
         Tuple<object, System.Collections.IList> GetModelData(IMultiModelDefinitionForm form, int Id);
+
+        // CRUD
+        object InsertItem(IModelDefinitionForm form, object item);
+        object UpdateItem(IModelDefinitionForm form, object item);
+        void DeleteItem(IModelDefinitionForm form, object item);
     }
 }
