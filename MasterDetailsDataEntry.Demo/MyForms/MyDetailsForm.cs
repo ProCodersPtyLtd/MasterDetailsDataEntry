@@ -2,6 +2,7 @@
 using MasterDetailsDataEntry.Demo.Data;
 using MasterDetailsDataEntry.Demo.Database.Model;
 using MasterDetailsDataEntry.Shared;
+using MasterDetailsDataEntry.Shared.Controls;
 using MasterDetailsDataEntry.Shared.Forms;
 using System;
 using System.Collections.Generic;
@@ -20,9 +21,11 @@ namespace MasterDetailsDataEntry.Demo.MyForms
                 .PrimaryKey(m => m.Id)
                 .FilterBy(m => m.OrderId)
                 .ForeignKey(d => d.OrderId)
-                .Field(d => d.Id, new Field { Hidden = true })
+                .Field(d => d.Id, new Field { ControlType = typeof(DefaultFormattedViewControl) })
+                .Field(d => d.OrderId, new Field { ControlType = typeof(DefaultFormattedViewControl) })
                 .Field(d => d.ItemName, new Field { Required = true, ControlType = typeof(TextEdit) })
                 .Field(d => d.Qty, new Field { Required = true, ControlType = typeof(TextEdit) })
+                .Field(d => d.AvailableFrom, new Field { Required = true })
                 ;
         }
     }

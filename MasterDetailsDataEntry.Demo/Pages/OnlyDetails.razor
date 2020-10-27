@@ -15,7 +15,7 @@
 
 <RepeaterDataControl ModelItems="@ModelItems" Fields="@Fields" ModelValueChanged="@ModelChanged" />*@
 
-<DetailsFormControl FormType="@typeof(MyDetailsForm)" FilterValue="@OrderId"/>
+<DetailsFormControl FormType="@typeof(MyDetailsForm)" FilterValue="@OrderId" ForeignKeyValue="@OrderId"/>
 
 @code {
     private int? OrderId { get; set; } = 1;

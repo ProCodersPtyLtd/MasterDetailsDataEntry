@@ -1,21 +1,31 @@
-﻿@inject IDataEntryProvider _dataEntryProvider
+﻿@using Microsoft.JSInterop
+
+@inject IJSRuntime JsRuntime
+@inject IDataEntryProvider _dataEntryProvider
 
 <div class="DetailsFormControl">
     @*DetailsControl*@
-    <RepeaterDataControl ModelItems="@ModelItems" Fields="@Fields" ModelValueChanged="@ModelChanged" />
+    <RepeaterDataControl ModelType="@ModelType" ModelItems="@ModelItems" Fields="@Fields" ModelValueChanged="@ModelChanged" ItemsChanged="@ItemsChanged" />
 </div>
 
 @code
 {
-    [Parameter]
-    public Type FormType { get; set; }
+        [Parameter]
+        public Type FormType { get; set; }
 
-    [Parameter]
-    public int? FilterValue { get; set; }
+        [Parameter]
+        public int? ForeignKeyValue { get; set; }
+
+        [Parameter]
+        public int? FilterValue { get; set; }
 
     public IEnumerable<DataField> Fields { get; set; }
 
     public System.Collections.IList ModelItems { get; set; }
+
+    public Type ModelType { get; set; }
+
+    private IModelDefinitionForm _form;
 
     protected override void OnInitialized()
     {
@@ -31,13 +41,56 @@
 
     private void LoadForm()
     {
-        var form = Activator.CreateInstance(FormType) as IModelDefinitionForm;
-        Fields = _dataEntryProvider.GetFormFields(form);
-        ModelItems = _dataEntryProvider.GetFilteredModelData(form, FilterValue);
+        _form = Activator.CreateInstance(FormType) as IModelDefinitionForm;
+        ModelType = _form.GetDetailsType();
+        Fields = _dataEntryProvider.GetFormFields(_form);
+        ModelItems = _dataEntryProvider.GetFilteredModelData(_form, FilterValue);
     }
 
     private async Task ModelChanged(ValueChangedArgs args)
     {
 
     }
+
+    private async Task ItemsChanged(ItemsChangedArgs args)
+    {
+        var item = ModelItems[args.RowIndex];
+        var id = item.GetPrimaryKeyValue(Fields);
+
+        switch (args.Operation)
+        {
+            case ItemOperations.Update:
+
+                if (id > 0)
+                {
+                    item = _dataEntryProvider.UpdateItem(_form, item);
+                }
+                else
+                {
+                    item.SetForeignKeyValue(Fields, ForeignKeyValue);
+                    item = _dataEntryProvider.InsertItem(_form, item);
+                }
+
+                break;
+
+            case ItemOperations.Delete:
+
+                if (id > 0)
+                {
+                    bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?");
+
+                    if (!confirmed)
+                    {
+                        return;
+                    }
+
+                    _dataEntryProvider.DeleteItem(_form, item);
+
+                }
+
+                ModelItems.Remove(item);
+                break;
+        }
+    }
+
 }

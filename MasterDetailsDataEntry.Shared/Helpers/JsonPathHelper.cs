@@ -22,7 +22,25 @@ namespace MasterDetailsDataEntry.Shared
         public static void SetPropertyValue(this object target, string bindingProperty, object value)
         {
             var property = target.GetType().GetProperty(bindingProperty);
-            property.SetValue(target, value);
+            object convertedValue = value;
+
+            try
+            {
+                switch (property.PropertyType.Name)
+                {
+                    case "Int32":
+                        convertedValue = Convert.ToInt32(value);
+                        break;
+
+                    case "Decimal":
+                        convertedValue = Convert.ToDecimal(value);
+                        break;
+                }
+
+                property.SetValue(target, convertedValue);
+            }
+            catch (FormatException fexc)
+            { }
         }
 
         public static object GetPropertyValue(this object target, string bindingProperty)

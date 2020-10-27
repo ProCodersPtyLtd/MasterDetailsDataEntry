@@ -79,6 +79,35 @@ namespace MasterDetailsDataEntry
             }
         }
 
+        public void DeleteItem(IModelDefinitionForm form, object item)
+        {
+            using (var db = GetDbContext(form))
+            {
+                db.Remove(item);
+                db.SaveChanges();
+            }
+        }
+
+        public object InsertItem(IModelDefinitionForm form, object item)
+        {
+            using (var db = GetDbContext(form))
+            {
+                db.Add(item);
+                db.SaveChanges();
+                return item;
+            }
+        }
+
+        public object UpdateItem(IModelDefinitionForm form, object item)
+        {
+            using (var db = GetDbContext(form))
+            {
+                db.Update(item);
+                db.SaveChanges();
+                return item;
+            }
+        }
+
         private DbContext GetDbContext(IModelDefinitionForm form)
         {
             var type = form.GetDbContextType();
