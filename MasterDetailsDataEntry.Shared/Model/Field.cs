@@ -12,5 +12,6 @@ namespace MasterDetailsDataEntry.Shared
         public string Label { get; set; }
         public bool Required { get; set; }
         public bool Hidden { get; set; }
+        public string Format { get; set; }
     }
 }

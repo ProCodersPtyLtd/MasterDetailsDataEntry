@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MasterDetailsDataEntry.Shared.Controls;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,12 @@ namespace MasterDetailsDataEntry.Shared.Forms
         private Dictionary<string, DataField> _fields;
         private Type _contextType;
 
+        private Dictionary<Type, string> _formats =  new Dictionary<Type, string>()
+        {
+            { typeof(DateTime), "dd/MM/yyyy" }
+            ,{ typeof(DateTime?), "dd/MM/yyyy" }
+        };
+
         protected abstract void Define();
 
         public DetailsForm()
@@ -21,6 +28,31 @@ namespace MasterDetailsDataEntry.Shared.Forms
             _dataFieldProcessor = new DefaultDataFieldProcessor();
             _fields = new Dictionary<string, DataField>();
             Define();
+        }
+
+        public string GetFieldFormat(string bindingProperty)
+        {
+            var field = _fields[bindingProperty];
+            var format = field.Format ?? FindDefaultFormat(field.DataType);
+            return format;
+        }
+
+        private string FindDefaultFormat(Type dataType)
+        {
+            if (_formats.ContainsKey(dataType))
+            {
+                return _formats[dataType];
+            }
+
+            return "";
+        }
+
+        // defenition
+        public DetailsForm<D> UseDefaultFormat<TContext>(Type dataType, string format)
+            where TContext : DbContext
+        {
+            _formats[dataType] = format;
+            return this;
         }
 
         public DetailsForm<D> Use<TContext>()
@@ -73,6 +105,52 @@ namespace MasterDetailsDataEntry.Shared.Forms
             f.CopyFrom(field);
             f.BindingProperty = bindingProperty;
             return this;
+        }
+
+        //public DetailsForm<D> DropdwonField<TEntity, TKey, TKey2, TKey3>(Expression<Func<D, TKey>> selectedId,
+        //    //Expression<Func<D, IEnumerable<TKey>>> items,
+        //    Expression<Func<TEntity, TKey2>> id,
+        //    Expression<Func<TEntity, TKey3>> name)
+        //{
+        //    return this;
+        //}
+
+        public class DropdownField<TEntity>
+        {
+            private DetailsForm<D> _parent;
+
+            public DropdownField(DetailsForm<D> parent)
+            {
+                _parent = parent;
+            }
+
+            public DetailsForm<D> Field<TKey, TKey2, TKey3>(Expression<Func<D, TKey>> selector, 
+                Expression<Func<TEntity, TKey2>> id, 
+                Expression<Func<TEntity, TKey3>> name,
+                Field field = null)
+            {
+                var bindingProperty = selector.Body.ToString().ReplaceLambdaVar();
+                var f = _parent.FindField(bindingProperty);
+
+                if (field != null)
+                {
+                    f.CopyFrom(field);
+                }
+
+                f.BindingProperty = bindingProperty;
+                f.ControlType = typeof(DefaultDropdownControl);
+                f.ViewModeControlType = typeof(DefaultDropdownReadonlyControl);
+                f.SelectEntityType = typeof(TEntity);
+                f.SelectIdProperty = id.Body.ToString().ReplaceLambdaVar();
+                f.SelectNameProperty = name.Body.ToString().ReplaceLambdaVar();
+
+                return _parent;
+            }
+        }
+
+        public DropdownField<TEntity> Dropdown<TEntity>()
+        {
+            return new DropdownField<TEntity>(this);
         }
 
         // Use Include or Exclude approach, don't use both

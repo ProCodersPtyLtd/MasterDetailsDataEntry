@@ -1,16 +1,7 @@
 ﻿@namespace MasterDetailsDataEntry.Blazor
 
-<div class="TextControl">
-    @*@if (Field.Required)
-    {
-        <div>@(Field.Label)*</div>
-    }
-    else
-    {
-        <div>@Field.Label</div>
-    }*@
-
-    <input class="form-control" value="@State.Value" @onchange="@(a => ValueChanged(a))" required="@Field.Required" />
+<div class="form-check">
+    <input type="checkbox" class="" checked="@GetValue()" @onchange="@(a => ValueChanged(a))" id="exampleCheck1" />
 </div>
 
 @code
@@ -23,6 +14,12 @@
 
     [Parameter]
     public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }
+
+    private string GetValue()
+    {
+        var result = (bool?)State.Value == true ? "checked" : null;
+        return result;
+    }
 
     private async Task ValueChanged(ChangeEventArgs a)
     {

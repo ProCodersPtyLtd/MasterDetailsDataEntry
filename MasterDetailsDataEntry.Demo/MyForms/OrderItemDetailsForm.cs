@@ -11,20 +11,22 @@ using System.Threading.Tasks;
 
 namespace MasterDetailsDataEntry.Demo.MyForms
 {
-    public class MyDetailsForm : DetailsForm<OrderItem>
+    public class OrderItemDetailsForm : DetailsForm<OrderItem>
     {
         protected override void Define()
         {
             this
                 .Use<TestContext>()
-                // order
+                // keys
                 .PrimaryKey(m => m.Id)
                 .FilterBy(m => m.OrderId)
                 .ForeignKey(d => d.OrderId)
+                // fields
                 .Field(d => d.Id, new Field { ControlType = typeof(DefaultFormattedViewControl) })
                 .Field(d => d.OrderId, new Field { ControlType = typeof(DefaultFormattedViewControl) })
                 .Field(d => d.ItemName, new Field { Required = true, ControlType = typeof(TextEdit) })
                 .Field(d => d.Qty, new Field { Required = true, ControlType = typeof(TextEdit) })
+                .Field(d => d.IsMajor, new Field { })
                 .Field(d => d.AvailableFrom, new Field { Required = true })
                 ;
         }

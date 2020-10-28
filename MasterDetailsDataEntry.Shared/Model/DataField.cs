@@ -11,6 +11,11 @@ namespace MasterDetailsDataEntry.Shared
         public bool ForeignKey { get; set; }
         public string FilterProperty { get; set; }
 
+        // Select
+        public Type SelectEntityType { get; set; }
+        public string SelectIdProperty { get; set; }
+        public string SelectNameProperty { get; set; }
+
         public DataField()
         { }
 
@@ -27,6 +32,7 @@ namespace MasterDetailsDataEntry.Shared
             Label = source.Label;
             Required = source.Required;
             Hidden = source.Hidden;
+            Format = source.Format;
         }
     }
 }

@@ -1,11 +1,14 @@
 ﻿@namespace MasterDetailsDataEntry.Blazor
 
 <div class="FormattedView">
-    @State.Value?.ToString()
+    <input class="form-control border-0" value="@GetValue()" disabled="disabled" />
 </div>
 
 @code
 {
+    [Parameter]
+    public IModelDefinitionForm Form { get; set; }
+
     [Parameter]
     public DataField Field { get; set; }
 
@@ -15,10 +18,14 @@
     [Parameter]
     public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }
 
-    private async Task ValueChanged(ChangeEventArgs a)
+    private string GetValue()
     {
-        State.Value = a.Value;
-        var args = new ValueChangedArgs { Field = Field, State = State, NewValue = a.Value };
-        await ModelValueChanged.InvokeAsync(args);
+        if (State.Value == null)
+        {
+            return "";
+        }
+
+        var format = Form.GetFieldFormat(Field.BindingProperty);
+        return string.Format($"{{0:{format}}}", State.Value);
     }
 }

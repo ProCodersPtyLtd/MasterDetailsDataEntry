@@ -15,6 +15,7 @@ namespace MasterDetailsDataEntry.Demo.Database.Model
         {
         }
 
+        public virtual DbSet<Client> Client { get; set; }
         public virtual DbSet<Order> Order { get; set; }
         public virtual DbSet<OrderItem> OrderItem { get; set; }
 
@@ -23,17 +24,42 @@ namespace MasterDetailsDataEntry.Demo.Database.Model
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=lake;Database=test;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=.;Database=test;Trusted_Connection=True;");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Client>(entity =>
+            {
+                entity.ToTable("client");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.FirstName)
+                    .IsRequired()
+                    .HasColumnName("first_name")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.LastName)
+                    .IsRequired()
+                    .HasColumnName("last_name")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("name")
+                    .HasMaxLength(101)
+                    .HasComputedColumnSql("(([first_name]+' ')+[last_name])");
+            });
+
             modelBuilder.Entity<Order>(entity =>
             {
                 entity.ToTable("order");
 
                 entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.ClientId).HasColumnName("client_id");
 
                 entity.Property(e => e.ClientName)
                     .IsRequired()
@@ -47,6 +73,12 @@ namespace MasterDetailsDataEntry.Demo.Database.Model
                 entity.Property(e => e.ExecuteDate)
                     .HasColumnName("execute_date")
                     .HasColumnType("date");
+
+                entity.HasOne(d => d.Client)
+                    .WithMany(p => p.Order)
+                    .HasForeignKey(d => d.ClientId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_order_client");
             });
 
             modelBuilder.Entity<OrderItem>(entity =>
@@ -54,6 +86,10 @@ namespace MasterDetailsDataEntry.Demo.Database.Model
                 entity.ToTable("order_item");
 
                 entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.AvailableFrom)
+                    .HasColumnName("available_from")
+                    .HasColumnType("date");
 
                 entity.Property(e => e.IsMajor).HasColumnName("is_major");
 
@@ -67,10 +103,6 @@ namespace MasterDetailsDataEntry.Demo.Database.Model
                 entity.Property(e => e.Price)
                     .HasColumnName("price")
                     .HasColumnType("decimal(12, 2)");
-
-                entity.Property(e => e.AvailableFrom)
-                    .HasColumnName("available_from")
-                    .HasColumnType("date");
 
                 entity.Property(e => e.Qty).HasColumnName("qty");
 

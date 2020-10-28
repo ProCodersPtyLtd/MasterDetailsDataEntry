@@ -1,0 +1,36 @@
+﻿@page "/OrderItemsDetails"
+@using MasterDetailsDataEntry.Demo.MyForms
+@using MasterDetailsDataEntry.Shared.Forms
+
+@inject IDataEntryProvider _dataEntryProvider
+
+<h1>Order Items Details</h1>
+
+<div>Order ID</div>
+<div>
+    <input value="@OrderId" @onchange="@(a => OrderIdValueChanged(a))" />
+</div>
+
+<DetailsFormControl FormType="@typeof(OrderItemDetailsForm)" FilterValue="@OrderId" ForeignKeyValue="@OrderId"/>
+
+@code {
+    private int? OrderId { get; set; } = 1;
+
+    private async Task ModelChanged(ValueChangedArgs args)
+    {
+
+    }
+
+    private void OrderIdValueChanged(ChangeEventArgs a)
+    {
+        int value;
+        OrderId = int.TryParse(a.Value.ToString(), out value) ? value: (int?)null;
+        StateHasChanged();
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+}

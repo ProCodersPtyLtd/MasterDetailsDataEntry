@@ -9,5 +9,6 @@ namespace MasterDetailsDataEntry.Shared
         Type GetDbContextType();
         Type GetDetailsType();
         IEnumerable<DataField> GetDetailsFields();
+        string GetFieldFormat(string bindingProperty);
     }
 }
