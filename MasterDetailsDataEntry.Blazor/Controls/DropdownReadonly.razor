@@ -3,7 +3,7 @@
 @inject IDataEntryProvider _dataEntryProvider
 
 <div class="TextControl">
-    <select class="form-control selectpicker" value="@State.Value" @onchange="@(a => ValueChanged(a))">
+    <select class="form-control selectpicker" disabled="disabled" value="@State.Value" >
         @foreach (var item in _items)
         {
             <option value="@GetId(item)">@GetName(item)</option>
@@ -46,10 +46,4 @@
         return result;
     }
 
-    private async Task ValueChanged(ChangeEventArgs a)
-    {
-        State.Value = a.Value;
-        var args = new ValueChangedArgs { Field = Field, State = State, NewValue = a.Value };
-        await ModelValueChanged.InvokeAsync(args);
-    }
 }

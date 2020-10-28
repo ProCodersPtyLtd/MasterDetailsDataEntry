@@ -15,6 +15,12 @@ namespace MasterDetailsDataEntry.Shared.Forms
         private Dictionary<string, DataField> _fields;
         private Type _contextType;
 
+        private Dictionary<Type, string> _formats =  new Dictionary<Type, string>()
+        {
+            { typeof(DateTime), "dd/MM/yyyy" }
+            ,{ typeof(DateTime?), "dd/MM/yyyy" }
+        };
+
         protected abstract void Define();
 
         public DetailsForm()
@@ -22,6 +28,31 @@ namespace MasterDetailsDataEntry.Shared.Forms
             _dataFieldProcessor = new DefaultDataFieldProcessor();
             _fields = new Dictionary<string, DataField>();
             Define();
+        }
+
+        public string GetFieldFormat(string bindingProperty)
+        {
+            var field = _fields[bindingProperty];
+            var format = field.Format ?? FindDefaultFormat(field.DataType);
+            return format;
+        }
+
+        private string FindDefaultFormat(Type dataType)
+        {
+            if (_formats.ContainsKey(dataType))
+            {
+                return _formats[dataType];
+            }
+
+            return "";
+        }
+
+        // defenition
+        public DetailsForm<D> UseDefaultFormat<TContext>(Type dataType, string format)
+            where TContext : DbContext
+        {
+            _formats[dataType] = format;
+            return this;
         }
 
         public DetailsForm<D> Use<TContext>()
@@ -108,6 +139,7 @@ namespace MasterDetailsDataEntry.Shared.Forms
 
                 f.BindingProperty = bindingProperty;
                 f.ControlType = typeof(DefaultDropdownControl);
+                f.ViewModeControlType = typeof(DefaultDropdownReadonlyControl);
                 f.SelectEntityType = typeof(TEntity);
                 f.SelectIdProperty = id.Body.ToString().ReplaceLambdaVar();
                 f.SelectNameProperty = name.Body.ToString().ReplaceLambdaVar();
@@ -116,7 +148,7 @@ namespace MasterDetailsDataEntry.Shared.Forms
             }
         }
 
-        public DropdownField<TEntity> AddDropdown<TEntity>()
+        public DropdownField<TEntity> Dropdown<TEntity>()
         {
             return new DropdownField<TEntity>(this);
         }

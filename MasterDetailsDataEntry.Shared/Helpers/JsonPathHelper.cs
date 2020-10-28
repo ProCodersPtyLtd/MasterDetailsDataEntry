@@ -35,6 +35,10 @@ namespace MasterDetailsDataEntry.Shared
                         convertedValue = Convert.ToInt32(value);
                         break;
 
+                    case "Boolean":
+                        convertedValue = Convert.ToBoolean(value);
+                        break;
+
                     case "Decimal":
                         convertedValue = Convert.ToDecimal(value);
                         break;

@@ -1,29 +1,20 @@
-﻿@page "/OnlyDetails"
+﻿@page "/OrderItemsDetails"
 @using MasterDetailsDataEntry.Demo.MyForms
 @using MasterDetailsDataEntry.Shared.Forms
 
 @inject IDataEntryProvider _dataEntryProvider
 
-<h1>Only Details</h1>
+<h1>Order Items Details</h1>
 
 <div>Order ID</div>
 <div>
     <input value="@OrderId" @onchange="@(a => OrderIdValueChanged(a))" />
 </div>
 
-@*<SingleDataControl Field="@Field" State="@(new FieldState(Field))" ModelValueChanged="@ModelChanged" />
-
-<RepeaterDataControl ModelItems="@ModelItems" Fields="@Fields" ModelValueChanged="@ModelChanged" />*@
-
-<DetailsFormControl FormType="@typeof(MyDetailsForm)" FilterValue="@OrderId" ForeignKeyValue="@OrderId"/>
+<DetailsFormControl FormType="@typeof(OrderItemDetailsForm)" FilterValue="@OrderId" ForeignKeyValue="@OrderId"/>
 
 @code {
     private int? OrderId { get; set; } = 1;
-
-    private DataField Field = new DataField { ControlType = typeof(TextEdit), BindingProperty = "ClientName", Label = "Client Name" };
-
-    private IEnumerable<DataField> Fields { get; set; }
-    private System.Collections.IList ModelItems { get; set; }
 
     private async Task ModelChanged(ValueChangedArgs args)
     {

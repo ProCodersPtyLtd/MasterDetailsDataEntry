@@ -175,6 +175,11 @@ namespace MasterDetailsDataEntry.Shared.Forms
             var fields = PrepareFields(_fields.Values.ToList(), typeof(D));
             return fields;
         }
+
+        public string GetFieldFormat(string bindingProperty)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class MyForm : MasterDetailsForm<A, B>

@@ -5,7 +5,7 @@
 
 <div class="DetailsFormControl">
     @*DetailsControl*@
-    <RepeaterDataControl Form="@_form" ModelType="@ModelType" ModelItems="@ModelItems" Fields="@Fields" ModelValueChanged="@ModelChanged" ItemsChanged="@ItemsChanged" />
+    <RepeaterDataControl FullRefresh="@_fullRefresh" Form="@_form" ModelType="@ModelType" ModelItems="@ModelItems" Fields="@Fields" ModelValueChanged="@ModelChanged" ItemsChanged="@ItemsChanged" />
 </div>
 
 @code
@@ -27,6 +27,8 @@
 
     private IModelDefinitionForm _form;
 
+    public bool _fullRefresh;
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -45,6 +47,7 @@
         ModelType = _form.GetDetailsType();
         Fields = _dataEntryProvider.GetFormFields(_form);
         ModelItems = _dataEntryProvider.GetFilteredModelData(_form, FilterValue);
+        _fullRefresh = true;
     }
 
     private async Task ModelChanged(ValueChangedArgs args)

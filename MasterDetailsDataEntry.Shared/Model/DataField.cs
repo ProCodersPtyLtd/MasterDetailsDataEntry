@@ -32,6 +32,7 @@ namespace MasterDetailsDataEntry.Shared
             Label = source.Label;
             Required = source.Required;
             Hidden = source.Hidden;
+            Format = source.Format;
         }
     }
 }

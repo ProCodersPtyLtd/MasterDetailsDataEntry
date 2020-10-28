@@ -86,7 +86,7 @@ namespace MasterDetailsDataEntry.Tests.FormDefinition
                 this
                     .Use<TestModelsContext>()
                     .PrimaryKey(x => x.Id)
-                    .AddDropdown<TestClient>().Field(o => o.ClientId, c => c.Id, c => c.Name)
+                    .Dropdown<TestClient>().Field(o => o.ClientId, c => c.Id, c => c.Name)
                     .Field(o => o.CreateDate, new Shared.Field { Hidden = true })
                     ;
             }

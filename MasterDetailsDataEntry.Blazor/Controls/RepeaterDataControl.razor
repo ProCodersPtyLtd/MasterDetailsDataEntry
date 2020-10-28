@@ -44,21 +44,41 @@
                     }
 
                     <td>
-                        <button @onclick="@((args) => EditClick(args, row))" hidden="@(GetRowState(rowIndex).IsEditing)" disabled="@_isEditing">Edit</button>
-                        <button @onclick="@((args) => DeleteClick(args, row))" hidden="@(GetRowState(rowIndex).IsEditing)" disabled="@_isEditing">Delete</button>
-                        <button @onclick="@((args) => ApplyClick(args, row))" hidden="@(!GetRowState(rowIndex).IsEditing)">Apply</button>
-                        <button @onclick="@((args) => CancelClick(args, row))" hidden="@(!GetRowState(rowIndex).IsEditing)">Cancel</button>
+                        <button class="btn btn-light" title="Edit" @onclick="@((args) => EditClick(args, row))" hidden="@(GetRowState(rowIndex).IsEditing)" disabled="@_isEditing">
+                            <span class="oi oi-pencil"></span>
+                        </button>
+
+                        <button class="btn btn-light" titel="Delete"
+                                @onclick="@((args) => DeleteClick(args, row))" hidden="@(GetRowState(rowIndex).IsEditing)" disabled="@_isEditing">
+                            <span class="oi oi-delete"></span>&nbsp;
+                        </button>
+
+                        <button class="btn btn-light" title="Apply" @onclick="@((args) => ApplyClick(args, row))" hidden="@(!GetRowState(rowIndex).IsEditing)">
+                            <span class="oi oi-check"></span>
+                        </button>
+
+                        <button class="btn btn-light" title="Cancel" @onclick="@((args) => CancelClick(args, row))" hidden="@(!GetRowState(rowIndex).IsEditing)">
+                            <span class="oi oi-action-undo"></span>
+                        </button>
                     </td>
                 </tr>
             }
         }
-    </table>
 
-    <button @onclick="@((args) => AddClick(args))" disabled="@_isEditing">Add</button>
+    </table>
+    <div>
+        <button class="btn btn-primary" @onclick="@((args) => AddClick(args))" disabled="@_isEditing">Add</button>
+    </div>
+
+    <textarea hidden="@(_error == null ? "hidden" : null)" readonly="readonly" class="form-control" style="background-color: black; color: red;" rows="3">Error: @_error</textarea>
 </div>
 
 @code
 {
+    [Parameter]
+    public bool FullRefresh { get; set; }
+
+
     [Parameter]
     public IModelDefinitionForm Form { get; set; }
 
@@ -79,6 +99,7 @@
 
     private object _modelItemReserveCopy;
     private bool _isEditing;
+    private string _error;
 
     protected override void OnInitialized()
     {
@@ -91,6 +112,13 @@
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
+
+        if (FullRefresh)
+        {
+            _isEditing = false;
+            _modelItemReserveCopy = null;
+            FullRefresh = false;
+        }
     }
 
     private EditModes GetEditMode()
@@ -143,18 +171,39 @@
         ItemsChanged.InvokeAsync(args);
     }
 
-    private void ApplyClick(MouseEventArgs e, int rowIndex)
+    private async Task ApplyClick(MouseEventArgs e, int rowIndex)
     {
+        _error = null;
         var args = new ItemsChangedArgs { Operation = ItemOperations.Update, RowIndex = rowIndex };
-        ItemsChanged.InvokeAsync(args);
 
-        ModelItems[rowIndex].GetBag<RowState>().IsEditing = false;
-        ModelItems[rowIndex].GetBag<RowState>().IsNew = false;
-        _isEditing = false;
+        try
+        {
+            await ItemsChanged.InvokeAsync(args);
+        }
+        catch(Exception exc)
+        {
+            _error = exc.Message;
+
+            if (exc.InnerException != null)
+            {
+                _error += "\r\n";
+                _error += exc.InnerException.Message;
+            }
+
+            StateHasChanged();
+        }
+
+        if (_error == null)
+        {
+            ModelItems[rowIndex].GetBag<RowState>().IsEditing = false;
+            ModelItems[rowIndex].GetBag<RowState>().IsNew = false;
+            _isEditing = false;
+        }
     }
 
     private void CancelClick(MouseEventArgs e, int rowIndex)
     {
+        _error = null;
         _modelItemReserveCopy.CopyTo(ModelItems[rowIndex]);
         ModelItems[rowIndex].GetBag<RowState>().IsEditing = false;
         _isEditing = false;
