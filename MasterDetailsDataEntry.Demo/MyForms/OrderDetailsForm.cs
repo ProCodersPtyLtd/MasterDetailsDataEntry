@@ -24,7 +24,7 @@ namespace MasterDetailsDataEntry.Demo.MyForms
                 .Field(m => m.ClientName, new Field { Required = true, ControlType = typeof(TextEdit) })
                 .Field(m => m.CreateDate, new Field { Required = true })
                 .Field(m => m.ExecuteDate, new Field { })
-                .Dropdown<Client>().Field(m => m.ClientId, c => c.Id, c => c.Name)
+                .Dropdown<Client>().Field(m => m.ClientId, c => c.Id, c => c.Name, new Field { Required = true })
                 ;
         }
     }

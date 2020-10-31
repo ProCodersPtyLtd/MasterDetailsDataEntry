@@ -1,12 +1,8 @@
 ﻿@inject IComponentTypeResolver _componentResolverService
 
-<div class="SingleDataControl">
-    @*@switch (Field.ControlType?.FullName)
-        {
-            case "":
-                break;
-        }*@
+<div class="SingleDataControl" style="vertical-align: top; width: @(GetWidth())px; height: @(ExtraHeight ? 61: 41)px;">
     @{
+
         var component = IsEditing
             ? _componentResolverService.GetComponentTypeByName(Field.ControlType?.FullName)
             : _componentResolverService.GetComponentTypeByName(Field.ViewModeControlType?.FullName);
@@ -18,6 +14,11 @@
             if (component.DefinesComponentParameter("Form", typeof(ParameterAttribute)))
             {
                 builder.AddAttribute(0, "Form", Form);
+            }
+
+            if (component.DefinesComponentParameter("IsEditing", typeof(ParameterAttribute)))
+            {
+                builder.AddAttribute(0, "IsEditing", ExtraHeight);
             }
 
             builder.AddAttribute(0, "Field", Field);
@@ -44,8 +45,27 @@
     public FieldState State { get; set; }
 
     [Parameter]
+    public bool ExtraHeight { get; set; }
+
+    [Parameter]
     public bool IsEditing { get; set; }
 
     [Parameter]
     public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }
+
+    private int GetWidth()
+    {
+        var component = IsEditing
+            ? _componentResolverService.GetComponentTypeByName(Field.ControlType?.FullName)
+            : _componentResolverService.GetComponentTypeByName(Field.ViewModeControlType?.FullName);
+
+        if (component == typeof(Checkbox) || component == typeof(CheckboxReadonly))
+        {
+            return 60;
+        }
+        else
+        {
+            return 167;
+        }
+    }
 }

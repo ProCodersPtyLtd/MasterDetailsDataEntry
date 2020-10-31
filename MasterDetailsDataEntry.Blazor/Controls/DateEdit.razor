@@ -1,7 +1,8 @@
 ﻿@namespace MasterDetailsDataEntry.Blazor
 
-<div class="TextControl">
+<div class="DateControl">
     <input class="form-control" type="date" value="@GetValue()" @onchange="@(a => ValueChanged(a))" required="@Field.Required" />
+    <Validator Messages="State.ValidationMessages" />
 </div>
 
 @code

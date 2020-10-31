@@ -29,25 +29,40 @@ namespace MasterDetailsDataEntry.Shared
 
             try
             {
-                switch (property.PropertyType.Name)
+                if (value == null || value.ToString().Trim() == "")
                 {
-                    case "Int32":
-                        convertedValue = Convert.ToInt32(value);
-                        break;
+                    convertedValue = null;
+                }
+                else
+                {
+                    var dataTypeName = property.PropertyType.Name;
 
-                    case "Boolean":
-                        convertedValue = Convert.ToBoolean(value);
-                        break;
+                    if (dataTypeName == "Nullable`1")
+                    {
+                        dataTypeName = Nullable.GetUnderlyingType(property.PropertyType).Name;
+                    }
 
-                    case "Decimal":
-                        convertedValue = Convert.ToDecimal(value);
-                        break;
+                    switch (dataTypeName)
+                    {
+                        case "Int32":
+                            convertedValue = Convert.ToInt32(value);
+                            break;
+
+                        case "Boolean":
+                            convertedValue = Convert.ToBoolean(value);
+                            break;
+
+                        case "Decimal":
+                            convertedValue = Convert.ToDecimal(value);
+                            break;
+                    }
                 }
 
                 property.SetValue(target, convertedValue);
             }
             catch (FormatException fexc)
-            { }
+            { 
+            }
         }
 
         public static object GetPropertyValue(this object target, string bindingProperty)

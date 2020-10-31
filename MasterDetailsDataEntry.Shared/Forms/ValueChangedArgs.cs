@@ -9,6 +9,6 @@ namespace MasterDetailsDataEntry.Shared.Forms
         public DataField Field { get; set; }
         public FieldState State { get; set; }
         public object NewValue { get; set; }
-        public int RowIndex { get; set; }
+        // public int RowIndex { get; set; }
     }
 }

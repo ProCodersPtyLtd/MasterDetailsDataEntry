@@ -1,4 +1,5 @@
 ﻿@inject IComponentTypeResolver _componentResolverService
+@inject IDataValidationProvider _dataValidationProvider
 
 <div class="RepeaterDataControl">
     <table mat-table>
@@ -37,9 +38,9 @@
                             continue;
                         }
 
-                        <td>
-                            <SingleDataControl Form="@Form" Field="@field" IsEditing="GetRowState(rowIndex).IsEditing" State="@CreateFieldState(field, rowIndex)"
-                                               ModelValueChanged="@LocalModelValueChanged" />
+                        <td >
+                            <SingleDataControl Form="@Form" Field="@field" ExtraHeight="@GetExtraHeight(rowIndex)" State="@CreateFieldState(field, rowIndex)"
+                                               IsEditing="@(GetRowState(rowIndex).IsEditing)" ModelValueChanged="@LocalModelValueChanged" />
                         </td>
                     }
 
@@ -53,13 +54,15 @@
                             <span class="oi oi-delete"></span>&nbsp;
                         </button>
 
-                        <button class="btn btn-light" title="Apply" @onclick="@((args) => ApplyClick(args, row))" hidden="@(!GetRowState(rowIndex).IsEditing)">
-                            <span class="oi oi-check"></span>
-                        </button>
+                        <div style="vertical-align: top; width: 167px; height:@(GetExtraHeight(rowIndex) ? 61: 41)px;" hidden="@(!GetRowState(rowIndex).IsEditing)">
+                            <button class="btn btn-light" title="Apply" @onclick="@((args) => ApplyClick(args, row))" hidden="@(!GetRowState(rowIndex).IsEditing)">
+                                <span class="oi oi-check"></span>
+                            </button>
 
-                        <button class="btn btn-light" title="Cancel" @onclick="@((args) => CancelClick(args, row))" hidden="@(!GetRowState(rowIndex).IsEditing)">
-                            <span class="oi oi-action-undo"></span>
-                        </button>
+                            <button class="btn btn-light" title="Cancel" @onclick="@((args) => CancelClick(args, row))" hidden="@(!GetRowState(rowIndex).IsEditing)">
+                                <span class="oi oi-action-undo"></span>
+                            </button>
+                        </div>
                     </td>
                 </tr>
             }
@@ -75,10 +78,6 @@
 
 @code
 {
-    [Parameter]
-    public bool FullRefresh { get; set; }
-
-
     [Parameter]
     public IModelDefinitionForm Form { get; set; }
 
@@ -100,6 +99,8 @@
     private object _modelItemReserveCopy;
     private bool _isEditing;
     private string _error;
+    private int _modelItemsHash;
+    private IEnumerable<ValidationResult> _validations = new ValidationResult[0];
 
     protected override void OnInitialized()
     {
@@ -113,12 +114,31 @@
     {
         base.OnParametersSet();
 
-        if (FullRefresh)
+        // check if items refreshed
+        if (_modelItemsHash != ModelItems.GetHashCode())
         {
             _isEditing = false;
             _modelItemReserveCopy = null;
-            FullRefresh = false;
+            _modelItemsHash = ModelItems.GetHashCode();
         }
+    }
+
+    private async Task LocalModelValueChanged(ValueChangedArgs args)
+    {
+        SetItemValue(args.Field, args.State);
+
+        if (args.State.ValidationMessages.Any())
+        {
+            var validations = _dataValidationProvider.ValidateModelProperty(ModelItems[args.State.RowIndex], args.State.RowIndex, args.Field.BindingProperty, Fields);
+            UpdateFieldStateValidations(validations, args.State.RowIndex, args.Field.BindingProperty);
+        }
+
+        await ModelValueChanged.InvokeAsync(args);
+    }
+
+    private bool GetExtraHeight(int rowIndex)
+    {
+        return _validations.Any() && GetRowState(rowIndex).IsEditing;
     }
 
     private EditModes GetEditMode()
@@ -126,19 +146,35 @@
         return EditModes.SingleRecord;
     }
 
-    private async Task LocalModelValueChanged(ValueChangedArgs args)
+    private Dictionary<string, FieldState> _states = new Dictionary<string, FieldState>();
+
+    private string GetFieldStateKey(string bindingProperty, int row)
     {
-        SetItemValue(args.Field, args.State);
-        await ModelValueChanged.InvokeAsync(args);
+        string fieldStateKey = $"{bindingProperty}[{row}]";
+        return fieldStateKey;
     }
 
     private FieldState CreateFieldState(DataField field, int row)
     {
-        var result = new FieldState(field, row);
+        string fieldStateKey = GetFieldStateKey(field.BindingProperty, row);
+
+        if (!_states.ContainsKey(fieldStateKey))
+        {
+            _states[fieldStateKey] = new FieldState(field, row);
+        }
+
+        var result = _states[fieldStateKey];
         result.Value = GetItemValue(field, row);
+        result.RowIndex = row;
         return result;
     }
 
+    private RowState GetRowState(int rowIndex)
+    {
+        return ModelItems[rowIndex].GetBag<RowState>();
+    }
+
+    #region reflection get set property
     private object GetItemValue(DataField field, int row)
     {
         var item = ModelItems[row];
@@ -151,12 +187,9 @@
         var item = ModelItems[state.RowIndex];
         item.SetPropertyValue(field.BindingProperty, state.Value);
     }
+    #endregion
 
-    private RowState GetRowState(int rowIndex)
-    {
-        return ModelItems[rowIndex].GetBag<RowState>();
-    }
-
+    #region clicks
     private void EditClick(MouseEventArgs e, int rowIndex)
     {
         _isEditing = true;
@@ -173,6 +206,14 @@
 
     private async Task ApplyClick(MouseEventArgs e, int rowIndex)
     {
+        _validations = _dataValidationProvider.ValidateModel(ModelItems[rowIndex], rowIndex, Fields);
+        UpdateFieldStateValidations(_validations, rowIndex);
+
+        if (_validations.Any())
+        {
+            return;
+        }
+
         _error = null;
         var args = new ItemsChangedArgs { Operation = ItemOperations.Update, RowIndex = rowIndex };
 
@@ -204,13 +245,23 @@
     private void CancelClick(MouseEventArgs e, int rowIndex)
     {
         _error = null;
-        _modelItemReserveCopy.CopyTo(ModelItems[rowIndex]);
+        ClearValidations();
+
+        //if (!ModelItems[rowIndex].GetBag<RowState>().IsNew)
+        //{
+        //    _modelItemReserveCopy.CopyTo(ModelItems[rowIndex]);
+        //}
+
         ModelItems[rowIndex].GetBag<RowState>().IsEditing = false;
         _isEditing = false;
 
-        if (ModelItems[ModelItems.Count - 1].GetBag<RowState>().IsNew)
+        if (ModelItems[rowIndex].GetBag<RowState>().IsNew)
         {
-            ModelItems.RemoveAt(ModelItems.Count - 1);
+            ModelItems.RemoveAt(rowIndex);
+        }
+        else
+        {
+            _modelItemReserveCopy.CopyTo(ModelItems[rowIndex]);
         }
     }
 
@@ -221,6 +272,39 @@
         EditClick(null, ModelItems.Count-1);
         ModelItems[ModelItems.Count - 1].GetBag<RowState>().IsNew = true;
     }
+    #endregion
 
+    private void ClearValidations()
+    {
+        foreach (var state in _states.Values)
+        {
+            state.ValidationMessages = new List<string>();
+        }
+    }
+
+    private void UpdateFieldStateValidations(IEnumerable<ValidationResult> validations, int rowIndex, string bindindProperty = null)
+    {
+        if (bindindProperty == null)
+        {
+            ClearValidations();
+        }
+        else
+        {
+            var key = GetFieldStateKey(bindindProperty, rowIndex);
+            _states[key].ValidationMessages = new List<string>();
+        }
+
+        foreach (var validation in validations)
+        {
+            if (bindindProperty == null || validation.BindingProperty == bindindProperty)
+            {
+                if (validation.ValidationResultType == ValidationResultTypes.Error)
+                {
+                    var key = GetFieldStateKey(validation.BindingProperty, validation.RowIndex);
+                    _states[key].ValidationMessages.Add(validation.Message);
+                }
+            }
+        }
+    }
 
 }

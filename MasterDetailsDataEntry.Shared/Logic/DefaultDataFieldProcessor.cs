@@ -40,6 +40,13 @@ namespace MasterDetailsDataEntry.Shared
 
             switch (dataTypeName)
             {
+                case "Int32":
+                case "Decimal":
+                case "Float":
+                case "Double":
+                    field.ControlType = field.ControlType ?? typeof(DefaultNumberEditControl);
+                    field.ViewModeControlType = field.ViewModeControlType ?? typeof(DefaultFormattedViewControl);
+                    break;
                 case "Boolean":
                     field.ControlType = field.ControlType ?? typeof(DefaultCheckboxControl);
                     field.ViewModeControlType = field.ViewModeControlType ?? typeof(DefaultReadonlyCheckboxControl);
