@@ -4,6 +4,8 @@
 
 <div class="TextControl">
     <select class="form-control selectpicker" value="@State.Value" @onchange="@(a => ValueChanged(a))">
+        <option value="0"></option>
+
         @foreach (var item in _items)
         {
             <option value="@GetId(item)">@GetName(item)</option>

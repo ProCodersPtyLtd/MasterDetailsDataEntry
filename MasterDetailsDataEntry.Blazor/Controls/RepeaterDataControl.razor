@@ -45,14 +45,15 @@
                     }
 
                     <td>
-                        <button class="btn btn-light" title="Edit" @onclick="@((args) => EditClick(args, row))" hidden="@(GetRowState(rowIndex).IsEditing)" disabled="@_isEditing">
-                            <span class="oi oi-pencil"></span>
-                        </button>
+                            <button class="btn btn-light" title="Edit" @onclick="@((args) => EditClick(args, row))" 
+                                    hidden="@(GetRowState(rowIndex).IsEditing || (ViewOptions?.AllowEdit == false))" disabled="@_isEditing">
+                                <span class="oi oi-pencil"></span>
+                            </button>
 
-                        <button class="btn btn-light" titel="Delete"
-                                @onclick="@((args) => DeleteClick(args, row))" hidden="@(GetRowState(rowIndex).IsEditing)" disabled="@_isEditing">
-                            <span class="oi oi-delete"></span>&nbsp;
-                        </button>
+                            <button class="btn btn-light" titel="Delete" @onclick="@((args) => DeleteClick(args, row))" 
+                                    hidden="@(GetRowState(rowIndex).IsEditing || (ViewOptions?.AllowDelete == false))" disabled="@_isEditing">
+                                <span class="oi oi-delete"></span>&nbsp;
+                            </button>
 
                         <div style="vertical-align: top; width: 167px; height:@(GetExtraHeight(rowIndex) ? 61: 41)px;" hidden="@(!GetRowState(rowIndex).IsEditing)">
                             <button class="btn btn-light" title="Apply" @onclick="@((args) => ApplyClick(args, row))" hidden="@(!GetRowState(rowIndex).IsEditing)">
@@ -69,7 +70,7 @@
         }
 
     </table>
-    <div>
+    <div hidden="@(!ViewOptions?.AllowAdd == true)">
         <button class="btn btn-primary" @onclick="@((args) => AddClick(args))" disabled="@_isEditing">Add</button>
     </div>
 
@@ -80,6 +81,9 @@
 {
     [Parameter]
     public IModelDefinitionForm Form { get; set; }
+
+    [Parameter]
+    public FormViewOptions ViewOptions { get; set; } = new FormViewOptions { AllowAdd = true, AllowDelete = true, AllowEdit = true };
 
     [Parameter]
     public Type ModelType { get; set; }

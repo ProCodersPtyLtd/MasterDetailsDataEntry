@@ -1,0 +1,16 @@
+﻿@page "/DepartmentDetails"
+@using MasterDetailsDataEntry.Demo.MyForms
+@using MasterDetailsDataEntry.Shared.Forms
+
+@inject IDataEntryProvider _dataEntryProvider
+
+<h2>Department Details</h2>
+
+<MasterRecordControl FormType="@typeof(DepartmentForm)" FilterValue="1" />
+<DetailsFormControl FormType="@typeof(DepartmentForm)" FilterValue="null" ForeignKeyValue="null" />
+
+@code {
+
+
+
+}
