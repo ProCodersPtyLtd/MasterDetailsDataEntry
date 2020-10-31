@@ -12,6 +12,7 @@ namespace MasterDetailsDataEntry.Blazor
         {
             // default controls
             { typeof(DefaultTextEditControl).FullName, typeof(TextEdit) },
+            { typeof(DefaultNumberEditControl).FullName, typeof(NumberEdit) },
             { typeof(DefaultDateEditControl).FullName, typeof(DateEdit) },
             { typeof(DefaultCheckboxControl).FullName, typeof(Checkbox) },
             { typeof(DefaultDropdownControl).FullName, typeof(Dropdown) },

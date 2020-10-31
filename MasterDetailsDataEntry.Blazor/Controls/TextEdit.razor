@@ -2,15 +2,17 @@
 
 <div class="TextControl">
     @*@if (Field.Required)
-    {
-        <div>@(Field.Label)*</div>
-    }
-    else
-    {
-        <div>@Field.Label</div>
-    }*@
+        {
+            <div>@(Field.Label)*</div>
+        }
+        else
+        {
+            <div>@Field.Label</div>
+        }*@
 
-    <input class="form-control" value="@State.Value" @onchange="@(a => ValueChanged(a))" required="@Field.Required" />
+    <input class="form-control" value="@State.Value" @onchange="@(a => ValueChanged(a))" />
+    @*<div class="validation-error-message" style="color: red;" hidden="hidden">Required</div>*@
+    <Validator Messages="State.ValidationMessages"/>
 </div>
 
 @code

@@ -1,7 +1,8 @@
 ﻿@namespace MasterDetailsDataEntry.Blazor
 
-<div class="form-check" >
-    <input type="checkbox" class="" checked="@GetValue()" @onchange="@(a => ValueChanged(a))" id="exampleCheck1" />
+<div class="NumberControl">
+    <input type="number" class="form-control" value="@State.Value" @onchange="@(a => ValueChanged(a))" />
+    <Validator Messages="State.ValidationMessages"/>
 </div>
 
 @code
@@ -15,16 +16,11 @@
     [Parameter]
     public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }
 
-    private string GetValue()
-    {
-        var result = (bool?)State.Value == true ? "checked" : null;
-        return result;
-    }
-
     private async Task ValueChanged(ChangeEventArgs a)
     {
         State.Value = a.Value;
         var args = new ValueChangedArgs { Field = Field, State = State, NewValue = a.Value };
         await ModelValueChanged.InvokeAsync(args);
+        StateHasChanged();
     }
 }

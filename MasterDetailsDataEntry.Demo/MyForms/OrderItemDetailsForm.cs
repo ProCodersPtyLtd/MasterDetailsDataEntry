@@ -25,7 +25,9 @@ namespace MasterDetailsDataEntry.Demo.MyForms
                 .Field(d => d.Id, new Field { ControlType = typeof(DefaultFormattedViewControl) })
                 .Field(d => d.OrderId, new Field { ControlType = typeof(DefaultFormattedViewControl) })
                 .Field(d => d.ItemName, new Field { Required = true, ControlType = typeof(TextEdit) })
-                .Field(d => d.Qty, new Field { Required = true, ControlType = typeof(TextEdit) })
+                .Field(d => d.Qty, new Field { Required = true })
+                .Field(d => d.Qty2, new Field { Required = true })
+                .Field(d => d.Price, new Field { Required = true })
                 .Field(d => d.IsMajor, new Field { })
                 .Field(d => d.AvailableFrom, new Field { Required = true })
                 ;

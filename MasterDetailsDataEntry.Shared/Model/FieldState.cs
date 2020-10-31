@@ -8,6 +8,7 @@ namespace MasterDetailsDataEntry.Shared
     {
         public int RowIndex { get; set; }
         public object Value { get; set; }
+        public List<string> ValidationMessages { get; set; } = new List<string>();
 
         public FieldState()
         { }

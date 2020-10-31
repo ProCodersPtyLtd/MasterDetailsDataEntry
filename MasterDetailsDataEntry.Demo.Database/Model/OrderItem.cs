@@ -12,6 +12,7 @@ namespace MasterDetailsDataEntry.Demo.Database.Model
         public bool? IsMajor { get; set; }
         public decimal Price { get; set; }
         public DateTime? AvailableFrom { get; set; }
+        public int? Qty2 { get; set; }
 
         public virtual Order Order { get; set; }
     }
