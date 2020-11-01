@@ -9,7 +9,7 @@ using Xunit;
 
 namespace MasterDetailsDataEntry.Tests.FormDefinition
 {
-    public class DetailsFormTests
+    public class DetailsFormOldTests
     {
         [Fact]
         public void EmptyFormTest()
@@ -52,13 +52,13 @@ namespace MasterDetailsDataEntry.Tests.FormDefinition
         }
 
         #region test forms
-        public class FormEmpty: DetailsForm<TestOrder>
+        public class FormEmpty: DetailsFormOld<TestOrder>
         {
             protected override void Define()
             {
             }
         }
-        public class FormWithContext : DetailsForm<TestOrder>
+        public class FormWithContext : DetailsFormOld<TestOrder>
         {
             protected override void Define()
             {
@@ -68,7 +68,7 @@ namespace MasterDetailsDataEntry.Tests.FormDefinition
             }
         }
 
-        public class FormWithPk : DetailsForm<TestOrder>
+        public class FormWithPk : DetailsFormOld<TestOrder>
         {
             protected override void Define()
             {
@@ -79,7 +79,7 @@ namespace MasterDetailsDataEntry.Tests.FormDefinition
             }
         }
 
-        public class FormWithDropdown : DetailsForm<TestOrder>
+        public class FormWithDropdown : DetailsFormOld<TestOrder>
         {
             protected override void Define()
             {

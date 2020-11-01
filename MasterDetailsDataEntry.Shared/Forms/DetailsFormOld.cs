@@ -8,7 +8,7 @@ using System.Text;
 
 namespace MasterDetailsDataEntry.Shared.Forms
 {
-    public abstract class DetailsForm<D> : IModelDefinitionForm
+    public abstract class DetailsFormOld<D> : IModelDefinitionForm
         where D : class
     {
         private readonly IDataFieldProcessor _dataFieldProcessor;
@@ -23,7 +23,7 @@ namespace MasterDetailsDataEntry.Shared.Forms
 
         protected abstract void Define();
 
-        public DetailsForm()
+        public DetailsFormOld()
         {
             _dataFieldProcessor = new DefaultDataFieldProcessor();
             _fields = new Dictionary<string, DataField>();
@@ -48,21 +48,21 @@ namespace MasterDetailsDataEntry.Shared.Forms
         }
 
         // defenition
-        public DetailsForm<D> UseDefaultFormat<TContext>(Type dataType, string format)
+        public DetailsFormOld<D> UseDefaultFormat<TContext>(Type dataType, string format)
             where TContext : DbContext
         {
             _formats[dataType] = format;
             return this;
         }
 
-        public DetailsForm<D> Use<TContext>()
+        public DetailsFormOld<D> Use<TContext>()
             where TContext : DbContext
         {
             _contextType = typeof(TContext);
             return this;
         }
 
-        public DetailsForm<D> PrimaryKey<TKey>(Expression<Func<D, TKey>> selector)
+        public DetailsFormOld<D> PrimaryKey<TKey>(Expression<Func<D, TKey>> selector)
         {
             var bindingProperty = selector.Body.ToString().ReplaceLambdaVar();
             var field = FindField(bindingProperty);
@@ -71,7 +71,7 @@ namespace MasterDetailsDataEntry.Shared.Forms
             return this;
         }
 
-        public DetailsForm<D> ForeignKey<TKey>(Expression<Func<D, TKey>> selector)
+        public DetailsFormOld<D> ForeignKey<TKey>(Expression<Func<D, TKey>> selector)
         {
             var bindingProperty = selector.Body.ToString().ReplaceLambdaVar();
             var field = FindField(bindingProperty);
@@ -90,7 +90,7 @@ namespace MasterDetailsDataEntry.Shared.Forms
             return _fields[bindingProperty];
         }
 
-        public DetailsForm<D> FilterBy<TKey>(Expression<Func<D, TKey>> selector)
+        public DetailsFormOld<D> FilterBy<TKey>(Expression<Func<D, TKey>> selector)
         {
             var filterProperty = selector.Body.ToString().ReplaceLambdaVar();
             var field = FindField(filterProperty);
@@ -98,7 +98,7 @@ namespace MasterDetailsDataEntry.Shared.Forms
             return this;
         }
 
-        public DetailsForm<D> Field<TKey>(Expression<Func<D, TKey>> selector, Field field)
+        public DetailsFormOld<D> Field<TKey>(Expression<Func<D, TKey>> selector, Field field)
         {
             var bindingProperty = selector.Body.ToString().ReplaceLambdaVar();
             var f = FindField(bindingProperty);
@@ -117,14 +117,14 @@ namespace MasterDetailsDataEntry.Shared.Forms
 
         public class DropdownField<TEntity>
         {
-            private DetailsForm<D> _parent;
+            private DetailsFormOld<D> _parent;
 
-            public DropdownField(DetailsForm<D> parent)
+            public DropdownField(DetailsFormOld<D> parent)
             {
                 _parent = parent;
             }
 
-            public DetailsForm<D> Field<TKey, TKey2, TKey3>(Expression<Func<D, TKey>> selector, 
+            public DetailsFormOld<D> Field<TKey, TKey2, TKey3>(Expression<Func<D, TKey>> selector, 
                 Expression<Func<TEntity, TKey2>> id, 
                 Expression<Func<TEntity, TKey3>> name,
                 Field field = null)
@@ -154,13 +154,13 @@ namespace MasterDetailsDataEntry.Shared.Forms
         }
 
         // Use Include or Exclude approach, don't use both
-        public DetailsForm<D> IncludeField<TKey>(Expression<Func<D, TKey>> selector)
+        public DetailsFormOld<D> IncludeField<TKey>(Expression<Func<D, TKey>> selector)
         {
             throw new NotImplementedException();
             return this;
         }
 
-        public DetailsForm<D> ExcludeField<TKey>(Expression<Func<D, TKey>> selector)
+        public DetailsFormOld<D> ExcludeField<TKey>(Expression<Func<D, TKey>> selector)
         {
             throw new NotImplementedException();
             return this;
@@ -181,7 +181,7 @@ namespace MasterDetailsDataEntry.Shared.Forms
             return typeof(D);
         }
 
-        public IEnumerable<DataField> GetDetailsFields()
+        IEnumerable<DataField> IModelDefinitionForm.GetDetailsFields()
         {
             var fields = _dataFieldProcessor.PrepareFields(_fields.Values.ToList(), typeof(D));
             return fields;

@@ -17,5 +17,12 @@ namespace MasterDetailsDataEntry
             IQueryable queryable = ((IQueryable)generic.Invoke(db, null)).Cast(entityType);
             return queryable;
         }
+
+        public static string FindSinglePrimaryKey(this DbContext db, Type entityType)
+        {
+            var entityMetadata = db.Model.GetEntityTypes().Single(p => p.ClrType == entityType);
+            var pk = entityMetadata.FindPrimaryKey().Properties.First().Name;
+            return pk;
+        }
     }
 }

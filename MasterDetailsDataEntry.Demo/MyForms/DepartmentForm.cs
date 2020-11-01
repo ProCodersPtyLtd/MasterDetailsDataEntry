@@ -9,7 +9,7 @@ using MasterDetailsDataEntry.Shared.Controls;
 
 namespace MasterDetailsDataEntry.Demo.MyForms
 {
-    public class DepartmentForm : DetailsForm<Department>
+    public class DepartmentForm : DetailsFormOld<Department>
     {
         protected override void Define()
         {

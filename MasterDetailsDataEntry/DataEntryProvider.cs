@@ -16,6 +16,13 @@ namespace MasterDetailsDataEntry
         public IEnumerable<DataField> GetFormFields(IModelDefinitionForm form)
         {
             var fieldsSet = form.GetDetailsFields();
+
+            using (var db = GetDbContext(form))
+            {
+                var pk = db.FindSinglePrimaryKey(form.GetDetailsType());
+                fieldsSet.Single(f => f.BindingProperty == pk).PrimaryKey = true; ;
+            }
+
             return fieldsSet;
         }
 

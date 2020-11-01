@@ -53,7 +53,7 @@ namespace MasterDetailsDataEntry.Tests.Providers
             Assert.Equal("Required", validations.First().Message);
         }
 
-        public class FormWithRequiredField : DetailsForm<TestOrderItem>
+        public class FormWithRequiredField : DetailsFormOld<TestOrderItem>
         {
             protected override void Define()
             {

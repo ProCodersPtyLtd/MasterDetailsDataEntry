@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MasterDetailsDataEntry.Demo.MyForms
 {
-    public class OrderDetailsForm : DetailsForm<Order>
+    public class OrderDetailsForm : DetailsFormOld<Order>
     {
         protected override void Define()
         {
