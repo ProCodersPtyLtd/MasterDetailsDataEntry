@@ -13,11 +13,11 @@ namespace MasterDetailsDataEntry.Shared
             return id;
         }
 
-        public static void SetForeignKeyValue(this object item, IEnumerable<DataField> fields, int? id)
+        public static void SetFilterKeyValue(this object item, IEnumerable<DataField> fields, int? id)
         {
-            if (id != null && fields.Any(f => f.ForeignKey))
+            if (id != null && fields.Any(f => f.Filter))
             {
-                item.SetPropertyValue(fields.First(f => f.ForeignKey).BindingProperty, id.Value);
+                item.SetPropertyValue(fields.First(f => f.Filter).BindingProperty, id.Value);
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using MasterDetailsDataEntry.Shared;
 using Microsoft.EntityFrameworkCore;
+using Platz.SqlForms;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -16,6 +17,15 @@ namespace MasterDetailsDataEntry
         public IEnumerable<DataField> GetFormFields(IModelDefinitionForm form)
         {
             var fieldsSet = form.GetDetailsFields();
+
+            using (var db = GetDbContext(form))
+            {
+                var pk = db.FindSinglePrimaryKeyProperty(form.GetDetailsType());
+                var pkField = fieldsSet.Single(f => f.BindingProperty == pk.Name);
+                pkField.PrimaryKey = true;
+                pkField.PrimaryKeyGeneratedType = (PrimaryKeyGeneratedTypes)pk.ValueGenerated;
+            }
+
             return fieldsSet;
         }
 
@@ -50,7 +60,7 @@ namespace MasterDetailsDataEntry
 
                 if (filterValue != null)
                 {
-                    var filterColumn = form.GetDetailsFields().Single(f => f.FilterProperty != null).FilterProperty;
+                    var filterColumn = form.GetDetailsFields().Single(f => f.Filter).BindingProperty;
                     query = query.Where($"{filterColumn} = {filterValue}");
                 }
 

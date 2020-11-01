@@ -11,7 +11,7 @@
     <input value="@OrderId" @onchange="@(a => OrderIdValueChanged(a))" />
 </div>
 
-<DetailsFormControl FormType="@typeof(OrderItemDetailsForm)" FilterValue="@OrderId" ForeignKeyValue="@OrderId"/>
+<DetailsFormControl FormType="@typeof(OrderItemDetailsForm)" FilterValue="@OrderId"/>
 
 @code {
     private int? OrderId { get; set; } = 1;
