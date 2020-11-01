@@ -10,7 +10,8 @@ namespace Platz.SqlForms
     {
         public static bool IsSimple(this Type t)
         {
-            return t.IsPrimitive || t == typeof(DateTime) || t == typeof(DateTime?) || t == typeof(string) || Nullable.GetUnderlyingType(t) != null;
+            return t.IsPrimitive || t == typeof(DateTime) || t == typeof(DateTime?) || t == typeof(decimal) || t == typeof(decimal?)
+                || t == typeof(string) || Nullable.GetUnderlyingType(t) != null;
         }
 
         public static bool IsList(this Type t)

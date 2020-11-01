@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Platz.SqlForms;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,9 +9,13 @@ namespace MasterDetailsDataEntry.Shared
     {
         public string BindingProperty { get; set; }
         public bool PrimaryKey { get; set; }
-        public bool ForeignKey { get; set; }
+        public PrimaryKeyGeneratedTypes PrimaryKeyGeneratedType { get; set; }
         public bool Filter { get; set; }
+
+        [Obsolete]
         public string FilterProperty { get; set; }
+        [Obsolete]
+        public bool ForeignKey { get; set; }
 
         // Select
         public Type SelectEntityType { get; set; }

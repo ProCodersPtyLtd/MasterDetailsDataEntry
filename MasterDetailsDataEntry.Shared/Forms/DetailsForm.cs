@@ -10,9 +10,10 @@ using System.Text;
 
 namespace Platz.SqlForms
 {
-    public abstract class DetailsForm2<TContext> : IModelDefinitionForm
+    public abstract class DetailsForm<TContext> : IModelDefinitionForm
         where TContext : DbContext
     {
+        protected readonly IDataFieldProcessor _dataFieldProcessor;
         protected FormBuilder _builder;
         protected Dictionary<string, DataField> _fields;
 
@@ -22,8 +23,9 @@ namespace Platz.SqlForms
             ,{ typeof(DateTime?), "dd/MM/yyyy" }
         };
 
-        public DetailsForm2()
+        public DetailsForm()
         {
+            _dataFieldProcessor = new DefaultDataFieldProcessor();
             _builder = new FormBuilder();
             Define(_builder);
         }
@@ -37,6 +39,12 @@ namespace Platz.SqlForms
         {
             var fields = _builder.Builders.SelectMany(b => b.Fields);
             _fields = fields.ToDictionary(f => f.BindingProperty, f => f);
+
+            if (fields.Any())
+            {
+                _dataFieldProcessor.PrepareFields(fields.ToList(), GetDetailsType());
+            }
+
             return fields;
         }
 

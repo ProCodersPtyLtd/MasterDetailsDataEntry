@@ -14,9 +14,6 @@
     public Type FormType { get; set; }
 
     [Parameter]
-    public int? ForeignKeyValue { get; set; }
-
-    [Parameter]
     public int? FilterValue { get; set; }
 
     public IEnumerable<DataField> Fields { get; set; }
@@ -59,18 +56,25 @@
 
         switch (args.Operation)
         {
+            case ItemOperations.Add:
+
+                //if (id > 0)
+                //{
+                //    item = _dataEntryProvider.UpdateItem(_form, item);
+                //}
+                //else
+                //{
+                //    item.SetForeignKeyValue(Fields, ForeignKeyValue);
+                //    item = _dataEntryProvider.InsertItem(_form, item);
+                //}
+
+                item.SetFilterKeyValue(Fields, FilterValue);
+                item = _dataEntryProvider.InsertItem(_form, item);
+                break;
+
             case ItemOperations.Update:
 
-                if (id > 0)
-                {
-                    item = _dataEntryProvider.UpdateItem(_form, item);
-                }
-                else
-                {
-                    item.SetForeignKeyValue(Fields, ForeignKeyValue);
-                    item = _dataEntryProvider.InsertItem(_form, item);
-                }
-
+                item = _dataEntryProvider.UpdateItem(_form, item);
                 break;
 
             case ItemOperations.Delete:

@@ -47,14 +47,14 @@ namespace MasterDetailsDataEntry.Tests.FormDefinition
             Assert.Equal("dd/MM/yyyy", f.GetFieldFormat("ExecuteDate"));
         }
 
-        public class FormWithContext : DetailsForm2<TestModelsContext>
+        public class FormWithContext : DetailsForm<TestModelsContext>
         {
             protected override void Define(FormBuilder builder)
             {
             }
         }
 
-        public class FormWithEntity : DetailsForm2<TestModelsContext>
+        public class FormWithEntity : DetailsForm<TestModelsContext>
         {
             protected override void Define(FormBuilder builder)
             {
@@ -64,7 +64,7 @@ namespace MasterDetailsDataEntry.Tests.FormDefinition
             }
         }
 
-        public class FormWithDates : DetailsForm2<TestModelsContext>
+        public class FormWithDates : DetailsForm<TestModelsContext>
         {
             protected override void Define(FormBuilder builder)
             {

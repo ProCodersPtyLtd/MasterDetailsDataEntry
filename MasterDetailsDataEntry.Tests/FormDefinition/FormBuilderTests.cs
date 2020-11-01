@@ -64,7 +64,17 @@ namespace MasterDetailsDataEntry.Tests.FormDefinition
             Assert.Equal("Name", f.SelectNameProperty);
         }
 
-        public class TestForm1 : DetailsForm2<TestContext>
+        [Fact]
+        public void ControlsPopulatedFormBuildTest()
+        {
+            var form = new TestForm1() as IModelDefinitionForm;
+            var fields = form.GetDetailsFields();
+
+            Assert.Empty(fields.Where(f => f.ControlType == null));
+            Assert.Empty(fields.Where(f => f.ViewModeControlType == null));
+        }
+
+        public class TestForm1 : DetailsForm<TestContext>
         {
             protected override void Define(FormBuilder builder)
             {
@@ -76,7 +86,7 @@ namespace MasterDetailsDataEntry.Tests.FormDefinition
             }
         }
 
-        public class TestForm2 : DetailsForm2<TestContext>
+        public class TestForm2 : DetailsForm<TestContext>
         {
             protected override void Define(FormBuilder builder)
             {

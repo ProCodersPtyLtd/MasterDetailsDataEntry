@@ -219,7 +219,8 @@
         }
 
         _error = null;
-        var args = new ItemsChangedArgs { Operation = ItemOperations.Update, RowIndex = rowIndex };
+        var args = new ItemsChangedArgs { RowIndex = rowIndex };
+        args.Operation = ModelItems[rowIndex].GetBag<RowState>().IsNew ? ItemOperations.Add : ItemOperations.Update;
 
         try
         {
