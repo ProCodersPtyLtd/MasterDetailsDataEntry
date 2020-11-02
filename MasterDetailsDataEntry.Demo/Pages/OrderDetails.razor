@@ -1,26 +1,15 @@
 ﻿@page "/OrderDetails"
 @using MasterDetailsDataEntry.Demo.MyForms
-@using MasterDetailsDataEntry.Shared.Forms
 
 @inject IDataEntryProvider _dataEntryProvider
 
 <h1>Order Details</h1>
 
-<div>Order ID</div>
-<div>
-    <input value="@OrderId" @onchange="@(a => OrderIdValueChanged(a))" />
-</div>
-
-@*<SingleDataControl Field="@Field" State="@(new FieldState(Field))" ModelValueChanged="@ModelChanged" />
-
-<RepeaterDataControl ModelItems="@ModelItems" Fields="@Fields" ModelValueChanged="@ModelChanged" />*@
-
-<DetailsFormControl FormType="@typeof(OrderDetailsForm)" FilterValue="null" ForeignKeyValue="null"/>
+<DetailsFormControl FormType="@typeof(OrderDetailsForm)" FilterValue="null" />
 
 @code {
     private int? OrderId { get; set; } = 1;
 
-    private DataField Field = new DataField { ControlType = typeof(TextEdit), BindingProperty = "ClientName", Label = "Client Name" };
 
     private IEnumerable<DataField> Fields { get; set; }
     private System.Collections.IList ModelItems { get; set; }

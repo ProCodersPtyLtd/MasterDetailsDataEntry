@@ -1,9 +1,9 @@
 ﻿using MasterDetailsDataEntry.Demo.Database.Model;
+using Platz.SqlForms.Shared;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
-using MasterDetailsDataEntry.Shared;
 
 namespace MasterDetailsDataEntry.Tests.Helpers
 {

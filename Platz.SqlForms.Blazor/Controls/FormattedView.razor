@@ -1,0 +1,31 @@
+﻿@namespace Platz.SqlForms.Blazor
+
+<div class="FormattedView">
+    <input class="form-control border-0" value="@GetValue()" disabled="disabled" />
+</div>
+
+@code
+{
+    [Parameter]
+    public IModelDefinitionForm Form { get; set; }
+
+    [Parameter]
+    public DataField Field { get; set; }
+
+    [Parameter]
+    public FieldState State { get; set; }
+
+    [Parameter]
+    public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }
+
+    private string GetValue()
+    {
+        if (State.Value == null)
+        {
+            return "";
+        }
+
+        var format = Form.GetFieldFormat(Field.BindingProperty);
+        return string.Format($"{{0:{format}}}", State.Value);
+    }
+}

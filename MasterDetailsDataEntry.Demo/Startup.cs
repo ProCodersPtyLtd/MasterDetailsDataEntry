@@ -9,8 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MasterDetailsDataEntry.Demo.Data;
-using MasterDetailsDataEntry.Blazor;
-using MasterDetailsDataEntry.Shared;
+using Platz.SqlForms;
 
 namespace MasterDetailsDataEntry.Demo
 {

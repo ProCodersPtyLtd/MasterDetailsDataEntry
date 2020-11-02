@@ -1,0 +1,26 @@
+﻿@namespace Platz.SqlForms.Blazor
+
+<div class="NumberControl">
+    <input type="number" class="form-control" value="@State.Value" @onchange="@(a => ValueChanged(a))" />
+    <Validator Messages="State.ValidationMessages" />
+</div>
+
+@code
+{
+    [Parameter]
+    public DataField Field { get; set; }
+
+    [Parameter]
+    public FieldState State { get; set; }
+
+    [Parameter]
+    public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }
+
+    private async Task ValueChanged(ChangeEventArgs a)
+    {
+        State.Value = a.Value;
+        var args = new ValueChangedArgs { Field = Field, State = State, NewValue = a.Value };
+        await ModelValueChanged.InvokeAsync(args);
+        StateHasChanged();
+    }
+}

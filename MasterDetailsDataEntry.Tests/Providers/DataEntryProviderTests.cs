@@ -1,6 +1,5 @@
 ﻿using MasterDetailsDataEntry.Demo.Database.Model;
 using MasterDetailsDataEntry.Demo.Database.School;
-using MasterDetailsDataEntry.Shared.Forms;
 using Platz.SqlForms;
 using System;
 using System.Collections.Generic;
