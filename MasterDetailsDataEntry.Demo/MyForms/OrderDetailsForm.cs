@@ -13,7 +13,7 @@ namespace MasterDetailsDataEntry.Demo.MyForms
         {
             builder.Entity<Order>(e =>
             {
-                e.Property(p => p.Id).IsHidden();
+                // e.Property(p => p.Id).IsHidden();
 
                 e.Property(p => p.ClientName).IsRequired();
 

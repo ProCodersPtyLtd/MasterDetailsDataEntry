@@ -27,6 +27,11 @@ namespace Platz.SqlForms.Shared
 
         public void ResolveControlType(Type type, DataField field)
         {
+            if (field.Button)
+            {
+                return;
+            }
+
             var property = type.GetProperty(field.BindingProperty);
             field.DataType = property.PropertyType;
             var dataTypeName = field.DataType.Name;

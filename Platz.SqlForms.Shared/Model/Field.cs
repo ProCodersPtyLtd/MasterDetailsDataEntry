@@ -12,7 +12,7 @@ namespace Platz.SqlForms
         public string Label { get; set; }
         public bool Required { get; set; }
         public bool Hidden { get; set; }
-        public bool ReadOnly { get; set; }
+        public bool? ReadOnly { get; set; }
         public string Format { get; set; }
     }
 }

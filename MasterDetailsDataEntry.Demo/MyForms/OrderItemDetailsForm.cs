@@ -13,7 +13,7 @@ namespace MasterDetailsDataEntry.Demo.MyForms
         {
             builder.Entity<OrderItem>(e =>
             {
-                e.Property(p => p.Id).Control(typeof(DefaultFormattedViewControl));
+                // e.Property(p => p.Id).Control(typeof(DefaultFormattedViewControl));
 
                 e.Property(p => p.OrderId).IsFilter().Control(typeof(DefaultFormattedViewControl));
 

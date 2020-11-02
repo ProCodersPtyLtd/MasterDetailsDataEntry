@@ -5,7 +5,7 @@
 <div class="SingleDataControl" style="vertical-align: top; width: @(GetWidth())px; height: @(ExtraHeight ? 61: 41)px;">
     @{
 
-        var component = IsEditing
+        var component = IsEditingControl() // IsEditing && ((Field.ReadOnly == null || Field.ReadOnly == false) && Field.PrimaryKey && State.IsNew)
             ? _componentResolverService.GetComponentTypeByName(Field.ControlType?.FullName)
             : _componentResolverService.GetComponentTypeByName(Field.ViewModeControlType?.FullName);
 
@@ -54,6 +54,31 @@
 
     [Parameter]
     public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }
+
+    private bool IsEditingControl()
+    {
+        if (IsEditing)//  && ((Field.ReadOnly == null || Field.ReadOnly == false) && Field.PrimaryKey && State.IsNew))
+        {
+            if (Field.PrimaryKey && State.IsNew && Field.PrimaryKeyGeneratedType != PrimaryKeyGeneratedTypes.Never)
+            {
+                return false;
+            }
+
+            if (Field.PrimaryKey && !State.IsNew)
+            {
+                return false;
+            }
+
+            if (Field.ReadOnly == true)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
 
     private int GetWidth()
     {
