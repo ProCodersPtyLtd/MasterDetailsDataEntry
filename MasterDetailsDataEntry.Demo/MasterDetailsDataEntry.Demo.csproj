@@ -12,10 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MasterDetailsDataEntry.Blazor\MasterDetailsDataEntry.Blazor.csproj" />
     <ProjectReference Include="..\MasterDetailsDataEntry.Demo.Database\MasterDetailsDataEntry.Demo.Database.csproj" />
-    <ProjectReference Include="..\MasterDetailsDataEntry.Shared\MasterDetailsDataEntry.Shared.csproj" />
-    <ProjectReference Include="..\MasterDetailsDataEntry\MasterDetailsDataEntry.csproj" />
+    <ProjectReference Include="..\Platz.SqlForms.Blazor\Platz.SqlForms.Blazor.csproj" />
+    <ProjectReference Include="..\Platz.SqlForms.Shared\Platz.SqlForms.Shared.csproj" />
+    <ProjectReference Include="..\Platz.SqlForms\Platz.SqlForms.csproj" />
   </ItemGroup>
 
 </Project>

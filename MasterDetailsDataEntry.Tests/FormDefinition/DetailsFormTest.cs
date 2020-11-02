@@ -1,5 +1,5 @@
-﻿using MasterDetailsDataEntry.Shared;
-using Platz.SqlForms;
+﻿using Platz.SqlForms;
+using Platz.SqlForms.Shared;
 using System;
 using System.Collections.Generic;
 using System.Text;

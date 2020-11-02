@@ -1,8 +1,6 @@
 ﻿using MasterDetailsDataEntry.Demo.Database.Model;
-using MasterDetailsDataEntry.Shared;
-using MasterDetailsDataEntry.Shared.Controls;
-using MasterDetailsDataEntry.Shared.Forms;
 using Platz.SqlForms;
+using Platz.SqlForms.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;

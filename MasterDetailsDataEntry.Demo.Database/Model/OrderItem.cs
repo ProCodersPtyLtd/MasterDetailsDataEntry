@@ -9,10 +9,10 @@ namespace MasterDetailsDataEntry.Demo.Database.Model
         public int OrderId { get; set; }
         public string ItemName { get; set; }
         public int Qty { get; set; }
+        public int? Qty2 { get; set; }
         public bool? IsMajor { get; set; }
         public decimal Price { get; set; }
         public DateTime? AvailableFrom { get; set; }
-        public int? Qty2 { get; set; }
 
         public virtual Order Order { get; set; }
     }

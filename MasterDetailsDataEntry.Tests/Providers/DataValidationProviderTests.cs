@@ -1,12 +1,11 @@
-﻿using MasterDetailsDataEntry.Shared.Forms;
-using MasterDetailsDataEntry.Tests.FormDefinition;
-using MasterDetailsDataEntry.Shared;
+﻿using MasterDetailsDataEntry.Tests.FormDefinition;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Xunit;
 using Platz.SqlForms;
+using Platz.SqlForms.Shared;
 
 namespace MasterDetailsDataEntry.Tests.Providers
 {
