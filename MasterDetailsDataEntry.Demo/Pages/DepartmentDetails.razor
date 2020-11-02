@@ -6,10 +6,16 @@
 <h2>Department Details</h2>
 
 <MasterRecordControl FormType="@typeof(DepartmentForm)" FilterValue="1" />
-<DetailsFormControl FormType="@typeof(DepartmentForm)" FilterValue="null" ForeignKeyValue="null" />
+<DetailsFormControl FormType="@typeof(DepartmentForm)" FilterValue="null" ItemButtonClicked="@ButtonClicked" />
+
+<label>@_label1</label>
 
 @code {
+    private string _label1;
 
-
+    private async Task ButtonClicked(ItemButtonClickedArgs args)
+    {
+        _label1 = args.Pk.ToString();
+    }
 
 }

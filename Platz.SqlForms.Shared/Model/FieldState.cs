@@ -9,6 +9,7 @@ namespace Platz.SqlForms
         public int RowIndex { get; set; }
         public object Value { get; set; }
         public List<string> ValidationMessages { get; set; } = new List<string>();
+        public bool IsNew { get; set; }
 
         public FieldState()
         { }

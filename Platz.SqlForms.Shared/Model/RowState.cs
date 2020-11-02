@@ -8,5 +8,6 @@ namespace Platz.SqlForms
     {
         public bool IsEditing { get; set; }
         public bool IsNew { get; set; }
+        public bool IsMouseOver { get; set; }
     }
 }

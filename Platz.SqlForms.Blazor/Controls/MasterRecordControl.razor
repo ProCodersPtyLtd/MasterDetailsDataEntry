@@ -17,9 +17,6 @@
     public Type FormType { get; set; }
 
     [Parameter]
-    public int? ForeignKeyValue { get; set; }
-
-    [Parameter]
     public int? FilterValue { get; set; }
 
     public IEnumerable<DataField> Fields { get; set; }
@@ -70,7 +67,7 @@
                 }
                 else
                 {
-                    item.SetFilterKeyValue(Fields, ForeignKeyValue);
+                    item.SetFilterKeyValue(Fields, FilterValue);
                     item = _dataEntryProvider.InsertItem(_form, item);
                 }
 

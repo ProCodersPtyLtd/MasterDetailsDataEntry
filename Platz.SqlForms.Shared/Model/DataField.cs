@@ -12,6 +12,7 @@ namespace Platz.SqlForms
         public PrimaryKeyGeneratedTypes PrimaryKeyGeneratedType { get; set; }
         public bool Filter { get; set; }
         public int Order { get; set; }
+        public bool Button { get; set; }
 
         // Select
         public Type SelectEntityType { get; set; }
@@ -34,6 +35,7 @@ namespace Platz.SqlForms
             Label = source.Label;
             Required = source.Required;
             Hidden = source.Hidden;
+            ReadOnly = source.ReadOnly;
             Format = source.Format;
         }
     }

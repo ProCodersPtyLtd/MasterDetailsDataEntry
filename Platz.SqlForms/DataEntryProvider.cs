@@ -24,6 +24,21 @@ namespace Platz.SqlForms
                 var pkField = fieldsSet.Single(f => f.BindingProperty == pk.Name);
                 pkField.PrimaryKey = true;
                 pkField.PrimaryKeyGeneratedType = (PrimaryKeyGeneratedTypes)pk.ValueGenerated;
+
+                //if (pkField.PrimaryKeyGeneratedType == PrimaryKeyGeneratedTypes.Never)
+                //{
+                //    pkField.Required = true;
+                //}
+                // set readonly based on PrimaryKeyGeneratedType
+                //if (pkField.ReadOnly == null)
+                //{
+                //    pkField.ReadOnly = pkField.PrimaryKeyGeneratedType == PrimaryKeyGeneratedTypes.OnAdd;
+                //}
+
+                //if (pkField.ReadOnly == false && !pkField.Required)
+                //{
+                //    pkField.Required = true;
+                //}
             }
 
             return fieldsSet;

@@ -34,6 +34,10 @@ namespace Platz.SqlForms
             return result;
         }
 
-        
+        public virtual void Button(string buttonText, string hint = null)
+        {
+            var bindingProperty = buttonText;
+            _fields[bindingProperty] = new DataField { Button = true, BindingProperty = bindingProperty, Label = hint };
+        }
     }
 }

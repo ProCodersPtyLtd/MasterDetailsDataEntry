@@ -7,7 +7,8 @@
 
 <div class="DetailsFormControl">
     @*DetailsControl*@
-    <RepeaterDataControl Form="@_form" ModelType="@ModelType" ModelItems="@ModelItems" Fields="@Fields" ModelValueChanged="@ModelChanged" ItemsChanged="@ItemsChanged" />
+    <RepeaterDataControl Form="@_form" ModelType="@ModelType" ModelItems="@ModelItems" Fields="@Fields" ModelValueChanged="@ModelChanged" 
+                         ItemsChanged="@ItemsChanged" ButtonClicked="@ButtonClicked" />
 </div>
 
 @code
@@ -17,6 +18,9 @@
 
     [Parameter]
     public int? FilterValue { get; set; }
+
+    [Parameter]
+    public EventCallback<ItemButtonClickedArgs> ItemButtonClicked { get; set; }
 
     public IEnumerable<DataField> Fields { get; set; }
 
@@ -46,6 +50,19 @@
         ModelItems = _dataEntryProvider.GetFilteredModelData(_form, FilterValue);
     }
 
+    private async Task ButtonClicked(ButtonClickedArgs args)
+    {
+        var returnArgs = new ItemButtonClickedArgs 
+        { 
+            Item = ModelItems[args.RowIndex], 
+            Pk = ModelItems[args.RowIndex].GetPrimaryKeyValue(Fields),
+            Button = args.Button, 
+            RowIndex = args.RowIndex 
+        };
+
+        await ItemButtonClicked.InvokeAsync(returnArgs);
+    }
+
     private async Task ModelChanged(ValueChangedArgs args)
     {
 
@@ -59,16 +76,6 @@
         switch (args.Operation)
         {
             case ItemOperations.Add:
-
-                //if (id > 0)
-                //{
-                //    item = _dataEntryProvider.UpdateItem(_form, item);
-                //}
-                //else
-                //{
-                //    item.SetForeignKeyValue(Fields, ForeignKeyValue);
-                //    item = _dataEntryProvider.InsertItem(_form, item);
-                //}
 
                 item.SetFilterKeyValue(Fields, FilterValue);
                 item = _dataEntryProvider.InsertItem(_form, item);
