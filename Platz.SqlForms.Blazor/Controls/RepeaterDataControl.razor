@@ -125,8 +125,7 @@
     {
         base.OnInitialized();
 
-        _isEditing = false;
-        _modelItemReserveCopy = null;
+        InitControl();
     }
 
     protected override void OnParametersSet()
@@ -139,6 +138,19 @@
             _isEditing = false;
             _modelItemReserveCopy = null;
             _modelItemsHash = ModelItems.GetHashCode();
+        }
+    }
+
+    private void InitControl()
+    {
+        if (ViewOptions?.StartNewEdititng == true)
+        {
+            AddClick(null);
+        }
+        else
+        {
+            _isEditing = false;
+            _modelItemReserveCopy = null;
         }
     }
 
@@ -237,7 +249,7 @@
     #region clicks
     private async Task CustomButtonClick(MouseEventArgs e, string button, int rowIndex)
     {
-        await ButtonClicked.InvokeAsync(new ButtonClickedArgs { Button = button, RowIndex = rowIndex });
+        await ButtonClicked.InvokeAsync(new ButtonClickedArgs { Entity = ModelType, Button = button, RowIndex = rowIndex });
     }
 
     private void EditClick(MouseEventArgs e, int rowIndex)
@@ -250,7 +262,7 @@
 
     private void DeleteClick(MouseEventArgs e, int rowIndex)
     {
-        var args = new ItemsChangedArgs { Operation = ItemOperations.Delete, RowIndex = rowIndex };
+        var args = new ItemsChangedArgs { Entity = ModelType, Operation = ItemOperations.Delete, RowIndex = rowIndex };
         ItemsChanged.InvokeAsync(args);
     }
 
@@ -265,7 +277,7 @@
         }
 
         _error = null;
-        var args = new ItemsChangedArgs { RowIndex = rowIndex };
+        var args = new ItemsChangedArgs { Entity = ModelType, RowIndex = rowIndex };
         args.Operation = ModelItems[rowIndex].GetBag<RowState>().IsNew ? ItemOperations.Add : ItemOperations.Update;
 
         try

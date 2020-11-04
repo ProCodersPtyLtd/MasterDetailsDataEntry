@@ -2,6 +2,7 @@
 using Platz.SqlForms.Shared;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Xunit;
 
@@ -36,7 +37,7 @@ namespace MasterDetailsDataEntry.Tests.FormDefinition
         {
             var f = new FormWithDates() as IModelDefinitionForm;
             var fields = f.GetDetailsFields();
-            Assert.Equal("MMM-yyyy-dd", f.GetFieldFormat("CreateDate"));
+            Assert.Equal("MMM-yyyy-dd", f.GetFieldFormat(fields.First(x => x.BindingProperty == "CreateDate")));
         }
 
         [Fact]
@@ -44,7 +45,7 @@ namespace MasterDetailsDataEntry.Tests.FormDefinition
         {
             var f = new FormWithDates() as IModelDefinitionForm;
             var fields = f.GetDetailsFields();
-            Assert.Equal("dd/MM/yyyy", f.GetFieldFormat("ExecuteDate"));
+            Assert.Equal("dd/MM/yyyy", f.GetFieldFormat(fields.First(x => x.BindingProperty == "ExecuteDate"))); 
         }
 
         public class FormWithContext : DetailsForm<TestModelsContext>

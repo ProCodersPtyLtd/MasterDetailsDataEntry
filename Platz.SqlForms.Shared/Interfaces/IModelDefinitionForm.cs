@@ -11,7 +11,10 @@ namespace Platz.SqlForms.Shared
     {
         Type GetDbContextType();
         Type GetDetailsType();
+        Type GetMasterType();
         internal IEnumerable<DataField> GetDetailsFields();
-        string GetFieldFormat(string bindingProperty);
+        internal IEnumerable<DataField> GetMasterFields();
+        internal IEnumerable<DataField> GetEntityFields(Type entity);
+        string GetFieldFormat(DataField field);
     }
 }

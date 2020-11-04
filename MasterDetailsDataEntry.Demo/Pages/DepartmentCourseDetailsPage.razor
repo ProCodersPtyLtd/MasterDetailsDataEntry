@@ -1,0 +1,44 @@
+﻿@page "/DepartmentCourseDetailsPage/{DepartmentId}"
+@using MasterDetailsDataEntry.Demo.MyForms
+
+@inject IDataEntryProvider _dataEntryProvider
+
+<h2>Department Course Details</h2>
+
+<FormMasterDetailsControl FormType="@typeof(DepartmentCourseForm)" FilterValue="@_pk" EditingNow="@_edititngNow" ItemButtonClicked="@ButtonClicked" />
+
+<label>@_label1</label>
+
+@code {
+    [Parameter]
+    public string DepartmentId { get; set; }
+
+    private int? _pk{ get; set; }
+    private bool _edititngNow { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        int id;
+
+        if (int.TryParse(DepartmentId, out id))
+        {
+            _pk = id;
+            _edititngNow = false;
+        }
+        else
+        {
+            _pk = int.MinValue;
+            _edititngNow = true;
+        }
+    }
+
+    private string _label1;
+
+    private async Task ButtonClicked(ItemButtonClickedArgs args)
+    {
+        _label1 = args.Pk.ToString();
+    }
+
+}

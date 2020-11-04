@@ -9,9 +9,9 @@ namespace Platz.SqlForms
     {
         private List<FormEntityTypeBuilder> _builders = new List<FormEntityTypeBuilder>();
         private List<Type> _entities = new List<Type>();
+        private int _masterEntityIndex = -1;
 
         public virtual FormBuilder Entity<TEntity>([NotNullAttribute] Action<FormEntityTypeBuilder<TEntity>> buildAction) where TEntity : class
-        // public virtual FormBuilder Entity<TEntity>([NotNullAttribute] Action<TEntity> buildAction) where TEntity : class
         {
             var builder = new FormEntityTypeBuilder<TEntity>();
             buildAction.Invoke(builder);
@@ -20,7 +20,14 @@ namespace Platz.SqlForms
             return this;
         }
 
-        public IEnumerable<FormEntityTypeBuilder> Builders { get { return _builders; } }
-        public IEnumerable<Type> Entities { get { return _entities; } }
+        public virtual FormBuilder IsMaster()
+        {
+            _masterEntityIndex = _entities.Count - 1;
+            return this;
+        }
+
+        public List<FormEntityTypeBuilder> Builders { get { return _builders; } }
+        public List<Type> Entities { get { return _entities; } }
+        public int MasterEntityIndex { get { return _masterEntityIndex; } }
     }
 }

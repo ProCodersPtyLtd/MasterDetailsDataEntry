@@ -10,5 +10,6 @@ namespace Platz.SqlForms
         public int RowIndex { get; set; }
         public object Item { get; set; }
         public int Pk { get; set; }
+        public Type Entity { get; set; }
     }
 }

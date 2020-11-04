@@ -14,31 +14,16 @@ namespace Platz.SqlForms
     public class DataEntryProvider : IDataEntryProvider
     {
         // read fields
-        public IEnumerable<DataField> GetFormFields(IModelDefinitionForm form)
+        public IEnumerable<DataField> GetFormFields(IModelDefinitionForm form, Type entity = null)
         {
-            var fieldsSet = form.GetDetailsFields();
+            var fieldsSet = entity == null? form.GetDetailsFields() : form.GetEntityFields(entity);
 
             using (var db = GetDbContext(form))
             {
-                var pk = db.FindSinglePrimaryKeyProperty(form.GetDetailsType());
+                var pk = db.FindSinglePrimaryKeyProperty(entity ?? form.GetDetailsType());
                 var pkField = fieldsSet.Single(f => f.BindingProperty == pk.Name);
                 pkField.PrimaryKey = true;
                 pkField.PrimaryKeyGeneratedType = (PrimaryKeyGeneratedTypes)pk.ValueGenerated;
-
-                //if (pkField.PrimaryKeyGeneratedType == PrimaryKeyGeneratedTypes.Never)
-                //{
-                //    pkField.Required = true;
-                //}
-                // set readonly based on PrimaryKeyGeneratedType
-                //if (pkField.ReadOnly == null)
-                //{
-                //    pkField.ReadOnly = pkField.PrimaryKeyGeneratedType == PrimaryKeyGeneratedTypes.OnAdd;
-                //}
-
-                //if (pkField.ReadOnly == false && !pkField.Required)
-                //{
-                //    pkField.Required = true;
-                //}
             }
 
             return fieldsSet;
@@ -60,14 +45,18 @@ namespace Platz.SqlForms
             throw new NotImplementedException();
         }
 
-        public IList GetFilteredModelData(IModelDefinitionForm form, int? filterValue)
+        public IList GetFilteredModelData(IModelDefinitionForm form, int? filterValue, Type entity = null)
         {
             using (var db = GetDbContext(form))
             {
-                var detailsType = form.GetDetailsType();
-                IQueryable query = db.FindSet(detailsType);
+                var entityType = entity ?? form.GetDetailsType();
+                IQueryable query = db.FindSet(entityType);
 
                 if (filterValue != null)
+                //{
+                //    query = query.Where("1 = 2");
+                //}
+                //else
                 {
                     var filterColumn = form.GetDetailsFields().Single(f => f.Filter).BindingProperty;
                     query = query.Where($"{filterColumn} = {filterValue}");

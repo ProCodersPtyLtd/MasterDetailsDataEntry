@@ -8,5 +8,6 @@ namespace Platz.SqlForms
     {
         public string Button { get; set; }
         public int RowIndex { get; set; }
+        public Type Entity { get; set; }
     }
 }

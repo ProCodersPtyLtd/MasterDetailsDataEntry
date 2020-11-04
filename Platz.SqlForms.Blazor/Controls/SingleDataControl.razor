@@ -86,7 +86,7 @@
             ? _componentResolverService.GetComponentTypeByName(Field.ControlType?.FullName)
             : _componentResolverService.GetComponentTypeByName(Field.ViewModeControlType?.FullName);
 
-        if (component == typeof(Checkbox) || component == typeof(CheckboxReadonly))
+        if (component == typeof(CheckboxControl) || component == typeof(CheckboxReadonlyControl))
         {
             return 60;
         }

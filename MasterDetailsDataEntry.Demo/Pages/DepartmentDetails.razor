@@ -2,11 +2,14 @@
 @using MasterDetailsDataEntry.Demo.MyForms
 
 @inject IDataEntryProvider _dataEntryProvider
+@inject NavigationManager _navi;
 
 <h2>Department Details</h2>
 
 <MasterRecordControl FormType="@typeof(DepartmentForm)" FilterValue="1" />
 <DetailsFormControl FormType="@typeof(DepartmentForm)" FilterValue="null" ItemButtonClicked="@ButtonClicked" />
+
+<button class="btn btn-primary" @onclick="@((args) => AddClick(args))">Add New Department</button>
 
 <label>@_label1</label>
 
@@ -16,6 +19,11 @@
     private async Task ButtonClicked(ItemButtonClickedArgs args)
     {
         _label1 = args.Pk.ToString();
+        _navi.NavigateTo($"/DepartmentCourseDetailsPage/{args.Pk}");
     }
 
+    private void AddClick(MouseEventArgs e)
+    {
+        _navi.NavigateTo($"/DepartmentCourseDetailsPage/nil");
+    }
 }
