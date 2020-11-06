@@ -13,7 +13,7 @@ namespace MasterDetailsDataEntry.Demo.MyForms
         {
             builder.Entity<Department>(e =>
             {
-                e.Property(p => p.DepartmentId).IsFilter();
+                e.Property(p => p.DepartmentId).IsFilter().IsUnique();
 
                 e.Property(p => p.Name).IsRequired();
 
@@ -28,7 +28,7 @@ namespace MasterDetailsDataEntry.Demo.MyForms
             {
                 e.Property(p => p.DepartmentId).IsFilter();
 
-                e.Property(p => p.CourseId).IsRequired();
+                e.Property(p => p.CourseId).IsRequired().IsUnique();
 
                 e.Property(p => p.Title).IsRequired();
 

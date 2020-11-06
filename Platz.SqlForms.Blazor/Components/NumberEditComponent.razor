@@ -1,18 +1,8 @@
 ﻿@namespace Platz.SqlForms.Blazor
 
-<div class="TextControl">
-    @*@if (Field.Required)
-        {
-            <div>@(Field.Label)*</div>
-        }
-        else
-        {
-            <div>@Field.Label</div>
-        }*@
-
-    <input class="form-control" value="@State.Value" @onchange="@(a => ValueChanged(a))" />
-    @*<div class="validation-error-message" style="color: red;" hidden="hidden">Required</div>*@
-    <ValidatorControl Messages="State.ValidationMessages" />
+<div class="NumberControl">
+    <input type="number" class="form-control" value="@State.Value" @onchange="@(a => ValueChanged(a))" />
+    <ValidatorComponent Messages="State.ValidationMessages" />
 </div>
 
 @code
@@ -31,5 +21,6 @@
         State.Value = a.Value;
         var args = new ValueChangedArgs { Field = Field, State = State, NewValue = a.Value };
         await ModelValueChanged.InvokeAsync(args);
+        StateHasChanged();
     }
 }

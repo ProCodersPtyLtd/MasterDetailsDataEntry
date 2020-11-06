@@ -29,21 +29,21 @@ namespace Platz.SqlForms
             return fieldsSet;
         }
 
-        public IEnumerable<DataField> GetFormFields(Type formType)
-        {
-            throw new NotImplementedException();
-        }
+        //public IEnumerable<DataField> GetFormFields(Type formType)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public Tuple<IEnumerable<DataField>, IEnumerable<DataField>> GetMultiFormFields(Type formType)
-        {
-            throw new NotImplementedException();
-        }
+        //public Tuple<IEnumerable<DataField>, IEnumerable<DataField>> GetMultiFormFields(Type formType)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         // read data
-        public IList GetModelData(IModelDefinitionForm form)
-        {
-            throw new NotImplementedException();
-        }
+        //public IList GetModelData(IModelDefinitionForm form)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public IList GetFilteredModelData(IModelDefinitionForm form, int? filterValue, Type entity = null)
         {
@@ -67,16 +67,26 @@ namespace Platz.SqlForms
             }
         }
 
-        public object GetModelData(IModelDefinitionForm form, int Id)
-        {
-            throw new NotImplementedException();
-        }
+        //public object GetModelData(IModelDefinitionForm form, int Id)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public System.Collections.IList GetEntityData(IModelDefinitionForm form, Type entity)
         {
             using (var db = GetDbContext(form))
             {
                 var result = db.FindSet(entity).ToDynamicList<object>();
+                return result;
+            }
+        }
+
+        public bool IsPropertyValueNotUnique(IModelDefinitionForm form, object item, string bindingProperty, Type entity)
+        {
+            using (var db = GetDbContext(form))
+            {
+                var value = item.GetPropertyValue(bindingProperty);
+                var result = db.FindSet(entity).Any($"{bindingProperty} = {value.ToSql()}");
                 return result;
             }
         }

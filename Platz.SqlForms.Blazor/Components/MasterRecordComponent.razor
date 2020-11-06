@@ -7,7 +7,7 @@
 
 <div class="MasterRecordControl">
     @*DetailsControl*@
-    <RepeaterDataControl Form="@_form" ModelType="@ModelType" ModelItems="@ModelItems" Fields="@Fields" ModelValueChanged="@ModelChanged"
+    <RepeaterDataComponent Form="@_form" ModelType="@ModelType" ModelItems="@ModelItems" Fields="@Fields" ModelValueChanged="@ModelChanged"
                          ItemsChanged="@ItemsChanged" ViewOptions="@(new FormViewOptions { AllowAdd = false, AllowDelete = false, AllowEdit = true })" />
 </div>
 

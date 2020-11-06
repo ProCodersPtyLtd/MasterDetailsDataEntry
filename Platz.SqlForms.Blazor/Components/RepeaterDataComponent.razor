@@ -1,5 +1,6 @@
 ﻿@inject IComponentTypeResolver _componentResolverService
 @inject IDataValidationProvider _dataValidationProvider
+@*@inject RepeaterDataComponentController _controller*@
 
 @namespace Platz.SqlForms.Blazor
 
@@ -41,28 +42,21 @@
                         }
 
                         <td>
-                            <SingleDataControl Form="@Form" Field="@field" ExtraHeight="@GetExtraHeight(rowIndex)" State="@CreateFieldState(field, rowIndex)"
+                            <SingleDataComponent Form="@Form" Field="@field" ExtraHeight="@GetExtraHeight(rowIndex)" State="@CreateFieldState(field, rowIndex)"
                                                IsEditing="@(GetRowState(rowIndex).IsEditing)" ModelValueChanged="@LocalModelValueChanged" />
                         </td>
                     }
 
                     <td width="200px"  @onmouseover="@(e => RowMouseOver(e, row))" @onmouseout="@(e => RowMouseOut(e, row))">
 
-                        @foreach (var field in GetButtonFields()) 
-                        { 
-                            <button class="btn btn-light" title="@field.Label" @onclick="@(async (args) => await CustomButtonClick(args, field.BindingProperty, row))" 
-                                    hidden="@(!GetRowState(rowIndex).IsMouseOver || (GetRowState(rowIndex).IsEditing || (ViewOptions?.AllowEdit == false)))" 
-                                    disabled="@_isEditing" >
-                                @field.BindingProperty
-                            </button>
-                        }
+                        
 
                         <button class="btn btn-light" title="Edit" @onclick="@((args) => EditClick(args, row))" disabled="@_isEditing"
                                 hidden="@(!GetRowState(rowIndex).IsMouseOver || (GetRowState(rowIndex).IsEditing || (ViewOptions?.AllowEdit == false)))" >
                             <span class="oi oi-pencil"></span>
                         </button>
 
-                        <button class="btn btn-light" titel="Delete" @onclick="@((args) => DeleteClick(args, row))"
+                        <button class="btn btn-light" titel="Delete" @onclick="@(async (args) => await DeleteClick(args, row))"
                                 hidden="@(!GetRowState(rowIndex).IsMouseOver || GetRowState(rowIndex).IsEditing || (ViewOptions?.AllowDelete == false))" disabled="@_isEditing">
                             <span class="oi oi-delete"></span>&nbsp;
                         </button>
@@ -76,6 +70,15 @@
                                 <span class="oi oi-action-undo"></span>
                             </button>
                         </div>
+
+                        @foreach (var field in GetButtonFields()) 
+                        { 
+                            <button class="btn btn-light" title="@field.Label" @onclick="@(async (args) => await CustomButtonClick(args, field.BindingProperty, row))" 
+                                    hidden="@(!GetRowState(rowIndex).IsMouseOver || (GetRowState(rowIndex).IsEditing || (ViewOptions?.AllowEdit == false)))" 
+                                    disabled="@_isEditing" >
+                                @field.BindingProperty
+                            </button>
+                        }
                     </td>
                 </tr>
             }
@@ -168,13 +171,14 @@
     private void RowMouseOver(MouseEventArgs args, int rowIndex)
     {
         GetRowState(rowIndex).IsMouseOver = true;
-        // StateHasChanged();
     }
 
     private void RowMouseOut(MouseEventArgs args, int rowIndex)
     {
-        GetRowState(rowIndex).IsMouseOver = false;
-        // StateHasChanged();
+        if (ModelItems.Count != 0)
+        {
+            GetRowState(rowIndex).IsMouseOver = false;
+        }
     }
 
     private async Task LocalModelValueChanged(ValueChangedArgs args)
@@ -183,7 +187,7 @@
 
         if (args.State.ValidationMessages.Any())
         {
-            var validations = _dataValidationProvider.ValidateModelProperty(ModelItems[args.State.RowIndex], args.State.RowIndex, args.Field.BindingProperty, Fields);
+            var validations = _dataValidationProvider.ValidateModelProperty(Form, ModelItems[args.State.RowIndex], args.State.RowIndex, args.Field.BindingProperty, Fields);
             UpdateFieldStateValidations(validations, args.State.RowIndex, args.Field.BindingProperty);
         }
 
@@ -194,11 +198,6 @@
     private bool GetExtraHeight(int rowIndex)
     {
         return _validations.Any() && GetRowState(rowIndex).IsEditing;
-    }
-
-    private EditModes GetEditMode()
-    {
-        return EditModes.SingleRecord;
     }
 
     #region field state
@@ -212,6 +211,11 @@
 
     private FieldState CreateFieldState(DataField field, int row)
     {
+        if (field.Button)
+        {
+            return null;
+        }
+
         string fieldStateKey = GetFieldStateKey(field.BindingProperty, row);
 
         if (!_states.ContainsKey(fieldStateKey))
@@ -260,15 +264,32 @@
         StateHasChanged();
     }
 
-    private void DeleteClick(MouseEventArgs e, int rowIndex)
+    private async Task DeleteClick(MouseEventArgs e, int rowIndex)
     {
         var args = new ItemsChangedArgs { Entity = ModelType, Operation = ItemOperations.Delete, RowIndex = rowIndex };
-        ItemsChanged.InvokeAsync(args);
+
+        try
+        {
+            await ItemsChanged.InvokeAsync(args);
+        }
+        catch (Exception exc)
+        {
+            _error = exc.Message;
+
+            if (exc.InnerException != null)
+            {
+                _error += "\r\n";
+                _error += exc.InnerException.Message;
+            }
+
+            StateHasChanged();
+        }
     }
 
     private async Task ApplyClick(MouseEventArgs e, int rowIndex)
     {
-        _validations = _dataValidationProvider.ValidateModel(ModelItems[rowIndex], rowIndex, Fields);
+        var editingFields = Fields.Where(f => CreateFieldState(f, rowIndex)?.IsEditing == true);
+        _validations = _dataValidationProvider.ValidateModel(Form, ModelItems[rowIndex], rowIndex, editingFields);
         UpdateFieldStateValidations(_validations, rowIndex);
 
         if (_validations.Any())
@@ -347,7 +368,7 @@
         var pkField = Fields.Single(f => f.PrimaryKey);
         CreateFieldState(pkField, rowIndex);
         var key = GetFieldStateKey(pkField.BindingProperty, rowIndex);
-        _states[key].IsNew = true;
+        _states[key].IsNew = isNew;
     }
 
     private void ClearValidations()

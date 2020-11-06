@@ -61,23 +61,33 @@
         {
             if (Field.PrimaryKey && State.IsNew && Field.PrimaryKeyGeneratedType != PrimaryKeyGeneratedTypes.Never)
             {
-                return false;
+                State.IsEditing = false;
             }
-
+            else
             if (Field.PrimaryKey && !State.IsNew)
             {
-                return false;
+                State.IsEditing = false;
             }
-
+            else
             if (Field.ReadOnly == true)
             {
-                return false;
+                State.IsEditing = false;
+            }
+            else
+            if (!Field.PrimaryKey && Field.Filter)
+            {
+                State.IsEditing = false;
+            }
+            else
+            {
+                State.IsEditing = true;
             }
 
-            return true;
+            return State.IsEditing;
         }
 
-        return false;
+        State.IsEditing = false;
+        return State.IsEditing;
     }
 
     private int GetWidth()
@@ -86,7 +96,7 @@
             ? _componentResolverService.GetComponentTypeByName(Field.ControlType?.FullName)
             : _componentResolverService.GetComponentTypeByName(Field.ViewModeControlType?.FullName);
 
-        if (component == typeof(CheckboxControl) || component == typeof(CheckboxReadonlyControl))
+        if (component == typeof(CheckboxComponent) || component == typeof(CheckboxReadonlyComponent))
         {
             return 60;
         }

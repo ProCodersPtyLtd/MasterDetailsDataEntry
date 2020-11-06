@@ -7,6 +7,7 @@ using System.Reflection;
 
 namespace Platz.SqlForms.Shared
 {
+    // ToDo: rename this class to more appropriate
     public static class JsonPathHelper
     {
         public static string ReplaceLambdaVar(this string selectorString)
@@ -20,6 +21,39 @@ namespace Platz.SqlForms.Shared
             }
 
             return result;
+        }
+
+        public static string ToSql(this object source)
+        {
+            if (source == null)
+            {
+                return "NULL";
+            }
+
+            string convertedValue;
+            var dataTypeName = source.GetType().Name;
+
+            if (dataTypeName == "Nullable`1")
+            {
+                dataTypeName = Nullable.GetUnderlyingType(source.GetType()).Name;
+            }
+
+            switch (dataTypeName)
+            {
+                case "DateTime":
+                    convertedValue = $"\"{((DateTime)source).ToString("yyyy-MM-dd")}\"";
+                    break;
+
+                case "String":
+                    convertedValue = $"\"{source}\"";
+                    break;
+
+                default:
+                    convertedValue = $"{source}";
+                    break;
+            }
+
+            return convertedValue;
         }
 
         public static void SetPropertyValue(this object target, string bindingProperty, object value)

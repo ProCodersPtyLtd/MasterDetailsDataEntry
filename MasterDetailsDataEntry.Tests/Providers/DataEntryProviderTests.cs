@@ -41,6 +41,45 @@ namespace MasterDetailsDataEntry.Tests.Providers
             Assert.Equal( PrimaryKeyGeneratedTypes.Never, f.PrimaryKeyGeneratedType);
         }
 
+        [Fact]
+        public void IsPropertyValueUniqueTest()
+        {
+            var bindingProperty = "DepartmentId";
+            var existingDepartdentId = 1;
+            var provider = new DataEntryProvider();
+            var form = new SchoolTestForm1();
+            var field = provider.GetFormFields(form).Where(f => f.BindingProperty == bindingProperty).Single();
+            var item = new Department { DepartmentId = existingDepartdentId };
+            var exists = provider.IsPropertyValueNotUnique(form, item, bindingProperty, typeof(Department));
+            Assert.True(exists);
+        }
+
+        [Fact]
+        public void IsPropertyValueNotUniqueTest()
+        {
+            var bindingProperty = "DepartmentId";
+            var existingDepartdentId = -17;
+            var provider = new DataEntryProvider();
+            var form = new SchoolTestForm1();
+            var field = provider.GetFormFields(form).Where(f => f.BindingProperty == bindingProperty).Single();
+            var item = new Department { DepartmentId = existingDepartdentId };
+            var exists = provider.IsPropertyValueNotUnique(form, item, bindingProperty, typeof(Department));
+            Assert.False(exists);
+        }
+
+        [Fact]
+        public void IsPropertyValueUniqueStringTest()
+        {
+            var bindingProperty = "Name";
+            var existingDepartdent = "Engineering";
+            var provider = new DataEntryProvider();
+            var form = new SchoolTestForm1();
+            var field = provider.GetFormFields(form).Where(f => f.BindingProperty == bindingProperty).Single();
+            var item = new Department { Name = existingDepartdent };
+            var exists = provider.IsPropertyValueNotUnique(form, item, bindingProperty, typeof(Department));
+            Assert.True(exists);
+        }
+
         public class TestForm1 : DetailsForm<TestContext>
         {
             protected override void Define(FormBuilder builder)

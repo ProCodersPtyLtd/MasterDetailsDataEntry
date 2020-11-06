@@ -7,26 +7,26 @@
 
 <div class="DetailsFormControl">
     @*MasterControl*@
-    <RepeaterDataControl Form="@_form" ModelType="@MasterModelType" ModelItems="@MasterModelItems" Fields="@MasterFields" ModelValueChanged="@ModelChanged"
+    <RepeaterDataComponent Form="@_form" ModelType="@MasterModelType" ModelItems="@MasterModelItems" Fields="@MasterFields" ModelValueChanged="@ModelChanged"
                          ItemsChanged="@ItemsChanged" ButtonClicked="@ButtonClicked" ViewOptions="@GetMasterViewOptions()" />
     @*DetailsControl*@
-    <RepeaterDataControl Form="@_form" ModelType="@ModelType" ModelItems="@ModelItems" Fields="@Fields" ModelValueChanged="@ModelChanged"
+    <RepeaterDataComponent Form="@_form" ModelType="@ModelType" ModelItems="@ModelItems" Fields="@Fields" ModelValueChanged="@ModelChanged"
                          ItemsChanged="@ItemsChanged" ButtonClicked="@ButtonClicked" ViewOptions="@GetDetailsViewOptions()" />
 </div>
 
 @code
 {
-    [Parameter]
-    public Type FormType { get; set; }
+        [Parameter]
+        public Type FormType { get; set; }
 
-    [Parameter]
-    public int? FilterValue { get; set; }
+        [Parameter]
+        public int? FilterValue { get; set; }
 
-    [Parameter]
-    public bool EditingNow { get; set; }
+        [Parameter]
+        public bool EditingNow { get; set; }
 
-    [Parameter]
-    public EventCallback<ItemButtonClickedArgs> ItemButtonClicked { get; set; }
+        [Parameter]
+        public EventCallback<ItemButtonClickedArgs> ItemButtonClicked { get; set; }
 
     public IEnumerable<DataField> MasterFields { get; set; }
     public IEnumerable<DataField> Fields { get; set; }
@@ -72,7 +72,7 @@
 
     private FormViewOptions GetDetailsViewOptions()
     {
-        var result = new FormViewOptions { AllowEdit = true, AllowAdd = true, AllowDelete = true };
+        var result = new FormViewOptions { AllowEdit = true, AllowAdd = !EditingNow, AllowDelete = true };
         return result;
     }
 
@@ -119,6 +119,12 @@
                 }
 
                 item = _dataEntryProvider.InsertItem(_form, item);
+
+                if (EditingNow)
+                {
+                    EditingNow = false;
+                }
+
                 break;
 
             case ItemOperations.Update:

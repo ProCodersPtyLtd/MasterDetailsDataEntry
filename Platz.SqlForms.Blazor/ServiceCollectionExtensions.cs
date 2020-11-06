@@ -13,6 +13,7 @@ namespace Platz.SqlForms
         public static IServiceCollection AddMasterDetailsDataEntryBlazor([NotNullAttribute] this IServiceCollection serviceCollection)
         {
             serviceCollection.AddSingleton<IComponentTypeResolver, ComponentTypeResolver>();
+            // serviceCollection.AddScoped<RepeaterDataComponentController, RepeaterDataComponentController>();
             return serviceCollection;
         }
     }

@@ -10,6 +10,7 @@ namespace Platz.SqlForms
         public object Value { get; set; }
         public List<string> ValidationMessages { get; set; } = new List<string>();
         public bool IsNew { get; set; }
+        public bool IsEditing { get; set; }
 
         public FieldState()
         { }

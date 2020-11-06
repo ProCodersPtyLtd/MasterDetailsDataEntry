@@ -8,24 +8,33 @@ namespace Platz.SqlForms
 {
     public class DataValidationProvider : IDataValidationProvider
     {
-        public IEnumerable<ValidationResult> ValidateModel(object item, int rowIndex, IEnumerable<DataField> fields)
+        private readonly IDataEntryProvider _dataEntryProvider;
+
+        public DataValidationProvider(IDataEntryProvider dataEntryProvider)
+        {
+            _dataEntryProvider = dataEntryProvider;
+        }
+
+        public IEnumerable<ValidationResult> ValidateModel(IModelDefinitionForm form, object item, int rowIndex, IEnumerable<DataField> fields)
         {
             var result = new List<ValidationResult>();
 
             foreach (var field in fields)
             {
                 RequiredRule(item, rowIndex, field, result);
+                UniqueRule(form, item, rowIndex, field, result);
             }
 
             return result;
         }
 
-        public IEnumerable<ValidationResult> ValidateModelProperty(object item, int rowIndex, string bindingProperty, IEnumerable<DataField> fields)
+        public IEnumerable<ValidationResult> ValidateModelProperty(IModelDefinitionForm form, object item, int rowIndex, string bindingProperty, IEnumerable<DataField> fields)
         {
             var result = new List<ValidationResult>();
             var field = fields.Single(f => f.BindingProperty == bindingProperty);
 
             RequiredRule(item, rowIndex, field, result);
+            UniqueRule(form, item, rowIndex, field, result);
             
             return result;
         }
@@ -41,6 +50,23 @@ namespace Platz.SqlForms
                     result.Add(new ValidationResult
                     {
                         Message = "Required",
+                        BindingProperty = field.BindingProperty,
+                        ValidationResultType = ValidationResultTypes.Error,
+                        RowIndex = rowIndex
+                    });
+                }
+            }
+        }
+
+        private void UniqueRule(IModelDefinitionForm form, object item, int rowIndex, DataField field, List<ValidationResult> result)
+        {
+            if (field.Unique)
+            {
+                if (_dataEntryProvider.IsPropertyValueNotUnique(form, item, field.BindingProperty, item.GetType()))
+                {
+                    result.Add(new ValidationResult
+                    {
+                        Message = "Not unique",
                         BindingProperty = field.BindingProperty,
                         ValidationResultType = ValidationResultTypes.Error,
                         RowIndex = rowIndex

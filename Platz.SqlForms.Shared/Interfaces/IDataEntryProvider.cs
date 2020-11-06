@@ -17,6 +17,9 @@ namespace Platz.SqlForms
         object UpdateItem(IModelDefinitionForm form, object item);
         void DeleteItem(IModelDefinitionForm form, object item);
 
+        // Validation
+        bool IsPropertyValueNotUnique(IModelDefinitionForm form, object item, string bindingProperty, Type entity);
+
         // IEnumerable<DataField> GetFormFields(Type formType);
         // Tuple<IEnumerable<DataField>, IEnumerable<DataField>> GetMultiFormFields(Type formType);
 
