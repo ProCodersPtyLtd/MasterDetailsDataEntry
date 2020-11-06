@@ -1,13 +1,13 @@
 ﻿@inject IComponentTypeResolver _componentResolverService
 @inject IDataValidationProvider _dataValidationProvider
-@*@inject RepeaterDataComponentController _controller*@
+@inject RepeaterDataComponentController _controller
 
 @namespace Platz.SqlForms.Blazor
 
 <div class="RepeaterDataControl">
     <table mat-table>
         <tr class="jsgrid-grid-header">
-            @foreach (var field in GetFields())
+            @foreach (var field in _controller.GetFields())
             {
                 @if (field.Hidden)
                 {
@@ -34,7 +34,7 @@
                 var row = rowIndex;
 
                 <tr class="jsgrid-row-item">
-                    @foreach (var field in GetFields())
+                    @foreach (var field in _controller.GetFields())
                     {
                         @if (field.Hidden)
                         {
@@ -42,7 +42,7 @@
                         }
 
                         <td>
-                            <SingleDataComponent Form="@Form" Field="@field" ExtraHeight="@GetExtraHeight(rowIndex)" State="@CreateFieldState(field, rowIndex)"
+                            <SingleDataComponent Form="@Form" Field="@field" ExtraHeight="@GetExtraHeight(rowIndex)" State="@_controller.CreateFieldState(field, rowIndex)"
                                                IsEditing="@(GetRowState(rowIndex).IsEditing)" ModelValueChanged="@LocalModelValueChanged" />
                         </td>
                     }
@@ -51,13 +51,13 @@
 
                         
 
-                        <button class="btn btn-light" title="Edit" @onclick="@((args) => EditClick(args, row))" disabled="@_isEditing"
+                        <button class="btn btn-light" title="Edit" @onclick="@((args) => EditClick(args, row))" disabled="@_controller.IsEditing"
                                 hidden="@(!GetRowState(rowIndex).IsMouseOver || (GetRowState(rowIndex).IsEditing || (ViewOptions?.AllowEdit == false)))" >
                             <span class="oi oi-pencil"></span>
                         </button>
 
                         <button class="btn btn-light" titel="Delete" @onclick="@(async (args) => await DeleteClick(args, row))"
-                                hidden="@(!GetRowState(rowIndex).IsMouseOver || GetRowState(rowIndex).IsEditing || (ViewOptions?.AllowDelete == false))" disabled="@_isEditing">
+                                hidden="@(!GetRowState(rowIndex).IsMouseOver || GetRowState(rowIndex).IsEditing || (ViewOptions?.AllowDelete == false))" disabled="@_controller.IsEditing">
                             <span class="oi oi-delete"></span>&nbsp;
                         </button>
 
@@ -71,11 +71,11 @@
                             </button>
                         </div>
 
-                        @foreach (var field in GetButtonFields()) 
+                        @foreach (var field in _controller.GetButtonFields()) 
                         { 
                             <button class="btn btn-light" title="@field.Label" @onclick="@(async (args) => await CustomButtonClick(args, field.BindingProperty, row))" 
                                     hidden="@(!GetRowState(rowIndex).IsMouseOver || (GetRowState(rowIndex).IsEditing || (ViewOptions?.AllowEdit == false)))" 
-                                    disabled="@_isEditing" >
+                                    disabled="@_controller.IsEditing" >
                                 @field.BindingProperty
                             </button>
                         }
@@ -86,10 +86,10 @@
 
     </table>
     <div hidden="@(!ViewOptions?.AllowAdd == true)">
-        <button class="btn btn-primary" @onclick="@((args) => AddClick(args))" disabled="@_isEditing">Add</button>
+        <button class="btn btn-primary" @onclick="@((args) => AddClick(args))" disabled="@_controller.IsEditing">Add</button>
     </div>
 
-    <textarea hidden="@(_error == null ? "hidden" : null)" readonly="readonly" class="form-control" style="background-color: black; color: red;" rows="3">Error: @_error</textarea>
+    <textarea hidden="@(_controller.Error == null ? "hidden" : null)" readonly="readonly" class="form-control" style="background-color: black; color: red;" rows="3">Error: @_controller.Error</textarea>
 </div>
 
 @code
@@ -118,139 +118,56 @@
     [Parameter]
     public EventCallback<ButtonClickedArgs> ButtonClicked { get; set; }
 
-    private object _modelItemReserveCopy;
-    private bool _isEditing;
-    private string _error;
-    private int _modelItemsHash;
-    private IEnumerable<ValidationResult> _validations = new ValidationResult[0];
-
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
-        InitControl();
+        _controller.SetParameters(Form, ViewOptions, ModelType, Fields, ModelItems);
+        _controller.InitControl();
     }
 
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
 
-        // check if items refreshed
-        if (_modelItemsHash != ModelItems.GetHashCode())
-        {
-            _isEditing = false;
-            _modelItemReserveCopy = null;
-            _modelItemsHash = ModelItems.GetHashCode();
-        }
+        _controller.SetParameters(Form, ViewOptions, ModelType, Fields, ModelItems);
     }
 
-    private void InitControl()
+    private bool GetExtraHeight(int rowIndex)
     {
-        if (ViewOptions?.StartNewEdititng == true)
-        {
-            AddClick(null);
-        }
-        else
-        {
-            _isEditing = false;
-            _modelItemReserveCopy = null;
-        }
+        return _controller.GetExtraHeight(rowIndex);
     }
 
-    private IEnumerable<DataField> GetFields()
+    private RowState GetRowState(int rowIndex)
     {
-        return Fields.Where(f => !f.Button);
-    }
-
-    private IEnumerable<DataField> GetButtonFields()
-    {
-        return Fields.Where(f => f.Button);
+        return _controller.GetRowState(rowIndex);
     }
 
     #region events
+
     private void RowMouseOver(MouseEventArgs args, int rowIndex)
     {
-        GetRowState(rowIndex).IsMouseOver = true;
+        _controller.GetRowState(rowIndex).IsMouseOver = true;
     }
 
     private void RowMouseOut(MouseEventArgs args, int rowIndex)
     {
-        if (ModelItems.Count != 0)
+        if (ModelItems.Count > rowIndex)
         {
-            GetRowState(rowIndex).IsMouseOver = false;
+            _controller.GetRowState(rowIndex).IsMouseOver = false;
         }
     }
 
     private async Task LocalModelValueChanged(ValueChangedArgs args)
     {
-        SetItemValue(args.Field, args.State);
-
-        if (args.State.ValidationMessages.Any())
-        {
-            var validations = _dataValidationProvider.ValidateModelProperty(Form, ModelItems[args.State.RowIndex], args.State.RowIndex, args.Field.BindingProperty, Fields);
-            UpdateFieldStateValidations(validations, args.State.RowIndex, args.Field.BindingProperty);
-        }
-
+        _controller.LocalModelValueChanged(args);
         await ModelValueChanged.InvokeAsync(args);
     }
-    #endregion
 
-    private bool GetExtraHeight(int rowIndex)
-    {
-        return _validations.Any() && GetRowState(rowIndex).IsEditing;
-    }
-
-    #region field state
-    private Dictionary<string, FieldState> _states = new Dictionary<string, FieldState>();
-
-    private string GetFieldStateKey(string bindingProperty, int row)
-    {
-        string fieldStateKey = $"{bindingProperty}[{row}]";
-        return fieldStateKey;
-    }
-
-    private FieldState CreateFieldState(DataField field, int row)
-    {
-        if (field.Button)
-        {
-            return null;
-        }
-
-        string fieldStateKey = GetFieldStateKey(field.BindingProperty, row);
-
-        if (!_states.ContainsKey(fieldStateKey))
-        {
-            _states[fieldStateKey] = new FieldState(field, row);
-        }
-
-        var result = _states[fieldStateKey];
-        result.Value = GetItemValue(field, row);
-        result.RowIndex = row;
-        return result;
-    }
-
-    private RowState GetRowState(int rowIndex)
-    {
-        return ModelItems[rowIndex].GetBag<RowState>();
-    }
-    #endregion
-
-    #region reflection get set property
-    private object GetItemValue(DataField field, int row)
-    {
-        var item = ModelItems[row];
-        var result = item.GetPropertyValue(field.BindingProperty);
-        return result;
-    }
-
-    private void SetItemValue(DataField field, FieldState state)
-    {
-        var item = ModelItems[state.RowIndex];
-        item.SetPropertyValue(field.BindingProperty, state.Value);
-    }
     #endregion
 
     #region clicks
+
     private async Task CustomButtonClick(MouseEventArgs e, string button, int rowIndex)
     {
         await ButtonClicked.InvokeAsync(new ButtonClickedArgs { Entity = ModelType, Button = button, RowIndex = rowIndex });
@@ -258,150 +175,32 @@
 
     private void EditClick(MouseEventArgs e, int rowIndex)
     {
-        _isEditing = true;
-        ModelItems[rowIndex].GetBag<RowState>().IsEditing = true;
-        _modelItemReserveCopy = ModelItems[rowIndex].GetCopy();
+        _controller.EditItem(rowIndex);
         StateHasChanged();
     }
 
     private async Task DeleteClick(MouseEventArgs e, int rowIndex)
     {
-        var args = new ItemsChangedArgs { Entity = ModelType, Operation = ItemOperations.Delete, RowIndex = rowIndex };
-
-        try
-        {
-            await ItemsChanged.InvokeAsync(args);
-        }
-        catch (Exception exc)
-        {
-            _error = exc.Message;
-
-            if (exc.InnerException != null)
-            {
-                _error += "\r\n";
-                _error += exc.InnerException.Message;
-            }
-
-            StateHasChanged();
-        }
+        await _controller.DeleteItem(rowIndex, ItemsChanged.InvokeAsync);
+        StateHasChanged();
     }
 
     private async Task ApplyClick(MouseEventArgs e, int rowIndex)
     {
-        var editingFields = Fields.Where(f => CreateFieldState(f, rowIndex)?.IsEditing == true);
-        _validations = _dataValidationProvider.ValidateModel(Form, ModelItems[rowIndex], rowIndex, editingFields);
-        UpdateFieldStateValidations(_validations, rowIndex);
-
-        if (_validations.Any())
-        {
-            return;
-        }
-
-        _error = null;
-        var args = new ItemsChangedArgs { Entity = ModelType, RowIndex = rowIndex };
-        args.Operation = ModelItems[rowIndex].GetBag<RowState>().IsNew ? ItemOperations.Add : ItemOperations.Update;
-
-        try
-        {
-            await ItemsChanged.InvokeAsync(args);
-        }
-        catch (Exception exc)
-        {
-            _error = exc.Message;
-
-            if (exc.InnerException != null)
-            {
-                _error += "\r\n";
-                _error += exc.InnerException.Message;
-            }
-
-            StateHasChanged();
-        }
-
-        if (_error == null)
-        {
-            ModelItems[rowIndex].GetBag<RowState>().IsEditing = false;
-            ModelItems[rowIndex].GetBag<RowState>().IsNew = false;
-            _isEditing = false;
-            SetPrimaryKeyIsNew(rowIndex, false);
-        }
+        await _controller.ApplyItem(rowIndex, ItemsChanged.InvokeAsync);
+        StateHasChanged();
     }
 
     private void CancelClick(MouseEventArgs e, int rowIndex)
     {
-        _error = null;
-        ClearValidations();
-
-        //if (!ModelItems[rowIndex].GetBag<RowState>().IsNew)
-        //{
-        //    _modelItemReserveCopy.CopyTo(ModelItems[rowIndex]);
-        //}
-
-        ModelItems[rowIndex].GetBag<RowState>().IsEditing = false;
-        _isEditing = false;
-
-        if (ModelItems[rowIndex].GetBag<RowState>().IsNew)
-        {
-            ModelItems.RemoveAt(rowIndex);
-        }
-        else
-        {
-            _modelItemReserveCopy.CopyTo(ModelItems[rowIndex]);
-        }
+        _controller.CancelItem(rowIndex);
     }
 
     private void AddClick(MouseEventArgs e)
     {
-        var rowIndex = ModelItems.Count;
-        var item = Activator.CreateInstance(ModelType);
-        ModelItems.Add(item);
-        SetPrimaryKeyIsNew(rowIndex, true);
-
-
-        EditClick(null, ModelItems.Count - 1);
-        ModelItems[ModelItems.Count - 1].GetBag<RowState>().IsNew = true;
+        _controller.AddNewItem();
     }
+
     #endregion
-
-    private void SetPrimaryKeyIsNew(int rowIndex, bool isNew)
-    {
-        var pkField = Fields.Single(f => f.PrimaryKey);
-        CreateFieldState(pkField, rowIndex);
-        var key = GetFieldStateKey(pkField.BindingProperty, rowIndex);
-        _states[key].IsNew = isNew;
-    }
-
-    private void ClearValidations()
-    {
-        foreach (var state in _states.Values)
-        {
-            state.ValidationMessages = new List<string>();
-        }
-    }
-
-    private void UpdateFieldStateValidations(IEnumerable<ValidationResult> validations, int rowIndex, string bindingProperty = null)
-    {
-        if (bindingProperty == null)
-        {
-            ClearValidations();
-        }
-        else
-        {
-            var key = GetFieldStateKey(bindingProperty, rowIndex);
-            _states[key].ValidationMessages = new List<string>();
-        }
-
-        foreach (var validation in validations)
-        {
-            if (bindingProperty == null || validation.BindingProperty == bindingProperty)
-            {
-                if (validation.ValidationResultType == ValidationResultTypes.Error)
-                {
-                    var key = GetFieldStateKey(validation.BindingProperty, validation.RowIndex);
-                    _states[key].ValidationMessages.Add(validation.Message);
-                }
-            }
-        }
-    }
 
 }

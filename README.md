@@ -11,5 +11,9 @@ Demo run:
 2. Change connection string in MasterDetailsDataEntry.Demo.Database\School\SchoolContext.cs if needed
 3. Set  MasterDetailsDataEntry.Demo as StartUp Project
 4. Run (F5)
+5. Click on [Department Details] menu
 
 <img src="https://github.com/ProCodersPtyLtd/MasterDetailsDataEntry/blob/main/MasterDetails3.gif">
+
+This is very good database to try:
+https://docs.microsoft.com/en-us/sql/samples/adventureworks-install-configure?view=sql-server-ver15&tabs=ssms
