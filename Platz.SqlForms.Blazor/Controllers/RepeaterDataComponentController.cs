@@ -16,32 +16,14 @@ namespace Platz.SqlForms.Blazor
         public IEnumerable<DataField> Fields => _fields;
         public FormViewOptions ViewOptions => _viewOptions;
 
-        //[Parameter]
+        // parameters
         private IModelDefinitionForm _form { get; set; }
-
-        //[Parameter]
         private FormViewOptions _viewOptions { get; set; }
-
-        //[Parameter]
         private Type _modelType { get; set; }
-
-        //[Parameter]
         private IEnumerable<DataField> _fields { get; set; }
+        private IList _modelItems { get; set; }
 
-        //[Parameter]
-        private System.Collections.IList _modelItems { get; set; }
-
-        //[Parameter]
-        //public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }
-
-        ////[Parameter]
-        //public EventCallback<ItemsChangedArgs> ItemsChanged { get; set; }
-
-        ////[Parameter]
-        //public EventCallback<ButtonClickedArgs> ButtonClicked { get; set; }
-
-
-
+        // state
         private object _modelItemReserveCopy;
         public bool IsEditing { get; private set; }
         public string Error { get; private set; }
@@ -49,6 +31,7 @@ namespace Platz.SqlForms.Blazor
         private IEnumerable<ValidationResult> _validations = new ValidationResult[0];
         private Dictionary<string, FieldState> _states = new Dictionary<string, FieldState>();
 
+        // DI
         private readonly IDataValidationProvider _dataValidationProvider;
 
         public RepeaterDataComponentController(IDataValidationProvider dataValidationProvider)
