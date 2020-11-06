@@ -12,4 +12,4 @@ Demo run:
 3. Set  MasterDetailsDataEntry.Demo as StartUp Project
 4. Run (F5)
 
-<img src="https://github.com/ProCodersPtyLtd/MasterDetailsDataEntry/blob/main/MasterDetails2.gif">
+<img src="https://github.com/ProCodersPtyLtd/MasterDetailsDataEntry/blob/main/MasterDetails3.gif">
