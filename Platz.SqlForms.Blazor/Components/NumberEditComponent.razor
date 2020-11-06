@@ -2,7 +2,7 @@
 
 <div class="NumberControl">
     <input type="number" class="form-control" value="@State.Value" @onchange="@(a => ValueChanged(a))" />
-    <Validator Messages="State.ValidationMessages" />
+    <ValidatorComponent Messages="State.ValidationMessages" />
 </div>
 
 @code

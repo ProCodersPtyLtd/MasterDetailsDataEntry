@@ -50,6 +50,12 @@ namespace Platz.SqlForms
             return this;
         }
 
+        public virtual FieldBuilder<TProperty> IsUnique(bool unique = true)
+        {
+            _field.Unique = unique;
+            return this;
+        }
+
         public virtual FieldBuilder<TProperty> Label(string label)
         {
             _field.Label = label;

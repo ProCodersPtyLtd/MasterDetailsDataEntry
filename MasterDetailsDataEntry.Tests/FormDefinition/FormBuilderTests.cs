@@ -54,7 +54,7 @@ namespace MasterDetailsDataEntry.Tests.FormDefinition
             var f = fields.Single();
             Assert.True(f.Required);
             Assert.False(f.Hidden);
-            Assert.False(f.ReadOnly);
+            Assert.Null(f.ReadOnly);
             Assert.False(f.Filter);
             Assert.Equal("Client", f.Label);
             Assert.Equal(typeof(Client), f.SelectEntityType);

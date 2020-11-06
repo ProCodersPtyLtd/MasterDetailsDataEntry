@@ -9,5 +9,6 @@ namespace Platz.SqlForms
         public bool AllowAdd { get; set; }
         public bool AllowEdit { get; set; }
         public bool AllowDelete { get; set; }
+        public bool StartNewEdititng { get; set; }
     }
 }

@@ -1,13 +1,13 @@
 ﻿using MasterDetailsDataEntry.Demo.Database.School;
+using Platz.SqlForms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Platz.SqlForms;
 
 namespace MasterDetailsDataEntry.Demo.MyForms
 {
-    public class DepartmentForm : DetailsForm<SchoolContext>
+    public class DepartmentCourseForm : DetailsForm<SchoolContext>
     {
         protected override void Define(FormBuilder builder)
         {
@@ -22,8 +22,17 @@ namespace MasterDetailsDataEntry.Demo.MyForms
                 e.Property(p => p.Budget).IsRequired();
 
                 e.Property(p => p.Administrator).Dropdown<Person>().Set(c => c.PersonId, c => c.FullName).IsRequired();
+            }).IsMaster();
 
-                e.Button("Details", "Details...");
+            builder.Entity<Course>(e =>
+            {
+                e.Property(p => p.DepartmentId).IsFilter();
+
+                e.Property(p => p.CourseId).IsRequired().IsUnique();
+
+                e.Property(p => p.Title).IsRequired();
+
+                e.Property(p => p.Credits).IsRequired();
             });
         }
     }

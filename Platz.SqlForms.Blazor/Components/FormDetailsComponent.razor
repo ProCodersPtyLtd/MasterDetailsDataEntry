@@ -7,7 +7,7 @@
 
 <div class="DetailsFormControl">
     @*DetailsControl*@
-    <RepeaterDataControl Form="@_form" ModelType="@ModelType" ModelItems="@ModelItems" Fields="@Fields" ModelValueChanged="@ModelChanged" 
+    <RepeaterDataComponent Form="@_form" ModelType="@ModelType" ModelItems="@ModelItems" Fields="@Fields" ModelValueChanged="@ModelChanged" 
                          ItemsChanged="@ItemsChanged" ButtonClicked="@ButtonClicked" />
 </div>
 
@@ -88,7 +88,7 @@
 
             case ItemOperations.Delete:
 
-                if (id > 0)
+                // if (id > 0)
                 {
                     bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?");
 

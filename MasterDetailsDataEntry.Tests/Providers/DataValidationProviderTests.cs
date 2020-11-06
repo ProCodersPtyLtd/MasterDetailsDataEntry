@@ -14,12 +14,12 @@ namespace MasterDetailsDataEntry.Tests.Providers
         [Fact]
         public void RequiredValidationForEmptyStringTest()
         {
-            var validProvider = new DataValidationProvider();
+            var validProvider = new DataValidationProvider(new DataEntryProvider());
             var form = new FormWithRequiredField() as IModelDefinitionForm;
             var fields = form.GetDetailsFields();
             var modelItem = new TestOrderItem { };
 
-            var validations = validProvider.ValidateModel(modelItem, 0, fields);
+            var validations = validProvider.ValidateModel(form, modelItem, 0, fields);
             Assert.Single(validations);
             Assert.Equal(ValidationResultTypes.Error, validations.First().ValidationResultType);
             Assert.Equal("ItemName", validations.First().BindingProperty);
@@ -29,24 +29,24 @@ namespace MasterDetailsDataEntry.Tests.Providers
         [Fact]
         public void RequiredValidationForNonEmptyStringTest()
         {
-            var validProvider = new DataValidationProvider();
+            var validProvider = new DataValidationProvider(new DataEntryProvider());
             var form = new FormWithRequiredField() as IModelDefinitionForm;
             var fields = form.GetDetailsFields();
             var modelItem = new TestOrderItem { ItemName = "qq" };
 
-            var validations = validProvider.ValidateModel(modelItem, 0, fields);
+            var validations = validProvider.ValidateModel(form, modelItem, 0, fields);
             Assert.Empty(validations);
         }
 
         [Fact]
         public void RequiredPropertyValidationForEmptyStringTest()
         {
-            var validProvider = new DataValidationProvider();
+            var validProvider = new DataValidationProvider(new DataEntryProvider());
             var form = new FormWithRequiredField() as IModelDefinitionForm;
             var fields = form.GetDetailsFields();
             var modelItem = new TestOrderItem { };
 
-            var validations = validProvider.ValidateModelProperty(modelItem, 0, "ItemName", fields);
+            var validations = validProvider.ValidateModelProperty(form, modelItem, 0, "ItemName", fields);
             Assert.Single(validations);
             Assert.Equal(ValidationResultTypes.Error, validations.First().ValidationResultType);
             Assert.Equal("ItemName", validations.First().BindingProperty);

@@ -25,7 +25,7 @@
             return "";
         }
 
-        var format = Form.GetFieldFormat(Field.BindingProperty);
+        var format = Form.GetFieldFormat(Field);
         return string.Format($"{{0:{format}}}", State.Value);
     }
 }

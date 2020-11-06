@@ -13,7 +13,6 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\MasterDetailsDataEntry.Shared\Platz.SqlForms.Shared.csproj" />
     <ProjectReference Include="..\Platz.SqlForms.Shared\Platz.SqlForms.Shared.csproj" />
   </ItemGroup>
 

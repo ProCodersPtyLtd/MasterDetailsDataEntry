@@ -12,7 +12,7 @@
 
     <input class="form-control" value="@State.Value" @onchange="@(a => ValueChanged(a))" />
     @*<div class="validation-error-message" style="color: red;" hidden="hidden">Required</div>*@
-    <Validator Messages="State.ValidationMessages" />
+    <ValidatorComponent Messages="State.ValidationMessages" />
 </div>
 
 @code

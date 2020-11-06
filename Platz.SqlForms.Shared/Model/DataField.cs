@@ -11,6 +11,7 @@ namespace Platz.SqlForms
         public bool PrimaryKey { get; set; }
         public PrimaryKeyGeneratedTypes PrimaryKeyGeneratedType { get; set; }
         public bool Filter { get; set; }
+        public bool Unique { get; set; }
         public int Order { get; set; }
         public bool Button { get; set; }
 

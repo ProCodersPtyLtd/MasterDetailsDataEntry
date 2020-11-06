@@ -9,18 +9,18 @@ namespace Platz.SqlForms.Blazor
         private readonly Dictionary<string, Type> _types = new Dictionary<string, Type>() 
         {
             // default controls
-            { typeof(DefaultTextEditControl).FullName, typeof(TextEdit) },
-            { typeof(DefaultNumberEditControl).FullName, typeof(NumberEdit) },
-            { typeof(DefaultDateEditControl).FullName, typeof(DateEdit) },
-            { typeof(DefaultCheckboxControl).FullName, typeof(Checkbox) },
-            { typeof(DefaultDropdownControl).FullName, typeof(Dropdown) },
-            { typeof(DefaultDropdownReadonlyControl).FullName, typeof(DropdownReadonly) },
+            { typeof(DefaultTextEditControl).FullName, typeof(TextEditComponent) },
+            { typeof(DefaultNumberEditControl).FullName, typeof(NumberEditComponent) },
+            { typeof(DefaultDateEditControl).FullName, typeof(DateEditComponent) },
+            { typeof(DefaultCheckboxControl).FullName, typeof(CheckboxComponent) },
+            { typeof(DefaultDropdownControl).FullName, typeof(DropdownComponent) },
+            { typeof(DefaultDropdownReadonlyControl).FullName, typeof(DropdownReadonlyComponent) },
             // readonly view
-            { typeof(DefaultFormattedViewControl).FullName, typeof(FormattedView) },
-            { typeof(DefaultReadonlyCheckboxControl).FullName, typeof(CheckboxReadonly) },
+            { typeof(DefaultFormattedViewControl).FullName, typeof(FormattedViewComponent) },
+            { typeof(DefaultReadonlyCheckboxControl).FullName, typeof(CheckboxReadonlyComponent) },
 
             // extended controls
-            { typeof(TextEdit).FullName, typeof(TextEdit) }
+            { typeof(TextEditComponent).FullName, typeof(TextEditComponent) }
         };
         
         public ComponentTypeResolver()
