@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Platz.SqlForms</id>
+    <version>0.1.0</version>
+    <authors>Pro Coders Australia</authors>
+    <owners>Pro Coders Australia</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Platz.SqlForms is a declarative Dynamic Forms framework that allows to create Blazor UI for EF entities</description>
+    <copyright>Copyright (c) 2020 Pro Coders PTY LTD</copyright>
+    <tags>platz blazor declarative dynamic form framework</tags>
+    <license type="expression">MIT</license>
+    <dependencies>
+		<group targetFramework="netcoreapp3.1">
+			<dependency id="Microsoft.AspNetCore.Components" version="3.1.9" />
+			<dependency id="Microsoft.AspNetCore.Components.Web" version="3.1.9" />
+      <dependency id="Microsoft.EntityFrameworkCore" version="3.1.9" />
+			<dependency id="Microsoft.EntityFrameworkCore.Relational" version="3.1.9" />
+			<dependency id="System.Linq.Dynamic.Core" version="1.2.5" />
+		</group>
+    </dependencies>
+    <contentFiles>
+      <files include="**\*.json" buildAction="None" />
+      <files include="**\*.cmd" buildAction="None" />
+      <files include="**\*.txt" buildAction="None" />
+      <files include="**\*.sql" buildAction="None" />
+      <files include="**\*.cs" buildAction="None" />
+      <files include="**\*.razor" buildAction="None" />
+    </contentFiles>
+  </metadata>
+  <files>
+    <file src="readme.txt" />
+    <file src="contentFiles\any\any\Platz.Config.Link\*" target="contentFiles\any\any\Platz.Config.Link"/>
+    <file src="contentFiles\any\any\Platz.Example.Link\*" target="contentFiles\any\any\Platz.Example.Link"/>
+    <file src="..\bin\Release\netcoreapp3.1\Platz.SqlForms.dll" target="lib\netcoreapp3.1\Platz.SqlForms.dll" />
+    <file src="..\bin\Release\netcoreapp3.1\Platz.SqlForms.Blazor.dll" target="lib\netcoreapp3.1\Platz.SqlForms.Blazor.dll" />
+    <file src="..\bin\Release\netcoreapp3.1\Platz.SqlForms.Shared.dll" target="lib\netcoreapp3.1\Platz.SqlForms.Shared.dll" />
+  </files>
+</package>

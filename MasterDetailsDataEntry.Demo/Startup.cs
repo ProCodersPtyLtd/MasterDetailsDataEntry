@@ -30,10 +30,7 @@ namespace MasterDetailsDataEntry.Demo
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
 
-            // ToDo: should be moved to IServiceCollection extension method
-            services.AddMasterDetailsDataEntryBlazor();
-            services.AddSingleton<IDataEntryProvider, DataEntryProvider>();
-            services.AddSingleton<IDataValidationProvider, DataValidationProvider>();
+            services.AddPlatzSqlForms();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

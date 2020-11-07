@@ -5,6 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Nuspec\contentFiles\any\any\Platz.Example.Link\SampleOrderDetailsForm.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Nuspec\contentFiles\any\any\Platz.Example.Link\SampleOrderDetailsForm.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.9" />
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.5" />
@@ -13,6 +21,12 @@
   <ItemGroup>
     <ProjectReference Include="..\Platz.SqlForms.Blazor\Platz.SqlForms.Blazor.csproj" />
     <ProjectReference Include="..\Platz.SqlForms.Shared\Platz.SqlForms.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Nuspec\contentFiles\any\any\Platz.Example.Link\SampleOrderDetails.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </None>
   </ItemGroup>
 
 </Project>

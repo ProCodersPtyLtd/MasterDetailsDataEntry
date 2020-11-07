@@ -1,8 +1,6 @@
 ﻿@page "/DepartmentCourseDetailsPage/{DepartmentId}"
 @using MasterDetailsDataEntry.Demo.MyForms
 
-@inject IDataEntryProvider _dataEntryProvider
-
 <h2>Department Course Details</h2>
 
 <FormMasterDetailsComponent FormType="@typeof(DepartmentCourseForm)" FilterValue="@_pk" EditingNow="@_edititngNow" ItemButtonClicked="@ButtonClicked" />
