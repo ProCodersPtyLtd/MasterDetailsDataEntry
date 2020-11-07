@@ -8,9 +8,9 @@ using System.Text;
 
 namespace Platz.SqlForms
 {
-    public static class ServiceCollectionExtensions
+    public static class BlazorServiceCollectionExtensions
     {
-        public static IServiceCollection AddMasterDetailsDataEntryBlazor([NotNullAttribute] this IServiceCollection serviceCollection)
+        public static IServiceCollection AddPlatzSqlFormsBlazor([NotNullAttribute] this IServiceCollection serviceCollection)
         {
             serviceCollection.AddSingleton<IComponentTypeResolver, ComponentTypeResolver>();
             serviceCollection.AddTransient<RepeaterDataComponentController, RepeaterDataComponentController>();

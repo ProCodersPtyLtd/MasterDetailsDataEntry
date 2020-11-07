@@ -1,34 +1,10 @@
 ﻿@page "/OrderDetails"
 @using MasterDetailsDataEntry.Demo.MyForms
 
-@inject IDataEntryProvider _dataEntryProvider
-
 <h1>Order Details</h1>
 
 <FormDetailsComponent FormType="@typeof(OrderDetailsForm)" FilterValue="null" />
 
 @code {
-    private int? OrderId { get; set; } = 1;
-
-
-    private IEnumerable<DataField> Fields { get; set; }
-    private System.Collections.IList ModelItems { get; set; }
-
-    private async Task ModelChanged(ValueChangedArgs args)
-    {
-
-    }
-
-    private void OrderIdValueChanged(ChangeEventArgs a)
-    {
-        int value;
-        OrderId = int.TryParse(a.Value.ToString(), out value) ? value: (int?)null;
-        StateHasChanged();
-    }
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-    }
 
 }
