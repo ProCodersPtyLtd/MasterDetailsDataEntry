@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MasterDetailsDataEntry.Demo.Data;
 using Platz.SqlForms;
+using Plk.Blazor.DragDrop;
 
 namespace MasterDetailsDataEntry.Demo
 {
@@ -31,6 +32,7 @@ namespace MasterDetailsDataEntry.Demo
             services.AddSingleton<WeatherForecastService>();
 
             services.AddPlatzSqlForms();
+            services.AddBlazorDragDrop();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
