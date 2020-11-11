@@ -1,1 +1,3 @@
 ﻿Scaffold-DbContext "Server=.;Database=test;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Model
+Scaffold-DbContext "Server=.;Database=School;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir School
+Scaffold-DbContext "Server=.;Database=AdventureWorksLT2017;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir AdventureWorks

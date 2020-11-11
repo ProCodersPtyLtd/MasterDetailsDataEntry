@@ -15,6 +15,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Platz.SqlForms.Shared", "Pl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Platz.SqlForms.Blazor", "Platz.SqlForms.Blazor\Platz.SqlForms.Blazor.csproj", "{6EDFF8D8-643A-4DC5-95F1-BFA87E80960D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Platz.ObjectBuilder", "Platz.ObjectBuilder\Platz.ObjectBuilder.csproj", "{A2AD538B-327A-4BDC-AC8F-2EACED477776}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Platz.ObjectBuilder.Blazor", "Platz.ObjectBuilder.Blazor\Platz.ObjectBuilder.Blazor.csproj", "{CE7C1144-4163-44B4-BA5C-AB58C2A1FD50}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{65DA840A-B566-4CCF-BF3F-373D31F907D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platz.ObjectBuilder.Tests", "Platz.ObjectBuilder.Tests\Platz.ObjectBuilder.Tests.csproj", "{51927228-452D-41E5-B94F-5DC53C1191A2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,9 +53,25 @@ Global
 		{6EDFF8D8-643A-4DC5-95F1-BFA87E80960D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6EDFF8D8-643A-4DC5-95F1-BFA87E80960D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6EDFF8D8-643A-4DC5-95F1-BFA87E80960D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2AD538B-327A-4BDC-AC8F-2EACED477776}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2AD538B-327A-4BDC-AC8F-2EACED477776}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2AD538B-327A-4BDC-AC8F-2EACED477776}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2AD538B-327A-4BDC-AC8F-2EACED477776}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE7C1144-4163-44B4-BA5C-AB58C2A1FD50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE7C1144-4163-44B4-BA5C-AB58C2A1FD50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE7C1144-4163-44B4-BA5C-AB58C2A1FD50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE7C1144-4163-44B4-BA5C-AB58C2A1FD50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51927228-452D-41E5-B94F-5DC53C1191A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51927228-452D-41E5-B94F-5DC53C1191A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51927228-452D-41E5-B94F-5DC53C1191A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51927228-452D-41E5-B94F-5DC53C1191A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D79D130E-B462-4BB8-867F-B13F89808127} = {65DA840A-B566-4CCF-BF3F-373D31F907D3}
+		{51927228-452D-41E5-B94F-5DC53C1191A2} = {65DA840A-B566-4CCF-BF3F-373D31F907D3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F9846F56-7C10-43F1-8EC0-0BDAF175072E}

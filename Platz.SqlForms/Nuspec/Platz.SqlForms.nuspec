@@ -2,9 +2,10 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>Platz.SqlForms</id>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
     <authors>Pro Coders Australia</authors>
     <owners>Pro Coders Australia</owners>
+    <projectUrl>https://github.com/ProCodersPtyLtd/MasterDetailsDataEntry</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Platz.SqlForms is a declarative Dynamic Forms framework that allows to create Blazor UI for EF entities</description>
     <copyright>Copyright (c) 2020 Pro Coders PTY LTD</copyright>

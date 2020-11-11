@@ -1,0 +1,51 @@
+﻿@namespace Platz.ObjectBuilder.Blazor
+
+
+    <table>
+        <tr>
+            <th></th>
+            <th>@Table.StoreDefinition.Name</th>
+            <th><input @bind-value="@Table.Alias" style="width: 48px;" /></th>
+            <th>
+                <button class="btn btn-light btn-sm" title="Cancel" @onclick="@((args) => DeleteClick(args, @Table.StoreDefinition.Name))"
+                        style="width: 28px; height: 28px; display:      block;    margin-left:  auto;    margin-right: 0;">
+                    <span class="oi oi-x"></span>
+                </button>
+            </th>
+        </tr>
+    </table>
+
+    <table>
+        @for (int rowIndex = 0; rowIndex < Table.Properties.Count; rowIndex++)
+        {
+            var item = Table.Properties[rowIndex];
+            var row = rowIndex;
+
+            <tr>
+                <td></td>
+                <td><input type="checkbox" checked="@GetSelectedValue(row)" @onchange="@((args) => SelectClick(args, row))" /></td>
+                <td>@item.StoreProperty.Name</td>
+                <td><input @bind-value="@item.Alias" style="width: 80px;" /></td>
+            </tr>
+        }
+    </table>
+
+    @code {
+        [Parameter]
+        public QueryFromTable Table { get; set; }
+
+        private string GetSelectedValue(int rowIndex)
+        {
+            var result = Table.Properties[rowIndex].Selected == true ? "checked" : null;
+            return result;
+        }
+
+        private void DeleteClick(MouseEventArgs e, string tableName)
+        {
+        }
+
+        private void SelectClick(ChangeEventArgs e, int rowIndex)
+        {
+            Table.Properties[rowIndex].Selected = (bool)e.Value;
+        }
+    }
