@@ -1,0 +1,67 @@
+﻿@using Platz.ObjectBuilder.Blazor.Controllers
+@namespace Platz.ObjectBuilder.Blazor
+@inject IQueryController _queryController
+
+<h3>Query Builder</h3>
+
+<hr />
+
+    <CascadingValue Value="@_queryController">
+        <table style="width: 100%">
+            <tr>
+                <th style="width: auto"></th>
+                <th style="width: 300px"></th>
+            </tr>
+            <tr>
+                <td>
+                    <div>Query</div>
+
+                    <hr />
+
+                    <div>
+                        <QuerySelectPanelComponent />
+                    </div>
+                    <div>
+                        @*<QueryFromPanelComponent QueryController="_queryController" />*@
+                        <QueryFromPanelComponent ModelChanged="ModelChanged" />
+                    </div>
+                    <div>
+                        <QueryWherePanelComponent />
+                    </div>
+                </td>
+                <td>
+                    <div class="overflow-auto" style="height: 600px">
+                        <QueryTableListComponent ModelChanged="ModelChanged" />
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </CascadingValue>
+
+    @code {
+        [Parameter]
+        public Type DbContextType { get; set; }
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+
+            InitController();
+        }
+
+        private void InitController()
+        {
+            if (DbContextType != null)
+            {
+                var p = new EntityFrameworkQueryControllerParameters { DbContextType = DbContextType };
+                _queryController.SetParameters(p);
+            }
+
+            _queryController.LoadSchema();
+        }
+
+        private async Task ModelChanged(ChangeEventArgs args)
+        {
+            StateHasChanged();
+        }
+    }

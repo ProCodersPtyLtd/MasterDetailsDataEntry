@@ -7,6 +7,6 @@ namespace Platz.ObjectBuilder.Engine
 {
     public class EntityFrameworkStoreSchemaReaderParameters : IStoreSchemaReaderParameters
     {
-        public DbContext Context { get; set; }
+        public Type DbContextType { get; set; }
     }
 }

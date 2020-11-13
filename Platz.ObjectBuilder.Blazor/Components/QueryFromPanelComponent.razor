@@ -1,0 +1,35 @@
+﻿@using Plk.Blazor.DragDrop
+@namespace Platz.ObjectBuilder.Blazor
+
+<div class="plk-flex" >
+    <Dropzone Class="flex-container" Items="QueryController.FromTables" ItemWrapperClass="flex-item">
+        @*<div>@context</div>*@
+        <TableAliasFieldsComponent Table="@context" ModelChanged="ModelChanged" />
+    </Dropzone>
+
+</div>
+
+<button class="btn btn-light btn-sm" title="Add" @onclick="@(() => Click())">
+    <span class="oi oi-fire"></span>
+</button>
+
+@code {
+    [CascadingParameter]
+    public IQueryController QueryController { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    private List<QueryFromTable> _fromTables { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        _fromTables = QueryController.FromTables.ToList();
+    }
+
+    private void Click()
+    {
+        StateHasChanged();
+    }
+}

@@ -1,8 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using MasterDetailsDataEntry.Demo.Database.AdventureWorks;
 
-namespace MasterDetailsDataEntry.Demo.Database.AdventureWorks
+namespace MasterDetailsDataEntry.Demo.Database
 {
     public partial class AdventureWorksContext : DbContext
     {

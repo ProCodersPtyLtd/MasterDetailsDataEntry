@@ -2,17 +2,19 @@
 @using Plk.Blazor.DragDrop
 @using Platz.ObjectBuilder.Blazor
 
-<div class="bg-success">Object Builder</div>
+<!--<div class="bg-success">Object Builder</div>
 
 <hr />
 
 <div class="plk-flex">
-    <Dropzone Class="flex-container" Items="Items" ItemWrapperClass="flex-item">
-        @*<div>@context</div>*@
-        <TableFieldsComponent Table="@context"/>
+    <Dropzone Class="flex-container" Items="Items" ItemWrapperClass="flex-item">-->
+@*<div>@context</div>*@
+<!--<TableFieldsComponent Table="@context"/>
     </Dropzone>
 
-</div>
+</div>-->
+
+<QueryComponent DbContextType="typeof(MasterDetailsDataEntry.Demo.Database.AdventureWorksContext)" />
 
 
 @code {
@@ -28,5 +30,8 @@
     //    new TableFieldsComponent { Name = "Project" }, new TableFieldsComponent { Name = "Allocation" }
     //};
 
-
+    private Type GetContextType()
+    {
+        return typeof(MasterDetailsDataEntry.Demo.Database.AdventureWorksContext);
+    }
 }

@@ -41,10 +41,11 @@ namespace Platz.ObjectBuilder
         public string Comment { get; set; }
 
         public int MinLength { get; set; }
-        public int MaxLength { get; set; }
+        public int? MaxLength { get; set; }
         public bool Pk { get; set; }
-        public bool AutoIncrement { get { return !ExternalId; } }
+        public bool AutoIncrement { get; set;  }
 
         public bool ExternalId { get; set; }
+        public int Order { get; set; }
     }
 }
