@@ -1,0 +1,90 @@
+﻿@namespace Platz.ObjectBuilder.Blazor
+
+<h4>Entities</h4>
+
+<div class="accordion" id="accordionTableList">
+
+    @{
+        var rowIndex = 0;
+
+        @foreach (var tbl in QueryController.Schema.Definitions.Values)
+        {
+            var row = rowIndex;
+
+            <div class="card" @onmouseover="@(e => RowMouseOver(e, row))" @onmouseout="@(e => RowMouseOut(e, row))">
+                <div class="card-header" id="headingOne">
+                    <table>
+                        <tr>
+                            <td style="width: 40px">
+                                <button class="btn btn-light btn-sm" title="Add" @onclick="@(async () => await RowClick(row))" hidden="@(!_buttonsVisible[rowIndex])">
+                                    <span class="oi oi-plus"></span>
+                                </button>
+                            </td>
+
+                            <td>
+                                <h2 class="mb-0">
+
+
+                                    <button class="btn btn-block text-left" type="button" data-toggle="collapse"
+                                            data-target="#@(GetCollapseName(tbl))" aria-expanded="false" aria-controls="@GetCollapseName(tbl)">
+                                        @tbl.Name
+                                    </button>
+                                </h2>
+
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div id="@GetCollapseName(tbl)" class="collapse" aria-labelledby="headingOne" data-parent="#accordionTableList">
+                <div class="card-body">
+                    Table columns here
+                </div>
+            </div>
+
+            rowIndex++;
+        }
+    }
+</div>
+
+
+@code {
+    [CascadingParameter]
+    public IQueryController QueryController { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    private List<StoreDefinition> _tables;
+    private List<bool> _buttonsVisible;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        _tables = QueryController.Schema.Definitions.Values.ToList();
+        _buttonsVisible = _tables.Select(d => false).ToList();
+    }
+
+    private string GetCollapseName(StoreDefinition tbl)
+    {
+        var result = $"collapse{tbl.Name}";
+        return result;
+    }
+
+    private async Task RowClick(int rowIndex)
+    {
+        QueryController.AddFromTable(_tables[rowIndex]);
+        await ModelChanged.InvokeAsync(null);
+    }
+
+    private void RowMouseOver(MouseEventArgs args, int rowIndex)
+    {
+        _buttonsVisible[rowIndex] = true;
+    }
+
+    private void RowMouseOut(MouseEventArgs args, int rowIndex)
+    {
+        _buttonsVisible[rowIndex] = false;
+    }
+}

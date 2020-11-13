@@ -11,6 +11,8 @@ using Microsoft.Extensions.Hosting;
 using MasterDetailsDataEntry.Demo.Data;
 using Platz.SqlForms;
 using Plk.Blazor.DragDrop;
+using Platz.ObjectBuilder.Blazor;
+using Platz.ObjectBuilder.Blazor.Controllers;
 
 namespace MasterDetailsDataEntry.Demo
 {
@@ -33,6 +35,10 @@ namespace MasterDetailsDataEntry.Demo
 
             services.AddPlatzSqlForms();
             services.AddBlazorDragDrop();
+
+            services.AddScoped<IQueryController, EntityFrameworkQueryController>();
+
+            var t = typeof(MasterDetailsDataEntry.Demo.Database.AdventureWorksContext);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,4 +1,4 @@
-﻿using MasterDetailsDataEntry.Demo.Database.AdventureWorks;
+﻿using MasterDetailsDataEntry.Demo.Database;
 using Platz.ObjectBuilder.Engine;
 using System;
 using System.Collections.Generic;
@@ -14,13 +14,13 @@ namespace Platz.ObjectBuilder.Tests
         [Fact]
         public void ReadSchemaTest()
         {
-            using (var db = new AdventureWorksContext())
-            {
-                var reader = new EntityFrameworkStoreSchemaReader();
-                var ps = new EntityFrameworkStoreSchemaReaderParameters { Context = db };
+            var reader = new EntityFrameworkStoreSchemaReader();
+            var ps = new EntityFrameworkStoreSchemaReaderParameters { DbContextType = typeof(AdventureWorksContext) };
 
-                var schema = reader.ReadSchema(ps);
-            }
+            var schema = reader.ReadSchema(ps);
+
+            Assert.Equal(15, schema.Definitions.Count);
+            Assert.True(schema.Definitions.ContainsKey("Address"));
         }
     }
 }

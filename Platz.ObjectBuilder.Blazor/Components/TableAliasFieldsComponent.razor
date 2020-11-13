@@ -1,13 +1,12 @@
 ﻿@namespace Platz.ObjectBuilder.Blazor
 
-
     <table>
         <tr>
             <th></th>
             <th>@Table.StoreDefinition.Name</th>
             <th><input @bind-value="@Table.Alias" style="width: 48px;" /></th>
             <th>
-                <button class="btn btn-light btn-sm" title="Cancel" @onclick="@((args) => DeleteClick(args, @Table.StoreDefinition.Name))"
+                <button class="btn btn-secondary btn-sm" title="Cancel" @onclick="@(async (args) => await DeleteClick(args, @Table.StoreDefinition.Name, @Table.Alias))"
                         style="width: 28px; height: 28px; display:      block;    margin-left:  auto;    margin-right: 0;">
                     <span class="oi oi-x"></span>
                 </button>
@@ -22,17 +21,27 @@
             var row = rowIndex;
 
             <tr>
-                <td></td>
+                <td>
+                    @if (item.StoreProperty.Pk)
+                    {
+                        <span class="oi oi-key"></span>
+                    }
+                </td>
                 <td><input type="checkbox" checked="@GetSelectedValue(row)" @onchange="@((args) => SelectClick(args, row))" /></td>
                 <td>@item.StoreProperty.Name</td>
-                <td><input @bind-value="@item.Alias" style="width: 80px;" /></td>
             </tr>
         }
     </table>
 
     @code {
+        [CascadingParameter]
+        public IQueryController QueryController { get; set; }
+
         [Parameter]
         public QueryFromTable Table { get; set; }
+
+        [Parameter]
+        public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 
         private string GetSelectedValue(int rowIndex)
         {
@@ -40,8 +49,10 @@
             return result;
         }
 
-        private void DeleteClick(MouseEventArgs e, string tableName)
+        private async Task DeleteClick(MouseEventArgs e, string tableName, string alias)
         {
+            QueryController.RemoveFromTable(tableName, alias);
+            await ModelChanged.InvokeAsync(null);
         }
 
         private void SelectClick(ChangeEventArgs e, int rowIndex)
