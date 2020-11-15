@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,6 +17,9 @@ namespace MasterDetailsDataEntry.Demo
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
+            //CreateHostBuilder(args).Build().Start();
+            //var url = "http://localhost:5000";
+            //Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

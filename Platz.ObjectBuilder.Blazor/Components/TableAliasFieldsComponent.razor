@@ -1,20 +1,26 @@
 ﻿@namespace Platz.ObjectBuilder.Blazor
 
+    <div class="float-right">
+            <button class="btn btn-danger btn-sm" title="Cancel" @onclick="@(async (args) => await DeleteClick(args, @Table.StoreDefinition.Name, @Table.Alias))"
+                style="display: block; margin-left: auto; margin-right: 0;">
+            <span class="oi oi-x"></span>
+        </button>
+    </div>
+
     <table>
         <tr>
             <th></th>
             <th>@Table.StoreDefinition.Name</th>
             <th><input @bind-value="@Table.Alias" style="width: 48px;" /></th>
-            <th>
-                <button class="btn btn-secondary btn-sm" title="Cancel" @onclick="@(async (args) => await DeleteClick(args, @Table.StoreDefinition.Name, @Table.Alias))"
-                        style="width: 28px; height: 28px; display:      block;    margin-left:  auto;    margin-right: 0;">
-                    <span class="oi oi-x"></span>
-                </button>
-            </th>
         </tr>
     </table>
 
-    <table>
+    <table @onmouseover="@(e => { _shortTableView = false; })" @onmouseout="@(e => { _shortTableView = true; })">
+        <tr hidden="@_shortTableView">
+            <th></th>
+            <th><input type="checkbox" checked="@GetSelectAllValue()" @onchange="@(async (args) => await SelectAllClick(args))" /></th>
+            <th>select all</th>
+        </tr>
         @for (int rowIndex = 0; rowIndex < Table.Properties.Count; rowIndex++)
         {
             var item = Table.Properties[rowIndex];
@@ -27,21 +33,48 @@
                         <span class="oi oi-key"></span>
                     }
                 </td>
-                <td><input type="checkbox" checked="@GetSelectedValue(row)" @onchange="@((args) => SelectClick(args, row))" /></td>
+                <td><input type="checkbox" checked="@GetSelectedValue(row)" @onchange="@(async (args) => await SelectClick(args, row))" /></td>
                 <td>@item.StoreProperty.Name</td>
             </tr>
         }
     </table>
 
     @code {
-        [CascadingParameter]
-        public IQueryController QueryController { get; set; }
+            [CascadingParameter]
+            public IQueryController QueryController { get; set; }
 
-        [Parameter]
-        public QueryFromTable Table { get; set; }
+            [Parameter]
+            public QueryFromTable Table { get; set; }
 
-        [Parameter]
-        public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+            [Parameter]
+            public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+        private bool _shortTableView = true;
+        private bool _selectAllValue;
+
+        protected override async Task OnInitializedAsync()
+        {
+            base.OnInitialized();
+            _selectAllValue = true;
+            SelectAll();
+            await ModelChanged.InvokeAsync(null);
+        }
+
+        private void SelectAll()
+        {
+            for (int i = 0; i < Table.Properties.Count; i++)
+            {
+                var item = Table.Properties[i];
+                item.Selected = _selectAllValue;
+                AddRemoveSelection(_selectAllValue, i);
+            }
+        }
+
+        private string GetSelectAllValue()
+        {
+            var result = _selectAllValue == true ? "checked" : null;
+            return result;
+        }
 
         private string GetSelectedValue(int rowIndex)
         {
@@ -51,12 +84,48 @@
 
         private async Task DeleteClick(MouseEventArgs e, string tableName, string alias)
         {
+            _selectAllValue = false;
+            SelectAll();
             QueryController.RemoveFromTable(tableName, alias);
             await ModelChanged.InvokeAsync(null);
         }
 
-        private void SelectClick(ChangeEventArgs e, int rowIndex)
+        private async Task SelectAllClick(ChangeEventArgs e)
         {
-            Table.Properties[rowIndex].Selected = (bool)e.Value;
+            _selectAllValue = !_selectAllValue;
+
+            for (int i = 0; i < Table.Properties.Count; i++)
+            {
+                var item = Table.Properties[i];
+
+                if (item.Selected != _selectAllValue)
+                {
+                    item.Selected = _selectAllValue;
+                    AddRemoveSelection(_selectAllValue, i);
+                }
+            }
+
+            await ModelChanged.InvokeAsync(null);
+        }
+
+        private async Task SelectClick(ChangeEventArgs e, int rowIndex)
+        {
+            var selected = (bool)e.Value;
+            Table.Properties[rowIndex].Selected = selected;
+            AddRemoveSelection(selected, rowIndex);
+
+            await ModelChanged.InvokeAsync(null);
+        }
+
+        private void AddRemoveSelection(bool selected, int rowIndex)
+        {
+            if (selected)
+            {
+                QueryController.AddSelectionProperty(Table, Table.Properties[rowIndex]);
+            }
+            else
+            {
+                QueryController.RemoveSelectionProperty(Table, Table.Properties[rowIndex]);
+            }
         }
     }

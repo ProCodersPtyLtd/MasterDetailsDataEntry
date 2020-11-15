@@ -1,7 +1,9 @@
 ﻿@using Plk.Blazor.DragDrop
 @namespace Platz.ObjectBuilder.Blazor
 
-<div class="plk-flex" >
+<h5>From</h5>
+
+<div class="plk-flex overflow-auto" style="min-height: 300px; height: 300px">
     <Dropzone Class="flex-container" Items="QueryController.FromTables" ItemWrapperClass="flex-item">
         @*<div>@context</div>*@
         <TableAliasFieldsComponent Table="@context" ModelChanged="ModelChanged" />
@@ -9,9 +11,7 @@
 
 </div>
 
-<button class="btn btn-light btn-sm" title="Add" @onclick="@(() => Click())">
-    <span class="oi oi-fire"></span>
-</button>
+
 
 @code {
     [CascadingParameter]
@@ -28,8 +28,5 @@
         _fromTables = QueryController.FromTables.ToList();
     }
 
-    private void Click()
-    {
-        StateHasChanged();
-    }
+    
 }

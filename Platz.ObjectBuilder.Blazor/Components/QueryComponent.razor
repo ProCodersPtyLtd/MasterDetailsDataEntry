@@ -2,9 +2,24 @@
 @namespace Platz.ObjectBuilder.Blazor
 @inject IQueryController _queryController
 
-<h3>Query Builder</h3>
+    <div style="width: 100%">
+        <p>
+            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                Settings
+            </button>
+        </p>
+        <div class="collapse" id="collapseExample">
+            <div class="card card-body">
+                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+            </div>
+        </div>
+    </div>
 
-<hr />
+    @*<div class="float-right">
+            <button class="btn btn-light btn-sm" title="Add" @onclick="@(() => Click())">
+                <span class="oi oi-fire"></span>
+            </button>
+        </div>*@
 
     <CascadingValue Value="@_queryController">
         <table style="width: 100%">
@@ -13,11 +28,7 @@
                 <th style="width: 300px"></th>
             </tr>
             <tr>
-                <td>
-                    <div>Query</div>
-
-                    <hr />
-
+                <td style="vertical-align: top">
                     <div>
                         <QuerySelectPanelComponent />
                     </div>
@@ -29,8 +40,8 @@
                         <QueryWherePanelComponent />
                     </div>
                 </td>
-                <td>
-                    <div class="overflow-auto" style="height: 600px">
+                <td style="vertical-align: top">
+                    <div style="vertical-align: top">
                         <QueryTableListComponent ModelChanged="ModelChanged" />
                     </div>
                 </td>
@@ -61,6 +72,11 @@
         }
 
         private async Task ModelChanged(ChangeEventArgs args)
+        {
+            StateHasChanged();
+        }
+
+        private void Click()
         {
             StateHasChanged();
         }
