@@ -12,11 +12,14 @@ namespace Platz.ObjectBuilder.Blazor
     {
         StoreSchema Schema { get; }
         List<QueryFromTable> FromTables { get; }
+        List<QuerySelectProperty> SelectionProperties { get; }
 
         void SetParameters(IQueryControllerParameters parameters);
         void LoadSchema();
         void AddFromTable(StoreDefinition table);
         void RemoveFromTable(string tableName, string alias);
+        void AddSelectionProperty(QueryFromTable table, QueryFromProperty property);
+        void RemoveSelectionProperty(QueryFromTable table, QueryFromProperty property);
     }
 
     public interface IQueryControllerParameters
@@ -24,8 +27,9 @@ namespace Platz.ObjectBuilder.Blazor
 
     public abstract class QueryControllerBase : IQueryController
     {
-        public StoreSchema Schema { get; protected set; }
-        public List<QueryFromTable> FromTables { get; protected set; } = new List<QueryFromTable>();
+        public StoreSchema Schema { get; private set; }
+        public List<QueryFromTable> FromTables { get; private set; } = new List<QueryFromTable>();
+        public List<QuerySelectProperty> SelectionProperties { get; private set; } = new List<QuerySelectProperty>();
 
         protected IStoreSchemaReader _reader;
         protected IStoreSchemaReaderParameters _readerParameters;
@@ -72,6 +76,22 @@ namespace Platz.ObjectBuilder.Blazor
 
             // alias not found
             return "";
+        }
+
+        public void AddSelectionProperty(QueryFromTable table, QueryFromProperty property)
+        {
+            var newSelectProperty = new QuerySelectProperty(table, property.StoreProperty) { IsOutput = true };
+            SelectionProperties.Add(newSelectProperty);
+        }
+
+        public void RemoveSelectionProperty(QueryFromTable table, QueryFromProperty property)
+        {
+            var item = SelectionProperties.FirstOrDefault(s => s.StoreProperty.Name == property.StoreProperty.Name && s.FromTable.Alias == table.Alias);
+
+            if (item != null)
+            {
+                SelectionProperties.Remove(item);
+            }
         }
     }
 

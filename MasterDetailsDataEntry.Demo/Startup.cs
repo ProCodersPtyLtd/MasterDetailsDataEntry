@@ -36,7 +36,7 @@ namespace MasterDetailsDataEntry.Demo
             services.AddPlatzSqlForms();
             services.AddBlazorDragDrop();
 
-            services.AddScoped<IQueryController, EntityFrameworkQueryController>();
+            services.AddTransient<IQueryController, EntityFrameworkQueryController>();
 
             var t = typeof(MasterDetailsDataEntry.Demo.Database.AdventureWorksContext);
         }

@@ -1,7 +1,77 @@
 ﻿@namespace Platz.ObjectBuilder.Blazor
 
+<h5>Select</h5>
 
+<div class="plk-flex overflow-auto" style="min-height: 300px; height: 300px">
+    <div style="background-color: lightgreen; min-height: 300px; ">
+        <table>
+            <tr>
+                <th>Column</th>
+                <th style="width: 60px">Output</th>
+                <th>Alias</th>
+                <th>Filter</th>
+                <th>GroupBy</th>
+            </tr>
 
+            @for (int rowIndex = 0; rowIndex < _properties.Count; rowIndex++)
+            {
+                var item = _properties[rowIndex];
+                var row = rowIndex;
 
-@code {
-}
+                <tr>
+                    <td>
+                        @GetPropertyName(row)
+                    </td>
+                    <td style="text-align: center">
+                        <input type="checkbox" checked="@GetOutputValue(row)" @onchange="@(async (args) => await OutputClick(args, row))" />
+                    </td>
+                    <td>
+                        <input style="width: 120px;" />
+                    </td>
+                    <td></td>
+                    <td style="text-align: center">
+                        <input type="checkbox" checked="@GetGroupByValue(row)" @onchange="@(async (args) => await GroupByClick(args, row))" />
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
+    @code {
+        [CascadingParameter]
+        public IQueryController QueryController { get; set; }
+
+        private List<QuerySelectProperty> _properties
+        {
+            get
+            {
+                return QueryController.SelectionProperties;
+            }
+        }
+
+        private string GetPropertyName(int rowIndex)
+        {
+            var item = _properties[rowIndex];
+            var result = $"{item.FromTable.Alias}.{item.StoreProperty.Name}";
+            return result;
+        }
+
+        private string GetOutputValue(int rowIndex)
+        {
+            var result = _properties[rowIndex].IsOutput == true ? "checked" : null;
+            return result;
+        }
+
+        private async Task OutputClick(ChangeEventArgs e, int rowIndex)
+        { }
+
+        private string GetGroupByValue(int rowIndex)
+        {
+            var result = _properties[rowIndex].IsGroup == true ? "checked" : null;
+            return result;
+        }
+
+        private async Task GroupByClick(ChangeEventArgs e, int rowIndex)
+        { }
+    }
