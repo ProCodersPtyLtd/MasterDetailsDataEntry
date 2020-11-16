@@ -28,7 +28,9 @@
                     <td>
                         <input style="width: 120px;" />
                     </td>
-                    <td></td>
+                    <td>
+                        <input style="width: 120px;" value="@_properties[rowIndex].Filter" @onchange="@(async (args) => await FilterChanged(args, row))" />
+                    </td>
                     <td style="text-align: center">
                         <input type="checkbox" checked="@GetGroupByValue(row)" @onchange="@(async (args) => await GroupByClick(args, row))" />
                     </td>
@@ -41,6 +43,9 @@
     @code {
         [CascadingParameter]
         public IQueryController QueryController { get; set; }
+
+        [Parameter]
+        public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 
         private List<QuerySelectProperty> _properties
         {
@@ -74,4 +79,13 @@
 
         private async Task GroupByClick(ChangeEventArgs e, int rowIndex)
         { }
+
+        private async Task FilterChanged(ChangeEventArgs e, int rowIndex)
+        {
+            QueryController.ApplySelectPropertyFilter(_properties[rowIndex], (string)e.Value);
+            _properties[rowIndex].Filter = (string)e.Value;
+            await ModelChanged.InvokeAsync(null);
+        }
+
+
     }

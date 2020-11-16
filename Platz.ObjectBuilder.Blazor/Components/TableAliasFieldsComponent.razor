@@ -11,7 +11,7 @@
         <tr>
             <th></th>
             <th>@Table.StoreDefinition.Name</th>
-            <th><input @bind-value="@Table.Alias" style="width: 48px;" /></th>
+            <th><input value="@Table.Alias" style="width: 48px;" @onchange="@(async (args) => await TableAliasChanged(args))" /></th>
         </tr>
     </table>
 
@@ -40,14 +40,14 @@
     </table>
 
     @code {
-            [CascadingParameter]
-            public IQueryController QueryController { get; set; }
+        [CascadingParameter]
+        public IQueryController QueryController { get; set; }
 
-            [Parameter]
-            public QueryFromTable Table { get; set; }
+        [Parameter]
+        public QueryFromTable Table { get; set; }
 
-            [Parameter]
-            public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+        [Parameter]
+        public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 
         private bool _shortTableView = true;
         private bool _selectAllValue;
@@ -114,6 +114,12 @@
             Table.Properties[rowIndex].Selected = selected;
             AddRemoveSelection(selected, rowIndex);
 
+            await ModelChanged.InvokeAsync(null);
+        }
+
+        private async Task TableAliasChanged(ChangeEventArgs e)
+        {
+            Table.Alias = (string)e.Value;
             await ModelChanged.InvokeAsync(null);
         }
 

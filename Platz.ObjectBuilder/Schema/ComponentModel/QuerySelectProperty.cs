@@ -14,7 +14,7 @@ namespace Platz.ObjectBuilder.Schema
         // public string Alias { get; set; }
         public string Filter { get; set; }
         public bool IsGroup { get; set; }
-        public string TableAlias { get; set; }
+        public string Alias { get; set; }
 
         public QuerySelectProperty() { }
 

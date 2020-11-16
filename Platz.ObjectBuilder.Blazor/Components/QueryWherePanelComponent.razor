@@ -4,9 +4,22 @@
 
     <div class="plk-flex" >
         @*<div style="background-color: lightblue; min-height: 150px; height: 150px">*@
-            <textarea id="exampleFormControlTextarea1" rows="5" style="width: 100%"></textarea>
+            <textarea id="exampleFormControlTextarea1" rows="5" style="width: 100%" value="@QueryController.WhereClause"
+                      @onchange="@(async (args) => await ValueChanged(args))">
+            </textarea>
         @*</div>*@
     </div>
 
 @code {
+    [CascadingParameter]
+    public IQueryController QueryController { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    private async Task ValueChanged(ChangeEventArgs e)
+    {
+        QueryController.SetWhereClause((string)e.Value);
+        await ModelChanged.InvokeAsync(null);
+    }
 }
