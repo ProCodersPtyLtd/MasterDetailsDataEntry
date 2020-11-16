@@ -10,7 +10,17 @@
         </p>
         <div class="collapse" id="collapseExample">
             <div class="card card-body">
-                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+                <div class="plk-flex">
+                    @*<div style="background-color: lightblue; min-height: 150px; height: 150px">*@
+                    <textarea id="exampleFormControlTextarea1" rows="5" style="width: 100%" @bind="@_queryController.Errors" />
+                    @*</div>*@
+                </div>
+
+                <div class="float-right">
+                    <button class="btn btn-light btn-sm" title="Add" @onclick="@(() => SettingsRightClick())">
+                        <span class="oi oi-fire"></span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -30,14 +40,14 @@
             <tr>
                 <td style="vertical-align: top">
                     <div>
-                        <QuerySelectPanelComponent />
+                        <QuerySelectPanelComponent ModelChanged="ModelChanged"/>
                     </div>
                     <div>
                         @*<QueryFromPanelComponent QueryController="_queryController" />*@
                         <QueryFromPanelComponent ModelChanged="ModelChanged" />
                     </div>
                     <div>
-                        <QueryWherePanelComponent />
+                        <QueryWherePanelComponent ModelChanged="ModelChanged"/>
                     </div>
                 </td>
                 <td style="vertical-align: top">
@@ -78,6 +88,14 @@
 
         private void Click()
         {
+            StateHasChanged();
+        }
+
+        private void SettingsRightClick()
+        {
+            var query = _queryController.GenerateQuery();
+            var json = System.Text.Json.JsonSerializer.Serialize(query);
+            _queryController.Errors = json;
             StateHasChanged();
         }
     }

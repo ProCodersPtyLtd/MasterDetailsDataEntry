@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Platz.ObjectBuilder.Engine;
+using Platz.ObjectBuilder.Expressions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,9 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
 
         public override void SetParameters(IQueryControllerParameters parameters)
         {
+            _resolver = new SqlJsonObjectResolver();
+            _expressions = new SqlExpressionEngine(_resolver);
+
             _parameters = parameters as EntityFrameworkQueryControllerParameters;
 
             if (_parameters == null)

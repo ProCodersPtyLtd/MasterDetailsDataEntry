@@ -31,6 +31,9 @@ namespace Platz.ObjectBuilder
 
         public string Comment { get; set; }
 
+        // Parameters
+        public Dictionary<string, StoreQueryParameter> Parameters { get; set; }
+
         // Select
         public Dictionary<string, StoreQueryField> Fields { get; set; }
 
@@ -106,8 +109,9 @@ namespace Platz.ObjectBuilder
 
     public class QueryExpression
     {
-        public object ScalarParam { get; set; }
-        public StoreQueryField FieldParam { get; set; }
+        public object Value { get; set; }
+        public StoreQueryField QueryField { get; set; }
+        public string Param { get; set; }
         public QueryExpression Left { get; set; }
         public string Operator { get; set; }
         public QueryExpression Right { get; set; }
