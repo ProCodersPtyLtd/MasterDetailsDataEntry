@@ -59,29 +59,61 @@ namespace Platz.ObjectBuilder.Blazor
 
         public StoreQuery GenerateQuery()
         {
-            var result = new StoreQuery();
-            result.Query = new StoreQueryDefinition();
-            
-            result.Query.Fields = SelectionProperties.ToDictionary(
-                p => p.Alias ?? p.StoreProperty.Name,
-                p => new StoreQueryField 
+            try
+            {
+                var result = new StoreQuery();
+                result.Query = new StoreQueryDefinition();
+
+                result.Query.Fields = SelectionProperties.ToDictionary(
+                    p => p.Alias ?? p.StoreProperty.Name,
+                    p => new StoreQueryField
+                    {
+                        FieldAlias = p.Alias ?? p.StoreProperty.Name,
+                        Field = new StoreFieldReference { FieldName = p.StoreProperty.Name, ObjectAlias = p.FromTable.Alias }
+                    });
+
+                result.Query.Tables = FromTables.ToDictionary(
+                    t => t.Alias,
+                    t => new StoreTableReference { ObjectAlias = t.Alias, TableName = t.StoreDefinition.Name }
+                    );
+
+                // ToDo: composite foreign keys not supported currently
+                var joins = new List<StoreObjectJoin>();
+                var tables = FromTables.ToList();
+                
+                var foreignKeys = tables.SelectMany(t => t.Properties, (t, p) => new { Tbl = t, Prop = p }).Where(p => 
+                    p.Prop.StoreProperty.Fk && tables.Any(d => d.StoreDefinition.Name == p.Prop.StoreProperty.ForeignKeys.First().DefinitionName)).ToList();
+
+                foreach (var reference in foreignKeys)
                 {
-                    FieldAlias = p.Alias ?? p.StoreProperty.Name,
-                    Field = new StoreFieldReference { FieldName = p.StoreProperty.Name, ObjectAlias = p.FromTable.Alias }
-                });
+                    var leftTable = tables.First(t => t.StoreDefinition.Name == reference.Prop.StoreProperty.ForeignKeys.First().DefinitionName);
+                    var rightTable = tables.First(t => t.StoreDefinition.Name == reference.Tbl.StoreDefinition.Name);
 
-            result.Query.Tables = FromTables.ToDictionary(
-                t => t.Alias,
-                t => new StoreTableReference { ObjectAlias = t.Alias, TableName = t.StoreDefinition.Name }
-                );
+                    var join = new StoreObjectJoin
+                    {
+                        JoinType = "inner",
+                        LeftObjectAlias = leftTable.Alias,
+                        LeftField = reference.Prop.StoreProperty.ForeignKeys.First().PropertyName,
+                        RightObjectAlias = rightTable.Alias,
+                        RightField = reference.Prop.StoreProperty.Name
+                    };
 
-            // result.Query.Joins = FromTables.ToDictionary(
-            
-            var expr = _expressions.BuildExpressionTree(WhereClause);
-            var storeExpr = QueryExpressionHelper.ReadFromSqlExpr(expr);
-            result.Query.Where = new StoreQueryCondition { Expression = storeExpr };
+                    joins.Add(join);
+                }
 
-            return result;
+                result.Query.Joins = joins.ToArray();
+
+                var expr = _expressions.BuildExpressionTree(WhereClause);
+                var storeExpr = QueryExpressionHelper.ReadFromSqlExpr(expr);
+                result.Query.Where = new StoreQueryCondition { Expression = storeExpr };
+
+                return result;
+            }
+            catch(Exception exc)
+            {
+                Errors += "\r\n" + exc.Message;
+                return null;
+            }
         }
 
         

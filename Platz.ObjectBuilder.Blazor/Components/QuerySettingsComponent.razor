@@ -1,0 +1,49 @@
+﻿@using Platz.ObjectBuilder.Blazor.Controllers
+@namespace Platz.ObjectBuilder.Blazor
+
+<div style="width: 100%">
+    <p>
+        <div class="float">
+            <button class="btn btn-light" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                <span class="oi oi-ellipses"></span>
+            </button>
+            <b>Settings: </b>
+            &nbsp;
+            <label>Path</label>
+            <input />
+        </div>
+    </p>
+    <div class="collapse" id="collapseExample">
+        <div class="card card-body">
+            <div class="plk-flex">
+                @*<div style="background-color: lightblue; min-height: 150px; height: 150px">*@
+                <textarea id="exampleFormControlTextarea1" rows="5" style="width: 100%" @bind="@QueryController.Errors" />
+                @*</div>*@
+            </div>
+
+            <div class="float-right">
+                <button class="btn btn-light btn-sm" title="Add" @onclick="@(() => SettingsRightClick())">
+                    <span class="oi oi-fire"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    public IQueryController QueryController { get; set; }
+
+    private void SettingsRightClick()
+    {
+        var query = QueryController.GenerateQuery();
+
+        if (query != null)
+        {
+            var json = System.Text.Json.JsonSerializer.Serialize(query);
+            QueryController.Errors = json;
+        }
+
+        StateHasChanged();
+    }
+}

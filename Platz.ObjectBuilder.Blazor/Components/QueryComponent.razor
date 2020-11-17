@@ -2,36 +2,11 @@
 @namespace Platz.ObjectBuilder.Blazor
 @inject IQueryController _queryController
 
-    <div style="width: 100%">
-        <p>
-            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                Settings
-            </button>
-        </p>
-        <div class="collapse" id="collapseExample">
-            <div class="card card-body">
-                <div class="plk-flex">
-                    @*<div style="background-color: lightblue; min-height: 150px; height: 150px">*@
-                    <textarea id="exampleFormControlTextarea1" rows="5" style="width: 100%" @bind="@_queryController.Errors" />
-                    @*</div>*@
-                </div>
-
-                <div class="float-right">
-                    <button class="btn btn-light btn-sm" title="Add" @onclick="@(() => SettingsRightClick())">
-                        <span class="oi oi-fire"></span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    @*<div class="float-right">
-            <button class="btn btn-light btn-sm" title="Add" @onclick="@(() => Click())">
-                <span class="oi oi-fire"></span>
-            </button>
-        </div>*@
 
     <CascadingValue Value="@_queryController">
+
+        <QuerySettingsComponent/>
+
         <table style="width: 100%">
             <tr>
                 <th style="width: auto"></th>
@@ -91,11 +66,4 @@
             StateHasChanged();
         }
 
-        private void SettingsRightClick()
-        {
-            var query = _queryController.GenerateQuery();
-            var json = System.Text.Json.JsonSerializer.Serialize(query);
-            _queryController.Errors = json;
-            StateHasChanged();
-        }
     }
