@@ -45,7 +45,20 @@ namespace Platz.ObjectBuilder
         public bool Pk { get; set; }
         public bool AutoIncrement { get; set;  }
 
+        // FK
+        public bool Fk { get; set; }
+        
+
         public bool ExternalId { get; set; }
         public int Order { get; set; }
+
+        public List<StoreForeignKey> ForeignKeys { get; set; }
+    }
+
+    public class StoreForeignKey
+    {
+        public string DefinitionName { get; set; }
+        public string PropertyName { get; set; }
+        public List<string> CompositePropertyNames { get; set; }
     }
 }

@@ -37,5 +37,44 @@ namespace Platz.ObjectBuilder.Tests.Expressions
             Assert.Equal("c.ModifiedDate", dict["@p2"]);
         }
 
+        [Fact]
+        public void ExpressionParseToStringTest()
+        {
+            var res = new SqlJsonObjectResolver();
+            var expEngine = new SqlExpressionEngine(res);
+            
+            var expr = expEngine.BuildExpressionTree(
+                "((p.project_id = @p1) AND a.allocation_id = @p2) OR ((p.project_id = 0 AND a.allocation_id = 0) OR u.last_name = 'admin')");
+
+            var result = QueryExpressionHelper.ReadFromSqlExpr(expr);
+            var text = QueryExpressionHelper.QueryExprToString(result);
+            Assert.Equal("((p.project_id = @p1) AND (a.allocation_id = @p2)) OR (((p.project_id = 0) AND (a.allocation_id = 0)) OR (u.last_name = 'admin'))", text);
+        }
+
+        [Fact]
+        public void ExpressionParseToStringOrPriorityParensTest()
+        {
+            var res = new SqlJsonObjectResolver();
+            var expEngine = new SqlExpressionEngine(res);
+
+            var expr = expEngine.BuildExpressionTree("p.project_id = @p1 AND (a.allocation_id = @p2 OR p.project_id = 0)");
+
+            var result = QueryExpressionHelper.ReadFromSqlExpr(expr);
+            var text = QueryExpressionHelper.QueryExprToString(result);
+            Assert.Equal("(p.project_id = @p1) AND ((a.allocation_id = @p2) OR (p.project_id = 0))", text);
+        }
+
+        [Fact]
+        public void ExpressionParseToStringAndPriorityTest()
+        {
+            var res = new SqlJsonObjectResolver();
+            var expEngine = new SqlExpressionEngine(res);
+
+            var expr = expEngine.BuildExpressionTree("p.project_id = @p1 AND a.allocation_id = @p2 OR p.project_id = 0");
+
+            var result = QueryExpressionHelper.ReadFromSqlExpr(expr);
+            var text = QueryExpressionHelper.QueryExprToString(result);
+            Assert.Equal("((p.project_id = @p1) AND (a.allocation_id = @p2)) OR (p.project_id = 0)", text);
+        }
     }
 }

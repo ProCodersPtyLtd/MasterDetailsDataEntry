@@ -41,7 +41,7 @@ namespace Platz.ObjectBuilder.Helpers
 
         public static QueryExpression ReadFromSqlExpr(SqlExpressionEngine.Expr expr)
         {
-            if (expr == null)
+            if (expr == null || expr.Type == SqlExpressionEngine.ExprType.None)
             {
                 return null;
             }
@@ -70,6 +70,38 @@ namespace Platz.ObjectBuilder.Helpers
             storeExpr.Right = ReadFromSqlExpr(expr.Right);
 
             return storeExpr;
+        }
+
+        //public static string ToString(this QueryExpression storeExpr)
+        //{
+        //    return ExprToString(storeExpr);
+        //}
+
+        public static string QueryExprToString(QueryExpression expr)
+        {
+            if (expr == null)
+            {
+                return "";
+            }
+
+            if (expr.QueryField != null)
+            {
+                return $"{expr.QueryField.Field.ObjectAlias}.{expr.QueryField.Field.FieldName}";
+            }
+            else if (expr.Param != null)
+            {
+                return expr.Param;
+            }
+            else if (expr.Value != null)
+            {
+                return expr.Value.ToString();
+            }
+
+            var left = expr.Left.Operator == null ? $"{QueryExprToString(expr.Left)}" : $"({QueryExprToString(expr.Left)})";
+            var right = expr.Right.Operator == null ? $"{QueryExprToString(expr.Right)}" : $"({QueryExprToString(expr.Right)})";
+
+            var result = $"{left} {expr.Operator} {right}";
+            return result;
         }
     }
 }

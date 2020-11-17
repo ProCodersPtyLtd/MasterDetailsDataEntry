@@ -81,12 +81,12 @@ namespace Platz.ObjectBuilder
     public class StoreObjectJoin
     {
         public string LeftObjectAlias { get; set; }
-        public string LeftFieldAlias { get; set; }
-        public string[] LeftComplexFieldAliases { get; set; }
+        public string LeftField { get; set; }
+        // public string[] LeftComplexFieldAliases { get; set; }
 
         public string RightObjectAlias { get; set; }
-        public string RightFieldAlias { get; set; }
-        public string[] RightComplexFieldAliases { get; set; }
+        public string RightField { get; set; }
+        // public string[] RightComplexFieldAliases { get; set; }
 
         // <empty> or inner, left, right, full 
         public string JoinType { get; set; }

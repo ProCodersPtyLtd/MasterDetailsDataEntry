@@ -17,9 +17,10 @@
 
     <table @onmouseover="@(e => { _shortTableView = false; })" @onmouseout="@(e => { _shortTableView = true; })">
         <tr hidden="@_shortTableView">
-            <th></th>
+            <th>PK</th>
             <th><input type="checkbox" checked="@GetSelectAllValue()" @onchange="@(async (args) => await SelectAllClick(args))" /></th>
             <th>select all</th>
+            <th>FK</th>
         </tr>
         @for (int rowIndex = 0; rowIndex < Table.Properties.Count; rowIndex++)
         {
@@ -35,6 +36,12 @@
                 </td>
                 <td><input type="checkbox" checked="@GetSelectedValue(row)" @onchange="@(async (args) => await SelectClick(args, row))" /></td>
                 <td>@item.StoreProperty.Name</td>
+                <td>
+                    @if (item.StoreProperty.Fk)
+                    {
+                        <span class="oi oi-infinity"></span>
+                    }
+                </td>
             </tr>
         }
     </table>

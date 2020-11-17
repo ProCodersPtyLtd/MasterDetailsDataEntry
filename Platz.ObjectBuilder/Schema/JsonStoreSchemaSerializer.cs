@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Platz.ObjectBuilder
 {
-    public class StoreSchemaEngine : IStoreSchemaEngine
+    public class JsonStoreSchemaSerializer : IStoreSchemaEngine
     {
         public StoreSchema ReadSchema(string json)
         {

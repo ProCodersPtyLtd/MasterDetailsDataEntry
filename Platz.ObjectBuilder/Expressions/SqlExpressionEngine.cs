@@ -78,6 +78,11 @@ namespace Platz.ObjectBuilder.Expressions
                 tokenList = tokenList.Where(t => t != null && t.Token != Token.CloseParens).ToList();
             }
 
+            if (!tokenList.Any())
+            {
+                return new Expr { Type = ExprType.None };
+            }
+
             // 2. Apply logical operators in order : = AND OR
             var prioDict = _resolver.GetPriorityOperators();
             var min = prioDict.Keys.Min();

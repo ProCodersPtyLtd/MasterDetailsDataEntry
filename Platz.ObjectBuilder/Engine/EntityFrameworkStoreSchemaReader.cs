@@ -41,9 +41,21 @@ namespace Platz.ObjectBuilder.Engine
                             Order = i,
                             Type = prop.ClrType.Name,
                             Pk = prop.IsPrimaryKey(),
+                            Fk = prop.IsForeignKey(),
                             MaxLength = prop.GetMaxLength(),
                             AutoIncrement = prop.ValueGenerated == ValueGenerated.OnAdd
                         };
+
+                        if (prop.IsForeignKey())
+                        {
+                            var fks = prop.GetContainingForeignKeys();
+                            storeProp.ForeignKeys = prop.GetContainingForeignKeys().Select(f => new StoreForeignKey
+                            {
+                                DefinitionName = f.PrincipalEntityType.ClrType.Name,
+                                PropertyName = f.PrincipalKey.Properties.First().Name,
+                                CompositePropertyNames = f.PrincipalKey.Properties.Select(p => p.Name).ToList()
+                            }).ToList();
+                        }
 
                         def.Properties.Add(storeProp.Name, storeProp);
                     }
