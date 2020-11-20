@@ -8,7 +8,11 @@ namespace Platz.ObjectBuilder
     public class StoreQuery
     {
         public string Name { get; set; }
+        public string DataService { get; set; }
+        public string Namespace { get; set; }
+        public string ReturnTypeName { get; set; }
         public string SchemaName { get; set; }
+        public string SchemaVersion { get; set; }
         public string[] Tags { get; set; }
         public StoreQueryDefinition Query { get; set; }
     }
