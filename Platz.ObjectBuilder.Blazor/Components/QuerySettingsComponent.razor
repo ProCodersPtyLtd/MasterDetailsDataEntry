@@ -10,29 +10,83 @@
             <b>Settings: </b>
             &nbsp;
             <label>Path</label>
-            <input />
+            <input readonly="readonly" @bind="StoreDataPath" style="width: 600px" />
         </div>
     </p>
     <div class="collapse" id="collapseExample">
         <div class="card card-body">
-            <div class="plk-flex">
-                @*<div style="background-color: lightblue; min-height: 150px; height: 150px">*@
-                <textarea id="exampleFormControlTextarea1" rows="5" style="width: 100%" @bind="@QueryController.Errors" />
-                @*</div>*@
-            </div>
+            <table>
+                <tr>
+                    <td style="vertical-align: top;">
+                        <label>Data Service name</label>
+                        <input @bind="QueryController.StoreParameters.DataService" />
+
+                        <label>Namespace</label>
+                        <input @bind="QueryController.StoreParameters.Namespace" />
+
+                        <label>Query Return Type name</label>
+                        <input value="@QueryController.StoreParameters.QueryReturnType" @onchange="QueryReturnTypeCahnged" />
+
+                        <label>Query name</label>
+                        <input @bind="QueryController.StoreParameters.QueryName" />
+                    </td>
+                    <td style="width: 300px; vertical-align: top;">
+                        <label>Parameters</label>
+                    </td>
+                    <td style="width: 100%; vertical-align: top;">
+                        <div class="plk-flex">
+                            <label>Log</label>
+                            <textarea id="exampleFormControlTextarea1" rows="8" style="width: 100%" @bind="@QueryController.Errors" />
+                        </div>
+
+                    </td>
+                </tr>
+            </table>
+
 
             <div class="float-right">
                 <button class="btn btn-light btn-sm" title="Add" @onclick="@(() => SettingsRightClick())">
                     <span class="oi oi-fire"></span>
                 </button>
             </div>
+
+            <hr />
+
+            <div class="float">
+                <button class="btn btn-primary" type="button" @onclick="SaveClick" style="width: 120px">Save</button>
+                &nbsp;
+                <button class="btn btn-secondary" type="button" @onclick="ValidateClick" style="width: 120px">Validate</button>
+                &nbsp;
+                <button class="btn btn-secondary" type="button" @onclick="LoadClick" style="width: 120px">Load...</button>
+            </div>
         </div>
-    </div>
+        </div>
+
 </div>
 
 @code {
     [CascadingParameter]
     public IQueryController QueryController { get; set; }
+
+    [Parameter]
+    public string StoreDataPath { get; set; }
+
+    private void LoadClick(MouseEventArgs args)
+    { }
+
+    private void SaveClick(MouseEventArgs args)
+    {
+        QueryController.SaveQuery(StoreDataPath);
+    }
+
+    private void ValidateClick(MouseEventArgs args)
+    { }
+
+    private void QueryReturnTypeCahnged(ChangeEventArgs args)
+    {
+        QueryController.StoreParameters.QueryReturnType = (string)args.Value;
+        QueryController.StoreParameters.QueryName = $"Get{QueryController.StoreParameters.QueryReturnType}List";
+    }
 
     private void SettingsRightClick()
     {

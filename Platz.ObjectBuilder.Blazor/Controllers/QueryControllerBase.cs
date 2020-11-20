@@ -5,6 +5,7 @@ using Platz.ObjectBuilder.Helpers;
 using Platz.ObjectBuilder.Schema;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -17,6 +18,7 @@ namespace Platz.ObjectBuilder.Blazor
         List<QuerySelectProperty> SelectionProperties { get; }
         string WhereClause { get; }
         string Errors { get; set; }
+        StoreQueryParameters StoreParameters { get; }
 
         void SetParameters(IQueryControllerParameters parameters);
         void LoadSchema();
@@ -28,13 +30,28 @@ namespace Platz.ObjectBuilder.Blazor
         void SetWhereClause(string text);
 
         StoreQuery GenerateQuery();
+        void SaveQuery(string path);
     }
 
     public interface IQueryControllerParameters
     { }
 
+    public class StoreQueryParameters
+    {
+        public string StoreDataPath { get; set; }
+
+        public string QueryReturnType { get; set; }
+
+        public string QueryName { get; set; }
+
+        public string Namespace { get; set; }
+
+        public string DataService { get; set; }
+    }
+
     public abstract class QueryControllerBase : IQueryController
     {
+        public StoreQueryParameters StoreParameters { get; set; } = new StoreQueryParameters();
         public StoreSchema Schema { get; private set; }
         public List<QueryFromTable> FromTables { get; private set; } = new List<QueryFromTable>();
         public List<QuerySelectProperty> SelectionProperties { get; private set; } = new List<QuerySelectProperty>();
@@ -42,6 +59,7 @@ namespace Platz.ObjectBuilder.Blazor
         public string Errors { get; set; } = "";
 
         protected IStoreSchemaReader _reader;
+        protected IStoreSchemaStorage _storage;
         protected IStoreSchemaReaderParameters _readerParameters;
         protected IObjectResolver _resolver;
         protected SqlExpressionEngine _expressions;
@@ -52,6 +70,14 @@ namespace Platz.ObjectBuilder.Blazor
 
         public abstract void SetParameters(IQueryControllerParameters parameters);
 
+        public void SaveQuery(string path)
+        {
+            var fileName = Path.Combine(path, $"{StoreParameters.QueryName}.json");
+            var parameters = new StorageParameters { FileName = fileName };
+            var query = GenerateQuery();
+            _storage.SaveQuery(query, parameters);
+        }
+
         public void LoadSchema()
         {
             Schema = _reader.ReadSchema(_readerParameters);
@@ -61,7 +87,16 @@ namespace Platz.ObjectBuilder.Blazor
         {
             try
             {
-                var result = new StoreQuery();
+                var result = new StoreQuery() 
+                { 
+                    DataService = StoreParameters.DataService,
+                    Name = StoreParameters.QueryName,
+                    Namespace = StoreParameters.Namespace,
+                    ReturnTypeName = StoreParameters.QueryReturnType,
+                    SchemaName = Schema.Name,
+                    SchemaVersion = Schema.Version
+                };
+
                 result.Query = new StoreQueryDefinition();
 
                 result.Query.Fields = SelectionProperties.ToDictionary(

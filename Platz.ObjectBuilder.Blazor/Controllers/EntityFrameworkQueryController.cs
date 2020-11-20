@@ -17,6 +17,11 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
     {
         private EntityFrameworkQueryControllerParameters _parameters;
 
+        public EntityFrameworkQueryController()
+        {
+            _storage = new FileStoreSchemaStorage();
+        }
+
         public override void SetParameters(IQueryControllerParameters parameters)
         {
             _resolver = new SqlJsonObjectResolver();

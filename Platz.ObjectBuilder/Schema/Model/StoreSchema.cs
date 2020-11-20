@@ -13,6 +13,7 @@ namespace Platz.ObjectBuilder
         public string Type { get; set; }
         public string Comment { get; set; }
         public string[] Tags { get; set; }
+        public string Version { get; set; }
 
         public Dictionary<string, StoreDefinition> Definitions { get; set; }
     }

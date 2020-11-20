@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Platz.ObjectBuilder
 {
-    public interface IStoreSchemaEngine
+    public interface IStoreSchemaSerializer
     {
     }
 }

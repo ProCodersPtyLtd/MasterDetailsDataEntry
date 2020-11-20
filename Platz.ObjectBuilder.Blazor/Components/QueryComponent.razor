@@ -1,11 +1,12 @@
 ﻿@using Platz.ObjectBuilder.Blazor.Controllers
+@using System.IO
 @namespace Platz.ObjectBuilder.Blazor
 @inject IQueryController _queryController
 
 
     <CascadingValue Value="@_queryController">
 
-        <QuerySettingsComponent/>
+        <QuerySettingsComponent StoreDataPath="@_fullStoreDataPath"/>
 
         <table style="width: 100%">
             <tr>
@@ -38,11 +39,18 @@
         [Parameter]
         public Type DbContextType { get; set; }
 
+        [Parameter]
+        public string StoreDataPath { get; set; }
+
+        private string _fullStoreDataPath { get; set; }
+
         protected override void OnInitialized()
         {
             base.OnInitialized();
 
             InitController();
+            _fullStoreDataPath = Path.Combine(Directory.GetCurrentDirectory(), StoreDataPath);
+            _fullStoreDataPath = Path.GetFullPath(_fullStoreDataPath);
         }
 
         private void InitController()
