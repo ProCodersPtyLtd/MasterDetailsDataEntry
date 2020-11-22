@@ -31,6 +31,7 @@ namespace Platz.ObjectBuilder.Blazor
 
         StoreQuery GenerateQuery();
         void SaveQuery(string path);
+        void SaveSchema(string path);
     }
 
     public interface IQueryControllerParameters
@@ -76,6 +77,13 @@ namespace Platz.ObjectBuilder.Blazor
             var parameters = new StorageParameters { FileName = fileName };
             var query = GenerateQuery();
             _storage.SaveQuery(query, parameters);
+        }
+
+        public void SaveSchema(string path)
+        {
+            var fileName = Path.Combine(path, $"Schema.json");
+            var parameters = new StorageParameters { FileName = fileName };
+            _storage.SaveSchema(Schema, parameters);
         }
 
         public void LoadSchema()

@@ -9,6 +9,8 @@ namespace Platz.ObjectBuilder
     public class StoreSchema
     {
         public string Name { get; set; }
+        public string DbContextName { get; set; }
+
         public string Title { get; set; }
         public string Type { get; set; }
         public string Comment { get; set; }

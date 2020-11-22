@@ -1,8 +1,8 @@
 {
-  "Name": "GetCustList",
-  "DataService": "MyDataService",
-  "Namespace": "Default",
-  "ReturnTypeName": "Cust",
+  "Name": "GetCustomerList",
+  "DataService": null,
+  "Namespace": "Adv.Data",
+  "ReturnTypeName": "Customer",
   "SchemaName": null,
   "SchemaVersion": null,
   "Tags": null,
@@ -145,20 +145,70 @@
         },
         "Operation": null,
         "RawExpression": null
+      },
+      "AddressId": {
+        "FieldAlias": "AddressId",
+        "Field": {
+          "ObjectAlias": "cu",
+          "FieldName": "AddressId"
+        },
+        "Operation": null,
+        "RawExpression": null
       }
     },
     "Tables": {
       "c": {
         "ObjectAlias": "c",
         "TableName": "Customer"
+      },
+      "cu": {
+        "ObjectAlias": "cu",
+        "TableName": "CustomerAddress"
       }
     },
     "SubQueries": null,
-    "Joins": [],
+    "Joins": [
+      {
+        "LeftObjectAlias": "c",
+        "LeftField": "CustomerId",
+        "RightObjectAlias": "cu",
+        "RightField": "CustomerId",
+        "JoinType": "inner"
+      }
+    ],
     "GroupByFields": null,
     "Having": null,
     "Where": {
-      "Expression": null
+      "Expression": {
+        "Value": null,
+        "QueryField": null,
+        "Param": null,
+        "Left": {
+          "Value": null,
+          "QueryField": {
+            "FieldAlias": null,
+            "Field": {
+              "ObjectAlias": "c",
+              "FieldName": "CustomerId"
+            },
+            "Operation": null,
+            "RawExpression": null
+          },
+          "Param": null,
+          "Left": null,
+          "Operator": null,
+          "Right": null
+        },
+        "Operator": "=",
+        "Right": {
+          "Value": null,
+          "QueryField": null,
+          "Param": "@p1",
+          "Left": null,
+          "Operator": null,
+          "Right": null
+        }
+      }
     }
   }
 }

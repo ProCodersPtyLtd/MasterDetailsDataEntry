@@ -25,7 +25,17 @@ namespace Platz.ObjectBuilder.Engine
 
         public void SaveSchema(StoreSchema schema, StorageParameters parameters)
         {
+            var options = new JsonSerializerOptions()
+            {
+                WriteIndented = true
+            };
 
+            var json = System.Text.Json.JsonSerializer.Serialize(schema, options);
+
+            using (var sw = new StreamWriter(parameters.FileName, false))
+            {
+                sw.Write(json);
+            }
         }
     }
 }

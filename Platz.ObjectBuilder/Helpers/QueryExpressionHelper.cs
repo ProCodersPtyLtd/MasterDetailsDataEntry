@@ -77,7 +77,7 @@ namespace Platz.ObjectBuilder.Helpers
         //    return ExprToString(storeExpr);
         //}
 
-        public static string QueryExprToString(QueryExpression expr)
+        public static string QueryExprToString(QueryExpression expr, Dictionary<string, string> operatorsMap = null)
         {
             if (expr == null)
             {
@@ -97,11 +97,26 @@ namespace Platz.ObjectBuilder.Helpers
                 return expr.Value.ToString();
             }
 
-            var left = expr.Left.Operator == null ? $"{QueryExprToString(expr.Left)}" : $"({QueryExprToString(expr.Left)})";
-            var right = expr.Right.Operator == null ? $"{QueryExprToString(expr.Right)}" : $"({QueryExprToString(expr.Right)})";
+            var left = expr.Left.Operator == null ? $"{QueryExprToString(expr.Left, operatorsMap)}" : $"({QueryExprToString(expr.Left, operatorsMap)})";
+            var right = expr.Right.Operator == null ? $"{QueryExprToString(expr.Right, operatorsMap)}" : $"({QueryExprToString(expr.Right, operatorsMap)})";
 
-            var result = $"{left} {expr.Operator} {right}";
+            var mappedOperator = expr.Operator;
+
+            if (operatorsMap != null && operatorsMap.ContainsKey(mappedOperator.ToLower()))
+            {
+                mappedOperator = operatorsMap[mappedOperator.ToLower()];
+            }
+
+            var result = $"{left} {mappedOperator} {right}";
             return result;
         }
+
+        public static Dictionary<string, string> CSharpOperatorsMap = new Dictionary<string, string>() 
+        {
+            { "or", "||" },
+            { "and", "&&" },
+            { "=", "==" },
+            { "<>", "!=" },
+        };
     }
 }

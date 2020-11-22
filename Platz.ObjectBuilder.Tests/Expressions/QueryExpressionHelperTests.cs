@@ -76,5 +76,18 @@ namespace Platz.ObjectBuilder.Tests.Expressions
             var text = QueryExpressionHelper.QueryExprToString(result);
             Assert.Equal("((p.project_id = @p1) AND (a.allocation_id = @p2)) OR (p.project_id = 0)", text);
         }
+
+        [Fact]
+        public void ExpressionParseToStringAndPriorityMappedTest()
+        {
+            var res = new SqlJsonObjectResolver();
+            var expEngine = new SqlExpressionEngine(res);
+
+            var expr = expEngine.BuildExpressionTree("p.project_id = @p1 AND a.allocation_id = @p2 OR p.project_id = 0");
+
+            var result = QueryExpressionHelper.ReadFromSqlExpr(expr);
+            var text = QueryExpressionHelper.QueryExprToString(result, QueryExpressionHelper.CSharpOperatorsMap);
+            Assert.Equal("((p.project_id == @p1) && (a.allocation_id == @p2)) || (p.project_id == 0)", text);
+        }
     }
 }
