@@ -121,4 +121,15 @@ namespace Platz.ObjectBuilder
         public QueryExpression Right { get; set; }
     }
 
+    // for templates
+    public class TemplateJoin
+    {
+        public string LeftObjectAlias { get; set; }
+        public string LeftObject { get; set; }
+        public string LeftField { get; set; }
+
+        public string RightObjectAlias { get; set; }
+        public string RightObject { get; set; }
+        public string RightField { get; set; }
+    }
 }

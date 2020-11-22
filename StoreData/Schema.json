@@ -1,0 +1,2058 @@
+{
+  "Name": null,
+  "DbContextName": "MasterDetailsDataEntry.Demo.Database.AdventureWorksContext",
+  "Title": null,
+  "Type": null,
+  "Comment": null,
+  "Tags": null,
+  "Version": null,
+  "Definitions": {
+    "Address": {
+      "Name": "Address",
+      "Type": null,
+      "Comment": null,
+      "Properties": {
+        "AddressId": {
+          "Name": "AddressId",
+          "Type": "Int32",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": true,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 0,
+          "ForeignKeys": null
+        },
+        "AddressLine1": {
+          "Name": "AddressLine1",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 60,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 1,
+          "ForeignKeys": null
+        },
+        "AddressLine2": {
+          "Name": "AddressLine2",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 60,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 2,
+          "ForeignKeys": null
+        },
+        "City": {
+          "Name": "City",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 30,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 3,
+          "ForeignKeys": null
+        },
+        "CountryRegion": {
+          "Name": "CountryRegion",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 50,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 4,
+          "ForeignKeys": null
+        },
+        "ModifiedDate": {
+          "Name": "ModifiedDate",
+          "Type": "DateTime",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 5,
+          "ForeignKeys": null
+        },
+        "PostalCode": {
+          "Name": "PostalCode",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 15,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 6,
+          "ForeignKeys": null
+        },
+        "Rowguid": {
+          "Name": "Rowguid",
+          "Type": "Guid",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 7,
+          "ForeignKeys": null
+        },
+        "StateProvince": {
+          "Name": "StateProvince",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 50,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 8,
+          "ForeignKeys": null
+        }
+      }
+    },
+    "BuildVersion": {
+      "Name": "BuildVersion",
+      "Type": null,
+      "Comment": null,
+      "Properties": {
+        "DatabaseVersion": {
+          "Name": "DatabaseVersion",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 25,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 0,
+          "ForeignKeys": null
+        },
+        "ModifiedDate": {
+          "Name": "ModifiedDate",
+          "Type": "DateTime",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 1,
+          "ForeignKeys": null
+        },
+        "SystemInformationId": {
+          "Name": "SystemInformationId",
+          "Type": "Byte",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 2,
+          "ForeignKeys": null
+        },
+        "VersionDate": {
+          "Name": "VersionDate",
+          "Type": "DateTime",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 3,
+          "ForeignKeys": null
+        }
+      }
+    },
+    "Customer": {
+      "Name": "Customer",
+      "Type": null,
+      "Comment": null,
+      "Properties": {
+        "CustomerId": {
+          "Name": "CustomerId",
+          "Type": "Int32",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": true,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 0,
+          "ForeignKeys": null
+        },
+        "CompanyName": {
+          "Name": "CompanyName",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 128,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 1,
+          "ForeignKeys": null
+        },
+        "EmailAddress": {
+          "Name": "EmailAddress",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 50,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 2,
+          "ForeignKeys": null
+        },
+        "FirstName": {
+          "Name": "FirstName",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 50,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 3,
+          "ForeignKeys": null
+        },
+        "LastName": {
+          "Name": "LastName",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 50,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 4,
+          "ForeignKeys": null
+        },
+        "MiddleName": {
+          "Name": "MiddleName",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 50,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 5,
+          "ForeignKeys": null
+        },
+        "ModifiedDate": {
+          "Name": "ModifiedDate",
+          "Type": "DateTime",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 6,
+          "ForeignKeys": null
+        },
+        "NameStyle": {
+          "Name": "NameStyle",
+          "Type": "Boolean",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 7,
+          "ForeignKeys": null
+        },
+        "PasswordHash": {
+          "Name": "PasswordHash",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 128,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 8,
+          "ForeignKeys": null
+        },
+        "PasswordSalt": {
+          "Name": "PasswordSalt",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 10,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 9,
+          "ForeignKeys": null
+        },
+        "Phone": {
+          "Name": "Phone",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 25,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 10,
+          "ForeignKeys": null
+        },
+        "Rowguid": {
+          "Name": "Rowguid",
+          "Type": "Guid",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 11,
+          "ForeignKeys": null
+        },
+        "SalesPerson": {
+          "Name": "SalesPerson",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 256,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 12,
+          "ForeignKeys": null
+        },
+        "Suffix": {
+          "Name": "Suffix",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 10,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 13,
+          "ForeignKeys": null
+        },
+        "Title": {
+          "Name": "Title",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 8,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 14,
+          "ForeignKeys": null
+        }
+      }
+    },
+    "CustomerAddress": {
+      "Name": "CustomerAddress",
+      "Type": null,
+      "Comment": null,
+      "Properties": {
+        "CustomerId": {
+          "Name": "CustomerId",
+          "Type": "Int32",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": true,
+          "AutoIncrement": false,
+          "Fk": true,
+          "ExternalId": false,
+          "Order": 0,
+          "ForeignKeys": [
+            {
+              "DefinitionName": "Customer",
+              "PropertyName": "CustomerId",
+              "CompositePropertyNames": [
+                "CustomerId"
+              ]
+            }
+          ]
+        },
+        "AddressId": {
+          "Name": "AddressId",
+          "Type": "Int32",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": true,
+          "AutoIncrement": false,
+          "Fk": true,
+          "ExternalId": false,
+          "Order": 1,
+          "ForeignKeys": [
+            {
+              "DefinitionName": "Address",
+              "PropertyName": "AddressId",
+              "CompositePropertyNames": [
+                "AddressId"
+              ]
+            }
+          ]
+        },
+        "AddressType": {
+          "Name": "AddressType",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 50,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 2,
+          "ForeignKeys": null
+        },
+        "ModifiedDate": {
+          "Name": "ModifiedDate",
+          "Type": "DateTime",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 3,
+          "ForeignKeys": null
+        },
+        "Rowguid": {
+          "Name": "Rowguid",
+          "Type": "Guid",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 4,
+          "ForeignKeys": null
+        }
+      }
+    },
+    "ErrorLog": {
+      "Name": "ErrorLog",
+      "Type": null,
+      "Comment": null,
+      "Properties": {
+        "ErrorLogId": {
+          "Name": "ErrorLogId",
+          "Type": "Int32",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": true,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 0,
+          "ForeignKeys": null
+        },
+        "ErrorLine": {
+          "Name": "ErrorLine",
+          "Type": "Nullable\u00601",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 1,
+          "ForeignKeys": null
+        },
+        "ErrorMessage": {
+          "Name": "ErrorMessage",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 4000,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 2,
+          "ForeignKeys": null
+        },
+        "ErrorNumber": {
+          "Name": "ErrorNumber",
+          "Type": "Int32",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 3,
+          "ForeignKeys": null
+        },
+        "ErrorProcedure": {
+          "Name": "ErrorProcedure",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 126,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 4,
+          "ForeignKeys": null
+        },
+        "ErrorSeverity": {
+          "Name": "ErrorSeverity",
+          "Type": "Nullable\u00601",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 5,
+          "ForeignKeys": null
+        },
+        "ErrorState": {
+          "Name": "ErrorState",
+          "Type": "Nullable\u00601",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 6,
+          "ForeignKeys": null
+        },
+        "ErrorTime": {
+          "Name": "ErrorTime",
+          "Type": "DateTime",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 7,
+          "ForeignKeys": null
+        },
+        "UserName": {
+          "Name": "UserName",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 128,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 8,
+          "ForeignKeys": null
+        }
+      }
+    },
+    "Product": {
+      "Name": "Product",
+      "Type": null,
+      "Comment": null,
+      "Properties": {
+        "ProductId": {
+          "Name": "ProductId",
+          "Type": "Int32",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": true,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 0,
+          "ForeignKeys": null
+        },
+        "Color": {
+          "Name": "Color",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 15,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 1,
+          "ForeignKeys": null
+        },
+        "DiscontinuedDate": {
+          "Name": "DiscontinuedDate",
+          "Type": "Nullable\u00601",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 2,
+          "ForeignKeys": null
+        },
+        "ListPrice": {
+          "Name": "ListPrice",
+          "Type": "Decimal",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 3,
+          "ForeignKeys": null
+        },
+        "ModifiedDate": {
+          "Name": "ModifiedDate",
+          "Type": "DateTime",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 4,
+          "ForeignKeys": null
+        },
+        "Name": {
+          "Name": "Name",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 50,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 5,
+          "ForeignKeys": null
+        },
+        "ProductCategoryId": {
+          "Name": "ProductCategoryId",
+          "Type": "Nullable\u00601",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": true,
+          "ExternalId": false,
+          "Order": 6,
+          "ForeignKeys": [
+            {
+              "DefinitionName": "ProductCategory",
+              "PropertyName": "ProductCategoryId",
+              "CompositePropertyNames": [
+                "ProductCategoryId"
+              ]
+            }
+          ]
+        },
+        "ProductModelId": {
+          "Name": "ProductModelId",
+          "Type": "Nullable\u00601",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": true,
+          "ExternalId": false,
+          "Order": 7,
+          "ForeignKeys": [
+            {
+              "DefinitionName": "ProductModel",
+              "PropertyName": "ProductModelId",
+              "CompositePropertyNames": [
+                "ProductModelId"
+              ]
+            }
+          ]
+        },
+        "ProductNumber": {
+          "Name": "ProductNumber",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 25,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 8,
+          "ForeignKeys": null
+        },
+        "Rowguid": {
+          "Name": "Rowguid",
+          "Type": "Guid",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 9,
+          "ForeignKeys": null
+        },
+        "SellEndDate": {
+          "Name": "SellEndDate",
+          "Type": "Nullable\u00601",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 10,
+          "ForeignKeys": null
+        },
+        "SellStartDate": {
+          "Name": "SellStartDate",
+          "Type": "DateTime",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 11,
+          "ForeignKeys": null
+        },
+        "Size": {
+          "Name": "Size",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 5,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 12,
+          "ForeignKeys": null
+        },
+        "StandardCost": {
+          "Name": "StandardCost",
+          "Type": "Decimal",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 13,
+          "ForeignKeys": null
+        },
+        "ThumbNailPhoto": {
+          "Name": "ThumbNailPhoto",
+          "Type": "Byte[]",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 14,
+          "ForeignKeys": null
+        },
+        "ThumbnailPhotoFileName": {
+          "Name": "ThumbnailPhotoFileName",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 50,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 15,
+          "ForeignKeys": null
+        },
+        "Weight": {
+          "Name": "Weight",
+          "Type": "Nullable\u00601",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 16,
+          "ForeignKeys": null
+        }
+      }
+    },
+    "ProductCategory": {
+      "Name": "ProductCategory",
+      "Type": null,
+      "Comment": null,
+      "Properties": {
+        "ProductCategoryId": {
+          "Name": "ProductCategoryId",
+          "Type": "Int32",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": true,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 0,
+          "ForeignKeys": null
+        },
+        "ModifiedDate": {
+          "Name": "ModifiedDate",
+          "Type": "DateTime",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 1,
+          "ForeignKeys": null
+        },
+        "Name": {
+          "Name": "Name",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 50,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 2,
+          "ForeignKeys": null
+        },
+        "ParentProductCategoryId": {
+          "Name": "ParentProductCategoryId",
+          "Type": "Nullable\u00601",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": true,
+          "ExternalId": false,
+          "Order": 3,
+          "ForeignKeys": [
+            {
+              "DefinitionName": "ProductCategory",
+              "PropertyName": "ProductCategoryId",
+              "CompositePropertyNames": [
+                "ProductCategoryId"
+              ]
+            }
+          ]
+        },
+        "Rowguid": {
+          "Name": "Rowguid",
+          "Type": "Guid",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 4,
+          "ForeignKeys": null
+        }
+      }
+    },
+    "ProductDescription": {
+      "Name": "ProductDescription",
+      "Type": null,
+      "Comment": null,
+      "Properties": {
+        "ProductDescriptionId": {
+          "Name": "ProductDescriptionId",
+          "Type": "Int32",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": true,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 0,
+          "ForeignKeys": null
+        },
+        "Description": {
+          "Name": "Description",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 400,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 1,
+          "ForeignKeys": null
+        },
+        "ModifiedDate": {
+          "Name": "ModifiedDate",
+          "Type": "DateTime",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 2,
+          "ForeignKeys": null
+        },
+        "Rowguid": {
+          "Name": "Rowguid",
+          "Type": "Guid",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 3,
+          "ForeignKeys": null
+        }
+      }
+    },
+    "ProductModel": {
+      "Name": "ProductModel",
+      "Type": null,
+      "Comment": null,
+      "Properties": {
+        "ProductModelId": {
+          "Name": "ProductModelId",
+          "Type": "Int32",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": true,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 0,
+          "ForeignKeys": null
+        },
+        "CatalogDescription": {
+          "Name": "CatalogDescription",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 1,
+          "ForeignKeys": null
+        },
+        "ModifiedDate": {
+          "Name": "ModifiedDate",
+          "Type": "DateTime",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 2,
+          "ForeignKeys": null
+        },
+        "Name": {
+          "Name": "Name",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 50,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 3,
+          "ForeignKeys": null
+        },
+        "Rowguid": {
+          "Name": "Rowguid",
+          "Type": "Guid",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 4,
+          "ForeignKeys": null
+        }
+      }
+    },
+    "ProductModelProductDescription": {
+      "Name": "ProductModelProductDescription",
+      "Type": null,
+      "Comment": null,
+      "Properties": {
+        "ProductModelId": {
+          "Name": "ProductModelId",
+          "Type": "Int32",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": true,
+          "AutoIncrement": false,
+          "Fk": true,
+          "ExternalId": false,
+          "Order": 0,
+          "ForeignKeys": [
+            {
+              "DefinitionName": "ProductModel",
+              "PropertyName": "ProductModelId",
+              "CompositePropertyNames": [
+                "ProductModelId"
+              ]
+            }
+          ]
+        },
+        "ProductDescriptionId": {
+          "Name": "ProductDescriptionId",
+          "Type": "Int32",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": true,
+          "AutoIncrement": false,
+          "Fk": true,
+          "ExternalId": false,
+          "Order": 1,
+          "ForeignKeys": [
+            {
+              "DefinitionName": "ProductDescription",
+              "PropertyName": "ProductDescriptionId",
+              "CompositePropertyNames": [
+                "ProductDescriptionId"
+              ]
+            }
+          ]
+        },
+        "Culture": {
+          "Name": "Culture",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 6,
+          "Pk": true,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 2,
+          "ForeignKeys": null
+        },
+        "ModifiedDate": {
+          "Name": "ModifiedDate",
+          "Type": "DateTime",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 3,
+          "ForeignKeys": null
+        },
+        "Rowguid": {
+          "Name": "Rowguid",
+          "Type": "Guid",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 4,
+          "ForeignKeys": null
+        }
+      }
+    },
+    "SalesOrderDetail": {
+      "Name": "SalesOrderDetail",
+      "Type": null,
+      "Comment": null,
+      "Properties": {
+        "SalesOrderId": {
+          "Name": "SalesOrderId",
+          "Type": "Int32",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": true,
+          "AutoIncrement": false,
+          "Fk": true,
+          "ExternalId": false,
+          "Order": 0,
+          "ForeignKeys": [
+            {
+              "DefinitionName": "SalesOrderHeader",
+              "PropertyName": "SalesOrderId",
+              "CompositePropertyNames": [
+                "SalesOrderId"
+              ]
+            }
+          ]
+        },
+        "SalesOrderDetailId": {
+          "Name": "SalesOrderDetailId",
+          "Type": "Int32",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": true,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 1,
+          "ForeignKeys": null
+        },
+        "LineTotal": {
+          "Name": "LineTotal",
+          "Type": "Decimal",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 2,
+          "ForeignKeys": null
+        },
+        "ModifiedDate": {
+          "Name": "ModifiedDate",
+          "Type": "DateTime",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 3,
+          "ForeignKeys": null
+        },
+        "OrderQty": {
+          "Name": "OrderQty",
+          "Type": "Int16",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 4,
+          "ForeignKeys": null
+        },
+        "ProductId": {
+          "Name": "ProductId",
+          "Type": "Int32",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": true,
+          "ExternalId": false,
+          "Order": 5,
+          "ForeignKeys": [
+            {
+              "DefinitionName": "Product",
+              "PropertyName": "ProductId",
+              "CompositePropertyNames": [
+                "ProductId"
+              ]
+            }
+          ]
+        },
+        "Rowguid": {
+          "Name": "Rowguid",
+          "Type": "Guid",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 6,
+          "ForeignKeys": null
+        },
+        "UnitPrice": {
+          "Name": "UnitPrice",
+          "Type": "Decimal",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 7,
+          "ForeignKeys": null
+        },
+        "UnitPriceDiscount": {
+          "Name": "UnitPriceDiscount",
+          "Type": "Decimal",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 8,
+          "ForeignKeys": null
+        }
+      }
+    },
+    "SalesOrderHeader": {
+      "Name": "SalesOrderHeader",
+      "Type": null,
+      "Comment": null,
+      "Properties": {
+        "SalesOrderId": {
+          "Name": "SalesOrderId",
+          "Type": "Int32",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": true,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 0,
+          "ForeignKeys": null
+        },
+        "AccountNumber": {
+          "Name": "AccountNumber",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 15,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 1,
+          "ForeignKeys": null
+        },
+        "BillToAddressId": {
+          "Name": "BillToAddressId",
+          "Type": "Nullable\u00601",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": true,
+          "ExternalId": false,
+          "Order": 2,
+          "ForeignKeys": [
+            {
+              "DefinitionName": "Address",
+              "PropertyName": "AddressId",
+              "CompositePropertyNames": [
+                "AddressId"
+              ]
+            }
+          ]
+        },
+        "Comment": {
+          "Name": "Comment",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 3,
+          "ForeignKeys": null
+        },
+        "CreditCardApprovalCode": {
+          "Name": "CreditCardApprovalCode",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 15,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 4,
+          "ForeignKeys": null
+        },
+        "CustomerId": {
+          "Name": "CustomerId",
+          "Type": "Int32",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": true,
+          "ExternalId": false,
+          "Order": 5,
+          "ForeignKeys": [
+            {
+              "DefinitionName": "Customer",
+              "PropertyName": "CustomerId",
+              "CompositePropertyNames": [
+                "CustomerId"
+              ]
+            }
+          ]
+        },
+        "DueDate": {
+          "Name": "DueDate",
+          "Type": "DateTime",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 6,
+          "ForeignKeys": null
+        },
+        "Freight": {
+          "Name": "Freight",
+          "Type": "Decimal",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 7,
+          "ForeignKeys": null
+        },
+        "ModifiedDate": {
+          "Name": "ModifiedDate",
+          "Type": "DateTime",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 8,
+          "ForeignKeys": null
+        },
+        "OnlineOrderFlag": {
+          "Name": "OnlineOrderFlag",
+          "Type": "Nullable\u00601",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 9,
+          "ForeignKeys": null
+        },
+        "OrderDate": {
+          "Name": "OrderDate",
+          "Type": "DateTime",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 10,
+          "ForeignKeys": null
+        },
+        "PurchaseOrderNumber": {
+          "Name": "PurchaseOrderNumber",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 25,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 11,
+          "ForeignKeys": null
+        },
+        "RevisionNumber": {
+          "Name": "RevisionNumber",
+          "Type": "Byte",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 12,
+          "ForeignKeys": null
+        },
+        "Rowguid": {
+          "Name": "Rowguid",
+          "Type": "Guid",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 13,
+          "ForeignKeys": null
+        },
+        "SalesOrderNumber": {
+          "Name": "SalesOrderNumber",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 25,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 14,
+          "ForeignKeys": null
+        },
+        "ShipDate": {
+          "Name": "ShipDate",
+          "Type": "Nullable\u00601",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 15,
+          "ForeignKeys": null
+        },
+        "ShipMethod": {
+          "Name": "ShipMethod",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 50,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 16,
+          "ForeignKeys": null
+        },
+        "ShipToAddressId": {
+          "Name": "ShipToAddressId",
+          "Type": "Nullable\u00601",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": true,
+          "ExternalId": false,
+          "Order": 17,
+          "ForeignKeys": [
+            {
+              "DefinitionName": "Address",
+              "PropertyName": "AddressId",
+              "CompositePropertyNames": [
+                "AddressId"
+              ]
+            }
+          ]
+        },
+        "Status": {
+          "Name": "Status",
+          "Type": "Byte",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 18,
+          "ForeignKeys": null
+        },
+        "SubTotal": {
+          "Name": "SubTotal",
+          "Type": "Decimal",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 19,
+          "ForeignKeys": null
+        },
+        "TaxAmt": {
+          "Name": "TaxAmt",
+          "Type": "Decimal",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 20,
+          "ForeignKeys": null
+        },
+        "TotalDue": {
+          "Name": "TotalDue",
+          "Type": "Decimal",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 21,
+          "ForeignKeys": null
+        }
+      }
+    },
+    "VGetAllCategories": {
+      "Name": "VGetAllCategories",
+      "Type": null,
+      "Comment": null,
+      "Properties": {
+        "ParentProductCategoryName": {
+          "Name": "ParentProductCategoryName",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 50,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 0,
+          "ForeignKeys": null
+        },
+        "ProductCategoryId": {
+          "Name": "ProductCategoryId",
+          "Type": "Nullable\u00601",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 1,
+          "ForeignKeys": null
+        },
+        "ProductCategoryName": {
+          "Name": "ProductCategoryName",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 50,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 2,
+          "ForeignKeys": null
+        }
+      }
+    },
+    "VProductAndDescription": {
+      "Name": "VProductAndDescription",
+      "Type": null,
+      "Comment": null,
+      "Properties": {
+        "Culture": {
+          "Name": "Culture",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 6,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 0,
+          "ForeignKeys": null
+        },
+        "Description": {
+          "Name": "Description",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 400,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 1,
+          "ForeignKeys": null
+        },
+        "Name": {
+          "Name": "Name",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 50,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 2,
+          "ForeignKeys": null
+        },
+        "ProductId": {
+          "Name": "ProductId",
+          "Type": "Int32",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 3,
+          "ForeignKeys": null
+        },
+        "ProductModel": {
+          "Name": "ProductModel",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 50,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 4,
+          "ForeignKeys": null
+        }
+      }
+    },
+    "VProductModelCatalogDescription": {
+      "Name": "VProductModelCatalogDescription",
+      "Type": null,
+      "Comment": null,
+      "Properties": {
+        "BikeFrame": {
+          "Name": "BikeFrame",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 0,
+          "ForeignKeys": null
+        },
+        "Color": {
+          "Name": "Color",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 256,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 1,
+          "ForeignKeys": null
+        },
+        "Copyright": {
+          "Name": "Copyright",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 30,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 2,
+          "ForeignKeys": null
+        },
+        "Crankset": {
+          "Name": "Crankset",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 256,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 3,
+          "ForeignKeys": null
+        },
+        "MaintenanceDescription": {
+          "Name": "MaintenanceDescription",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 256,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 4,
+          "ForeignKeys": null
+        },
+        "Manufacturer": {
+          "Name": "Manufacturer",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 5,
+          "ForeignKeys": null
+        },
+        "Material": {
+          "Name": "Material",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 256,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 6,
+          "ForeignKeys": null
+        },
+        "ModifiedDate": {
+          "Name": "ModifiedDate",
+          "Type": "DateTime",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 7,
+          "ForeignKeys": null
+        },
+        "Name": {
+          "Name": "Name",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 50,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 8,
+          "ForeignKeys": null
+        },
+        "NoOfYears": {
+          "Name": "NoOfYears",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 256,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 9,
+          "ForeignKeys": null
+        },
+        "Pedal": {
+          "Name": "Pedal",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 256,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 10,
+          "ForeignKeys": null
+        },
+        "PictureAngle": {
+          "Name": "PictureAngle",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 256,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 11,
+          "ForeignKeys": null
+        },
+        "PictureSize": {
+          "Name": "PictureSize",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 256,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 12,
+          "ForeignKeys": null
+        },
+        "ProductLine": {
+          "Name": "ProductLine",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 256,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 13,
+          "ForeignKeys": null
+        },
+        "ProductModelId": {
+          "Name": "ProductModelId",
+          "Type": "Int32",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 14,
+          "ForeignKeys": null
+        },
+        "ProductPhotoId": {
+          "Name": "ProductPhotoId",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 256,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 15,
+          "ForeignKeys": null
+        },
+        "ProductUrl": {
+          "Name": "ProductUrl",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 256,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 16,
+          "ForeignKeys": null
+        },
+        "RiderExperience": {
+          "Name": "RiderExperience",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 1024,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 17,
+          "ForeignKeys": null
+        },
+        "Rowguid": {
+          "Name": "Rowguid",
+          "Type": "Guid",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 18,
+          "ForeignKeys": null
+        },
+        "Saddle": {
+          "Name": "Saddle",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 256,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 19,
+          "ForeignKeys": null
+        },
+        "Style": {
+          "Name": "Style",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 256,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 20,
+          "ForeignKeys": null
+        },
+        "Summary": {
+          "Name": "Summary",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 21,
+          "ForeignKeys": null
+        },
+        "WarrantyDescription": {
+          "Name": "WarrantyDescription",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 256,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 22,
+          "ForeignKeys": null
+        },
+        "WarrantyPeriod": {
+          "Name": "WarrantyPeriod",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 256,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 23,
+          "ForeignKeys": null
+        },
+        "Wheel": {
+          "Name": "Wheel",
+          "Type": "String",
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": 256,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 24,
+          "ForeignKeys": null
+        }
+      }
+    }
+  }
+}

@@ -21,7 +21,20 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Platz.ObjectBuilder.Blazor"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{65DA840A-B566-4CCF-BF3F-373D31F907D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platz.ObjectBuilder.Tests", "Platz.ObjectBuilder.Tests\Platz.ObjectBuilder.Tests.csproj", "{51927228-452D-41E5-B94F-5DC53C1191A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Platz.ObjectBuilder.Tests", "Platz.ObjectBuilder.Tests\Platz.ObjectBuilder.Tests.csproj", "{51927228-452D-41E5-B94F-5DC53C1191A2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StoreData", "StoreData", "{F2989CDC-C8FC-4595-9C22-A45041CEC41B}"
+	ProjectSection(SolutionItems) = preProject
+		StoreData\GetCustList.json = StoreData\GetCustList.json
+		StoreData\GetCustomerList.json = StoreData\GetCustomerList.json
+		StoreData\Schema.json = StoreData\Schema.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SqlForms", "SqlForms", "{FECD7F4C-A673-4945-B11E-68DA78A27DD6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ObjectBuilder", "ObjectBuilder", "{2859855A-5EFC-4AE0-AF18-AA82EA12E158}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platz.ObjectBuilder.Templates", "Platz.ObjectBuilder.Templates\Platz.ObjectBuilder.Templates.csproj", "{92A9C8E4-2110-4B00-BC10-A53468BE8B51}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,13 +78,23 @@ Global
 		{51927228-452D-41E5-B94F-5DC53C1191A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51927228-452D-41E5-B94F-5DC53C1191A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51927228-452D-41E5-B94F-5DC53C1191A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92A9C8E4-2110-4B00-BC10-A53468BE8B51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92A9C8E4-2110-4B00-BC10-A53468BE8B51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92A9C8E4-2110-4B00-BC10-A53468BE8B51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92A9C8E4-2110-4B00-BC10-A53468BE8B51}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D79D130E-B462-4BB8-867F-B13F89808127} = {65DA840A-B566-4CCF-BF3F-373D31F907D3}
+		{60839916-A868-42AA-A794-CF0DA378D439} = {FECD7F4C-A673-4945-B11E-68DA78A27DD6}
+		{6FD9FA96-65CA-47D0-9FC9-385FB97C6C9E} = {FECD7F4C-A673-4945-B11E-68DA78A27DD6}
+		{6EDFF8D8-643A-4DC5-95F1-BFA87E80960D} = {FECD7F4C-A673-4945-B11E-68DA78A27DD6}
+		{A2AD538B-327A-4BDC-AC8F-2EACED477776} = {2859855A-5EFC-4AE0-AF18-AA82EA12E158}
+		{CE7C1144-4163-44B4-BA5C-AB58C2A1FD50} = {2859855A-5EFC-4AE0-AF18-AA82EA12E158}
 		{51927228-452D-41E5-B94F-5DC53C1191A2} = {65DA840A-B566-4CCF-BF3F-373D31F907D3}
+		{92A9C8E4-2110-4B00-BC10-A53468BE8B51} = {2859855A-5EFC-4AE0-AF18-AA82EA12E158}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F9846F56-7C10-43F1-8EC0-0BDAF175072E}

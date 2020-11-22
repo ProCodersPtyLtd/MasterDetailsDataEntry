@@ -21,4 +21,20 @@
     <ProjectReference Include="..\Platz.SqlForms\Platz.SqlForms.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="DataServices\PlatzDataService.tt">
+      <LastGenOutput>PlatzDataService.txt</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="DataServices\PlatzDataService.txt">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PlatzDataService.tt</DependentUpon>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
 </Project>

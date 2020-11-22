@@ -1,0 +1,152 @@
+﻿using System.Text.Json;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Linq;
+
+namespace Platz.ObjectBuilder
+{
+    public class JsonStoreSchemaParser : IStoreSchemaSerializer
+    {
+        public StoreSchema ReadSchema(string json)
+        {
+            var data = JsonSerializer.Deserialize<StoreSchema>(json);
+
+            foreach(var tk in data.Definitions.Keys)
+            {
+                var table = data.Definitions[tk];
+                table.Name = tk;
+
+                foreach(var pk in table.Properties.Keys)
+                {
+                    table.Properties[pk].Name = pk;
+                }
+            }
+
+            return data;
+        }
+
+        public StoreQuery ReadQuery(string json)
+        {
+            var data = JsonSerializer.Deserialize<StoreQuery>(json);
+            var query = data.Query;
+
+            // populate key props in Dictionaries 
+
+            if (query.Fields != null)
+            {
+                foreach (var fk in query.Fields.Keys)
+                {
+                    var f = query.Fields[fk];
+                    f.FieldAlias = fk;
+                }
+            }
+
+            if (query.Tables != null)
+            {
+                foreach (var tk in query.Tables.Keys)
+                {
+                    var table = query.Tables[tk];
+                    table.ObjectAlias = tk;
+                }
+            }
+
+            if (query.SubQueries != null)
+            {
+                foreach (var sk in query.SubQueries.Keys)
+                {
+                    var q = query.SubQueries[sk];
+                    q.QueryAlias = sk;
+                }
+            }
+
+            return data;
+        }
+
+        public TemplateJoin ReadFrom(StoreQuery query, StoreSchema schema)
+        {
+            TemplateJoin result;
+            var join = query.Query.Joins.FirstOrDefault();
+
+            if (join != null)
+            {
+                var table = query.Query.Tables[join.LeftObjectAlias].TableName;
+                result = new TemplateJoin { LeftField = join.LeftField, LeftObjectAlias = join.LeftObjectAlias, LeftObject = table };
+            }
+            else
+            {
+                var table = query.Query.Tables.Values.First();
+                result = new TemplateJoin { LeftObjectAlias = table.ObjectAlias, LeftObject = table.TableName };
+            }
+
+            return result;
+        }
+
+        public List<TemplateJoin> ReadJoins(StoreQuery query, StoreSchema schema)
+        {
+            var result = new List<TemplateJoin>();
+
+            foreach (var join in query.Query.Joins)
+            {
+                var leftTable = query.Query.Tables[join.LeftObjectAlias].TableName;
+                var rightTable = query.Query.Tables[join.RightObjectAlias].TableName;
+
+                var tj = new TemplateJoin
+                {
+                    LeftField = join.LeftField,
+                    LeftObjectAlias = join.LeftObjectAlias,
+                    LeftObject = leftTable,
+                    RightField = join.RightField,
+                    RightObjectAlias = join.RightObjectAlias,
+                    RightObject = rightTable
+                };
+
+                result.Add(tj);
+            }
+
+            return result;
+        }
+
+        public string QueryExprToString(QueryExpression expr, Dictionary<string, string> operatorsMap = null)
+        {
+            if (expr == null)
+            {
+                return "";
+            }
+
+            if (expr.QueryField != null)
+            {
+                return $"{expr.QueryField.Field.ObjectAlias}.{expr.QueryField.Field.FieldName}";
+            }
+            else if (expr.Param != null)
+            {
+                return expr.Param;
+            }
+            else if (expr.Value != null)
+            {
+                return expr.Value.ToString();
+            }
+
+            var left = expr.Left.Operator == null ? $"{QueryExprToString(expr.Left, operatorsMap)}" : $"({QueryExprToString(expr.Left, operatorsMap)})";
+            var right = expr.Right.Operator == null ? $"{QueryExprToString(expr.Right, operatorsMap)}" : $"({QueryExprToString(expr.Right, operatorsMap)})";
+
+            var mappedOperator = expr.Operator;
+
+            if (operatorsMap != null && operatorsMap.ContainsKey(mappedOperator.ToLower()))
+            {
+                mappedOperator = operatorsMap[mappedOperator.ToLower()];
+            }
+
+            var result = $"{left} {mappedOperator} {right}";
+            return result;
+        }
+
+        public static Dictionary<string, string> CSharpOperatorsMap = new Dictionary<string, string>()
+        {
+            { "or", "||" },
+            { "and", "&&" },
+            { "=", "==" },
+            { "<>", "!=" },
+        };
+    }
+}
