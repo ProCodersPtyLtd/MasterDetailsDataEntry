@@ -23,13 +23,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{65DA840A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Platz.ObjectBuilder.Tests", "Platz.ObjectBuilder.Tests\Platz.ObjectBuilder.Tests.csproj", "{51927228-452D-41E5-B94F-5DC53C1191A2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StoreData", "StoreData", "{F2989CDC-C8FC-4595-9C22-A45041CEC41B}"
-	ProjectSection(SolutionItems) = preProject
-		StoreData\GetCustList.json = StoreData\GetCustList.json
-		StoreData\GetCustomerList.json = StoreData\GetCustomerList.json
-		StoreData\Schema.json = StoreData\Schema.json
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SqlForms", "SqlForms", "{FECD7F4C-A673-4945-B11E-68DA78A27DD6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ObjectBuilder", "ObjectBuilder", "{2859855A-5EFC-4AE0-AF18-AA82EA12E158}"

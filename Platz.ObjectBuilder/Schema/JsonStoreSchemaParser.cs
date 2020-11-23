@@ -63,6 +63,17 @@ namespace Platz.ObjectBuilder
             return data;
         }
 
+        public List<StoreQueryParameter> ReadParameters(StoreQuery query)
+        {
+            if (query.Query.Parameters == null)
+            {
+                return new List<StoreQueryParameter>();
+            }
+
+            var result = query.Query.Parameters.Values.Select(p => new StoreQueryParameter { Name = p.Name.Replace("@", ""), Type = p.Type }).ToList();
+            return result;
+        }
+
         public TemplateJoin ReadFrom(StoreQuery query, StoreSchema schema)
         {
             TemplateJoin result;
@@ -85,21 +96,42 @@ namespace Platz.ObjectBuilder
         public List<TemplateJoin> ReadJoins(StoreQuery query, StoreSchema schema)
         {
             var result = new List<TemplateJoin>();
+            var rightTables = new HashSet<string>();
 
             foreach (var join in query.Query.Joins)
             {
                 var leftTable = query.Query.Tables[join.LeftObjectAlias].TableName;
                 var rightTable = query.Query.Tables[join.RightObjectAlias].TableName;
+                TemplateJoin tj;
 
-                var tj = new TemplateJoin
+                if (rightTables.Contains(join.RightObjectAlias))
                 {
-                    LeftField = join.LeftField,
-                    LeftObjectAlias = join.LeftObjectAlias,
-                    LeftObject = leftTable,
-                    RightField = join.RightField,
-                    RightObjectAlias = join.RightObjectAlias,
-                    RightObject = rightTable
-                };
+                    // flip
+                    tj = new TemplateJoin
+                    {
+                        LeftField = join.RightField,
+                        LeftObjectAlias = join.RightObjectAlias,
+                        LeftObject = rightTable,
+
+                        RightField = join.LeftField,
+                        RightObjectAlias = join.LeftObjectAlias,
+                        RightObject = leftTable
+                    };
+                }
+                else
+                {
+                    tj = new TemplateJoin
+                    {
+                        LeftField = join.LeftField,
+                        LeftObjectAlias = join.LeftObjectAlias,
+                        LeftObject = leftTable,
+                        RightField = join.RightField,
+                        RightObjectAlias = join.RightObjectAlias,
+                        RightObject = rightTable
+                    };
+
+                    rightTables.Add(join.RightObjectAlias);
+                }
 
                 result.Add(tj);
             }
@@ -120,7 +152,7 @@ namespace Platz.ObjectBuilder
             }
             else if (expr.Param != null)
             {
-                return expr.Param;
+                return expr.Param.Replace("@", "");
             }
             else if (expr.Value != null)
             {

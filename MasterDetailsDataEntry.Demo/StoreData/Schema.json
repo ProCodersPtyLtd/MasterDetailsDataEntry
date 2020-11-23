@@ -500,7 +500,7 @@
         },
         "ErrorLine": {
           "Name": "ErrorLine",
-          "Type": "Nullable\u00601",
+          "Type": "Int32?",
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -552,7 +552,7 @@
         },
         "ErrorSeverity": {
           "Name": "ErrorSeverity",
-          "Type": "Nullable\u00601",
+          "Type": "Int32?",
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -565,7 +565,7 @@
         },
         "ErrorState": {
           "Name": "ErrorState",
-          "Type": "Nullable\u00601",
+          "Type": "Int32?",
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -637,7 +637,7 @@
         },
         "DiscontinuedDate": {
           "Name": "DiscontinuedDate",
-          "Type": "Nullable\u00601",
+          "Type": "DateTime?",
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -689,7 +689,7 @@
         },
         "ProductCategoryId": {
           "Name": "ProductCategoryId",
-          "Type": "Nullable\u00601",
+          "Type": "Int32?",
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -710,7 +710,7 @@
         },
         "ProductModelId": {
           "Name": "ProductModelId",
-          "Type": "Nullable\u00601",
+          "Type": "Int32?",
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -757,7 +757,7 @@
         },
         "SellEndDate": {
           "Name": "SellEndDate",
-          "Type": "Nullable\u00601",
+          "Type": "DateTime?",
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -835,7 +835,7 @@
         },
         "Weight": {
           "Name": "Weight",
-          "Type": "Nullable\u00601",
+          "Type": "Decimal?",
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -894,7 +894,7 @@
         },
         "ParentProductCategoryId": {
           "Name": "ParentProductCategoryId",
-          "Type": "Nullable\u00601",
+          "Type": "Int32?",
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1320,7 +1320,7 @@
         },
         "BillToAddressId": {
           "Name": "BillToAddressId",
-          "Type": "Nullable\u00601",
+          "Type": "Int32?",
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1427,7 +1427,7 @@
         },
         "OnlineOrderFlag": {
           "Name": "OnlineOrderFlag",
-          "Type": "Nullable\u00601",
+          "Type": "Boolean?",
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1505,7 +1505,7 @@
         },
         "ShipDate": {
           "Name": "ShipDate",
-          "Type": "Nullable\u00601",
+          "Type": "DateTime?",
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1531,7 +1531,7 @@
         },
         "ShipToAddressId": {
           "Name": "ShipToAddressId",
-          "Type": "Nullable\u00601",
+          "Type": "Int32?",
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1624,7 +1624,7 @@
         },
         "ProductCategoryId": {
           "Name": "ProductCategoryId",
-          "Type": "Nullable\u00601",
+          "Type": "Int32?",
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,

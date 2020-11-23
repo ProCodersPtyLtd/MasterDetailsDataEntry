@@ -1,0 +1,32 @@
+﻿@using Microsoft.JSInterop
+
+@inject IJSRuntime JsRuntime
+@inject IDataEntryProvider _dataEntryProvider
+
+@namespace Platz.SqlForms
+
+<div class="DetailsFormControl">
+</div>
+
+@code
+{
+    [Parameter]
+    public Type FormType { get; set; }
+
+    [Parameter]
+    public object[] ServiceParameters { get; set; }
+
+    [Parameter]
+    public EventCallback<ItemButtonClickedArgs> ItemButtonClicked { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+    }
+
+}
