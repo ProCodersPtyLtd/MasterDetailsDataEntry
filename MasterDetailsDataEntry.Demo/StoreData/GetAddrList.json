@@ -1,0 +1,144 @@
+{
+  "Name": "GetAddrList",
+  "DataService": "MyDataService",
+  "Namespace": "Default",
+  "ReturnTypeName": "Addr",
+  "SchemaName": null,
+  "SchemaVersion": null,
+  "Tags": null,
+  "Query": {
+    "QueryAlias": null,
+    "Comment": null,
+    "Parameters": {
+      "@id": {
+        "Name": "@id",
+        "Type": "Int32"
+      }
+    },
+    "Fields": {
+      "AddressId": {
+        "FieldAlias": "AddressId",
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "AddressId"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "AddressLine1": {
+        "FieldAlias": "AddressLine1",
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "AddressLine1"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "AddressLine2": {
+        "FieldAlias": "AddressLine2",
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "AddressLine2"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "City": {
+        "FieldAlias": "City",
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "City"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "CountryRegion": {
+        "FieldAlias": "CountryRegion",
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "CountryRegion"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "ModifiedDate": {
+        "FieldAlias": "ModifiedDate",
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "ModifiedDate"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "PostalCode": {
+        "FieldAlias": "PostalCode",
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "PostalCode"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "Rowguid": {
+        "FieldAlias": "Rowguid",
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "Rowguid"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "StateProvince": {
+        "FieldAlias": "StateProvince",
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "StateProvince"
+        },
+        "Operation": null,
+        "RawExpression": null
+      }
+    },
+    "Tables": {
+      "a": {
+        "ObjectAlias": "a",
+        "TableName": "Address"
+      }
+    },
+    "SubQueries": null,
+    "Joins": [],
+    "GroupByFields": null,
+    "Having": null,
+    "Where": {
+      "Expression": {
+        "Value": null,
+        "QueryField": null,
+        "Param": null,
+        "Left": {
+          "Value": null,
+          "QueryField": {
+            "FieldAlias": null,
+            "Field": {
+              "ObjectAlias": "a",
+              "FieldName": "AddressId"
+            },
+            "Operation": null,
+            "RawExpression": null
+          },
+          "Param": null,
+          "Left": null,
+          "Operator": null,
+          "Right": null
+        },
+        "Operator": "=",
+        "Right": {
+          "Value": null,
+          "QueryField": null,
+          "Param": "@id",
+          "Left": null,
+          "Operator": null,
+          "Right": null
+        }
+      }
+    }
+  }
+}

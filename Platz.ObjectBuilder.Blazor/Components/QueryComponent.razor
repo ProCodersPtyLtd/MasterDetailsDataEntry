@@ -6,7 +6,7 @@
 
     <CascadingValue Value="@_queryController">
 
-        <QuerySettingsComponent StoreDataPath="@_fullStoreDataPath"/>
+        <QuerySettingsComponent StoreDataPath="@_fullStoreDataPath" DataService="@DataService" Namespace="@Namespace" />
 
         <table style="width: 100%">
             <tr>
@@ -41,6 +41,12 @@
 
         [Parameter]
         public string StoreDataPath { get; set; }
+
+        [Parameter]
+        public string Namespace { get; set; }
+
+        [Parameter]
+        public string DataService { get; set; }
 
         private string _fullStoreDataPath { get; set; }
 

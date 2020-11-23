@@ -6,10 +6,10 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.IO" #>
-<#@ output extension=".txt" #>
+<#@ output extension=".cs" #>
 <#@ import namespace="Platz.ObjectBuilder" #>
 <# // ================================================================ Set JsonStorePath here, relative to solution folder ================================== #>
-<#      var JsonStorePath = @"StoreData"; #>
+<#      var JsonStorePath = @"MasterDetailsDataEntry.Demo\StoreData"; #>
 <# // ======================================================================================================================================================= #>
 <# 
         StoreSchema Schema = null;
@@ -27,6 +27,10 @@ using System.Text;
 using System.Linq;
 using Platz.ObjectBuilder;
 
+<#
+    if (Queries != null && Queries.Count > 0)
+    {
+#>
 namespace <#=Queries.First().Namespace#>
 {
     #region Interface 
@@ -36,9 +40,18 @@ namespace <#=Queries.First().Namespace#>
 <#
         foreach (var query in Queries)
         {
+            if (query.Query.Parameters != null && query.Query.Parameters.Any())
+            {
+#>
+        List<<#=query.ReturnTypeName#>> <#=query.Name#>(params object[] parameters);
+<#
+            }
+            else
+            {
 #>
         List<<#=query.ReturnTypeName#>> <#=query.Name#>();
 <#
+            }
         }
 #>
     }
@@ -49,15 +62,39 @@ namespace <#=Queries.First().Namespace#>
 
     public partial class <#=Queries.First().DataService#> : DataServiceBase<<#=Schema.DbContextName#>>, I<#=Queries.First().DataService#>
     {
-<#
+<# 
         foreach (var query in Queries)
         {
             var from = Parser.ReadFrom(query, Schema);
             var joins = Parser.ReadJoins(query, Schema);
             var where = Parser.QueryExprToString(query.Query.Where.Expression, JsonStoreSchemaParser.CSharpOperatorsMap);
+            var parameters = Parser.ReadParameters(query);
+
+            if (query.Query.Parameters != null && query.Query.Parameters.Any())
+            {
+#>
+        public List<<#=query.ReturnTypeName#>> <#=query.Name#>(params object[] parameters)
+        {
+<#
+                for (int i = 0; i < parameters.Count; i++)
+                {
+                    var p = parameters[i];
+#>
+            var <#=p.Name#> = (<#=p.Type#>)parameters[<#=i#>];
+<#
+                }
+#>
+
+<#
+            }
+            else
+            {
 #>
         public List<<#=query.ReturnTypeName#>> <#=query.Name#>()
         {
+<#
+            }
+#>
             using (var db = GetDbContext())
             {
                 var query =
@@ -102,7 +139,6 @@ namespace <#=Queries.First().Namespace#>
 
     #endregion
 
-
     #region Entities
 
 <#
@@ -130,6 +166,7 @@ namespace <#=Queries.First().Namespace#>
     #endregion
 }
 <#
+    }
         void Generate()
         {
             var parser = new JsonStoreSchemaParser();

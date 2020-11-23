@@ -16,7 +16,13 @@ namespace Platz.ObjectBuilder.Tests
         {
             var logic = new GenerationLogic();
             logic.Void();
+
+            Run(new object[] { });
+            Run();
         }
+
+        private void Run(params object[] vs)
+        { }
 
         private void SimpleQuery()
         {

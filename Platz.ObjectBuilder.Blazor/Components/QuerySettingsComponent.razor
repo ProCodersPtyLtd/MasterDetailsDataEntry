@@ -4,7 +4,8 @@
 <div style="width: 100%">
     <p>
         <div class="float">
-            <button class="btn btn-light" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            <button class="btn btn-light" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample"
+                    @onclick="@(() => SettingsClick())">
                 <span class="oi oi-ellipses"></span>
             </button>
             <b>Settings: </b>
@@ -15,7 +16,7 @@
     </p>
     <div class="collapse" id="collapseExample">
         <div class="card card-body">
-            <table>
+            <table cellpadding="10">
                 <tr>
                     <td style="vertical-align: top;">
                         <label>Data Service name</label>
@@ -32,6 +33,19 @@
                     </td>
                     <td style="width: 300px; vertical-align: top;">
                         <label>Parameters</label>
+
+                        @if (_query?.Query?.Parameters != null)
+                        {
+                            <table cellpadding="3">
+                                @foreach (var p in _query.Query.Parameters.Values)
+                                {
+                                <tr>
+                                    <td>@p.Name</td>
+                                    <td>@p.Type</td>
+                                </tr>
+                                }
+                            </table>
+                        }
                     </td>
                     <td style="width: 100%; vertical-align: top;">
                         <div class="plk-flex">
@@ -71,6 +85,22 @@
     [Parameter]
     public string StoreDataPath { get; set; }
 
+    [Parameter]
+    public string Namespace { get; set; }
+
+    [Parameter]
+    public string DataService { get; set; }
+
+    private StoreQuery _query;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        QueryController.StoreParameters.Namespace = Namespace;
+        QueryController.StoreParameters.DataService = DataService;
+    }
+
     private void LoadClick(MouseEventArgs args)
     { }
 
@@ -87,6 +117,12 @@
     {
         QueryController.StoreParameters.QueryReturnType = (string)args.Value;
         QueryController.StoreParameters.QueryName = $"Get{QueryController.StoreParameters.QueryReturnType}List";
+    }
+
+    private void SettingsClick()
+    {
+        _query = QueryController.GenerateQuery();
+        StateHasChanged();
     }
 
     private void SettingsRightClick()

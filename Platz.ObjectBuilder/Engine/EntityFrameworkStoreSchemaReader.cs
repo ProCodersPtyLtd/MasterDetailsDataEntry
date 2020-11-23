@@ -18,7 +18,7 @@ namespace Platz.ObjectBuilder.Engine
                 throw new Exception($"EntityFrameworkStoreSchemaReader expects EntityFrameworkStoreSchemaReaderParameters.");
             }
 
-            var schema = new StoreSchema { Definitions = new Dictionary<string, StoreDefinition>() };
+            var schema = new StoreSchema { Definitions = new Dictionary<string, StoreDefinition>(), DbContextName = dr.DbContextType.FullName };
 
             using (var db = GetDbContext(dr.DbContextType))
             {
@@ -39,7 +39,7 @@ namespace Platz.ObjectBuilder.Engine
                         {
                             Name = prop.Name,
                             Order = i,
-                            Type = prop.ClrType.Name,
+                            Type = GetTypeString(prop.ClrType),
                             Pk = prop.IsPrimaryKey(),
                             Fk = prop.IsForeignKey(),
                             MaxLength = prop.GetMaxLength(),
@@ -63,6 +63,16 @@ namespace Platz.ObjectBuilder.Engine
             }
 
             return schema;
+        }
+
+        private string GetTypeString(Type source)
+        {
+            if (source.Name == "Nullable`1")
+            {
+                return Nullable.GetUnderlyingType(source).Name + "?";
+            }
+
+            return source.Name;
         }
 
         private DbContext GetDbContext(Type dbContextType)

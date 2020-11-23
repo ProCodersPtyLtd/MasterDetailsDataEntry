@@ -150,6 +150,9 @@ namespace Platz.ObjectBuilder.Blazor
                 var storeExpr = QueryExpressionHelper.ReadFromSqlExpr(expr);
                 result.Query.Where = new StoreQueryCondition { Expression = storeExpr };
 
+                var paramsDict = QueryExpressionHelper.GetParamsFromSqlExpr(expr);
+                result.Query.Parameters = paramsDict.ToDictionary(d => d.Key, d => new StoreQueryParameter { Name = d.Key, Type = FindStoreProperty(d.Value)?.Type });
+
                 return result;
             }
             catch(Exception exc)
@@ -159,7 +162,21 @@ namespace Platz.ObjectBuilder.Blazor
             }
         }
 
-        
+        private StoreProperty FindStoreProperty(string expressionField)
+        {
+            var split = expressionField.Split('.');
+
+            if (split.Count() < 2)
+            {
+                return null;
+            }
+
+            var alias = split[0];
+            var name = split[1];
+            var def = FromTables.First(t => t.Alias == alias);
+            var result = def.StoreDefinition.Properties[name];
+            return result;
+        }
 
         public void AddFromTable(StoreDefinition table)
         {
