@@ -29,6 +29,8 @@ namespace Platz.SqlForms
         public virtual FieldBuilder<TProperty> Property<TProperty>([NotNullAttribute] Expression<Func<TEntity, TProperty>> propertyExpression)
         {
             var bindingProperty = propertyExpression.Body.ToString().ReplaceLambdaVar();
+            // explicitly mentioned property is not hidden anymore
+            _fields[bindingProperty].Hidden = false;
             var result = new FieldBuilder<TProperty>(_fields[bindingProperty]);
             _fieldBuilder = result;
             return result;
@@ -38,6 +40,12 @@ namespace Platz.SqlForms
         {
             var bindingProperty = buttonText;
             _fields[bindingProperty] = new DataField { Button = true, BindingProperty = bindingProperty, Label = hint };
+        }
+
+        // hide all except mentioned explicitly
+        public virtual void ExcludeAll()
+        {
+            _fields.Values.ToList().ForEach(f => f.Hidden = true);
         }
     }
 }

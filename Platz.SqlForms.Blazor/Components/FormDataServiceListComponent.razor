@@ -1,23 +1,65 @@
 ﻿@using Microsoft.JSInterop
 
+@typeparam TForm
+
 @inject IJSRuntime JsRuntime
 @inject IDataEntryProvider _dataEntryProvider
 
 @namespace Platz.SqlForms
 
-<div class="DetailsFormControl">
+<div class="DataServiceListComponent">
+
+    <table class="table table-striped">
+        <thead class="thead-light">
+            <tr>
+                @foreach (var f in _fields)
+                {
+                <th scope="col">@f.Label</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+
+            @*@foreach (var item in _modelItems)*@
+            @for (int rowIndex = 0; rowIndex < _modelItems.Count; rowIndex++)
+            {
+                var row = rowIndex;
+
+                <tr>
+                    @foreach (var f in _fields)
+                    {
+                        <td>@GetItemValue(f, row)</td>
+                    }
+                </tr>
+            }
+            @*@foreach (var forecast in forecasts)
+        {
+            <tr>
+                <td>@forecast.Date.ToShortDateString()</td>
+                <td>@forecast.TemperatureC</td>
+                <td>@forecast.TemperatureF</td>
+                <td>@forecast.Summary</td>
+            </tr>
+        }*@
+        </tbody>
+    </table>
+
 </div>
 
 @code
 {
-    [Parameter]
-    public Type FormType { get; set; }
+    //[Parameter]
+    //public Type FormType { get; set; }
 
     [Parameter]
     public object[] ServiceParameters { get; set; }
 
     [Parameter]
     public EventCallback<ItemButtonClickedArgs> ItemButtonClicked { get; set; }
+
+    private DataServiceBase _form;
+    private IEnumerable<DataField> _fields;
+    private System.Collections.IList _modelItems { get; set; }
 
     protected override void OnInitialized()
     {
@@ -27,6 +69,20 @@
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
+        LoadForm();
     }
 
+    private void LoadForm()
+    {
+        _form = Activator.CreateInstance<TForm>() as DataServiceBase;
+        _fields = _form.GetDetailsFields().Where(f => f.Hidden == false);
+        _modelItems = _form.ExecuteListQuery(ServiceParameters);
+    }
+
+    private object GetItemValue(DataField field, int row)
+    {
+        var item = _modelItems[row];
+        var result = item.GetPropertyValue(field.BindingProperty);
+        return result;
+    }
 }
