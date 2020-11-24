@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using Platz.ObjectBuilder;
+using Platz.SqlForms;
 
 namespace Default
 {
@@ -14,6 +15,7 @@ namespace Default
     public partial interface IMyDataService
     {
         List<Addr> GetAddrList(params object[] parameters);
+        List<Cust> GetCustList(params object[] parameters);
         List<CustomerOrder> GetCustomerOrderList(params object[] parameters);
     }
 
@@ -43,6 +45,39 @@ namespace Default
                         PostalCode = a.PostalCode,
                         Rowguid = a.Rowguid,
                         StateProvince = a.StateProvince,
+                    };
+
+                var result = query.ToList();
+                return result;
+            }
+        }
+
+        public List<Cust> GetCustList(params object[] parameters)
+        {
+            var name = (String)parameters[0];
+
+            using (var db = GetDbContext())
+            {
+                var query =
+                    from c in db.Customer 
+                    where c.FirstName == name
+                    select new Cust
+                    {
+                        CustomerId = c.CustomerId,
+                        CompanyName = c.CompanyName,
+                        EmailAddress = c.EmailAddress,
+                        FirstName = c.FirstName,
+                        LastName = c.LastName,
+                        MiddleName = c.MiddleName,
+                        ModifiedDate = c.ModifiedDate,
+                        NameStyle = c.NameStyle,
+                        PasswordHash = c.PasswordHash,
+                        PasswordSalt = c.PasswordSalt,
+                        Phone = c.Phone,
+                        Rowguid = c.Rowguid,
+                        SalesPerson = c.SalesPerson,
+                        Suffix = c.Suffix,
+                        Title = c.Title,
                     };
 
                 var result = query.ToList();
@@ -123,6 +158,25 @@ namespace Default
         public String PostalCode { get; set; }
         public Guid Rowguid { get; set; }
         public String StateProvince { get; set; }
+    }
+
+    public partial class Cust
+    {
+        public Int32 CustomerId { get; set; }
+        public String CompanyName { get; set; }
+        public String EmailAddress { get; set; }
+        public String FirstName { get; set; }
+        public String LastName { get; set; }
+        public String MiddleName { get; set; }
+        public DateTime ModifiedDate { get; set; }
+        public Boolean NameStyle { get; set; }
+        public String PasswordHash { get; set; }
+        public String PasswordSalt { get; set; }
+        public String Phone { get; set; }
+        public Guid Rowguid { get; set; }
+        public String SalesPerson { get; set; }
+        public String Suffix { get; set; }
+        public String Title { get; set; }
     }
 
     public partial class CustomerOrder
