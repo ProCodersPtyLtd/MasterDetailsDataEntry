@@ -31,7 +31,7 @@
                 <td>
                     @if (item.StoreProperty.Pk)
                     {
-                        <span class="oi oi-key"></span>
+                        <span id="@GetPkId(row)" class="oi oi-key"></span>
                     }
                 </td>
                 <td><input type="checkbox" checked="@GetSelectedValue(row)" @onchange="@(async (args) => await SelectClick(args, row))" /></td>
@@ -39,7 +39,7 @@
                 <td>
                     @if (item.StoreProperty.Fk)
                     {
-                        <span class="oi oi-infinity"></span>
+                        <span id="@GetFkId(row)" class="oi oi-infinity"></span>
                     }
                 </td>
             </tr>
@@ -56,8 +56,22 @@
         [Parameter]
         public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 
+        //public ElementReference PkRef;
+
         private bool _shortTableView = true;
         private bool _selectAllValue;
+
+        public string GetPkId(int i)
+        {
+            var id = QueryController.GenerateObjectId("table_primary", Table.Id, i);
+            return id;
+        }
+
+        public string GetFkId(int i)
+        {
+            var id = QueryController.GenerateObjectId("table_foreign", Table.Id, i);
+            return id;
+        }
 
         protected override async Task OnInitializedAsync()
         {
