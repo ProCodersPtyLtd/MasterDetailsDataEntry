@@ -13,33 +13,37 @@
 
             <div class="card" @onmouseover="@(e => RowMouseOver(e, row))" @onmouseout="@(e => RowMouseOut(e, row))">
                 <div class="card-header" id="headingOne">
-                    <table>
-                        <tr>
-                            <td style="width: 40px">
-                                @*<button class="btn btn-light btn-sm" title="Add" @onclick="@(async () => await RowClick(row))" hidden="@(!_buttonsVisible[rowIndex])">
-                                    <span class="oi oi-plus"></span>
-                                </button>*@
-                            </td>
 
-                            <td>
-                                <h2 class="mb-0">
+                    <h2 class="mb-0">
+                        <button class="btn btn-block text-left" type="button" data-toggle="collapse"
+                                data-target="#@(GetCollapseName(join))" aria-expanded="false" aria-controls="@GetCollapseName(join)">
+                            @join.Source.GetJoinString()
+                        </button>
+                    </h2>
 
-
-                                    <button class="btn btn-block text-left" type="button" data-toggle="collapse"
-                                            data-target="#@(GetCollapseName(join))" aria-expanded="false" aria-controls="@GetCollapseName(join)">
-                                        @join.Source.GetJoinString()
-                                    </button>
-                                </h2>
-
-                            </td>
-                        </tr>
-                    </table>
                 </div>
             </div>
 
             <div id="@GetCollapseName(join)" class="collapse" aria-labelledby="headingOne" data-parent="#accordionTableList">
                 <div class="card-body">
-                    Join details here
+                    <label>[@GetTableName(join.Source.LeftObjectAlias)]</label>
+                    <input readonly="readonly" value="@GetLeftName(join)" />
+                    <br />
+
+                    <select value="@GetJoinType(join)" @onchange="@(a => JoinTypeChanged(a, join))">
+                        <option>Inner</option>
+                        <option>Left outer</option>
+                        <option>Right outer</option>
+                        <option>Full outer</option>
+                    </select>
+                    <br />
+
+                    <label>[@GetTableName(join.Source.RightObjectAlias)]</label>
+                    <input readonly="readonly" value="@GetRightName(join)" />
+                    <br />
+                    
+                    <input id="@GetCheckboxName(join)" type="checkbox" checked="@GetDeletedValue(join)" @onchange="@(async (args) => await SetDeletedValue(args, join))" />
+                    <label class="form-check-label" for="@GetCheckboxName(join)">Deleted</label>
                 </div>
             </div>
 
@@ -66,9 +70,58 @@
         _buttonsVisible = _tables.Select(d => false).ToList();
     }
 
+    private string GetTableName(string alias)
+    {
+        var pt = QueryController.FromTables.First(t => t.Alias == alias);
+        return pt.StoreDefinition.Name;
+    }
+
+    private async Task SetDeletedValue(ChangeEventArgs args, TableJoinModel j)
+    {
+        j.IsDeleted = (bool)args.Value;
+        QueryController.RegenerateTableLinks();
+        await ModelChanged.InvokeAsync(null);
+    }
+
+    private void JoinTypeChanged(ChangeEventArgs args, TableJoinModel j)
+    {
+        j.JoinType = (string)args.Value;
+    }
+
+    private string GetJoinType(TableJoinModel j)
+    {
+        return j.JoinType;
+    }
+
+    private string GetDeletedValue(TableJoinModel j)
+    {
+        var result = j.IsDeleted == true ? "checked" : null;
+        return result;
+    }
+
+    private string GetCheckboxName(TableJoinModel tbl)
+    {
+        var result = $"chk{tbl.Source.GetJoinString()}";
+        result = result.Replace(".", "").Replace("=", "");
+        return result;
+    }
+
     private string GetCollapseName(TableJoinModel tbl)
     {
         var result = $"collapse{tbl.Source.GetJoinString()}";
+        result = result.Replace(".", "").Replace("=", "");
+        return result;
+    }
+
+    private string GetLeftName(TableJoinModel j)
+    {
+        var result = $"{j.Source.LeftObjectAlias}.{j.Source.LeftField}";
+        return result;
+    }
+
+    private string GetRightName(TableJoinModel j)
+    {
+        var result = $"{j.Source.RightObjectAlias}.{j.Source.RightField}";
         return result;
     }
 

@@ -142,7 +142,9 @@
 
         private async Task TableAliasChanged(ChangeEventArgs e)
         {
+            string oldAlias = Table.Alias;
             Table.Alias = (string)e.Value;
+            QueryController.AliasChanged(oldAlias, (string)e.Value);
             await ModelChanged.InvokeAsync(null);
         }
 

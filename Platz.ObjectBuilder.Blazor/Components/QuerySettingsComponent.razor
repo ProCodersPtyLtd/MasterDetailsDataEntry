@@ -1,4 +1,5 @@
 ﻿@using Platz.ObjectBuilder.Blazor.Controllers
+@using System.Text.Json
 @namespace Platz.ObjectBuilder.Blazor
 
 <div style="width: 100%">
@@ -131,7 +132,12 @@
 
         if (query != null)
         {
-            var json = System.Text.Json.JsonSerializer.Serialize(query);
+            var options = new JsonSerializerOptions()
+            {
+                WriteIndented = true
+            };
+
+            var json = System.Text.Json.JsonSerializer.Serialize(query, options);
             QueryController.Errors = json;
         }
 

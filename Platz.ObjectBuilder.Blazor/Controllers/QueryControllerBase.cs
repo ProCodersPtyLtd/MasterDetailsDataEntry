@@ -36,6 +36,9 @@ namespace Platz.ObjectBuilder.Blazor
         void SaveSchema(string path);
 
         string GenerateObjectId(string sfx, int objId, int propId = 0);
+
+        void AliasChanged(string oldAlias, string newAlias);
+        void RegenerateTableLinks();
     }
 
     public interface IQueryControllerParameters
@@ -76,6 +79,22 @@ namespace Platz.ObjectBuilder.Blazor
         }
 
         public abstract void SetParameters(IQueryControllerParameters parameters);
+
+        public void AliasChanged(string oldAlias, string newAlias)
+        {
+            foreach (var j in FromTableJoins)
+            {
+                if (j.Source.LeftObjectAlias == oldAlias)
+                {
+                    j.Source.LeftObjectAlias = newAlias;
+                }
+
+                if (j.Source.RightObjectAlias == oldAlias)
+                {
+                    j.Source.RightObjectAlias = newAlias;
+                }
+            }
+        }
 
         public string GenerateObjectId(string prefix, int objId, int propId = 0)
         {
@@ -133,7 +152,12 @@ namespace Platz.ObjectBuilder.Blazor
                     );
 
                 // ToDo: composite foreign keys not supported currently
-                List<StoreObjectJoin> joins = GenerateJoins();
+                List<StoreObjectJoin> joins = FromTableJoins.Where(f => !f.IsDeleted)
+                    .Select(f => 
+                    {
+                        f.Source.JoinType = f.JoinType;
+                        return f.Source;  
+                    }).ToList();
 
                 result.Query.Joins = joins.ToArray();
 
@@ -212,13 +236,17 @@ namespace Platz.ObjectBuilder.Blazor
             RegenerateTableLinks();
         }
 
-        private void RegenerateTableLinks()
+        public void RegenerateTableLinks()
         {
             FromTableLinks = new List<TableLink>();
             var joins = GenerateJoins();
 
-            foreach (var join in joins)
+            var newJoins = joins.Where(j => !FromTableJoins.Any(f => f.Source.GetJoinString() == j.GetJoinString()));
+            FromTableJoins.AddRange(newJoins.Select(j => new TableJoinModel { Source = j, JoinType = "Inner" }));
+
+            foreach (var fj in FromTableJoins.Where(f => !f.IsDeleted))
             {
+                var join = fj.Source;
                 var pt = FromTables.First(t => t.Alias == join.LeftObjectAlias);
                 var pk = pt.Properties.First(p => p.StoreProperty.Name == join.LeftField);
                 var pkIndex = pt.Properties.IndexOf(pk);
