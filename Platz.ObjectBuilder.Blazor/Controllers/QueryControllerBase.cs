@@ -19,6 +19,8 @@ namespace Platz.ObjectBuilder.Blazor
         string WhereClause { get; }
         string Errors { get; set; }
         StoreQueryParameters StoreParameters { get; }
+        List<TableLink> FromTableLinks { get; }
+        List<TableJoinModel> FromTableJoins { get; }
 
         void SetParameters(IQueryControllerParameters parameters);
         void LoadSchema();
@@ -32,6 +34,11 @@ namespace Platz.ObjectBuilder.Blazor
         StoreQuery GenerateQuery();
         void SaveQuery(string path);
         void SaveSchema(string path);
+
+        string GenerateObjectId(string sfx, int objId, int propId = 0);
+
+        void AliasChanged(string oldAlias, string newAlias);
+        void RegenerateTableLinks();
     }
 
     public interface IQueryControllerParameters
@@ -56,6 +63,8 @@ namespace Platz.ObjectBuilder.Blazor
         public StoreSchema Schema { get; private set; }
         public List<QueryFromTable> FromTables { get; private set; } = new List<QueryFromTable>();
         public List<QuerySelectProperty> SelectionProperties { get; private set; } = new List<QuerySelectProperty>();
+        public List<TableLink> FromTableLinks { get; private set; } = new List<TableLink>();
+        public List<TableJoinModel> FromTableJoins { get; set; } = new List<TableJoinModel>();
         public string WhereClause { get; private set; } = "";
         public string Errors { get; set; } = "";
 
@@ -70,6 +79,28 @@ namespace Platz.ObjectBuilder.Blazor
         }
 
         public abstract void SetParameters(IQueryControllerParameters parameters);
+
+        public void AliasChanged(string oldAlias, string newAlias)
+        {
+            foreach (var j in FromTableJoins)
+            {
+                if (j.Source.LeftObjectAlias == oldAlias)
+                {
+                    j.Source.LeftObjectAlias = newAlias;
+                }
+
+                if (j.Source.RightObjectAlias == oldAlias)
+                {
+                    j.Source.RightObjectAlias = newAlias;
+                }
+            }
+        }
+
+        public string GenerateObjectId(string prefix, int objId, int propId = 0)
+        {
+            var id = $"{prefix}_{objId}_{propId}";
+            return id;
+        }
 
         public void SaveQuery(string path)
         {
@@ -95,8 +126,8 @@ namespace Platz.ObjectBuilder.Blazor
         {
             try
             {
-                var result = new StoreQuery() 
-                { 
+                var result = new StoreQuery()
+                {
                     DataService = StoreParameters.DataService,
                     Name = StoreParameters.QueryName,
                     Namespace = StoreParameters.Namespace,
@@ -121,28 +152,12 @@ namespace Platz.ObjectBuilder.Blazor
                     );
 
                 // ToDo: composite foreign keys not supported currently
-                var joins = new List<StoreObjectJoin>();
-                var tables = FromTables.ToList();
-                
-                var foreignKeys = tables.SelectMany(t => t.Properties, (t, p) => new { Tbl = t, Prop = p }).Where(p => 
-                    p.Prop.StoreProperty.Fk && tables.Any(d => d.StoreDefinition.Name == p.Prop.StoreProperty.ForeignKeys.First().DefinitionName)).ToList();
-
-                foreach (var reference in foreignKeys)
-                {
-                    var leftTable = tables.First(t => t.StoreDefinition.Name == reference.Prop.StoreProperty.ForeignKeys.First().DefinitionName);
-                    var rightTable = tables.First(t => t.StoreDefinition.Name == reference.Tbl.StoreDefinition.Name);
-
-                    var join = new StoreObjectJoin
+                List<StoreObjectJoin> joins = FromTableJoins.Where(f => !f.IsDeleted)
+                    .Select(f => 
                     {
-                        JoinType = "inner",
-                        LeftObjectAlias = leftTable.Alias,
-                        LeftField = reference.Prop.StoreProperty.ForeignKeys.First().PropertyName,
-                        RightObjectAlias = rightTable.Alias,
-                        RightField = reference.Prop.StoreProperty.Name
-                    };
-
-                    joins.Add(join);
-                }
+                        f.Source.JoinType = f.JoinType;
+                        return f.Source;  
+                    }).ToList();
 
                 result.Query.Joins = joins.ToArray();
 
@@ -155,11 +170,39 @@ namespace Platz.ObjectBuilder.Blazor
 
                 return result;
             }
-            catch(Exception exc)
+            catch (Exception exc)
             {
                 Errors += "\r\n" + exc.Message;
                 return null;
             }
+        }
+
+        private List<StoreObjectJoin> GenerateJoins()
+        {
+            var joins = new List<StoreObjectJoin>();
+            var tables = FromTables.ToList();
+
+            var foreignKeys = tables.SelectMany(t => t.Properties, (t, p) => new { Tbl = t, Prop = p }).Where(p =>
+                p.Prop.StoreProperty.Fk && tables.Any(d => d.StoreDefinition.Name == p.Prop.StoreProperty.ForeignKeys.First().DefinitionName)).ToList();
+
+            foreach (var reference in foreignKeys)
+            {
+                var leftTable = tables.First(t => t.StoreDefinition.Name == reference.Prop.StoreProperty.ForeignKeys.First().DefinitionName);
+                var rightTable = tables.First(t => t.StoreDefinition.Name == reference.Tbl.StoreDefinition.Name);
+
+                var join = new StoreObjectJoin
+                {
+                    JoinType = "inner",
+                    LeftObjectAlias = leftTable.Alias,
+                    LeftField = reference.Prop.StoreProperty.ForeignKeys.First().PropertyName,
+                    RightObjectAlias = rightTable.Alias,
+                    RightField = reference.Prop.StoreProperty.Name
+                };
+
+                joins.Add(join);
+            }
+
+            return joins;
         }
 
         private StoreProperty FindStoreProperty(string expressionField)
@@ -183,12 +226,44 @@ namespace Platz.ObjectBuilder.Blazor
             var ft = new QueryFromTable(table);
             ft.Alias = GetDefaultAlias(ft);
             FromTables.Add(ft);
+            RegenerateTableLinks();
         }
 
         public void RemoveFromTable(string tableName, string alias)
         {
             var table = FromTables.Single(t => t.Alias == alias && t.StoreDefinition.Name == tableName);
             FromTables.Remove(table);
+            RegenerateTableLinks();
+        }
+
+        public void RegenerateTableLinks()
+        {
+            FromTableLinks = new List<TableLink>();
+            var joins = GenerateJoins();
+
+            var newJoins = joins.Where(j => !FromTableJoins.Any(f => f.Source.GetJoinString() == j.GetJoinString()));
+            FromTableJoins.AddRange(newJoins.Select(j => new TableJoinModel { Source = j, JoinType = "Inner" }));
+
+            foreach (var fj in FromTableJoins.Where(f => !f.IsDeleted))
+            {
+                var join = fj.Source;
+                var pt = FromTables.First(t => t.Alias == join.LeftObjectAlias);
+                var pk = pt.Properties.First(p => p.StoreProperty.Name == join.LeftField);
+                var pkIndex = pt.Properties.IndexOf(pk);
+
+                var ft = FromTables.First(t => t.Alias == join.RightObjectAlias);
+                var fk = ft.Properties.First(p => p.StoreProperty.Name == join.RightField);
+                var fkIndex = ft.Properties.IndexOf(fk);
+
+                var link = new TableLink 
+                { 
+                    PrimaryRefId = GenerateObjectId("table_primary", pt.Id, pkIndex),
+                    ForeignRefId = GenerateObjectId("table_foreign", ft.Id, fkIndex),
+                    Source = join
+                };
+
+                FromTableLinks.Add(link);
+            }
         }
 
         private string GetDefaultAlias(QueryFromTable ft)
@@ -296,5 +371,43 @@ namespace Platz.ObjectBuilder.Blazor
         }
     }
 
-    
+    public class TableJoinModel
+    {
+        public string JoinType { get; set; }
+        public bool IsDeleted { get; set; }
+        public StoreObjectJoin Source { get; set; }
+    }
+
+    public class TableLink
+    {
+        public string PrimaryRefId { get; set; }
+        public string ForeignRefId { get; set; }
+        public StoreObjectJoin Source { get; set; }
+    }
+
+    public class BoundingClientRect
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Width { get; set; }
+        public double Height { get; set; }
+        public double Top { get; set; }
+        public double Right { get; set; }
+        public double Bottom { get; set; }
+        public double Left { get; set; }
+    }
+
+    public class Point
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+    }
+
+    public class LinePoints
+    {
+        public double X1 { get; set; }
+        public double Y1 { get; set; }
+        public double X2 { get; set; }
+        public double Y2 { get; set; }
+    }
 }

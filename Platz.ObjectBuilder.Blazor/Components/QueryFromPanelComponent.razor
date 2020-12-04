@@ -1,32 +1,116 @@
 ﻿@using Plk.Blazor.DragDrop
 @namespace Platz.ObjectBuilder.Blazor
+@inject IJSRuntime JS;
 
 <h6>From</h6>
 
-<div class="plk-flex overflow-auto" style="min-height: 300px; height: 300px">
-    <Dropzone Class="flex-container" Items="QueryController.FromTables" ItemWrapperClass="flex-item">
+<div class="plk-flex overflow-auto" style="min-height: 300px; height: @(Height)px; width: 100%;" @onscroll="() => Refresh()">
+    <div class="svg-panel-container" style="z-index: -10; position: absolute; opacity: 0.9;">
+        <svg @ref="_svgRef" width="1600" height="@(Height)">
+
+            @if (_lines != null)
+            {
+                @foreach (var l in _lines)
+                {
+                    <line x1="@l.X1" y1="@l.Y1" x2="@l.X2" y2="@l.Y2" stroke="black" stroke-width="4px" stroke-linecap="round" />
+                }
+            }
+            @*<line x1="0" y1="0" x2="@_x" y2="@_y" stroke="black" stroke-width="4px" stroke-linecap="round" />*@
+        </svg>
+    </div>
+
+    <Dropzone Class="flex-container" Items="_fromTables" ItemWrapperClass="flex-item" OnItemDrop="@((QueryFromTable i) => { Refresh(); })">
         @*<div>@context</div>*@
-        <TableAliasFieldsComponent Table="@context" ModelChanged="ModelChanged" />
+        @{ var index = QueryController.FromTables.IndexOf(@context);}
+        <TableAliasFieldsComponent @ref="_refs[index]" Table="@context" ModelChanged="ModelChanged" />
     </Dropzone>
-
 </div>
-
-
 
 @code {
     [CascadingParameter]
     public IQueryController QueryController { get; set; }
 
     [Parameter]
+    public double Height { get; set; }
+
+    [Parameter]
     public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 
     private List<QueryFromTable> _fromTables { get; set; }
+    private List<LinePoints> _lines { get; set; } //= new List<LinePoints>();
 
-    protected override void OnParametersSet()
+    private ElementReference _svgRef;
+
+    private TableAliasFieldsComponent[] _refs = new TableAliasFieldsComponent[10];
+
+    protected override async Task OnParametersSetAsync()
     {
-        base.OnParametersSet();
         _fromTables = QueryController.FromTables.ToList();
+
+        if (_lines == null || (_lines.Count != QueryController.FromTableLinks.Count))
+        {
+            _needRefreshLinks = true;
+        }
     }
 
-    
+    double _x;
+    double _y;
+
+    private bool _needRefreshLinks;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_needRefreshLinks)
+        {
+            _needRefreshLinks = false;
+            await GenerateLinks();
+            StateHasChanged();
+        }
+    }
+
+    private void Refresh()
+    {
+        _needRefreshLinks = true;
+        StateHasChanged();
+    }
+
+    private void Drop(QueryFromTable args)
+    {
+        _needRefreshLinks = true;
+        StateHasChanged();
+    }
+
+    private async Task GenerateLinks()
+    {
+        //if (_lines.Count != QueryController.FromTableLinks.Count)
+        {
+            _lines = new List<LinePoints>();
+
+            foreach (var link in QueryController.FromTableLinks)
+            {
+                var line = await GetLinkPoints(link);
+                _lines.Add(line);
+            }
+
+            //_lines = await QueryController.FromTableLinks.Select(async (l) => await GetLinkPoints(l)).ToListAsync();
+
+            // var _lines = (await Task.WhenAll(QueryController.FromTableLinks.Select(ev => GetLinkPoints(ev)))).ToList();
+
+            //StateHasChanged();
+        }
+    }
+
+    private async Task<LinePoints> GetLinkPoints(TableLink link)
+    {
+        var startRect = await JS.InvokeAsync<BoundingClientRect>("MyIdGetBoundingClientRect", new object[] { link.PrimaryRefId });
+        var sp = new Point { X = startRect.X + 0.5 * startRect.Width, Y = startRect.Y + 0.5 * startRect.Height };
+        var spConv = await JS.InvokeAsync<Point>("ConvertToSvg", new object[] { _svgRef, sp });
+
+        var endRect = await JS.InvokeAsync<BoundingClientRect>("MyIdGetBoundingClientRect", new object[] { link.ForeignRefId });
+        var ep = new Point { X = endRect.X + 0.5 * endRect.Width, Y = endRect.Y + 0.5 * endRect.Height };
+        var epConv = await JS.InvokeAsync<Point>("ConvertToSvg", new object[] { _svgRef, ep });
+
+        var result = new LinePoints { X1 = spConv.X, Y1 = spConv.Y, X2 = epConv.X, Y2 = epConv.Y };
+        return result;
+    }
 }

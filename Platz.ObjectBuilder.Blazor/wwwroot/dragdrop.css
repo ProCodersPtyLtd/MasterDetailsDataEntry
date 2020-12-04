@@ -103,4 +103,5 @@
     display: flex;
     background-color: dodgerblue;
     min-height: 300px;
+    opacity: 0.8;
 }

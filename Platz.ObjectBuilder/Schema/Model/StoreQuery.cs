@@ -95,6 +95,11 @@ namespace Platz.ObjectBuilder
         // <empty> or inner, left, right, full 
         public string JoinType { get; set; }
 
+        public string GetJoinString()
+        {
+            var result = $"{LeftObjectAlias}.{LeftField}={RightObjectAlias}.{RightField}";
+            return result;
+        }
     }
 
     public class StoreQueryCondition

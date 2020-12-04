@@ -7,6 +7,10 @@ namespace Platz.ObjectBuilder.Schema
 {
     public class QueryFromTable
     {
+        private static int _counter;
+
+        public int Id { get; private set; }
+
         public StoreDefinition StoreDefinition { get; set; }
 
         public List<QueryFromProperty> Properties { get; set; }
@@ -21,9 +25,12 @@ namespace Platz.ObjectBuilder.Schema
         }
 
         public QueryFromTable()
-        { }
+        {
+            Id = _counter;
+            _counter++;
+        }
 
-        public QueryFromTable(StoreDefinition source)
+        public QueryFromTable(StoreDefinition source): this()
         {
             CopyFrom(source);
         }

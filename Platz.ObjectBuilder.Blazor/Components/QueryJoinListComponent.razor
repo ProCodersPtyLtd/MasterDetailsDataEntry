@@ -1,0 +1,143 @@
+﻿@namespace Platz.ObjectBuilder.Blazor
+
+@*<h6>Relationships</h6>*@
+
+<div class="accordion overflow-auto" id="accordionTableList" style="height: 780px;" >
+
+    @{
+        var rowIndex = 0;
+
+        @foreach (var join in QueryController.FromTableJoins)
+        {
+            var row = rowIndex;
+
+            <div class="card" @onmouseover="@(e => RowMouseOver(e, row))" @onmouseout="@(e => RowMouseOut(e, row))">
+                <div class="card-header" id="headingOne">
+
+                    <h2 class="mb-0">
+                        <button class="btn btn-block text-left" type="button" data-toggle="collapse"
+                                data-target="#@(GetCollapseName(join))" aria-expanded="false" aria-controls="@GetCollapseName(join)">
+                            @join.Source.GetJoinString()
+                        </button>
+                    </h2>
+
+                </div>
+            </div>
+
+            <div id="@GetCollapseName(join)" class="collapse" aria-labelledby="headingOne" data-parent="#accordionTableList">
+                <div class="card-body">
+                    <label>[@GetTableName(join.Source.LeftObjectAlias)]</label>
+                    <input readonly="readonly" value="@GetLeftName(join)" />
+                    <br />
+
+                    <select value="@GetJoinType(join)" @onchange="@(a => JoinTypeChanged(a, join))">
+                        <option>Inner</option>
+                        <option>Left outer</option>
+                        <option>Right outer</option>
+                        <option>Full outer</option>
+                    </select>
+                    <br />
+
+                    <label>[@GetTableName(join.Source.RightObjectAlias)]</label>
+                    <input readonly="readonly" value="@GetRightName(join)" />
+                    <br />
+                    
+                    <input id="@GetCheckboxName(join)" type="checkbox" checked="@GetDeletedValue(join)" @onchange="@(async (args) => await SetDeletedValue(args, join))" />
+                    <label class="form-check-label" for="@GetCheckboxName(join)">Deleted</label>
+                </div>
+            </div>
+
+            rowIndex++;
+        }
+    }
+</div>
+
+
+@code {
+    [CascadingParameter]
+    public IQueryController QueryController { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    private List<StoreDefinition> _tables;
+    private List<bool> _buttonsVisible;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        _tables = QueryController.Schema.Definitions.Values.ToList();
+        _buttonsVisible = _tables.Select(d => false).ToList();
+    }
+
+    private string GetTableName(string alias)
+    {
+        var pt = QueryController.FromTables.First(t => t.Alias == alias);
+        return pt.StoreDefinition.Name;
+    }
+
+    private async Task SetDeletedValue(ChangeEventArgs args, TableJoinModel j)
+    {
+        j.IsDeleted = (bool)args.Value;
+        QueryController.RegenerateTableLinks();
+        await ModelChanged.InvokeAsync(null);
+    }
+
+    private void JoinTypeChanged(ChangeEventArgs args, TableJoinModel j)
+    {
+        j.JoinType = (string)args.Value;
+    }
+
+    private string GetJoinType(TableJoinModel j)
+    {
+        return j.JoinType;
+    }
+
+    private string GetDeletedValue(TableJoinModel j)
+    {
+        var result = j.IsDeleted == true ? "checked" : null;
+        return result;
+    }
+
+    private string GetCheckboxName(TableJoinModel tbl)
+    {
+        var result = $"chk{tbl.Source.GetJoinString()}";
+        result = result.Replace(".", "").Replace("=", "");
+        return result;
+    }
+
+    private string GetCollapseName(TableJoinModel tbl)
+    {
+        var result = $"collapse{tbl.Source.GetJoinString()}";
+        result = result.Replace(".", "").Replace("=", "");
+        return result;
+    }
+
+    private string GetLeftName(TableJoinModel j)
+    {
+        var result = $"{j.Source.LeftObjectAlias}.{j.Source.LeftField}";
+        return result;
+    }
+
+    private string GetRightName(TableJoinModel j)
+    {
+        var result = $"{j.Source.RightObjectAlias}.{j.Source.RightField}";
+        return result;
+    }
+
+    private async Task RowClick(int rowIndex)
+    {
+        QueryController.AddFromTable(_tables[rowIndex]);
+        await ModelChanged.InvokeAsync(null);
+    }
+
+    private void RowMouseOver(MouseEventArgs args, int rowIndex)
+    {
+        _buttonsVisible[rowIndex] = true;
+    }
+
+    private void RowMouseOut(MouseEventArgs args, int rowIndex)
+    {
+        _buttonsVisible[rowIndex] = false;
+    }
+}
