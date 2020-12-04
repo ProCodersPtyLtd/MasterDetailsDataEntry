@@ -1,13 +1,13 @@
 ﻿@namespace Platz.ObjectBuilder.Blazor
 
-@*<h6>Entities</h6>*@
+@*<h6>Relationships</h6>*@
 
 <div class="accordion overflow-auto" id="accordionTableList" style="height: 780px;" >
 
     @{
         var rowIndex = 0;
 
-        @foreach (var tbl in QueryController.Schema.Definitions.Values)
+        @foreach (var join in QueryController.FromTableJoins)
         {
             var row = rowIndex;
 
@@ -16,9 +16,9 @@
                     <table>
                         <tr>
                             <td style="width: 40px">
-                                <button class="btn btn-light btn-sm" title="Add" @onclick="@(async () => await RowClick(row))" hidden="@(!_buttonsVisible[rowIndex])">
+                                @*<button class="btn btn-light btn-sm" title="Add" @onclick="@(async () => await RowClick(row))" hidden="@(!_buttonsVisible[rowIndex])">
                                     <span class="oi oi-plus"></span>
-                                </button>
+                                </button>*@
                             </td>
 
                             <td>
@@ -26,8 +26,8 @@
 
 
                                     <button class="btn btn-block text-left" type="button" data-toggle="collapse"
-                                            data-target="#@(GetCollapseName(tbl))" aria-expanded="false" aria-controls="@GetCollapseName(tbl)">
-                                        @tbl.Name
+                                            data-target="#@(GetCollapseName(join))" aria-expanded="false" aria-controls="@GetCollapseName(join)">
+                                        @join.Source.GetJoinString()
                                     </button>
                                 </h2>
 
@@ -37,9 +37,9 @@
                 </div>
             </div>
 
-            <div id="@GetCollapseName(tbl)" class="collapse" aria-labelledby="headingOne" data-parent="#accordionTableList">
+            <div id="@GetCollapseName(join)" class="collapse" aria-labelledby="headingOne" data-parent="#accordionTableList">
                 <div class="card-body">
-                    Table columns here
+                    Join details here
                 </div>
             </div>
 
@@ -66,9 +66,9 @@
         _buttonsVisible = _tables.Select(d => false).ToList();
     }
 
-    private string GetCollapseName(StoreDefinition tbl)
+    private string GetCollapseName(TableJoinModel tbl)
     {
-        var result = $"collapse{tbl.Name}";
+        var result = $"collapse{tbl.Source.GetJoinString()}";
         return result;
     }
 

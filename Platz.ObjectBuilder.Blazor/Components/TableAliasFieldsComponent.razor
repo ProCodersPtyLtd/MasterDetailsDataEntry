@@ -16,11 +16,13 @@
     </table>
 
     <table @onmouseover="@(e => { _shortTableView = false; })" @onmouseout="@(e => { _shortTableView = true; })">
-        <tr hidden="@_shortTableView">
-            <th>PK</th>
+        @*<tr hidden="@_shortTableView">*@
+        <tr>
+            <th>pk</th>
             <th><input type="checkbox" checked="@GetSelectAllValue()" @onchange="@(async (args) => await SelectAllClick(args))" /></th>
             <th>select all</th>
-            <th>FK</th>
+            @*<th>FK</th>*@
+            <th></th>
         </tr>
         @for (int rowIndex = 0; rowIndex < Table.Properties.Count; rowIndex++)
         {

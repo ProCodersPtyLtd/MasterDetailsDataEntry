@@ -20,6 +20,7 @@ namespace Platz.ObjectBuilder.Blazor
         string Errors { get; set; }
         StoreQueryParameters StoreParameters { get; }
         List<TableLink> FromTableLinks { get; }
+        List<TableJoinModel> FromTableJoins { get; }
 
         void SetParameters(IQueryControllerParameters parameters);
         void LoadSchema();
@@ -60,6 +61,7 @@ namespace Platz.ObjectBuilder.Blazor
         public List<QueryFromTable> FromTables { get; private set; } = new List<QueryFromTable>();
         public List<QuerySelectProperty> SelectionProperties { get; private set; } = new List<QuerySelectProperty>();
         public List<TableLink> FromTableLinks { get; private set; } = new List<TableLink>();
+        public List<TableJoinModel> FromTableJoins { get; set; } = new List<TableJoinModel>();
         public string WhereClause { get; private set; } = "";
         public string Errors { get; set; } = "";
 
@@ -339,6 +341,13 @@ namespace Platz.ObjectBuilder.Blazor
                 Errors += "\r\n" + exc.Message;
             }
         }
+    }
+
+    public class TableJoinModel
+    {
+        public string JoinType { get; set; }
+        public bool IsDeleted { get; set; }
+        public StoreObjectJoin Source { get; set; }
     }
 
     public class TableLink

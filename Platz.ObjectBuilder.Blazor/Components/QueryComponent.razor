@@ -3,7 +3,6 @@
 @namespace Platz.ObjectBuilder.Blazor
 @inject IQueryController _queryController
 
-
     <CascadingValue Value="@_queryController">
 
         <QuerySettingsComponent StoreDataPath="@_fullStoreDataPath" DataService="@DataService" Namespace="@Namespace" />
@@ -20,7 +19,7 @@
                     </div>
                     <div>
                         @*<QueryFromPanelComponent QueryController="_queryController" />*@
-                        <QueryFromPanelComponent ModelChanged="ModelChanged" />
+                        <QueryFromPanelComponent ModelChanged="ModelChanged" Height="300"/>
                     </div>
                     <div>
                         <QueryWherePanelComponent ModelChanged="ModelChanged"/>
@@ -28,7 +27,32 @@
                 </td>
                 <td style="vertical-align: top">
                     <div style="vertical-align: top">
-                        <QueryTableListComponent ModelChanged="ModelChanged" />
+
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" href="#tables">Entities</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#joins">Relationships</a>
+                            </li>
+                        </ul>
+
+
+                        @*<ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#tables">Entities</a></li>
+                            <li><a data-toggle="tab" href="#joins">Relationships</a></li>
+                        </ul>*@
+
+                        <div class="tab-content">
+                            <div id="tables" class="container tab-pane active">
+                                <QueryTableListComponent ModelChanged="ModelChanged" />
+                            </div>
+                            <div id="joins" class="container tab-pane fade">
+                                <QueryJoinListComponent ModelChanged="ModelChanged" />
+                            </div>
+                        </div>
+
+
                     </div>
                 </td>
             </tr>
