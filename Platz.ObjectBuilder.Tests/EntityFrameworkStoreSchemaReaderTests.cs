@@ -22,5 +22,20 @@ namespace Platz.ObjectBuilder.Tests
             Assert.Equal(15, schema.Definitions.Count);
             Assert.True(schema.Definitions.ContainsKey("Address"));
         }
+
+        [Fact]
+        public void Queries()
+        {
+            using(var db = new AdventureWorksContext())
+            {
+                var q = from ca in db.CustomerAddress
+                        join c in db.Customer on ca.CustomerId equals c.CustomerId
+                        group c by new { c.CustomerId, c.FirstName, c.LastName } into cg
+                        where cg.Count() > 1
+                        select new { cg.Key.FirstName, cg.Key.LastName, Count = cg.Count() };
+
+                var grp = q.ToList();
+            }
+        }
     }
 }

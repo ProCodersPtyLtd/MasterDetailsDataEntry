@@ -12,8 +12,10 @@ namespace Platz.SqlForms
     {
         protected FieldBuilder _fieldBuilder;
         protected Dictionary<string, DataField> _fields;
+        protected List<ActionRouteLink> _contextLinks;
         public FieldBuilder FieldBuilder { get { return _fieldBuilder; } }
         public IEnumerable<DataField> Fields {  get { return _fields.Values; } }
+        public IEnumerable<ActionRouteLink> ContextLinks{  get { return _contextLinks; } }
     }
 
     public class FormEntityTypeBuilder<TEntity> : FormEntityTypeBuilder where TEntity : class
@@ -24,6 +26,7 @@ namespace Platz.SqlForms
             // pre-populate all fields
             var fields = typeof(TEntity).GetSimpleTypeProperties().Select(p => new DataField { BindingProperty = p.Name, DataType = p.PropertyType, Order = order++ });
             _fields = fields.ToDictionary(f => f.BindingProperty, f => f);
+            _contextLinks = new List<ActionRouteLink>();
         }
 
         public virtual FieldBuilder<TProperty> Property<TProperty>([NotNullAttribute] Expression<Func<TEntity, TProperty>> propertyExpression)
@@ -40,6 +43,12 @@ namespace Platz.SqlForms
         {
             var bindingProperty = buttonText;
             _fields[bindingProperty] = new DataField { Button = true, BindingProperty = bindingProperty, Label = hint };
+        }
+
+        public virtual FormEntityTypeBuilder<TEntity> ContextButton(string buttonText, string actionLinkText)
+        {
+            _contextLinks.Add(new ActionRouteLink { Text = buttonText, LinkText = actionLinkText });
+            return this;
         }
 
         // hide all except mentioned explicitly
