@@ -26,10 +26,10 @@
                         <input type="checkbox" checked="@GetOutputValue(row)" @onchange="@(async (args) => await OutputClick(args, row))" />
                     </td>
                     <td>
-                        <input style="width: 120px;" />
+                        <input style="width: 120px;" @bind-value="@_properties[row].Alias"/>
                     </td>
                     <td>
-                        <input style="width: 120px;" value="@_properties[rowIndex].Filter" @onchange="@(async (args) => await FilterChanged(args, row))" />
+                        <input style="width: 120px;" value="@_properties[row].Filter" @onchange="@(async (args) => await FilterChanged(args, row))" />
                     </td>
                     <td style="text-align: center">
                         <input type="checkbox" checked="@GetGroupByValue(row)" @onchange="@(async (args) => await GroupByClick(args, row))" />
@@ -69,7 +69,9 @@
         }
 
         private async Task OutputClick(ChangeEventArgs e, int rowIndex)
-        { }
+        {
+            _properties[rowIndex].IsOutput = (bool)e.Value;
+        }
 
         private string GetGroupByValue(int rowIndex)
         {

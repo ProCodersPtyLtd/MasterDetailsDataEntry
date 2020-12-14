@@ -9,6 +9,7 @@ namespace Platz.ObjectBuilder.Schema
         public StoreProperty StoreProperty { get; set; }
 
         // component fields
+        // ToDo: Alias should be removed as it is not used, only in tests
         public string Alias { get; set; }
         public bool Selected { get; set; }
 

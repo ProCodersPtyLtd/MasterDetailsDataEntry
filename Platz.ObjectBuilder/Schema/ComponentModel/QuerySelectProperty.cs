@@ -11,10 +11,11 @@ namespace Platz.ObjectBuilder.Schema
 
         // component fields
         public bool IsOutput { get; set; }
-        // public string Alias { get; set; }
         public string Filter { get; set; }
         public bool IsGroup { get; set; }
         public string Alias { get; set; }
+
+        public string OutputName {  get { return string.IsNullOrWhiteSpace(Alias) ? StoreProperty.Name : Alias; } }
 
         public QuerySelectProperty() { }
 

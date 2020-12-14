@@ -30,6 +30,12 @@ namespace Platz.SqlForms
             return result;
         }
 
+        public IEnumerable<ActionRouteLink> GetContextLinks()
+        {
+            var result = _builder.Builders.SelectMany(b => b.ContextLinks);
+            return result;
+        }
+
         public IEnumerable<DataField> GetDetailsFields()
         {
             var fields = new List<DataField>();
@@ -50,6 +56,19 @@ namespace Platz.SqlForms
             if (fields.Any())
             {
                 _dataFieldProcessor.PrepareFields(fields.ToList(), GetEntityType());
+
+                // ToDo: we need a way to always specify PK in query builder
+                if (!fields.Any(f => f.PrimaryKey))
+                {
+                    var pk = fields.FirstOrDefault(f => f.BindingProperty.ToLower().EndsWith("id"));
+                    pk = pk ?? fields.FirstOrDefault(f => f.BindingProperty.ToLower().StartsWith("id"));
+                    pk = pk ?? fields.FirstOrDefault(f => f.BindingProperty.ToLower().Contains("id"));
+                    
+                    if (pk != null)
+                    {
+                        pk.PrimaryKey = true;
+                    }
+                }
             }
 
             return fields;

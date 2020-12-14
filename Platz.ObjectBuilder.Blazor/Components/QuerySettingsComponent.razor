@@ -112,7 +112,26 @@
     }
 
     private void ValidateClick(MouseEventArgs args)
-    { }
+    {
+        QueryController.Validate();
+        ShowErrors();
+        StateHasChanged();
+    }
+
+    private void ShowErrors()
+    {
+        if (QueryController.ValidationResults.Any())
+        {
+            foreach (var r in QueryController.ValidationResults)
+            {
+                QueryController.Errors += "\r\n" + r.Message;
+            }
+        }
+        else
+        {
+            QueryController.Errors += "\r\n" + "Validation result: pass";
+        }
+    }
 
     private void QueryReturnTypeCahnged(ChangeEventArgs args)
     {
@@ -123,24 +142,26 @@
     private void SettingsClick()
     {
         _query = QueryController.GenerateQuery();
+        ShowErrors();
         StateHasChanged();
     }
 
     private void SettingsRightClick()
     {
-        var query = QueryController.GenerateQuery();
+        _query = QueryController.GenerateQuery();
 
-        if (query != null)
+        if (_query != null)
         {
             var options = new JsonSerializerOptions()
             {
                 WriteIndented = true
             };
 
-            var json = System.Text.Json.JsonSerializer.Serialize(query, options);
+            var json = System.Text.Json.JsonSerializer.Serialize(_query, options);
             QueryController.Errors = json;
         }
 
+        ShowErrors();
         StateHasChanged();
     }
 }

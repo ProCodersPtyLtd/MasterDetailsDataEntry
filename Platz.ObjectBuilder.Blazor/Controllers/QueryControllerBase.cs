@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Platz.ObjectBuilder.Blazor.Controllers.Logic;
+using Platz.ObjectBuilder.Blazor.Controllers.Validation;
 using Platz.ObjectBuilder.Engine;
 using Platz.ObjectBuilder.Expressions;
 using Platz.ObjectBuilder.Helpers;
@@ -11,7 +13,7 @@ using System.Text;
 
 namespace Platz.ObjectBuilder.Blazor
 {
-    public interface IQueryController
+    public interface IQueryModel
     {
         StoreSchema Schema { get; }
         List<QueryFromTable> FromTables { get; }
@@ -21,7 +23,11 @@ namespace Platz.ObjectBuilder.Blazor
         StoreQueryParameters StoreParameters { get; }
         List<TableLink> FromTableLinks { get; }
         List<TableJoinModel> FromTableJoins { get; }
+        List<RuleValidationResult> ValidationResults { get; }
+    }
 
+    public interface IQueryController : IQueryModel
+    {
         void SetParameters(IQueryControllerParameters parameters);
         void LoadSchema();
         void AddFromTable(StoreDefinition table);
@@ -39,8 +45,9 @@ namespace Platz.ObjectBuilder.Blazor
 
         void AliasChanged(string oldAlias, string newAlias);
         void RegenerateTableLinks();
+        void Validate();
     }
-
+ 
     public interface IQueryControllerParameters
     { }
 
@@ -64,7 +71,8 @@ namespace Platz.ObjectBuilder.Blazor
         public List<QueryFromTable> FromTables { get; private set; } = new List<QueryFromTable>();
         public List<QuerySelectProperty> SelectionProperties { get; private set; } = new List<QuerySelectProperty>();
         public List<TableLink> FromTableLinks { get; private set; } = new List<TableLink>();
-        public List<TableJoinModel> FromTableJoins { get; set; } = new List<TableJoinModel>();
+        public List<TableJoinModel> FromTableJoins { get; private set; } = new List<TableJoinModel>();
+        public List<RuleValidationResult> ValidationResults { get; private set; } = new List<RuleValidationResult>();
         public string WhereClause { get; private set; } = "";
         public string Errors { get; set; } = "";
 
@@ -73,9 +81,11 @@ namespace Platz.ObjectBuilder.Blazor
         protected IStoreSchemaReaderParameters _readerParameters;
         protected IObjectResolver _resolver;
         protected SqlExpressionEngine _expressions;
+        private readonly IQueryBuilderEngine _engine;
 
-        public QueryControllerBase()
+        public QueryControllerBase(IQueryBuilderEngine engine)
         {
+            _engine = engine;
         }
 
         public abstract void SetParameters(IQueryControllerParameters parameters);
@@ -124,57 +134,19 @@ namespace Platz.ObjectBuilder.Blazor
 
         public StoreQuery GenerateQuery()
         {
-            try
+            Validate();
+
+            if (ValidationResults.Any())
             {
-                var result = new StoreQuery()
-                {
-                    DataService = StoreParameters.DataService,
-                    Name = StoreParameters.QueryName,
-                    Namespace = StoreParameters.Namespace,
-                    ReturnTypeName = StoreParameters.QueryReturnType,
-                    SchemaName = Schema.Name,
-                    SchemaVersion = Schema.Version
-                };
-
-                result.Query = new StoreQueryDefinition();
-
-                result.Query.Fields = SelectionProperties.ToDictionary(
-                    p => p.Alias ?? p.StoreProperty.Name,
-                    p => new StoreQueryField
-                    {
-                        FieldAlias = p.Alias ?? p.StoreProperty.Name,
-                        Field = new StoreFieldReference { FieldName = p.StoreProperty.Name, ObjectAlias = p.FromTable.Alias }
-                    });
-
-                result.Query.Tables = FromTables.ToDictionary(
-                    t => t.Alias,
-                    t => new StoreTableReference { ObjectAlias = t.Alias, TableName = t.StoreDefinition.Name }
-                    );
-
-                // ToDo: composite foreign keys not supported currently
-                List<StoreObjectJoin> joins = FromTableJoins.Where(f => !f.IsDeleted)
-                    .Select(f => 
-                    {
-                        f.Source.JoinType = f.JoinType;
-                        return f.Source;  
-                    }).ToList();
-
-                result.Query.Joins = joins.ToArray();
-
-                var expr = _expressions.BuildExpressionTree(WhereClause);
-                var storeExpr = QueryExpressionHelper.ReadFromSqlExpr(expr);
-                result.Query.Where = new StoreQueryCondition { Expression = storeExpr };
-
-                var paramsDict = QueryExpressionHelper.GetParamsFromSqlExpr(expr);
-                result.Query.Parameters = paramsDict.ToDictionary(d => d.Key, d => new StoreQueryParameter { Name = d.Key, Type = FindStoreProperty(d.Value)?.Type });
-
-                return result;
-            }
-            catch (Exception exc)
-            {
-                Errors += "\r\n" + exc.Message;
                 return null;
             }
+
+            return _engine.GenerateQuery(this);
+        }
+
+        public void Validate()
+        {
+            ValidationResults = _engine.Validate(this);
         }
 
         private List<StoreObjectJoin> GenerateJoins()
@@ -205,28 +177,13 @@ namespace Platz.ObjectBuilder.Blazor
             return joins;
         }
 
-        private StoreProperty FindStoreProperty(string expressionField)
-        {
-            var split = expressionField.Split('.');
-
-            if (split.Count() < 2)
-            {
-                return null;
-            }
-
-            var alias = split[0];
-            var name = split[1];
-            var def = FromTables.First(t => t.Alias == alias);
-            var result = def.StoreDefinition.Properties[name];
-            return result;
-        }
-
         public void AddFromTable(StoreDefinition table)
         {
             var ft = new QueryFromTable(table);
             ft.Alias = GetDefaultAlias(ft);
             FromTables.Add(ft);
             RegenerateTableLinks();
+            _engine.SelectPropertiesFromNewTable(this, ft);
         }
 
         public void RemoveFromTable(string tableName, string alias)
@@ -288,7 +245,7 @@ namespace Platz.ObjectBuilder.Blazor
 
         public void AddSelectionProperty(QueryFromTable table, QueryFromProperty property)
         {
-            var newSelectProperty = new QuerySelectProperty(table, property.StoreProperty) { IsOutput = true };
+            var newSelectProperty = new QuerySelectProperty(table, property.StoreProperty) { IsOutput = true, Alias = property.Alias };
             SelectionProperties.Add(newSelectProperty);
         }
 
