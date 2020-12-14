@@ -6,7 +6,11 @@ using System.Text;
 
 namespace Platz.ObjectBuilder.Expressions
 {
-    public class SqlExpressionEngine
+    public interface ISqlExpressionEngine
+    {
+        SqlExpressionEngine.Expr BuildExpressionTree(string text);
+    }
+    public class SqlExpressionEngine : ISqlExpressionEngine
     {
         private readonly IObjectResolver _resolver;
         public SqlExpressionEngine(IObjectResolver resolver)

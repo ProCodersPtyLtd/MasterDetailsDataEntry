@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Platz.ObjectBuilder.Blazor.Controllers.Logic;
 using Platz.ObjectBuilder.Engine;
 using Platz.ObjectBuilder.Expressions;
 using System;
@@ -17,7 +18,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
     {
         private EntityFrameworkQueryControllerParameters _parameters;
 
-        public EntityFrameworkQueryController()
+        public EntityFrameworkQueryController(IQueryBuilderEngine engine): base(engine)
         {
             _storage = new FileStoreSchemaStorage();
         }

@@ -13,6 +13,8 @@ using Platz.SqlForms;
 using Plk.Blazor.DragDrop;
 using Platz.ObjectBuilder.Blazor;
 using Platz.ObjectBuilder.Blazor.Controllers;
+using Platz.ObjectBuilder.Blazor.Controllers.Logic;
+using Platz.ObjectBuilder.Expressions;
 
 namespace MasterDetailsDataEntry.Demo
 {
@@ -36,6 +38,8 @@ namespace MasterDetailsDataEntry.Demo
             services.AddPlatzSqlForms();
             services.AddBlazorDragDrop();
 
+            services.AddTransient<ISqlExpressionEngine, SqlExpressionEngine>();
+            services.AddTransient<IQueryBuilderEngine, QueryBuilderEngine>();
             services.AddTransient<IQueryController, EntityFrameworkQueryController>();
 
             var t = typeof(MasterDetailsDataEntry.Demo.Database.AdventureWorksContext);

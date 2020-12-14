@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MasterDetailsDataEntry.Demo.Database\MasterDetailsDataEntry.Demo.Database.csproj" />
+    <ProjectReference Include="..\Platz.ObjectBuilder.Blazor\Platz.ObjectBuilder.Blazor.csproj" />
     <ProjectReference Include="..\Platz.ObjectBuilder\Platz.ObjectBuilder.csproj" />
   </ItemGroup>
 
