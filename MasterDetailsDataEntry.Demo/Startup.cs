@@ -15,6 +15,7 @@ using Platz.ObjectBuilder.Blazor;
 using Platz.ObjectBuilder.Blazor.Controllers;
 using Platz.ObjectBuilder.Blazor.Controllers.Logic;
 using Platz.ObjectBuilder.Expressions;
+using Platz.ObjectBuilder.Blazor.Controllers.Validation;
 
 namespace MasterDetailsDataEntry.Demo
 {
@@ -38,6 +39,8 @@ namespace MasterDetailsDataEntry.Demo
             services.AddPlatzSqlForms();
             services.AddBlazorDragDrop();
 
+            services.AddTransient<IObjectResolver, SqlJsonObjectResolver>();
+            services.AddTransient<IObjectBuilderRuleFactory, ObjectBuilderRuleFactory>();
             services.AddTransient<ISqlExpressionEngine, SqlExpressionEngine>();
             services.AddTransient<IQueryBuilderEngine, QueryBuilderEngine>();
             services.AddTransient<IQueryController, EntityFrameworkQueryController>();

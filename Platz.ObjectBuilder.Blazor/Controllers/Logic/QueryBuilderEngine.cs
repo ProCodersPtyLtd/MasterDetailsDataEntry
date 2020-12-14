@@ -5,22 +5,32 @@ using System.Text;
 using System.Linq;
 using Platz.ObjectBuilder.Helpers;
 using Platz.ObjectBuilder.Expressions;
+using Platz.ObjectBuilder.Blazor.Controllers.Validation;
 
 namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
 {
     public interface IQueryBuilderEngine
     {
         void SelectPropertiesFromNewTable(IQueryController qc, QueryFromTable newTable);
-        StoreQuery GenerateQuery(IQueryBuilderModel qc);
+        StoreQuery GenerateQuery(IQueryModel qm);
+        List<RuleValidationResult> Validate(IQueryModel qm);
     }
 
     public class QueryBuilderEngine : IQueryBuilderEngine
     {
         private readonly ISqlExpressionEngine _expressions;
+        private readonly IObjectBuilderRuleFactory _ruleEngine;
 
-        public QueryBuilderEngine(ISqlExpressionEngine expressions)
+        public QueryBuilderEngine(ISqlExpressionEngine expressions, IObjectBuilderRuleFactory ruleEngine)
         {
             _expressions = expressions;
+            _ruleEngine = ruleEngine;
+        }
+
+        public List<RuleValidationResult> Validate(IQueryModel qm)
+        {
+            var result = _ruleEngine.ValidateAllRules(qm);
+            return result;
         }
 
         public void SelectPropertiesFromNewTable(IQueryController qc, QueryFromTable newTable)
@@ -37,7 +47,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
             }
         }
 
-        public StoreQuery GenerateQuery(IQueryBuilderModel qc)
+        public StoreQuery GenerateQuery(IQueryModel qc)
         {
             try
             {
@@ -53,11 +63,12 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
 
                 result.Query = new StoreQueryDefinition();
 
-                result.Query.Fields = qc.SelectionProperties.Where(p => p.IsOutput).ToDictionary(
+                result.Query.Fields = qc.SelectionProperties.ToDictionary(
                     p => p.OutputName,
                     p => new StoreQueryField
                     {
                         FieldAlias = p.OutputName,
+                        IsOutput = p.IsOutput,
                         Field = new StoreFieldReference { FieldName = p.StoreProperty.Name, ObjectAlias = p.FromTable.Alias }
                     });
 
@@ -92,7 +103,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
             }
         }
 
-        private StoreProperty FindStoreProperty(IQueryBuilderModel qc, string expressionField)
+        private StoreProperty FindStoreProperty(IQueryModel qc, string expressionField)
         {
             var split = expressionField.Split('.');
 

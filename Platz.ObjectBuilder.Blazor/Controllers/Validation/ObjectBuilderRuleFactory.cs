@@ -9,6 +9,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Validation
     {
         List<IObjectBuilderRule> GetAllRules();
         void RegisterRule(IObjectBuilderRule rule);
+        List<RuleValidationResult> ValidateAllRules(IQueryModel qm);
     }
 
     public class ObjectBuilderRuleFactory : IObjectBuilderRuleFactory
@@ -35,14 +36,14 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Validation
             }
         }
 
-        public List<RuleValidationResult> ValidateAllRules(IQueryController qc)
+        public List<RuleValidationResult> ValidateAllRules(IQueryModel qm)
         {
             var result = new List<RuleValidationResult>();
             var rules = GetAllRules();
 
             foreach (var rule in rules)
             {
-                var vr = rule.Validate(qc);
+                var vr = rule.Validate(qm);
 
                 if (vr != null && vr.IsFailed)
                 {
@@ -55,7 +56,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Validation
 
         private List<IObjectBuilderRule> GetLocalRules()
         {
-            var result = typeof(ObjectBuilderRuleFactory).Assembly.GetTypes().Where(t => typeof(IObjectBuilderRule).IsAssignableFrom(t))
+            var result = typeof(ObjectBuilderRuleFactory).Assembly.GetTypes().Where(t => !t.IsInterface && typeof(IObjectBuilderRule).IsAssignableFrom(t))
                 .Select(t => Activator.CreateInstance(t) as IObjectBuilderRule)
                 .ToList();
 

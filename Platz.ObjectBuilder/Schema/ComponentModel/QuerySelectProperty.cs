@@ -15,7 +15,7 @@ namespace Platz.ObjectBuilder.Schema
         public bool IsGroup { get; set; }
         public string Alias { get; set; }
 
-        public string OutputName {  get { return Alias ?? StoreProperty.Name; } }
+        public string OutputName {  get { return string.IsNullOrWhiteSpace(Alias) ? StoreProperty.Name : Alias; } }
 
         public QuerySelectProperty() { }
 

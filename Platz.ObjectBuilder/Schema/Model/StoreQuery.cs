@@ -61,7 +61,7 @@ namespace Platz.ObjectBuilder
         [Key]
         // Unique Field Alias in Query = FieldName by Default
         public string FieldAlias { get; set; }
-
+        public bool IsOutput { get; set; }
         public StoreFieldReference Field { get; set; }
 
         // <empty>, min, max, count, concat(f1, f2, ...) etc.

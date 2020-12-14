@@ -8,7 +8,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Validation
 {
     public interface IObjectBuilderRule
     {
-        RuleValidationResult Validate(IQueryController qc);
+        RuleValidationResult Validate(IQueryModel qm);
     }
 
     public class RuleValidationResult
