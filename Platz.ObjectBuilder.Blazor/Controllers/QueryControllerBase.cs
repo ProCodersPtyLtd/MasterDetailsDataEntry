@@ -46,6 +46,7 @@ namespace Platz.ObjectBuilder.Blazor
         void AliasChanged(string oldAlias, string newAlias);
         void RegenerateTableLinks();
         void Validate();
+        List<string> GetFileList(string path);
     }
  
     public interface IQueryControllerParameters
@@ -89,6 +90,13 @@ namespace Platz.ObjectBuilder.Blazor
         }
 
         public abstract void SetParameters(IQueryControllerParameters parameters);
+
+        public List<string> GetFileList(string path)
+        {
+            var result = _storage.GetFileNames(new StorageParameters { Path = path });
+            result = result.Where(f => f != "Schema.json").ToList();
+            return result;
+        }
 
         public void AliasChanged(string oldAlias, string newAlias)
         {
