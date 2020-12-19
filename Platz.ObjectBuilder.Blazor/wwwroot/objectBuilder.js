@@ -21,3 +21,7 @@ ConvertToSvg = (element, rect) => {
     var res = { x: svgP.x, y: svgP.y };
     return res;
 }
+
+HideModal = (name) => {
+    $(name).modal('hide');
+}

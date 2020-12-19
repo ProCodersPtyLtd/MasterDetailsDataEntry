@@ -16,6 +16,14 @@ namespace Platz.ObjectBuilder.Engine
             return result;
         }
 
+        public StoreQuery LoadQuery(StorageParameters parameters)
+        {
+            var fileName = Path.Combine(parameters.Path, parameters.FileName);
+            var json = File.ReadAllText(fileName);
+            var result = JsonSerializer.Deserialize<StoreQuery>(json);
+            return result;
+        }
+
         public void SaveQuery(StoreQuery query, StorageParameters parameters)
         {
             var options = new JsonSerializerOptions()

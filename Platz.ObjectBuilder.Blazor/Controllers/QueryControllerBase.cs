@@ -47,6 +47,7 @@ namespace Platz.ObjectBuilder.Blazor
         void RegenerateTableLinks();
         void Validate();
         List<string> GetFileList(string path);
+        void LoadFromFile(string path, string fileName);
     }
  
     public interface IQueryControllerParameters
@@ -90,6 +91,12 @@ namespace Platz.ObjectBuilder.Blazor
         }
 
         public abstract void SetParameters(IQueryControllerParameters parameters);
+
+        public void LoadFromFile(string path, string fileName)
+        {
+            var parameters = new StorageParameters { FileName = fileName, Path = path };
+            var query = _storage.LoadQuery(parameters);
+        }
 
         public List<string> GetFileList(string path)
         {

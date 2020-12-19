@@ -1,5 +1,8 @@
 ﻿@using Platz.ObjectBuilder.Blazor.Controllers
 @using System.Text.Json
+
+@inject IJSRuntime JS
+
 @namespace Platz.ObjectBuilder.Blazor
 
 <div style="width: 100%">
@@ -96,18 +99,18 @@
                     </div>
                     <div class="form-group">
                         <label for="message-text" class="col-form-label">Files:</label>
-                        @{ 
+                        @{
                             var data = GetLoadFiles();
                         }
 
                         <div class="list-group overflow-auto" id="list-tab" role="tablist" style="max-height: 400px;">
-                        @for (int i = 0; i < data.Count; i++)
-                        {
-                            var rowIndex = i;
+                            @for (int i = 0; i < data.Count; i++)
+                            {
+                                var rowIndex = i;
 
-                            <a class="list-group-item list-group-item-action" @onclick="() => FileClick(rowIndex)" data-toggle="list" href="#list-home" role="tab" 
-                               aria-controls="home">@data[i]</a>
-                        }
+                                <a class="list-group-item list-group-item-action" @onclick="() => FileClick(rowIndex)" @ondblclick="async(a) => await FileDblClick(a, rowIndex)"
+                                   data-toggle="list" href="#list-home" role="tab" aria-controls="home">@data[i]</a>
+                            }
                         </div>
                     </div>
                 </form>
@@ -135,6 +138,9 @@
     [Parameter]
     public string DataService { get; set; }
 
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
     private StoreQuery _query;
     private string _selectedFileName;
     private List<string> _files;
@@ -148,9 +154,17 @@
         QueryController.StoreParameters.StoreDataPath = StoreDataPath;
     }
 
-    private void LoadFile(MouseEventArgs args)
+    private async Task LoadFile(MouseEventArgs args)
     {
+        QueryController.LoadFromFile(StoreDataPath, _selectedFileName);
+        await ModelChanged.InvokeAsync(null);
+    }
 
+    private async Task FileDblClick(MouseEventArgs args, int row)
+    {
+        _selectedFileName = _files[row];
+        await JS.InvokeAsync<object>("HideModal", new object[] { "#loadModal" });
+        await LoadFile(args);
     }
 
     private void FileClick(int row)
