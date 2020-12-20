@@ -1,0 +1,227 @@
+{
+  "Name": "GetCustomerAddrList",
+  "DataService": "MyDataService",
+  "Namespace": "Default",
+  "ReturnTypeName": "CustomerAddr",
+  "SchemaName": null,
+  "SchemaVersion": null,
+  "Tags": null,
+  "Query": {
+    "QueryAlias": null,
+    "Comment": null,
+    "Parameters": {
+      "@p1": {
+        "Name": "@p1",
+        "Type": "String"
+      },
+      "@p2": {
+        "Name": "@p2",
+        "Type": "String"
+      }
+    },
+    "Fields": {
+      "AddrId": {
+        "FieldAlias": "AddrId",
+        "IsOutput": true,
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "AddressId"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "AddressLine1": {
+        "FieldAlias": "AddressLine1",
+        "IsOutput": true,
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "AddressLine1"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "AddressLine2": {
+        "FieldAlias": "AddressLine2",
+        "IsOutput": true,
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "AddressLine2"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "City": {
+        "FieldAlias": "City",
+        "IsOutput": true,
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "City"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "CountryRegion": {
+        "FieldAlias": "CountryRegion",
+        "IsOutput": true,
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "CountryRegion"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "ModifiedDate": {
+        "FieldAlias": "ModifiedDate",
+        "IsOutput": true,
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "ModifiedDate"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "PostalCode": {
+        "FieldAlias": "PostalCode",
+        "IsOutput": true,
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "PostalCode"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "Rowguid": {
+        "FieldAlias": "Rowguid",
+        "IsOutput": true,
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "Rowguid"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "StateProvince": {
+        "FieldAlias": "StateProvince",
+        "IsOutput": true,
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "StateProvince"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "CustomerId": {
+        "FieldAlias": "CustomerId",
+        "IsOutput": true,
+        "Field": {
+          "ObjectAlias": "c",
+          "FieldName": "CustomerId"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "AddressType": {
+        "FieldAlias": "AddressType",
+        "IsOutput": true,
+        "Field": {
+          "ObjectAlias": "c",
+          "FieldName": "AddressType"
+        },
+        "Operation": null,
+        "RawExpression": null
+      }
+    },
+    "Tables": {
+      "a": {
+        "ObjectAlias": "a",
+        "TableName": "Address"
+      },
+      "c": {
+        "ObjectAlias": "c",
+        "TableName": "CustomerAddress"
+      }
+    },
+    "SubQueries": null,
+    "Joins": [
+      {
+        "LeftObjectAlias": "a",
+        "LeftField": "AddressId",
+        "RightObjectAlias": "c",
+        "RightField": "AddressId",
+        "JoinType": "Inner"
+      }
+    ],
+    "GroupByFields": null,
+    "Having": null,
+    "Where": {
+      "Expression": {
+        "Value": null,
+        "QueryField": null,
+        "Param": null,
+        "Left": {
+          "Value": null,
+          "QueryField": null,
+          "Param": null,
+          "Left": {
+            "Value": null,
+            "QueryField": {
+              "FieldAlias": null,
+              "IsOutput": false,
+              "Field": {
+                "ObjectAlias": "a",
+                "FieldName": "City"
+              },
+              "Operation": null,
+              "RawExpression": null
+            },
+            "Param": null,
+            "Left": null,
+            "Operator": null,
+            "Right": null
+          },
+          "Operator": "=",
+          "Right": {
+            "Value": null,
+            "QueryField": null,
+            "Param": "@p1",
+            "Left": null,
+            "Operator": null,
+            "Right": null
+          }
+        },
+        "Operator": "AND",
+        "Right": {
+          "Value": null,
+          "QueryField": null,
+          "Param": null,
+          "Left": {
+            "Value": null,
+            "QueryField": {
+              "FieldAlias": null,
+              "IsOutput": false,
+              "Field": {
+                "ObjectAlias": "a",
+                "FieldName": "StateProvince"
+              },
+              "Operation": null,
+              "RawExpression": null
+            },
+            "Param": null,
+            "Left": null,
+            "Operator": null,
+            "Right": null
+          },
+          "Operator": "=",
+          "Right": {
+            "Value": null,
+            "QueryField": null,
+            "Param": "@p2",
+            "Left": null,
+            "Operator": null,
+            "Right": null
+          }
+        }
+      }
+    }
+  }
+}
