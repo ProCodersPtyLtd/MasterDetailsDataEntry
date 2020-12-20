@@ -7,11 +7,14 @@ namespace Platz.ObjectBuilder
     public interface IStoreSchemaStorage
     {
         void SaveQuery(StoreQuery query, StorageParameters parameters);
-        public void SaveSchema(StoreSchema schema, StorageParameters parameters);
+        void SaveSchema(StoreSchema schema, StorageParameters parameters);
+        List<string> GetFileNames(StorageParameters parameters);
+        StoreQuery LoadQuery(StorageParameters parameters);
     }
 
     public class StorageParameters
     {
+        public string Path { get; set; }
         public string FileName { get; set; }
     }
 }

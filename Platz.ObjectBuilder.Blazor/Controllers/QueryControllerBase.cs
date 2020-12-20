@@ -46,6 +46,9 @@ namespace Platz.ObjectBuilder.Blazor
         void AliasChanged(string oldAlias, string newAlias);
         void RegenerateTableLinks();
         void Validate();
+        List<string> GetFileList(string path);
+        void LoadFromFile(string path, string fileName);
+        void Clear();
     }
  
     public interface IQueryControllerParameters
@@ -89,6 +92,41 @@ namespace Platz.ObjectBuilder.Blazor
         }
 
         public abstract void SetParameters(IQueryControllerParameters parameters);
+
+        public void Clear()
+        {
+            // clear all values in controller
+            StoreParameters.DataService = "MyDataService";
+            StoreParameters.QueryName = "";
+            StoreParameters.Namespace = "Default";
+            StoreParameters.QueryReturnType = "";
+
+            FromTables.Clear();
+            SelectionProperties.Clear();
+            FromTableLinks.Clear();
+            FromTableJoins.Clear();
+            WhereClause = "";
+        }
+
+        public void LoadFromFile(string path, string fileName)
+        {
+            var parameters = new StorageParameters { FileName = fileName, Path = path };
+            var q = _storage.LoadQuery(parameters);
+            Clear();
+            var queryModel = _engine.LoadFromStoreQuery(this, q);
+            StoreParameters = queryModel.StoreParameters;
+            FromTables = queryModel.FromTables;
+            RegenerateTableLinks();
+            SelectionProperties = queryModel.SelectionProperties;
+            WhereClause = queryModel.WhereClause;
+        }
+
+        public List<string> GetFileList(string path)
+        {
+            var result = _storage.GetFileNames(new StorageParameters { Path = path });
+            result = result.Where(f => f != "Schema.json").ToList();
+            return result;
+        }
 
         public void AliasChanged(string oldAlias, string newAlias)
         {
@@ -245,8 +283,11 @@ namespace Platz.ObjectBuilder.Blazor
 
         public void AddSelectionProperty(QueryFromTable table, QueryFromProperty property)
         {
-            var newSelectProperty = new QuerySelectProperty(table, property.StoreProperty) { IsOutput = true, Alias = property.Alias };
-            SelectionProperties.Add(newSelectProperty);
+            if (!SelectionProperties.Any(s => s.FromTable.Alias == table.Alias && s.StoreProperty.Name == property.StoreProperty.Name))
+            {
+                var newSelectProperty = new QuerySelectProperty(table, property.StoreProperty) { IsOutput = true, Alias = property.Alias };
+                SelectionProperties.Add(newSelectProperty);
+            }
         }
 
         public void RemoveSelectionProperty(QueryFromTable table, QueryFromProperty property)
@@ -326,6 +367,19 @@ namespace Platz.ObjectBuilder.Blazor
                 Errors += "\r\n" + exc.Message;
             }
         }
+    }
+
+    public class QueryModel : IQueryModel
+    {
+        public StoreQueryParameters StoreParameters { get; set; } = new StoreQueryParameters();
+        public StoreSchema Schema { get; set; } = new StoreSchema();
+        public List<QueryFromTable> FromTables { get; set; } = new List<QueryFromTable>();
+        public List<QuerySelectProperty> SelectionProperties { get; set; } = new List<QuerySelectProperty>();
+        public List<TableLink> FromTableLinks { get; set; } = new List<TableLink>();
+        public List<TableJoinModel> FromTableJoins { get; set; } = new List<TableJoinModel>();
+        public List<RuleValidationResult> ValidationResults { get; set; } = new List<RuleValidationResult>();
+        public string WhereClause { get; set; } = "";
+        public string Errors { get; set; } = "";
     }
 
     public class TableJoinModel

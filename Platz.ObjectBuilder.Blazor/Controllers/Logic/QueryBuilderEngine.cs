@@ -13,7 +13,9 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
     {
         void SelectPropertiesFromNewTable(IQueryController qc, QueryFromTable newTable);
         StoreQuery GenerateQuery(IQueryModel qm);
+        QueryModel LoadFromStoreQuery(IQueryModel qm, StoreQuery q);
         List<RuleValidationResult> Validate(IQueryModel qm);
+        string QueryExprToString(QueryExpression expr, Dictionary<string, string> operatorsMap = null);
     }
 
     public class QueryBuilderEngine : IQueryBuilderEngine
@@ -30,6 +32,61 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
         public List<RuleValidationResult> Validate(IQueryModel qm)
         {
             var result = _ruleEngine.ValidateAllRules(qm);
+            return result;
+        }
+
+        public QueryModel LoadFromStoreQuery(IQueryModel qm, StoreQuery q)
+        {
+            var result = new QueryModel();
+            // read parameters
+            result.StoreParameters.DataService = q.DataService;
+            result.StoreParameters.QueryName = q.Name;
+            result.StoreParameters.Namespace = q.Namespace;
+            result.StoreParameters.QueryReturnType = q.ReturnTypeName;
+            result.Schema.Name = q.SchemaName;
+            result.Schema.Version = q.SchemaVersion;
+
+            // from
+            foreach (var t in q.Query.Tables)
+            {
+                var schemaTable = qm.Schema.Definitions[t.Value.TableName];
+                var ft = new QueryFromTable(schemaTable);
+                ft.Alias = t.Value.ObjectAlias;
+                result.FromTables.Add(ft);
+            }
+
+            // qc.RegenerateTableLinks();
+
+            // fields
+            foreach (var f in q.Query.Fields.Values)
+            {
+                var table = result.FromTables.FirstOrDefault(t => t.Alias == f.Field.ObjectAlias);
+
+                if (table == null)
+                {
+                    throw new Exception($"Table with alias '{f.Field.ObjectAlias}' not found");
+                }
+
+                var storeProperty = table.Properties.FirstOrDefault(p => p.StoreProperty.Name == f.Field.FieldName);
+
+                if (storeProperty == null)
+                {
+                    throw new Exception($"Field '{f.Field.FieldName}' not found in table with alias '{f.Field.ObjectAlias}'");
+                }
+
+                var newSelectionProperty = new QuerySelectProperty(table, storeProperty.StoreProperty)
+                {
+                    IsOutput = f.IsOutput,
+                    Alias = f.FieldAlias != f.Field.FieldName ? f.FieldAlias : ""
+                    // ToDo: Filter is not stored and cannot be loaded
+                };
+
+                result.SelectionProperties.Add(newSelectionProperty);
+            }
+
+            // Where
+            result.WhereClause = QueryExpressionHelper.QueryExprToString(q.Query.Where.Expression);
+
             return result;
         }
 
@@ -101,6 +158,11 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
                 qc.Errors += "\r\n" + exc.Message;
                 return null;
             }
+        }
+
+        public string QueryExprToString(QueryExpression expr, Dictionary<string, string> operatorsMap = null)
+        {
+            return QueryExpressionHelper.QueryExprToString(expr, operatorsMap);
         }
 
         private StoreProperty FindStoreProperty(IQueryModel qc, string expressionField)
