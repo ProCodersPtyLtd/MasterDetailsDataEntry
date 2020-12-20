@@ -1,45 +1,45 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Platz.SqlForms.Shared;
+using Platz.SqlForms.Shared.Interfaces;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace Platz.SqlForms
 {
-    public abstract class DataServiceBase
+    public abstract class DynamicEditFormBase : IDynamicEditForm
     {
         protected readonly IDataFieldProcessor _dataFieldProcessor;
-        protected DataServiceFormBuilder _builder;
+        protected DynamicFormBuilder _builder;
 
-        public DataServiceBase()
+        private Dictionary<Type, string> _formats = new Dictionary<Type, string>()
+        {
+            { typeof(DateTime), "dd/MM/yyyy" }
+            ,{ typeof(DateTime?), "dd/MM/yyyy" }
+        };
+
+        public DynamicEditFormBase()
         {
             _dataFieldProcessor = new DefaultDataFieldProcessor();
-            _builder = new DataServiceFormBuilder();
+            _builder = new DynamicFormBuilder();
             Define(_builder);
         }
 
-        protected virtual void Define(DataServiceFormBuilder builder)
+        protected virtual void Define(DynamicFormBuilder builder)
         {
         }
 
-        public IList ExecuteListQuery(object[] parameters)
+        public IEnumerable<DialogButtonDetails> GetButtons()
         {
-            var result = _builder.ListQuery(parameters) as IList;
+            var result = _builder.Builders.SelectMany(b => b.DialogButtons);
             return result;
         }
 
-        public IEnumerable<ActionRouteLink> GetContextLinks()
-        {
-            var result = _builder.Builders.SelectMany(b => b.ContextLinks);
-            return result;
-        }
 
-        public IEnumerable<DataField> GetDetailsFields()
+        IEnumerable<DataField> IDynamicEditForm.GetFields()
         {
             var fields = new List<DataField>();
-            // _builder.Builders.Where(b => b != _builder.Builders[_builder.MasterEntityIndex]).Single().Fields.OrderBy(f => f.Order);
 
             for (int i = 0; i < _builder.Builders.Count; i++)
             {
@@ -51,8 +51,6 @@ namespace Platz.SqlForms
                 }
             }
 
-            // _fields = fields.ToDictionary(f => f.BindingProperty, f => f);
-
             if (fields.Any())
             {
                 _dataFieldProcessor.PrepareFields(fields.ToList(), GetEntityType());
@@ -63,7 +61,7 @@ namespace Platz.SqlForms
                     var pk = fields.FirstOrDefault(f => f.BindingProperty.ToLower().EndsWith("id"));
                     pk = pk ?? fields.FirstOrDefault(f => f.BindingProperty.ToLower().StartsWith("id"));
                     pk = pk ?? fields.FirstOrDefault(f => f.BindingProperty.ToLower().Contains("id"));
-                    
+
                     if (pk != null)
                     {
                         pk.PrimaryKey = true;
@@ -74,20 +72,41 @@ namespace Platz.SqlForms
             return fields;
         }
 
-        private Type GetEntityType()
+        public Type GetEntityType()
         {
             return _builder.Entities.First();
         }
+
+        public abstract Type GetDbContextType();
+
+        public string GetFieldFormat(DataField field)
+        {
+            var format = field.Format ?? FindDefaultFormat(field.DataType);
+            return format;
+        }
+
+        private string FindDefaultFormat(Type dataType)
+        {
+            if (_formats.ContainsKey(dataType))
+            {
+                return _formats[dataType];
+            }
+
+            return "";
+        }
     }
 
-    public abstract class DataServiceBase<T> : DataServiceBase where T: DbContext
+    public abstract class DynamicEditFormBase<T> : DynamicEditFormBase where T : DbContext
     {
+        public override Type GetDbContextType()
+        {
+            return typeof(T);
+        }
+
         protected T GetDbContext()
         {
             var context = Activator.CreateInstance<T>();
             return context;
         }
-
-        
     }
 }

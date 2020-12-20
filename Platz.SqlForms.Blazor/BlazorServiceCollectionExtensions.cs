@@ -14,6 +14,7 @@ namespace Platz.SqlForms
         {
             serviceCollection.AddSingleton<IComponentTypeResolver, ComponentTypeResolver>();
             serviceCollection.AddTransient<RepeaterDataComponentController, RepeaterDataComponentController>();
+            serviceCollection.AddTransient<DynamicEditController, DynamicEditController>();
             return serviceCollection;
         }
     }

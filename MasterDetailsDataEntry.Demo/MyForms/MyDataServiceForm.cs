@@ -16,7 +16,7 @@ namespace MasterDetailsDataEntry.Demo.MyForms
             {
                 e.ExcludeAll();
 
-                e.Property(p => p.CustomerId);
+                e.Property(p => p.CustomerId).IsPrimaryKey();
 
                 e.Property(p => p.FirstName);
 
@@ -28,10 +28,12 @@ namespace MasterDetailsDataEntry.Demo.MyForms
 
                 e.Property(p => p.CompanyName);
 
-                e.ContextButton("Details", "CustView/{0}").ContextButton("Edit", "CustEdit/{0}").ContextButton("Delete", "CustDelete/{0}");
+                e.ContextButton("Details", "CustView/{0}").ContextButton("Edit", "CustomerEdit/{0}").ContextButton("Delete", "CustomerDelete/{0}");
             });
 
             builder.SetListMethod(GetCustList);
         }
+
+        //public void 
     }
 }

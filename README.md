@@ -24,5 +24,15 @@ Demo run (download or clone this repository):
 
 <img src="https://github.com/ProCodersPtyLtd/MasterDetailsDataEntry/blob/main/MasterDetails3.gif">
 
-This is very good database to try:
+This is another good database to try:
 https://docs.microsoft.com/en-us/sql/samples/adventureworks-install-configure?view=sql-server-ver15&tabs=ssms
+
+## Official roadmap 
+- Support data services that returns business objects that may differ from EF entities
+- UI component to show a list of business objects and context menu
+- UI form to entry/edit EF entities
+- Platz.ObjectBuilder library to define data services using visual interface
+- ObjectBuilder T4 template to generate data services C# code
+- UI form to entry/edit business objects
+- ObjectBuilder definition of business object - entity mappings and CRUD operations
+- ObjectBuilder T4 tempalte to generate business object CRUD operations' C# code
