@@ -9,6 +9,7 @@ namespace Platz.ObjectBuilder
         void SaveQuery(StoreQuery query, StorageParameters parameters);
         void SaveSchema(StoreSchema schema, StorageParameters parameters);
         List<string> GetFileNames(StorageParameters parameters);
+        bool FileExists(StorageParameters parameters);
         StoreQuery LoadQuery(StorageParameters parameters);
     }
 

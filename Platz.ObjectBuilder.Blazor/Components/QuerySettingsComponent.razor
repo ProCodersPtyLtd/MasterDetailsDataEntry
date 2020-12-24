@@ -1,6 +1,6 @@
 ﻿@using Platz.ObjectBuilder.Blazor.Controllers
 @using System.Text.Json
-
+@using System.IO
 @inject IJSRuntime JS
 
 @namespace Platz.ObjectBuilder.Blazor
@@ -144,6 +144,7 @@
     private StoreQuery _query;
     private string _selectedFileName;
     private List<string> _files;
+    private bool _fileNameChanged;
 
     protected override void OnParametersSet()
     {
@@ -158,6 +159,7 @@
     {
         QueryController.LoadFromFile(StoreDataPath, _selectedFileName);
         await ModelChanged.InvokeAsync(null);
+        _fileNameChanged = false;
     }
 
     private async Task FileDblClick(MouseEventArgs args, int row)
@@ -190,10 +192,23 @@
     private void LoadClick(MouseEventArgs args)
     { }
 
-    private void SaveClick(MouseEventArgs args)
+    private async Task SaveClick(MouseEventArgs args)
     {
-        QueryController.SaveSchema(StoreDataPath);
-        QueryController.SaveQuery(StoreDataPath);
+        bool canSave = true;
+
+        if (_fileNameChanged && QueryController.FileExists(StoreDataPath))
+        {
+            var fileName = QueryController.GenerateFileName(StoreDataPath);
+            fileName = Path.GetFileName(fileName);
+            canSave = await JS.InvokeAsync<bool>("confirm", $"File '{fileName}' already exists. Are you sure you want to overwrite it?");
+        }
+
+        if (canSave)
+        {
+            QueryController.SaveSchema(StoreDataPath);
+            QueryController.SaveQuery(StoreDataPath);
+            _fileNameChanged = false;
+        }
     }
 
     private void ValidateClick(MouseEventArgs args)
@@ -222,6 +237,7 @@
     {
         QueryController.StoreParameters.QueryReturnType = (string)args.Value;
         QueryController.StoreParameters.QueryName = $"Get{QueryController.StoreParameters.QueryReturnType}List";
+        _fileNameChanged = true;
     }
 
     private void SettingsClick()
