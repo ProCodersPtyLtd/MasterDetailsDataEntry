@@ -48,6 +48,8 @@ namespace Platz.ObjectBuilder.Blazor
         void Validate();
         List<string> GetFileList(string path);
         void LoadFromFile(string path, string fileName);
+        bool FileExists(string path);
+        string GenerateFileName(string path);
         void Clear();
     }
  
@@ -121,6 +123,11 @@ namespace Platz.ObjectBuilder.Blazor
             WhereClause = queryModel.WhereClause;
         }
 
+        public bool FileExists(string path)
+        {
+            return _storage.FileExists(new StorageParameters { Path = path, FileName = GenerateFileName(path) });
+        }
+
         public List<string> GetFileList(string path)
         {
             var result = _storage.GetFileNames(new StorageParameters { Path = path });
@@ -152,10 +159,15 @@ namespace Platz.ObjectBuilder.Blazor
 
         public void SaveQuery(string path)
         {
-            var fileName = Path.Combine(path, $"{StoreParameters.QueryName}.json");
+            var fileName = GenerateFileName(path);
             var parameters = new StorageParameters { FileName = fileName };
             var query = GenerateQuery();
             _storage.SaveQuery(query, parameters);
+        }
+
+        public string GenerateFileName(string path)
+        {
+            return Path.Combine(path, $"{StoreParameters.QueryName}.json");
         }
 
         public void SaveSchema(string path)

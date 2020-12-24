@@ -9,6 +9,13 @@ namespace Platz.ObjectBuilder.Engine
 {
     public class FileStoreSchemaStorage : IStoreSchemaStorage
     {
+        public bool FileExists(StorageParameters parameters)
+        {
+            var fileName = Path.Combine(parameters.Path, parameters.FileName);
+            var result = File.Exists(fileName);
+            return result;
+        }
+
         public List<string> GetFileNames(StorageParameters parameters)
         {
             var files = Directory.GetFiles(parameters.Path);
