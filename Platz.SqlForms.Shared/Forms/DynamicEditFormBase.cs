@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Platz.SqlForms.Shared;
+using Platz.SqlForms.Shared.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Text;
 
 namespace Platz.SqlForms
 {
-    public abstract class DynamicEditFormBase
+    public abstract class DynamicEditFormBase : IDynamicEditForm
     {
         protected readonly IDataFieldProcessor _dataFieldProcessor;
         protected DynamicFormBuilder _builder;
@@ -23,7 +24,9 @@ namespace Platz.SqlForms
         {
         }
 
-        public IEnumerable<DataField> GetDetailsFields()
+        
+
+        public IEnumerable<DataField> GetFields()
         {
             var fields = new List<DataField>();
 
@@ -58,14 +61,21 @@ namespace Platz.SqlForms
             return fields;
         }
 
-        private Type GetEntityType()
+        public Type GetEntityType()
         {
             return _builder.Entities.First();
         }
+
+        public abstract Type GetDbContextType();
     }
 
     public abstract class DynamicEditFormBase<T> : DynamicEditFormBase where T : DbContext
     {
+        public override Type GetDbContextType()
+        {
+            return typeof(T);
+        }
+
         protected T GetDbContext()
         {
             var context = Activator.CreateInstance<T>();

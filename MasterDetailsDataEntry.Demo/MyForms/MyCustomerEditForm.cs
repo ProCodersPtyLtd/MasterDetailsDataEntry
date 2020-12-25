@@ -1,4 +1,5 @@
-﻿using MasterDetailsDataEntry.Demo.Database.AdventureWorks;
+﻿using MasterDetailsDataEntry.Demo.Database;
+using MasterDetailsDataEntry.Demo.Database.AdventureWorks;
 using Platz.SqlForms;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MasterDetailsDataEntry.Demo.MyForms
 {
-    public class MyCustEditForm : DynamicEditFormBase
+    public class MyCustomerEditForm : DynamicEditFormBase<AdventureWorksContext>
     {
         protected override void Define(DynamicFormBuilder builder)
         {
@@ -28,8 +29,20 @@ namespace MasterDetailsDataEntry.Demo.MyForms
                 e.ContextButton("Details", "CustView/{0}").ContextButton("Edit", "CustEdit/{0}").ContextButton("Delete", "CustDelete/{0}");
             });
 
+            // builder.GetMethod(GetById);
+            // builder.SaveMethod(Save);
             // builder.SetListMethod(GetCustList);
         }
+
+        public Customer GetById(int id)
+        {
+            return null;
+        }
+        public Customer Save(Customer model)
+        {
+            return null;
+        }
+
 
         public FormRuleResult CheckEmail(Customer model)
         {

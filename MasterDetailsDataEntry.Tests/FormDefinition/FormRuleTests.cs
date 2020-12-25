@@ -14,14 +14,14 @@ namespace MasterDetailsDataEntry.Tests.FormDefinition
         public void FormRuleExecuteTest()
         {
             var form = new TestForm3();
-            var fields = form.GetDetailsFields();
+            var fields = form.GetFields();
             Assert.Equal(5, fields.Count());
 
             var nameField = fields.First(f => f.BindingProperty == "ClientName");
             Assert.Single(nameField.Rules);
 
             var order = new Order { ClientName = "Bashirov" };
-            var result = nameField.Rules[0].Rule(order);
+            var result = nameField.Rules[0].Method(order);
             Assert.Null(result);
         }
 
@@ -29,14 +29,14 @@ namespace MasterDetailsDataEntry.Tests.FormDefinition
         public void FormRuleErrorTest()
         {
             var form = new TestForm3();
-            var fields = form. GetDetailsFields();
+            var fields = form. GetFields();
             Assert.Equal(5, fields.Count());
 
             var nameField = fields.First(f => f.BindingProperty == "ClientName");
             Assert.Single(nameField.Rules);
 
             var order = new Order { ClientName = "Petrov" };
-            var result = nameField.Rules[0].Rule(order);
+            var result = nameField.Rules[0].Method(order);
             Assert.True(result.IsFailed);
             Assert.Equal("wrong name", result.Message);
             Assert.Equal("TestForm3", result.RuleName);

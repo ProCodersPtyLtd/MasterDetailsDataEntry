@@ -15,6 +15,7 @@ namespace Platz.SqlForms
             services.AddPlatzSqlFormsBlazor();
             services.AddSingleton<IDataEntryProvider, DataEntryProvider>();
             services.AddSingleton<IDataValidationProvider, DataValidationProvider>();
+            services.AddSingleton<IDynamicEditFormDataProvider, DynamicEditFormDataProvider>();
             return services;
         }
     }

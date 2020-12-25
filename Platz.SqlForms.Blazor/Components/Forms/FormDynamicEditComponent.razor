@@ -24,7 +24,7 @@
                 <lable>@field.Label</lable>
             }
 
-            <SingleDataComponent Form="@Form" Field="@field" ExtraHeight="@true" @*State="@_controller.CreateFieldState(field, rowIndex)"*@
+            <SingleDataComponent Form="@Form" Field="@field" ExtraHeight="@true" State="@_controller.GetFieldState(field)"
                                  IsEditing="@true" ModelValueChanged="@LocalModelValueChanged" />
         }
     </div>
@@ -61,7 +61,8 @@
     [Parameter]
     public EventCallback<ButtonClickedArgs> ButtonClicked { get; set; }
 
-    private DynamicEditFormBase _form;
+    private IDynamicEditForm _form;
+    private IEnumerable<DataField> _fields;
 
     protected override void OnInitialized()
     {
@@ -74,8 +75,17 @@
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-
+        LoadForm();
         //_controller.SetParameters(Form, ViewOptions, ModelType, Fields, ModelItems);
+    }
+
+    private void LoadForm()
+    {
+        _form = Activator.CreateInstance<TForm>() as IDynamicEditForm;
+        // _fields = _form.GetFields().Where(f => f.Hidden == false);
+        _controller.SetParameters(_form);
+        _fields = _controller.GetFields();
+        //_modelItems = _form.ExecuteListQuery(ServiceParameters);
     }
 
     #region events

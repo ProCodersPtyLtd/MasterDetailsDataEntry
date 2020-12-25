@@ -29,7 +29,7 @@ namespace Platz.SqlForms
         public virtual FieldBuilder<TProperty, TEntity> Rule([NotNullAttribute] Func<TEntity, FormRuleResult> method, FormRuleTriggers trigger = FormRuleTriggers.ChangeSubmit)
         {
             Func<object, FormRuleResult> rule = new Func<object, FormRuleResult>(f => method((TEntity)f));
-            _field.Rules.Add(new FieldRule { Rule = rule, Trigger = trigger });
+            _field.Rules.Add(new FieldRule { Method = rule, Trigger = trigger });
             return this;
         }
 

@@ -7,6 +7,6 @@ namespace Platz.SqlForms
     public class FieldRule
     {
         public FormRuleTriggers Trigger { get; set; }
-        public Func<object, FormRuleResult> Rule { get; set; }
+        public Func<object, FormRuleResult> Method { get; set; }
     }
 }
