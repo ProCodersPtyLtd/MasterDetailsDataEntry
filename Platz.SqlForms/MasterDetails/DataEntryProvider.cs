@@ -72,7 +72,7 @@ namespace Platz.SqlForms
         //    throw new NotImplementedException();
         //}
 
-        public System.Collections.IList GetEntityData(IModelDefinitionForm form, Type entity)
+        public System.Collections.IList GetEntityData(IDataForm form, Type entity)
         {
             using (var db = GetDbContext(form))
             {
@@ -121,7 +121,7 @@ namespace Platz.SqlForms
             }
         }
 
-        private DbContext GetDbContext(IModelDefinitionForm form)
+        private DbContext GetDbContext(IDataForm form)
         {
             var type = form.GetDbContextType();
             var context = Activator.CreateInstance(type) as DbContext;

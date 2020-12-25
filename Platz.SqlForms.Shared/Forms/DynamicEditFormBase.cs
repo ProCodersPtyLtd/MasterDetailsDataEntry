@@ -13,6 +13,12 @@ namespace Platz.SqlForms
         protected readonly IDataFieldProcessor _dataFieldProcessor;
         protected DynamicFormBuilder _builder;
 
+        private Dictionary<Type, string> _formats = new Dictionary<Type, string>()
+        {
+            { typeof(DateTime), "dd/MM/yyyy" }
+            ,{ typeof(DateTime?), "dd/MM/yyyy" }
+        };
+
         public DynamicEditFormBase()
         {
             _dataFieldProcessor = new DefaultDataFieldProcessor();
@@ -24,9 +30,8 @@ namespace Platz.SqlForms
         {
         }
 
-        
 
-        public IEnumerable<DataField> GetFields()
+        IEnumerable<DataField> IDynamicEditForm.GetFields()
         {
             var fields = new List<DataField>();
 
@@ -67,6 +72,22 @@ namespace Platz.SqlForms
         }
 
         public abstract Type GetDbContextType();
+
+        public string GetFieldFormat(DataField field)
+        {
+            var format = field.Format ?? FindDefaultFormat(field.DataType);
+            return format;
+        }
+
+        private string FindDefaultFormat(Type dataType)
+        {
+            if (_formats.ContainsKey(dataType))
+            {
+                return _formats[dataType];
+            }
+
+            return "";
+        }
     }
 
     public abstract class DynamicEditFormBase<T> : DynamicEditFormBase where T : DbContext

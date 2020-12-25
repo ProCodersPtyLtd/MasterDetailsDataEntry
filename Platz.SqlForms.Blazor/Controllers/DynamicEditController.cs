@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Platz.SqlForms.Shared;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,6 +9,7 @@ namespace Platz.SqlForms.Blazor
     {
         protected readonly IDynamicEditFormDataProvider _dataProvider;
         protected IDynamicEditForm _form;
+        protected int _id;
         protected Dictionary<string, FieldState> _fieldStates = new Dictionary<string, FieldState>();
         public string Error { get; private set; }
 
@@ -16,9 +18,15 @@ namespace Platz.SqlForms.Blazor
             _dataProvider = dataProvider;
         }
 
-        public void SetParameters(IDynamicEditForm form)
+        public void SetParameters(IDynamicEditForm form, int id)
         {
             _form = form;
+            _id = id;
+        }
+
+        public object GetItem()
+        {
+            return _dataProvider.GetItem(_form, _id);
         }
 
         public IEnumerable<DataField> GetFields()

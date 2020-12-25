@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using Xunit;
+using Platz.SqlForms.Shared;
 
 namespace MasterDetailsDataEntry.Tests.FormDefinition
 {
@@ -14,7 +15,7 @@ namespace MasterDetailsDataEntry.Tests.FormDefinition
         public void FormRuleExecuteTest()
         {
             var form = new TestForm3();
-            var fields = form.GetFields();
+            var fields = ((IDynamicEditForm)form).GetFields();
             Assert.Equal(5, fields.Count());
 
             var nameField = fields.First(f => f.BindingProperty == "ClientName");
@@ -29,7 +30,7 @@ namespace MasterDetailsDataEntry.Tests.FormDefinition
         public void FormRuleErrorTest()
         {
             var form = new TestForm3();
-            var fields = form. GetFields();
+            var fields = ((IDynamicEditForm)form).GetFields();
             Assert.Equal(5, fields.Count());
 
             var nameField = fields.First(f => f.BindingProperty == "ClientName");

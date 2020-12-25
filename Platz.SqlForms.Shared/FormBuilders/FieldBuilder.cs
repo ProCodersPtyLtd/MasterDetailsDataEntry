@@ -28,6 +28,7 @@ namespace Platz.SqlForms
 
         public virtual FieldBuilder<TProperty, TEntity> Rule([NotNullAttribute] Func<TEntity, FormRuleResult> method, FormRuleTriggers trigger = FormRuleTriggers.ChangeSubmit)
         {
+            // https://stackoverflow.com/questions/3444246/convert-actiont-to-actionobject
             Func<object, FormRuleResult> rule = new Func<object, FormRuleResult>(f => method((TEntity)f));
             _field.Rules.Add(new FieldRule { Method = rule, Trigger = trigger });
             return this;

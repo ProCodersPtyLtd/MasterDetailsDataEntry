@@ -24,7 +24,7 @@
                 <lable>@field.Label</lable>
             }
 
-            <SingleDataComponent Form="@Form" Field="@field" ExtraHeight="@true" State="@_controller.GetFieldState(field)"
+            <SingleDataComponent Form="@_form" Field="@field" ExtraHeight="@true" State="@_controller.GetFieldState(field)"
                                  IsEditing="@true" ModelValueChanged="@LocalModelValueChanged" />
         }
     </div>
@@ -37,8 +37,6 @@
 
 @code
 {
-    [Parameter]
-    public IModelDefinitionForm Form { get; set; }
 
     [Parameter]
     public FormViewOptions ViewOptions { get; set; } = new FormViewOptions { AllowAdd = true, AllowDelete = true, AllowEdit = true };
@@ -50,7 +48,7 @@
     public IEnumerable<DataField> Fields { get; set; }
 
     [Parameter]
-    public object ModelItem { get; set; }
+    public int Id { get; set; }
 
     [Parameter]
     public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }
@@ -61,6 +59,7 @@
     [Parameter]
     public EventCallback<ButtonClickedArgs> ButtonClicked { get; set; }
 
+    private object _modelItem { get; set; }
     private IDynamicEditForm _form;
     private IEnumerable<DataField> _fields;
 
@@ -83,8 +82,9 @@
     {
         _form = Activator.CreateInstance<TForm>() as IDynamicEditForm;
         // _fields = _form.GetFields().Where(f => f.Hidden == false);
-        _controller.SetParameters(_form);
+        _controller.SetParameters(_form, Id);
         _fields = _controller.GetFields();
+        _modelItem = _controller.GetItem();
         //_modelItems = _form.ExecuteListQuery(ServiceParameters);
     }
 
