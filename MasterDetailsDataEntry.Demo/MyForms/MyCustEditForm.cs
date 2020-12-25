@@ -21,7 +21,7 @@ namespace MasterDetailsDataEntry.Demo.MyForms
 
                 e.Property(p => p.Phone);
 
-                e.Property2(p => p.EmailAddress).Rule(CheckEmail);
+                e.Property(p => p.EmailAddress).Rule(CheckEmail);
 
                 e.Property(p => p.CompanyName);
 

@@ -29,23 +29,13 @@ namespace Platz.SqlForms
             _contextLinks = new List<ActionRouteLink>();
         }
 
-        public virtual FieldBuilder<TProperty> Property<TProperty>([NotNullAttribute] Expression<Func<TEntity, TProperty>> propertyExpression)
+        public virtual FieldBuilder<TProperty, TEntity> Property<TProperty>([NotNullAttribute] Expression<Func<TEntity, TProperty>> propertyExpression)
         {
             var bindingProperty = propertyExpression.Body.ToString().ReplaceLambdaVar();
             // explicitly mentioned property is not hidden anymore
             _fields[bindingProperty].Hidden = false;
-            var result = new FieldBuilder<TProperty>(_fields[bindingProperty]);
+            var result = new FieldBuilder<TProperty, TEntity>(_fields[bindingProperty]);
             _fieldBuilder = result;
-            return result;
-        }
-
-        public virtual FieldBuilder2<TProperty, TEntity> Property2<TProperty>([NotNullAttribute] Expression<Func<TEntity, TProperty>> propertyExpression)
-        {
-            var bindingProperty = propertyExpression.Body.ToString().ReplaceLambdaVar();
-            // explicitly mentioned property is not hidden anymore
-            _fields[bindingProperty].Hidden = false;
-            var result = new FieldBuilder2<TProperty, TEntity>(_fields[bindingProperty]);
-            //_fieldBuilder = result;
             return result;
         }
 

@@ -14,5 +14,6 @@ namespace Platz.SqlForms
         public bool Hidden { get; set; }
         public bool? ReadOnly { get; set; }
         public string Format { get; set; }
+        public List<FieldRule> Rules { get; set; } = new List<FieldRule>();
     }
 }
