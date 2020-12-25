@@ -33,5 +33,7 @@ namespace MasterDetailsDataEntry.Demo.MyForms
 
             builder.SetListMethod(GetCustList);
         }
+
+        //public void 
     }
 }

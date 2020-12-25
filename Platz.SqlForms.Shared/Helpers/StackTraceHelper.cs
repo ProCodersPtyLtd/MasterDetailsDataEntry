@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-namespace Platz.ObjectBuilder.Blazor.Controllers.Validation
+namespace Platz.Shared
 {
     public static class StackTraceHelper
     {

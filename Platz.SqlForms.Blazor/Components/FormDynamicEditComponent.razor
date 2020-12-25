@@ -1,0 +1,131 @@
+﻿@inject IComponentTypeResolver _componentResolverService
+@inject IDataValidationProvider _dataValidationProvider
+@inject DynamicEditController _controller
+
+@typeparam TForm
+
+@namespace Platz.SqlForms.Blazor
+
+<div class="FormDynamicEditComponent">
+    <div>
+        @foreach (var field in _controller.GetFields())
+        {
+            @if (field.Hidden)
+            {
+                continue;
+            }
+
+            @if (field.Required)
+            {
+                <label>@(field.Label)*</label>
+            }
+            else
+            {
+                <lable>@field.Label</lable>
+            }
+
+            <SingleDataComponent Form="@Form" Field="@field" ExtraHeight="@true" @*State="@_controller.CreateFieldState(field, rowIndex)"*@
+                                 IsEditing="@true" ModelValueChanged="@LocalModelValueChanged" />
+        }
+    </div>
+
+    <button class="btn btn-light" title="Save" @onclick="@(async (args) => await SaveClick(args))" />
+
+    <textarea hidden="@(_controller.Error == null ? "hidden" : null)" readonly="readonly" class="form-control" style="background-color: black; color: red;" rows="3">Error: @_controller.Error</textarea>
+
+</div>
+
+@code
+{
+    [Parameter]
+    public IModelDefinitionForm Form { get; set; }
+
+    [Parameter]
+    public FormViewOptions ViewOptions { get; set; } = new FormViewOptions { AllowAdd = true, AllowDelete = true, AllowEdit = true };
+
+    [Parameter]
+    public Type ModelType { get; set; }
+
+    [Parameter]
+    public IEnumerable<DataField> Fields { get; set; }
+
+    [Parameter]
+    public object ModelItem { get; set; }
+
+    [Parameter]
+    public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<ItemsChangedArgs> ItemsChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<ButtonClickedArgs> ButtonClicked { get; set; }
+
+    private DynamicEditFormBase _form;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        //_controller.SetParameters(Form, ViewOptions, ModelType, Fields, ModelItems);
+        //_controller.InitControl();
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        //_controller.SetParameters(Form, ViewOptions, ModelType, Fields, ModelItems);
+    }
+
+    #region events
+
+    private async Task LocalModelValueChanged(ValueChangedArgs args)
+    {
+        await ModelValueChanged.InvokeAsync(args);
+    }
+
+    #endregion
+
+    #region clicks
+
+    private async Task SaveClick(MouseEventArgs e)
+    {
+    }
+
+    private async Task CustomButtonClick(MouseEventArgs e, string button, int rowIndex)
+    {
+        await ButtonClicked.InvokeAsync(new ButtonClickedArgs { Entity = ModelType, Button = button, RowIndex = rowIndex });
+    }
+
+    private void EditClick(MouseEventArgs e, int rowIndex)
+    {
+        //_controller.EditItem(rowIndex);
+        StateHasChanged();
+    }
+
+    private async Task DeleteClick(MouseEventArgs e, int rowIndex)
+    {
+        //await _controller.DeleteItem(rowIndex, ItemsChanged.InvokeAsync);
+        StateHasChanged();
+    }
+
+    private async Task ApplyClick(MouseEventArgs e, int rowIndex)
+    {
+        //await _controller.ApplyItem(rowIndex, ItemsChanged.InvokeAsync);
+        StateHasChanged();
+    }
+
+    private void CancelClick(MouseEventArgs e, int rowIndex)
+    {
+        //_controller.CancelItem(rowIndex);
+    }
+
+    private void AddClick(MouseEventArgs e)
+    {
+        //_controller.AddNewItem();
+    }
+
+    #endregion
+
+}
