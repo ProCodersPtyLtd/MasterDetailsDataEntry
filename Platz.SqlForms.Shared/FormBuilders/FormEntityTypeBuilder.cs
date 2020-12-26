@@ -12,10 +12,11 @@ namespace Platz.SqlForms
     {
         protected FieldBuilder _fieldBuilder;
         protected Dictionary<string, DataField> _fields;
-        protected List<ActionRouteLink> _contextLinks;
+        protected readonly List<ActionRouteLink> _contextLinks = new List<ActionRouteLink>();
         public FieldBuilder FieldBuilder { get { return _fieldBuilder; } }
         public IEnumerable<DataField> Fields {  get { return _fields.Values; } }
         public IEnumerable<ActionRouteLink> ContextLinks{  get { return _contextLinks; } }
+        public List<DialogButtonDetails> DialogButtons { get; private set; }  = new List<DialogButtonDetails>();
     }
 
     public class FormEntityTypeBuilder<TEntity> : FormEntityTypeBuilder where TEntity : class
@@ -26,7 +27,6 @@ namespace Platz.SqlForms
             // pre-populate all fields
             var fields = typeof(TEntity).GetSimpleTypeProperties().Select(p => new DataField { BindingProperty = p.Name, DataType = p.PropertyType, Order = order++ });
             _fields = fields.ToDictionary(f => f.BindingProperty, f => f);
-            _contextLinks = new List<ActionRouteLink>();
         }
 
         public virtual FieldBuilder<TProperty, TEntity> Property<TProperty>([NotNullAttribute] Expression<Func<TEntity, TProperty>> propertyExpression)
@@ -48,6 +48,18 @@ namespace Platz.SqlForms
         public virtual FormEntityTypeBuilder<TEntity> ContextButton(string buttonText, string actionLinkText)
         {
             _contextLinks.Add(new ActionRouteLink { Text = buttonText, LinkText = actionLinkText });
+            return this;
+        }
+
+        public virtual FormEntityTypeBuilder<TEntity> DialogButton(ButtonActionTypes actionType, string buttonText = null, string hint = null, string actionLinkText = null)
+        {
+            DialogButtons.Add(new DialogButtonDetails { Action = actionType, Text = buttonText, Hint = hint, LinkText = actionLinkText });
+            return this;
+        }
+
+        public virtual FormEntityTypeBuilder<TEntity> DialogButton(string actionLinkText, ButtonActionTypes actionType, string buttonText = null, string hint = null)
+        {
+            DialogButtons.Add(new DialogButtonDetails { Action = actionType, Text = buttonText, Hint = hint, LinkText = actionLinkText });
             return this;
         }
 

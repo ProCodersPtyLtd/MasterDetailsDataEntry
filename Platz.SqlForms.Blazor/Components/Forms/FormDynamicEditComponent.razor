@@ -1,6 +1,7 @@
 ﻿@inject IComponentTypeResolver _componentResolverService
 @inject IDataValidationProvider _dataValidationProvider
 @inject DynamicEditController _controller
+@inject NavigationManager _navi
 
 @typeparam TForm
 
@@ -17,7 +18,7 @@
 
             <div class="row">
 
-                <div class="col-sm-4">
+                <div class="col-md-4">
                     @if (field.Required)
                     {
                         <label>@(field.Label)*</label>
@@ -28,19 +29,35 @@
                     }
                 </div>
 
-                <div class="col-sm">
+                <div class="col-md-8">
                     <SingleDataComponent Form="@_form" Field="@field" ExtraHeight="@true" State="@_controller.GetFieldState(field)"
                                          IsEditing="@true" ModelValueChanged="@LocalModelValueChanged" />
                 </div>
             </div>
         }
+
+        <div class="row">
+            <div class="col-md-2"></div>
+
+            <div class="col-md-10">
+                @foreach (var btn in _controller.Buttons)
+                {
+                    @:&nbsp;
+                    <button class="@GetButtonClass(btn)" title="@btn.Hint" @onclick="@(async (args) => await ButtonClick(args, btn))">@GetButtonText(btn)</button>
+                }
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <textarea hidden="@(_controller.Error == null ? "hidden" : null)" readonly="readonly" class="form-control" style="background-color: black; color: red;" rows="3">Error: @_controller.Error</textarea>
+            </div>
+        </div>
+
     </div>
-
-    <button class="btn btn-light" title="Save" @onclick="@(async (args) => await SaveClick(args))" />
-
-    <textarea hidden="@(_controller.Error == null ? "hidden" : null)" readonly="readonly" class="form-control" style="background-color: black; color: red;" rows="3">Error: @_controller.Error</textarea>
-
 </div>
+
+
 
 @code
 {
@@ -95,6 +112,25 @@
         //_modelItems = _form.ExecuteListQuery(ServiceParameters);
     }
 
+    private string GetButtonClass(DialogButtonDetails btn)
+    {
+        switch (btn.Action)
+        {
+            case ButtonActionTypes.Submit:
+                return "btn btn-primary";
+            case ButtonActionTypes.Cancel:
+                return "btn btn-danger";
+            default:
+                return "btn btn-secondary";
+        }
+    }
+
+    private string GetButtonText(DialogButtonDetails btn)
+    {
+        var result = btn.Text ?? Enum.GetName(typeof(ButtonActionTypes), btn.Action);
+        return result;
+    }
+
     #region events
 
     private async Task LocalModelValueChanged(ValueChangedArgs args)
@@ -106,6 +142,27 @@
     #endregion
 
     #region clicks
+
+    private async Task ButtonClick(MouseEventArgs e, DialogButtonDetails btn)
+    {
+        switch (btn.Action)
+        {
+            case ButtonActionTypes.Submit:
+                break;
+            case ButtonActionTypes.Validate:
+                break;
+            default:
+                if (btn.LinkText != null)
+                {
+                    _navi.NavigateTo($"{btn.LinkText}");
+                }
+                else
+                {
+                    await ButtonClicked.InvokeAsync(new ButtonClickedArgs { Entity = _form.GetEntityType(), Button = GetButtonText(btn) });
+                }
+                break;
+        }
+    }
 
     private async Task SaveClick(MouseEventArgs e)
     {

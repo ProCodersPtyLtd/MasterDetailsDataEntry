@@ -26,7 +26,13 @@ namespace MasterDetailsDataEntry.Demo.MyForms
 
                 e.Property(p => p.CompanyName);
 
-                e.ContextButton("Details", "CustView/{0}").ContextButton("Edit", "CustEdit/{0}").ContextButton("Delete", "CustDelete/{0}");
+                //e.ContextButton("Details", "CustView/{0}").ContextButton("Edit", "CustEdit/{0}").ContextButton("Delete", "CustDelete/{0}");
+
+                e.DialogButton("QueryResult", ButtonActionTypes.Custom, "Back")
+                .DialogButton("QueryResult", ButtonActionTypes.Cancel)
+                .DialogButton("/", ButtonActionTypes.Close)
+                .DialogButton(ButtonActionTypes.Validate)
+                .DialogButton(ButtonActionTypes.Submit, "Update", "Save to database");
             });
 
             // builder.GetMethod(GetById);

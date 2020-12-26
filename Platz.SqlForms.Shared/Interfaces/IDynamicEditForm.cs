@@ -10,8 +10,8 @@ namespace Platz.SqlForms.Shared
 {
     public interface IDynamicEditForm : IDataForm
     {
-        Type GetDbContextType();
         Type GetEntityType();
         internal IEnumerable<DataField> GetFields();
+        IEnumerable<DialogButtonDetails> GetButtons();
     }
 }

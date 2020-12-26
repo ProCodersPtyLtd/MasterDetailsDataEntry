@@ -30,6 +30,12 @@ namespace Platz.SqlForms
         {
         }
 
+        public IEnumerable<DialogButtonDetails> GetButtons()
+        {
+            var result = _builder.Builders.SelectMany(b => b.DialogButtons);
+            return result;
+        }
+
 
         IEnumerable<DataField> IDynamicEditForm.GetFields()
         {
