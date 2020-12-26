@@ -19,6 +19,7 @@ namespace Platz.SqlForms.Blazor
         public object ModelItem { get; private set; }
         public IEnumerable<DataField> Fields { get; private set; }
         public IEnumerable<DialogButtonDetails> Buttons { get; private set; }
+        public IEnumerable<DialogButtonNavigationDetails> ButtonNavigations { get; private set; }
         public string Error { get; private set; }
 
         public DynamicEditController(IDynamicEditFormDataProvider dataProvider, IDataValidationProvider dataValidationProvider)
@@ -34,6 +35,25 @@ namespace Platz.SqlForms.Blazor
             Fields = GetFields();
             ModelItem = GetItem();
             Buttons = _form.GetButtons();
+            ButtonNavigations = _form.GetButtonNavigations();
+        }
+
+        public async Task<bool> Delete()
+        {
+            var success = true;
+
+            try
+            {
+                Error = null;
+                _dataProvider.DeleteItem(_form, ModelItem);
+            }
+            catch (Exception exc)
+            {
+                LogException(exc);
+                success = false;
+            }
+
+            return success;
         }
 
         public async Task<bool> Submit()

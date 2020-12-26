@@ -36,6 +36,11 @@ namespace Platz.SqlForms
             return result;
         }
 
+        public IEnumerable<DialogButtonNavigationDetails> GetButtonNavigations()
+        {
+            var result = _builder.Builders.SelectMany(b => b.DialogButtonNavigations);
+            return result;
+        }
 
         IEnumerable<DataField> IDynamicEditForm.GetFields()
         {

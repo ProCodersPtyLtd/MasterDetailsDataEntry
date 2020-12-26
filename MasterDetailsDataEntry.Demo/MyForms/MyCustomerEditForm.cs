@@ -18,7 +18,7 @@ namespace MasterDetailsDataEntry.Demo.MyForms
 
                 e.Property(p => p.FirstName).IsRequired();
 
-                e.Property(p => p.LastName);
+                e.Property(p => p.LastName).IsRequired();
 
                 e.Property(p => p.Phone);
 
@@ -26,11 +26,16 @@ namespace MasterDetailsDataEntry.Demo.MyForms
 
                 e.Property(p => p.CompanyName);
 
-                e.DialogButton("QueryResult", ButtonActionTypes.Custom, "Back")
+                e
+                //.DialogButton("QueryResult", ButtonActionTypes.Custom, "Back")
                 .DialogButton("QueryResult", ButtonActionTypes.Cancel)
-                .DialogButton("/", ButtonActionTypes.Close)
+                //.DialogButton(ButtonActionTypes.Close)
                 .DialogButton(ButtonActionTypes.Validate)
-                .DialogButton("QueryResult", ButtonActionTypes.Submit, "Update", "Save to database");
+                .DialogButton(ButtonActionTypes.Submit, "Update", "Save to database");
+
+                e.DialogButtonNavigation("QueryResult", ButtonActionTypes.Delete, ButtonActionTypes.Submit);
+
+                e.DialogButtonNavigation("/", ButtonActionTypes.Close);
             });
 
         }

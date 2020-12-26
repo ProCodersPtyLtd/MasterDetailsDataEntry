@@ -17,6 +17,7 @@ namespace Platz.SqlForms
         public IEnumerable<DataField> Fields {  get { return _fields.Values; } }
         public IEnumerable<ActionRouteLink> ContextLinks{  get { return _contextLinks; } }
         public List<DialogButtonDetails> DialogButtons { get; private set; }  = new List<DialogButtonDetails>();
+        public List<DialogButtonNavigationDetails> DialogButtonNavigations { get; private set; }  = new List<DialogButtonNavigationDetails>();
     }
 
     public class FormEntityTypeBuilder<TEntity> : FormEntityTypeBuilder where TEntity : class
@@ -60,6 +61,12 @@ namespace Platz.SqlForms
         public virtual FormEntityTypeBuilder<TEntity> DialogButton(string actionLinkText, ButtonActionTypes actionType, string buttonText = null, string hint = null)
         {
             DialogButtons.Add(new DialogButtonDetails { Action = actionType, Text = buttonText, Hint = hint, LinkText = actionLinkText });
+            return this;
+        }
+
+        public virtual FormEntityTypeBuilder<TEntity> DialogButtonNavigation(string actionLinkText, params ButtonActionTypes[] actions)
+        {
+            DialogButtonNavigations.Add(new DialogButtonNavigationDetails { LinkText = actionLinkText, Actions = actions.ToList() });
             return this;
         }
 
