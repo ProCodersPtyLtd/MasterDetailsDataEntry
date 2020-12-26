@@ -13,5 +13,6 @@ namespace Platz.SqlForms.Shared
         Type GetEntityType();
         internal IEnumerable<DataField> GetFields();
         IEnumerable<DialogButtonDetails> GetButtons();
+        IEnumerable<DialogButtonNavigationDetails> GetButtonNavigations();
     }
 }
