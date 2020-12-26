@@ -18,7 +18,7 @@ namespace Platz.SqlForms
         void DeleteItem(IModelDefinitionForm form, object item);
 
         // Validation
-        bool IsPropertyValueNotUnique(IModelDefinitionForm form, object item, string bindingProperty, Type entity);
+        bool IsPropertyValueNotUnique(IDataForm form, object item, string bindingProperty, Type entity);
 
         // ToDo: it looks like the second specialization - it should be moved to another interface
         System.Collections.IList GetEntityData(IDataForm form, Type entity);

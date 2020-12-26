@@ -15,7 +15,7 @@ namespace Platz.SqlForms
             _dataEntryProvider = dataEntryProvider;
         }
 
-        public IEnumerable<ValidationResult> ValidateModel(IModelDefinitionForm form, object item, int rowIndex, IEnumerable<DataField> fields)
+        public IEnumerable<ValidationResult> ValidateModel(IDataForm form, object item, int rowIndex, IEnumerable<DataField> fields)
         {
             var result = new List<ValidationResult>();
 
@@ -28,7 +28,7 @@ namespace Platz.SqlForms
             return result;
         }
 
-        public IEnumerable<ValidationResult> ValidateModelProperty(IModelDefinitionForm form, object item, int rowIndex, string bindingProperty, IEnumerable<DataField> fields)
+        public IEnumerable<ValidationResult> ValidateModelProperty(IDataForm form, object item, int rowIndex, string bindingProperty, IEnumerable<DataField> fields)
         {
             var result = new List<ValidationResult>();
             var field = fields.Single(f => f.BindingProperty == bindingProperty);
@@ -58,7 +58,7 @@ namespace Platz.SqlForms
             }
         }
 
-        private void UniqueRule(IModelDefinitionForm form, object item, int rowIndex, DataField field, List<ValidationResult> result)
+        private void UniqueRule(IDataForm form, object item, int rowIndex, DataField field, List<ValidationResult> result)
         {
             if (field.Unique)
             {

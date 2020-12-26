@@ -81,7 +81,7 @@ namespace Platz.SqlForms
             }
         }
 
-        public bool IsPropertyValueNotUnique(IModelDefinitionForm form, object item, string bindingProperty, Type entity)
+        public bool IsPropertyValueNotUnique(IDataForm form, object item, string bindingProperty, Type entity)
         {
             using (var db = GetDbContext(form))
             {

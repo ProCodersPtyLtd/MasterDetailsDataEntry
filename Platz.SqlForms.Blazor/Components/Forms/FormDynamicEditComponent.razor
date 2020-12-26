@@ -4,10 +4,10 @@
 
 @typeparam TForm
 
-@namespace Platz.SqlForms.Blazor
+@namespace Platz.SqlForms
 
 <div class="FormDynamicEditComponent">
-    <div>
+    <div class="container">
         @foreach (var field in _controller.GetFields())
         {
             @if (field.Hidden)
@@ -15,17 +15,24 @@
                 continue;
             }
 
-            @if (field.Required)
-            {
-                <label>@(field.Label)*</label>
-            }
-            else
-            {
-                <lable>@field.Label</lable>
-            }
+            <div class="row">
 
-            <SingleDataComponent Form="@_form" Field="@field" ExtraHeight="@true" State="@_controller.GetFieldState(field)"
-                                 IsEditing="@true" ModelValueChanged="@LocalModelValueChanged" />
+                <div class="col-sm-4">
+                    @if (field.Required)
+                    {
+                        <label>@(field.Label)*</label>
+                    }
+                    else
+                    {
+                        <lable>@field.Label</lable>
+                    }
+                </div>
+
+                <div class="col-sm">
+                    <SingleDataComponent Form="@_form" Field="@field" ExtraHeight="@true" State="@_controller.GetFieldState(field)"
+                                         IsEditing="@true" ModelValueChanged="@LocalModelValueChanged" />
+                </div>
+            </div>
         }
     </div>
 
@@ -38,14 +45,14 @@
 @code
 {
 
-    [Parameter]
-    public FormViewOptions ViewOptions { get; set; } = new FormViewOptions { AllowAdd = true, AllowDelete = true, AllowEdit = true };
+    //[Parameter]
+    //public FormViewOptions ViewOptions { get; set; } = new FormViewOptions { AllowAdd = true, AllowDelete = true, AllowEdit = true };
 
-    [Parameter]
-    public Type ModelType { get; set; }
+    //[Parameter]
+    //public Type ModelType { get; set; }
 
-    [Parameter]
-    public IEnumerable<DataField> Fields { get; set; }
+    //[Parameter]
+    //public IEnumerable<DataField> Fields { get; set; }
 
     [Parameter]
     public int Id { get; set; }
@@ -61,7 +68,7 @@
 
     private object _modelItem { get; set; }
     private IDynamicEditForm _form;
-    private IEnumerable<DataField> _fields;
+    //private IEnumerable<DataField> _fields;
 
     protected override void OnInitialized()
     {
@@ -83,8 +90,8 @@
         _form = Activator.CreateInstance<TForm>() as IDynamicEditForm;
         // _fields = _form.GetFields().Where(f => f.Hidden == false);
         _controller.SetParameters(_form, Id);
-        _fields = _controller.GetFields();
-        _modelItem = _controller.GetItem();
+        //_fields = _controller.GetFields();
+        //_modelItem = _controller.GetItem();
         //_modelItems = _form.ExecuteListQuery(ServiceParameters);
     }
 
@@ -92,6 +99,7 @@
 
     private async Task LocalModelValueChanged(ValueChangedArgs args)
     {
+        _controller.LocalModelValueChanged(args);
         await ModelValueChanged.InvokeAsync(args);
     }
 
@@ -105,7 +113,7 @@
 
     private async Task CustomButtonClick(MouseEventArgs e, string button, int rowIndex)
     {
-        await ButtonClicked.InvokeAsync(new ButtonClickedArgs { Entity = ModelType, Button = button, RowIndex = rowIndex });
+        await ButtonClicked.InvokeAsync(new ButtonClickedArgs { Entity = _form.GetEntityType(), Button = button, RowIndex = rowIndex });
     }
 
     private void EditClick(MouseEventArgs e, int rowIndex)

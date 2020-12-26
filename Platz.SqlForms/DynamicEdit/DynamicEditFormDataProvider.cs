@@ -28,11 +28,12 @@ namespace Platz.SqlForms
         public object GetItem(IDynamicEditForm form, int id)
         {
             // ToDo: check is form overrides GetItem operation
+            Type entity = form.GetEntityType();
+
             using (var db = GetDbContext(form))
             {
-                //db.Add(item);
-                //db.SaveChanges();
-                return null;
+                var item = db.Find(entity, id);
+                return item;
             }
         }
 
