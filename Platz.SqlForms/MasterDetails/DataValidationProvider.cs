@@ -15,7 +15,7 @@ namespace Platz.SqlForms
             _dataEntryProvider = dataEntryProvider;
         }
 
-        public IEnumerable<ValidationResult> ValidateModel(IModelDefinitionForm form, object item, int rowIndex, IEnumerable<DataField> fields)
+        public IEnumerable<ValidationResult> ValidateModel(IDataForm form, object item, int rowIndex, IEnumerable<DataField> fields)
         {
             var result = new List<ValidationResult>();
 
@@ -23,20 +23,41 @@ namespace Platz.SqlForms
             {
                 RequiredRule(item, rowIndex, field, result);
                 UniqueRule(form, item, rowIndex, field, result);
+                CustomRule(form, item, rowIndex, field, result);
             }
 
             return result;
         }
 
-        public IEnumerable<ValidationResult> ValidateModelProperty(IModelDefinitionForm form, object item, int rowIndex, string bindingProperty, IEnumerable<DataField> fields)
+        public IEnumerable<ValidationResult> ValidateModelProperty(IDataForm form, object item, int rowIndex, string bindingProperty, IEnumerable<DataField> fields)
         {
             var result = new List<ValidationResult>();
             var field = fields.Single(f => f.BindingProperty == bindingProperty);
 
             RequiredRule(item, rowIndex, field, result);
             UniqueRule(form, item, rowIndex, field, result);
+            CustomRule(form, item, rowIndex, field, result);
             
             return result;
+        }
+
+        private void CustomRule(IDataForm form, object item, int rowIndex, DataField field, List<ValidationResult> result)
+        {
+            foreach (var rule in field.Rules)
+            {
+                var vr = rule.Method(item);
+
+                if (vr != null && vr.IsFailed)
+                {
+                    result.Add(new ValidationResult
+                    {
+                        Message = $"{vr.RuleName}: {vr.Message}",
+                        BindingProperty = field.BindingProperty,
+                        ValidationResultType = ValidationResultTypes.Error,
+                        RowIndex = rowIndex
+                    });
+                }
+            }
         }
 
         private void RequiredRule(object item, int rowIndex, DataField field, List<ValidationResult> result)
@@ -58,7 +79,7 @@ namespace Platz.SqlForms
             }
         }
 
-        private void UniqueRule(IModelDefinitionForm form, object item, int rowIndex, DataField field, List<ValidationResult> result)
+        private void UniqueRule(IDataForm form, object item, int rowIndex, DataField field, List<ValidationResult> result)
         {
             if (field.Unique)
             {

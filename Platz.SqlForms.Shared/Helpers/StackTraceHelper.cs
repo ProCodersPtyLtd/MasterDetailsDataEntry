@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-namespace Platz.ObjectBuilder.Blazor.Controllers.Validation
+namespace Platz.Shared
 {
     public static class StackTraceHelper
     {
@@ -13,6 +13,14 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Validation
             StackTrace st = new StackTrace();
             var sf = st.GetFrames().Skip(2).FirstOrDefault();
             var result = sf.GetMethod().ReflectedType;
+            return result;
+        }
+
+        public static string GetCallingMethod()
+        {
+            StackTrace st = new StackTrace();
+            var sf = st.GetFrames().Skip(2).FirstOrDefault();
+            var result = sf.GetMethod().Name;
             return result;
         }
     }

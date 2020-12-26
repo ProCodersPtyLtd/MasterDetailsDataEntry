@@ -1,0 +1,177 @@
+﻿@inject IComponentTypeResolver _componentResolverService
+@inject IDataValidationProvider _dataValidationProvider
+@inject DynamicEditController _controller
+@inject NavigationManager _navi
+
+@typeparam TForm
+
+@namespace Platz.SqlForms
+
+<div class="FormDynamicEditComponent">
+    <div class="container">
+        @foreach (var field in _controller.GetFields())
+        {
+            @if (field.Hidden)
+            {
+                continue;
+            }
+
+            <div class="row">
+
+                <div class="col-md-4">
+                    @if (field.Required)
+                    {
+                        <label>@(field.Label)*</label>
+                    }
+                    else
+                    {
+                        <lable>@field.Label</lable>
+                    }
+                </div>
+
+                <div class="col-md-6">
+                    <SingleFormDataComponent Form="@_form" Field="@field" State="@_controller.GetFieldState(field)"
+                                             IsEditing="@(!ReadOnly)" ModelValueChanged="@LocalModelValueChanged" />
+                </div>
+            </div>
+        }
+
+        <div class="row">
+            <div class="col-md-12">
+                <textarea hidden="@(_controller.Error == null ? "hidden" : null)" readonly="readonly" class="form-control" style="background-color: black; color: red;" rows="3">Error: @_controller.Error</textarea>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-2"></div>
+
+            <div class="col-md-10">
+                @foreach (var btn in _controller.Buttons)
+                {
+                    @:&nbsp;
+                    <button class="@GetButtonClass(btn)" title="@btn.Hint" @onclick="@(async (args) => await ButtonClick(args, btn))">@GetButtonText(btn)</button>
+                }
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<br/>
+
+@code
+{
+
+    [Parameter]
+    public int Id { get; set; }
+
+    [Parameter]
+    public bool ReadOnly { get; set; }
+
+    [Parameter]
+    public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }
+
+    //[Parameter]
+    //public EventCallback<ItemsChangedArgs> ItemsChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<ButtonClickedArgs> ButtonClicked { get; set; }
+
+    private object _modelItem { get; set; }
+    private IDynamicEditForm _form;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        LoadForm();
+    }
+
+    private void LoadForm()
+    {
+        _form = Activator.CreateInstance<TForm>() as IDynamicEditForm;
+        _controller.SetParameters(_form, Id);
+    }
+
+    private string GetButtonClass(DialogButtonDetails btn)
+    {
+        switch (btn.Action)
+        {
+            case ButtonActionTypes.Submit:
+                return "btn btn-primary";
+            case ButtonActionTypes.Cancel:
+            case ButtonActionTypes.Close:
+                return "btn btn-danger";
+            default:
+                return "btn btn-secondary";
+        }
+    }
+
+    private string GetButtonText(DialogButtonDetails btn)
+    {
+        var result = btn.Text ?? Enum.GetName(typeof(ButtonActionTypes), btn.Action);
+        return result;
+    }
+
+    #region events
+
+    private async Task LocalModelValueChanged(ValueChangedArgs args)
+    {
+        _controller.LocalModelValueChanged(args);
+        await ModelValueChanged.InvokeAsync(args);
+    }
+
+    #endregion
+
+    #region clicks
+
+    private async Task ButtonClick(MouseEventArgs e, DialogButtonDetails btn)
+    {
+        var canContinue = true;
+
+        switch (btn.Action)
+        {
+            case ButtonActionTypes.Submit:
+                canContinue = await _controller.Submit();
+                break;
+            case ButtonActionTypes.Validate:
+                await _controller.Validate();
+                await ButtonClicked.InvokeAsync(new ButtonClickedArgs { Entity = _form.GetEntityType(), Button = GetButtonText(btn) });
+                StateHasChanged();
+                return;
+            case ButtonActionTypes.Cancel:
+            case ButtonActionTypes.Close:
+                canContinue = await AllowToLeavePage();
+                break;
+            default:
+                break;
+        }
+
+        if (canContinue)
+        {
+            if (btn.LinkText != null)
+            {
+                _navi.NavigateTo($"{btn.LinkText}");
+            }
+            else
+            {
+                await ButtonClicked.InvokeAsync(new ButtonClickedArgs { Entity = _form.GetEntityType(), Button = GetButtonText(btn) });
+            }
+        }
+    }
+
+    #endregion
+
+    private async Task<bool> AllowToLeavePage()
+    {
+        return true;
+    }
+
+
+
+
+}
