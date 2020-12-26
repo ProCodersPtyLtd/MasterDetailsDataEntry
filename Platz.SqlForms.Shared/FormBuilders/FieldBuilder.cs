@@ -45,6 +45,13 @@ namespace Platz.SqlForms
             _field.Hidden = hidden;
             return this;
         }
+
+        public virtual FieldBuilder<TProperty, TEntity> IsPrimaryKey(bool pk = true)
+        {
+            _field.PrimaryKey = pk;
+            return this;
+        }
+
         public virtual FieldBuilder<TProperty, TEntity> IsReadOnly(bool readOnly = true)
         {
             _field.ReadOnly = readOnly;

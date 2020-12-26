@@ -82,8 +82,6 @@ namespace Platz.SqlForms
 
     public abstract class DataServiceBase<T> : DataServiceBase where T: DbContext
     {
-        // protected DbContext Context { get; set; }
-
         protected T GetDbContext()
         {
             var context = Activator.CreateInstance<T>();

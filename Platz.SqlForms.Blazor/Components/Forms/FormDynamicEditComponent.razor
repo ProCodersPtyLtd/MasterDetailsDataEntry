@@ -29,12 +29,18 @@
                     }
                 </div>
 
-                <div class="col-md-8">
-                    <SingleDataComponent Form="@_form" Field="@field" ExtraHeight="@true" State="@_controller.GetFieldState(field)"
-                                         IsEditing="@true" ModelValueChanged="@LocalModelValueChanged" />
+                <div class="col-md-6">
+                    <SingleFormDataComponent Form="@_form" Field="@field" State="@_controller.GetFieldState(field)"
+                                             IsEditing="@(!ReadOnly)" ModelValueChanged="@LocalModelValueChanged" />
                 </div>
             </div>
         }
+
+        <div class="row">
+            <div class="col-md-12">
+                <textarea hidden="@(_controller.Error == null ? "hidden" : null)" readonly="readonly" class="form-control" style="background-color: black; color: red;" rows="3">Error: @_controller.Error</textarea>
+            </div>
+        </div>
 
         <div class="row">
             <div class="col-md-2"></div>
@@ -48,68 +54,47 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-12">
-                <textarea hidden="@(_controller.Error == null ? "hidden" : null)" readonly="readonly" class="form-control" style="background-color: black; color: red;" rows="3">Error: @_controller.Error</textarea>
-            </div>
-        </div>
-
     </div>
 </div>
 
-
+<br/>
 
 @code
 {
-
-    //[Parameter]
-    //public FormViewOptions ViewOptions { get; set; } = new FormViewOptions { AllowAdd = true, AllowDelete = true, AllowEdit = true };
-
-    //[Parameter]
-    //public Type ModelType { get; set; }
-
-    //[Parameter]
-    //public IEnumerable<DataField> Fields { get; set; }
 
     [Parameter]
     public int Id { get; set; }
 
     [Parameter]
-    public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }
+    public bool ReadOnly { get; set; }
 
     [Parameter]
-    public EventCallback<ItemsChangedArgs> ItemsChanged { get; set; }
+    public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }
+
+    //[Parameter]
+    //public EventCallback<ItemsChangedArgs> ItemsChanged { get; set; }
 
     [Parameter]
     public EventCallback<ButtonClickedArgs> ButtonClicked { get; set; }
 
     private object _modelItem { get; set; }
     private IDynamicEditForm _form;
-    //private IEnumerable<DataField> _fields;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-
-        //_controller.SetParameters(Form, ViewOptions, ModelType, Fields, ModelItems);
-        //_controller.InitControl();
     }
 
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
         LoadForm();
-        //_controller.SetParameters(Form, ViewOptions, ModelType, Fields, ModelItems);
     }
 
     private void LoadForm()
     {
         _form = Activator.CreateInstance<TForm>() as IDynamicEditForm;
-        // _fields = _form.GetFields().Where(f => f.Hidden == false);
         _controller.SetParameters(_form, Id);
-        //_fields = _controller.GetFields();
-        //_modelItem = _controller.GetItem();
-        //_modelItems = _form.ExecuteListQuery(ServiceParameters);
     }
 
     private string GetButtonClass(DialogButtonDetails btn)
@@ -119,6 +104,7 @@
             case ButtonActionTypes.Submit:
                 return "btn btn-primary";
             case ButtonActionTypes.Cancel:
+            case ButtonActionTypes.Close:
                 return "btn btn-danger";
             default:
                 return "btn btn-secondary";
@@ -145,62 +131,47 @@
 
     private async Task ButtonClick(MouseEventArgs e, DialogButtonDetails btn)
     {
+        var canContinue = true;
+
         switch (btn.Action)
         {
             case ButtonActionTypes.Submit:
+                canContinue = await _controller.Submit();
                 break;
             case ButtonActionTypes.Validate:
+                await _controller.Validate();
+                await ButtonClicked.InvokeAsync(new ButtonClickedArgs { Entity = _form.GetEntityType(), Button = GetButtonText(btn) });
+                StateHasChanged();
+                return;
+            case ButtonActionTypes.Cancel:
+            case ButtonActionTypes.Close:
+                canContinue = await AllowToLeavePage();
                 break;
             default:
-                if (btn.LinkText != null)
-                {
-                    _navi.NavigateTo($"{btn.LinkText}");
-                }
-                else
-                {
-                    await ButtonClicked.InvokeAsync(new ButtonClickedArgs { Entity = _form.GetEntityType(), Button = GetButtonText(btn) });
-                }
                 break;
+        }
+
+        if (canContinue)
+        {
+            if (btn.LinkText != null)
+            {
+                _navi.NavigateTo($"{btn.LinkText}");
+            }
+            else
+            {
+                await ButtonClicked.InvokeAsync(new ButtonClickedArgs { Entity = _form.GetEntityType(), Button = GetButtonText(btn) });
+            }
         }
     }
 
-    private async Task SaveClick(MouseEventArgs e)
-    {
-    }
-
-    private async Task CustomButtonClick(MouseEventArgs e, string button, int rowIndex)
-    {
-        await ButtonClicked.InvokeAsync(new ButtonClickedArgs { Entity = _form.GetEntityType(), Button = button, RowIndex = rowIndex });
-    }
-
-    private void EditClick(MouseEventArgs e, int rowIndex)
-    {
-        //_controller.EditItem(rowIndex);
-        StateHasChanged();
-    }
-
-    private async Task DeleteClick(MouseEventArgs e, int rowIndex)
-    {
-        //await _controller.DeleteItem(rowIndex, ItemsChanged.InvokeAsync);
-        StateHasChanged();
-    }
-
-    private async Task ApplyClick(MouseEventArgs e, int rowIndex)
-    {
-        //await _controller.ApplyItem(rowIndex, ItemsChanged.InvokeAsync);
-        StateHasChanged();
-    }
-
-    private void CancelClick(MouseEventArgs e, int rowIndex)
-    {
-        //_controller.CancelItem(rowIndex);
-    }
-
-    private void AddClick(MouseEventArgs e)
-    {
-        //_controller.AddNewItem();
-    }
-
     #endregion
+
+    private async Task<bool> AllowToLeavePage()
+    {
+        return true;
+    }
+
+
+
 
 }

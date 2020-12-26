@@ -21,7 +21,7 @@ namespace Platz.SqlForms
             IsFailed = true;
         }
 
-        public FormRuleResult(string message) : this(StackTraceHelper.GetCallingClass().Name, message)
+        public FormRuleResult(string message) : this(StackTraceHelper.GetCallingMethod(), message)
         {
         }
     }

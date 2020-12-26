@@ -40,7 +40,7 @@ namespace MasterDetailsDataEntry.Tests.FormDefinition
             var result = nameField.Rules[0].Method(order);
             Assert.True(result.IsFailed);
             Assert.Equal("wrong name", result.Message);
-            Assert.Equal("TestForm3", result.RuleName);
+            Assert.Equal("CheckName", result.RuleName);
         }
 
 

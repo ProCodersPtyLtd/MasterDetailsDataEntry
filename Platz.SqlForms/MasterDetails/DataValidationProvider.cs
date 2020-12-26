@@ -23,6 +23,7 @@ namespace Platz.SqlForms
             {
                 RequiredRule(item, rowIndex, field, result);
                 UniqueRule(form, item, rowIndex, field, result);
+                CustomRule(form, item, rowIndex, field, result);
             }
 
             return result;
@@ -35,8 +36,28 @@ namespace Platz.SqlForms
 
             RequiredRule(item, rowIndex, field, result);
             UniqueRule(form, item, rowIndex, field, result);
+            CustomRule(form, item, rowIndex, field, result);
             
             return result;
+        }
+
+        private void CustomRule(IDataForm form, object item, int rowIndex, DataField field, List<ValidationResult> result)
+        {
+            foreach (var rule in field.Rules)
+            {
+                var vr = rule.Method(item);
+
+                if (vr != null && vr.IsFailed)
+                {
+                    result.Add(new ValidationResult
+                    {
+                        Message = $"{vr.RuleName}: {vr.Message}",
+                        BindingProperty = field.BindingProperty,
+                        ValidationResultType = ValidationResultTypes.Error,
+                        RowIndex = rowIndex
+                    });
+                }
+            }
         }
 
         private void RequiredRule(object item, int rowIndex, DataField field, List<ValidationResult> result)

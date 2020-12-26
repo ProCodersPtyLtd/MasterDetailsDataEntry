@@ -14,9 +14,9 @@ namespace MasterDetailsDataEntry.Demo.MyForms
         {
             builder.Entity<Customer>(e =>
             {
-                e.Property(p => p.CustomerId).IsHidden();
+                e.Property(p => p.CustomerId).IsReadOnly();
 
-                e.Property(p => p.FirstName);
+                e.Property(p => p.FirstName).IsRequired();
 
                 e.Property(p => p.LastName);
 
@@ -26,18 +26,13 @@ namespace MasterDetailsDataEntry.Demo.MyForms
 
                 e.Property(p => p.CompanyName);
 
-                //e.ContextButton("Details", "CustView/{0}").ContextButton("Edit", "CustEdit/{0}").ContextButton("Delete", "CustDelete/{0}");
-
                 e.DialogButton("QueryResult", ButtonActionTypes.Custom, "Back")
                 .DialogButton("QueryResult", ButtonActionTypes.Cancel)
                 .DialogButton("/", ButtonActionTypes.Close)
                 .DialogButton(ButtonActionTypes.Validate)
-                .DialogButton(ButtonActionTypes.Submit, "Update", "Save to database");
+                .DialogButton("QueryResult", ButtonActionTypes.Submit, "Update", "Save to database");
             });
 
-            // builder.GetMethod(GetById);
-            // builder.SaveMethod(Save);
-            // builder.SetListMethod(GetCustList);
         }
 
         public Customer GetById(int id)
@@ -52,9 +47,9 @@ namespace MasterDetailsDataEntry.Demo.MyForms
 
         public FormRuleResult CheckEmail(Customer model)
         {
-            if (!model.EmailAddress.Contains("@"))
+            if (model.EmailAddress != null && !model.EmailAddress.Contains("@"))
             {
-                return new FormRuleResult("Email shoulc contacin '@' symbol");
+                return new FormRuleResult("Email should contain '@' symbol");
             }
 
             return null;

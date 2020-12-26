@@ -15,5 +15,13 @@ namespace Platz.Shared
             var result = sf.GetMethod().ReflectedType;
             return result;
         }
+
+        public static string GetCallingMethod()
+        {
+            StackTrace st = new StackTrace();
+            var sf = st.GetFrames().Skip(2).FirstOrDefault();
+            var result = sf.GetMethod().Name;
+            return result;
+        }
     }
 }
