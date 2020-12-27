@@ -1,0 +1,12 @@
+﻿@page "/CustAddrList/{CustomerId:int}"
+@using Plk.Blazor.DragDrop
+@using Platz.ObjectBuilder.Blazor
+@using MasterDetailsDataEntry.Demo.MyForms
+
+<FormDataServiceListComponent ServiceParameters="@(new object[] { CustomerId })" TForm="MyCustomerAddrListForm" />
+
+
+@code {
+    [Parameter]
+    public int CustomerId { get; set; }
+}

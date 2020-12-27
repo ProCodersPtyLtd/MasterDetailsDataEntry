@@ -14,5 +14,7 @@ namespace Platz.SqlForms.Shared
         internal IEnumerable<DataField> GetFields();
         IEnumerable<DialogButtonDetails> GetButtons();
         IEnumerable<DialogButtonNavigationDetails> GetButtonNavigations();
+        IEnumerable<EntityDataOperationDetails> GetDataOperationActions();
+        void AfterInsert(object model, DataOperationArgs args);
     }
 }

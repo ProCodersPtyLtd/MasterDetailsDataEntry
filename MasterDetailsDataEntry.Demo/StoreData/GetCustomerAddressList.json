@@ -1,8 +1,8 @@
 {
-  "Name": "GetAddrList",
+  "Name": "GetCustomerAddressList",
   "DataService": "MyDataService",
   "Namespace": "Default",
-  "ReturnTypeName": "Addr",
+  "ReturnTypeName": "CustomerAddress",
   "SchemaName": null,
   "SchemaVersion": null,
   "Tags": null,
@@ -10,14 +10,15 @@
     "QueryAlias": null,
     "Comment": null,
     "Parameters": {
-      "@id": {
-        "Name": "@id",
+      "@p1": {
+        "Name": "@p1",
         "Type": "Int32"
       }
     },
     "Fields": {
       "AddressId": {
         "FieldAlias": "AddressId",
+        "IsOutput": true,
         "Field": {
           "ObjectAlias": "a",
           "FieldName": "AddressId"
@@ -27,6 +28,7 @@
       },
       "AddressLine1": {
         "FieldAlias": "AddressLine1",
+        "IsOutput": true,
         "Field": {
           "ObjectAlias": "a",
           "FieldName": "AddressLine1"
@@ -36,6 +38,7 @@
       },
       "AddressLine2": {
         "FieldAlias": "AddressLine2",
+        "IsOutput": true,
         "Field": {
           "ObjectAlias": "a",
           "FieldName": "AddressLine2"
@@ -45,6 +48,7 @@
       },
       "City": {
         "FieldAlias": "City",
+        "IsOutput": true,
         "Field": {
           "ObjectAlias": "a",
           "FieldName": "City"
@@ -54,6 +58,7 @@
       },
       "CountryRegion": {
         "FieldAlias": "CountryRegion",
+        "IsOutput": true,
         "Field": {
           "ObjectAlias": "a",
           "FieldName": "CountryRegion"
@@ -63,6 +68,7 @@
       },
       "ModifiedDate": {
         "FieldAlias": "ModifiedDate",
+        "IsOutput": true,
         "Field": {
           "ObjectAlias": "a",
           "FieldName": "ModifiedDate"
@@ -72,6 +78,7 @@
       },
       "PostalCode": {
         "FieldAlias": "PostalCode",
+        "IsOutput": true,
         "Field": {
           "ObjectAlias": "a",
           "FieldName": "PostalCode"
@@ -81,6 +88,7 @@
       },
       "Rowguid": {
         "FieldAlias": "Rowguid",
+        "IsOutput": true,
         "Field": {
           "ObjectAlias": "a",
           "FieldName": "Rowguid"
@@ -90,9 +98,60 @@
       },
       "StateProvince": {
         "FieldAlias": "StateProvince",
+        "IsOutput": true,
         "Field": {
           "ObjectAlias": "a",
           "FieldName": "StateProvince"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "CustomerId": {
+        "FieldAlias": "CustomerId",
+        "IsOutput": true,
+        "Field": {
+          "ObjectAlias": "c",
+          "FieldName": "CustomerId"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "AddressType": {
+        "FieldAlias": "AddressType",
+        "IsOutput": true,
+        "Field": {
+          "ObjectAlias": "c",
+          "FieldName": "AddressType"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "Title": {
+        "FieldAlias": "Title",
+        "IsOutput": true,
+        "Field": {
+          "ObjectAlias": "cu",
+          "FieldName": "Title"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "FirstName": {
+        "FieldAlias": "FirstName",
+        "IsOutput": true,
+        "Field": {
+          "ObjectAlias": "cu",
+          "FieldName": "FirstName"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "LastName": {
+        "FieldAlias": "LastName",
+        "IsOutput": true,
+        "Field": {
+          "ObjectAlias": "cu",
+          "FieldName": "LastName"
         },
         "Operation": null,
         "RawExpression": null
@@ -102,10 +161,33 @@
       "a": {
         "ObjectAlias": "a",
         "TableName": "Address"
+      },
+      "c": {
+        "ObjectAlias": "c",
+        "TableName": "CustomerAddress"
+      },
+      "cu": {
+        "ObjectAlias": "cu",
+        "TableName": "Customer"
       }
     },
     "SubQueries": null,
-    "Joins": [],
+    "Joins": [
+      {
+        "LeftObjectAlias": "a",
+        "LeftField": "AddressId",
+        "RightObjectAlias": "c",
+        "RightField": "AddressId",
+        "JoinType": "Inner"
+      },
+      {
+        "LeftObjectAlias": "cu",
+        "LeftField": "CustomerId",
+        "RightObjectAlias": "c",
+        "RightField": "CustomerId",
+        "JoinType": "Inner"
+      }
+    ],
     "GroupByFields": null,
     "Having": null,
     "Where": {
@@ -117,9 +199,10 @@
           "Value": null,
           "QueryField": {
             "FieldAlias": null,
+            "IsOutput": false,
             "Field": {
-              "ObjectAlias": "a",
-              "FieldName": "AddressId"
+              "ObjectAlias": "c",
+              "FieldName": "CustomerId"
             },
             "Operation": null,
             "RawExpression": null
@@ -133,7 +216,7 @@
         "Right": {
           "Value": null,
           "QueryField": null,
-          "Param": "@id",
+          "Param": "@p1",
           "Left": null,
           "Operator": null,
           "Right": null

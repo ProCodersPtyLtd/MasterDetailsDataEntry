@@ -45,10 +45,17 @@
             </div>
         </div>
 
+        <hr />
+
         <div class="row">
+
             <div class="col-md-2"></div>
 
             <div class="col-md-10">
+
+                <BottomButtonsComponent Form="_form" ButtonActionClicked="ButtonActionClicked" NavigateFormatParameters="_controller.NavigateFormatParameters" 
+                       Buttons="_controller.Buttons" ButtonNavigations="_controller.ButtonNavigations"/>
+
                 @foreach (var btn in _controller.Buttons)
                 {
                     if (ForDelete && (btn.Action == ButtonActionTypes.Submit || btn.Action == ButtonActionTypes.Validate))
@@ -83,23 +90,26 @@
 @code
 {
 
-        [Parameter]
-        public int Id { get; set; }
+    [Parameter]
+    public int Id { get; set; }
 
-        [Parameter]
-        public bool ReadOnly { get; set; }
+    [Parameter]
+    public object[] ServiceParameters { get; set; }
 
-        [Parameter]
-        public bool ForDelete { get; set; }
+    [Parameter]
+    public bool ReadOnly { get; set; }
 
-        [Parameter]
-        public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }
+    [Parameter]
+    public bool ForDelete { get; set; }
 
-        //[Parameter]
-        //public EventCallback<ItemsChangedArgs> ItemsChanged { get; set; }
+    [Parameter]
+    public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }
 
-        [Parameter]
-        public EventCallback<ButtonClickedArgs> ButtonClicked { get; set; }
+    //[Parameter]
+    //public EventCallback<ItemsChangedArgs> ItemsChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<ButtonClickedArgs> ButtonClicked { get; set; }
 
     private object _modelItem { get; set; }
     private IDynamicEditForm _form;
@@ -115,10 +125,15 @@
         LoadForm();
     }
 
+    private async Task<bool> ButtonActionClicked(ButtonActionArgs args)
+    {
+        return true;
+    }
+
     private void LoadForm()
     {
         _form = Activator.CreateInstance<TForm>() as IDynamicEditForm;
-        _controller.SetParameters(_form, Id);
+        _controller.SetParameters(_form, Id, ServiceParameters);
     }
 
     private bool AllowEdit()
@@ -200,7 +215,8 @@
             // 1st priority - button link
             if (btn.LinkText != null)
             {
-                _navi.NavigateTo($"{btn.LinkText}");
+                var route = string.Format(btn.LinkText, _controller.NavigateFormatParameters);
+                _navi.NavigateTo(route);
             }
             else
             {
@@ -209,7 +225,8 @@
                 // 2nd priority - button navigation
                 if (buttonNavigation != null)
                 {
-                    _navi.NavigateTo($"{buttonNavigation}");
+                    var route = string.Format(buttonNavigation, _controller.NavigateFormatParameters);
+                    _navi.NavigateTo(route);
                 }
                 // 3rd priority - button event
                 else

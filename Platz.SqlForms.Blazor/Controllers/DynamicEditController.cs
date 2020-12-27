@@ -13,6 +13,7 @@ namespace Platz.SqlForms.Blazor
         protected readonly IDynamicEditFormDataProvider _dataProvider;
         protected IDynamicEditForm _form;
         protected int _id;
+        protected object[] _serviceParameters;
         protected Dictionary<string, FieldState> _fieldStates = new Dictionary<string, FieldState>();
         private IEnumerable<ValidationResult> _validations = new ValidationResult[0];
 
@@ -20,6 +21,7 @@ namespace Platz.SqlForms.Blazor
         public IEnumerable<DataField> Fields { get; private set; }
         public IEnumerable<DialogButtonDetails> Buttons { get; private set; }
         public IEnumerable<DialogButtonNavigationDetails> ButtonNavigations { get; private set; }
+        public object[] NavigateFormatParameters { get; private set; }
         public string Error { get; private set; }
 
         public DynamicEditController(IDynamicEditFormDataProvider dataProvider, IDataValidationProvider dataValidationProvider)
@@ -28,10 +30,13 @@ namespace Platz.SqlForms.Blazor
             _dataValidationProvider = dataValidationProvider;
         }
 
-        public void SetParameters(IDynamicEditForm form, int id)
+        public void SetParameters(IDynamicEditForm form, int id, object[] serviceParameters)
         {
             _form = form;
             _id = id;
+            _serviceParameters = serviceParameters;
+            _dataProvider.SetParameters(_serviceParameters);
+            NavigateFormatParameters = _id.GetFormatParameters(_serviceParameters);
             Fields = GetFields();
             ModelItem = GetItem();
             Buttons = _form.GetButtons();

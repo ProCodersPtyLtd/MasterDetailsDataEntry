@@ -7,6 +7,8 @@ namespace Platz.SqlForms
 {
     public interface IDynamicEditFormDataProvider
     {
+        void SetParameters(object[] serviceParameters);
+
         IEnumerable<DataField> GetFormFields(IDynamicEditForm form);
 
         object GetItem(IDynamicEditForm form, int id);

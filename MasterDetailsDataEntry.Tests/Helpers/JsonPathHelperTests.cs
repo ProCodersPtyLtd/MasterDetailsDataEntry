@@ -14,5 +14,18 @@ namespace MasterDetailsDataEntry.Tests.Helpers
             object value = "value";
             Assert.Equal("\"value\"", value.ToSql());
         }
+
+        [Fact]
+        public void FormatTest()
+        {
+            var p = string.Format("CustAddrList/{1}", 10, 20);
+            Assert.Equal("CustAddrList/20", p);
+
+            p = string.Format("CustAddrList/{1}", 10, new object[] { 20 });
+            Assert.NotEqual("CustAddrList/20", p);
+
+            p = string.Format("CustAddrList/{1}", new object[] { 10, 20 });
+            Assert.Equal("CustAddrList/20", p);
+        }
     }
 }

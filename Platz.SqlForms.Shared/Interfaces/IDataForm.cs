@@ -6,6 +6,7 @@ namespace Platz.SqlForms.Shared
 {
     public interface IDataForm
     {
+        Type GetEntityType();
         Type GetDbContextType();
         string GetFieldFormat(DataField field);
     }

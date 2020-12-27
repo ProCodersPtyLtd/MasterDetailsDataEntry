@@ -9,9 +9,8 @@ namespace Platz.SqlForms
     {
         public Func<object[], object> ListQuery { get; private set; }
 
-        public virtual void SetListMethod(Func<object[], object> method)
+        public virtual void AfterSave(Action<object> model)
         {
-            ListQuery = method;
         }
     }
 }

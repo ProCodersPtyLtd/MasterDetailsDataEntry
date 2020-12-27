@@ -28,7 +28,8 @@ namespace MasterDetailsDataEntry.Demo.MyForms
 
                 e.Property(p => p.CompanyName);
 
-                e.ContextButton("Details", "CustView/{0}").ContextButton("Edit", "CustomerEdit/{0}").ContextButton("Delete", "CustomerDelete/{0}");
+                e.ContextButton("Details", "CustomerView/{0}").ContextButton("Edit", "CustomerEdit/{0}").ContextButton("Addresses", "CustAddrList/{0}")
+                    .ContextButton("Delete", "CustomerDelete/{0}");
             });
 
             builder.SetListMethod(GetCustList);

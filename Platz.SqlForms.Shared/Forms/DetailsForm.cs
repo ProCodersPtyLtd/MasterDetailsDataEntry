@@ -78,6 +78,11 @@ namespace Platz.SqlForms
             return fields;
         }
 
+        public Type GetEntityType()
+        {
+            return _builder.Entities.First();
+        }
+
         public Type GetDetailsType()
         {
             for (int i = 0; i < _builder.Builders.Count; i++)
@@ -90,6 +95,8 @@ namespace Platz.SqlForms
 
             throw new Exception("Cannot find Details Entity");
         }
+
+        // ToDo: why it is implemented explicitly? 
         Type IModelDefinitionForm.GetMasterType()
         {
             return _builder.Entities[_builder.MasterEntityIndex];
