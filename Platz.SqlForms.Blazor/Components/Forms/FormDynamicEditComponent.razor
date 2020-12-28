@@ -54,31 +54,8 @@
             <div class="col-md-10">
 
                 <BottomButtonsComponent Form="_form" ButtonActionClicked="ButtonActionClicked" NavigateFormatParameters="_controller.NavigateFormatParameters" 
-                       Buttons="_controller.Buttons" ButtonNavigations="_controller.ButtonNavigations"/>
+                       ForDelete="ForDelete" Buttons="_controller.Buttons" ButtonNavigations="_controller.ButtonNavigations" ButtonClicked="ButtonClicked"/>
 
-                @foreach (var btn in _controller.Buttons)
-                {
-                    if (ForDelete && (btn.Action == ButtonActionTypes.Submit || btn.Action == ButtonActionTypes.Validate))
-                    {
-                        continue;
-                    }
-
-                    if (ForDelete && (btn.Action == ButtonActionTypes.Submit || btn.Action == ButtonActionTypes.Validate))
-                    {
-                        continue;
-                    }
-
-                    @:&nbsp;
-                    <button class="@GetButtonClass(btn)" title="@btn.Hint" @onclick="@(async (args) => await ButtonClick(args, btn))">@GetButtonText(btn)</button>
-                }
-
-                @if (ForDelete)
-                {
-                    var btn = GetGenericDeleteButton();
-
-                    @:&nbsp;
-                    <button class="@GetButtonClass(btn)" title="@btn.Hint" @onclick="@(async (args) => await ButtonClick(args, btn))">@GetButtonText(btn)</button>
-                }
             </div>
         </div>
 
@@ -105,9 +82,6 @@
     [Parameter]
     public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }
 
-    //[Parameter]
-    //public EventCallback<ItemsChangedArgs> ItemsChanged { get; set; }
-
     [Parameter]
     public EventCallback<ButtonClickedArgs> ButtonClicked { get; set; }
 
@@ -125,15 +99,10 @@
         LoadForm();
     }
 
-    private async Task<bool> ButtonActionClicked(ButtonActionArgs args)
-    {
-        return true;
-    }
-
     private void LoadForm()
     {
         _form = Activator.CreateInstance<TForm>() as IDynamicEditForm;
-        _controller.SetParameters(_form, Id, ServiceParameters);
+        _controller.SetParameters(_form, Id, ServiceParameters, ControllerDataChanged);
     }
 
     private bool AllowEdit()
@@ -146,31 +115,26 @@
         return !ReadOnly;
     }
 
-    private DialogButtonDetails GetGenericDeleteButton()
+    private async Task ControllerDataChanged()
     {
-        return new DialogButtonDetails { Action = ButtonActionTypes.Delete };
+        StateHasChanged();
     }
 
-    private string GetButtonClass(DialogButtonDetails btn)
+    private async Task<bool> ButtonActionClicked(ButtonActionArgs args)
     {
-        switch (btn.Action)
+        switch (args.ActionType)
         {
             case ButtonActionTypes.Submit:
-                return "btn btn-primary";
-            case ButtonActionTypes.Cancel:
-            case ButtonActionTypes.Close:
-                return "btn btn-info";
+                return await _controller.Submit();
+            case ButtonActionTypes.Validate:
+                await _controller.Validate();
+                StateHasChanged();
+                return true;
             case ButtonActionTypes.Delete:
-                return "btn btn-danger";
-            default:
-                return "btn btn-secondary";
+                return await _controller.Delete();
         }
-    }
 
-    private string GetButtonText(DialogButtonDetails btn)
-    {
-        var result = btn.Text ?? Enum.GetName(typeof(ButtonActionTypes), btn.Action);
-        return result;
+        return true;
     }
 
     #region events
@@ -182,87 +146,5 @@
     }
 
     #endregion
-
-    #region clicks
-
-    private async Task ButtonClick(MouseEventArgs e, DialogButtonDetails btn)
-    {
-        var canContinue = true;
-
-        switch (btn.Action)
-        {
-            case ButtonActionTypes.Submit:
-                canContinue = await _controller.Submit();
-                break;
-            case ButtonActionTypes.Validate:
-                await _controller.Validate();
-                await ButtonClicked.InvokeAsync(new ButtonClickedArgs { Entity = _form.GetEntityType(), Button = GetButtonText(btn) });
-                StateHasChanged();
-                return;
-            case ButtonActionTypes.Cancel:
-            case ButtonActionTypes.Close:
-                canContinue = await AllowToLeavePage();
-                break;
-            case ButtonActionTypes.Delete:
-                canContinue = await Delete();
-                break;
-            default:
-                break;
-        }
-
-        if (canContinue)
-        {
-            // 1st priority - button link
-            if (btn.LinkText != null)
-            {
-                var route = string.Format(btn.LinkText, _controller.NavigateFormatParameters);
-                _navi.NavigateTo(route);
-            }
-            else
-            {
-                var buttonNavigation = FindButtonNavigationLink(btn);
-
-                // 2nd priority - button navigation
-                if (buttonNavigation != null)
-                {
-                    var route = string.Format(buttonNavigation, _controller.NavigateFormatParameters);
-                    _navi.NavigateTo(route);
-                }
-                // 3rd priority - button event
-                else
-                {
-                    await ButtonClicked.InvokeAsync(new ButtonClickedArgs { Entity = _form.GetEntityType(), Button = GetButtonText(btn) });
-                }
-            }
-        }
-    }
-
-    private string FindButtonNavigationLink(DialogButtonDetails btn)
-    {
-        var nav = _controller.ButtonNavigations.FirstOrDefault(n => n.Actions.Contains(btn.Action));
-        return nav?.LinkText;
-    }
-
-    private async Task<bool> Delete()
-    {
-        var result = await JS.InvokeAsync<bool>("confirm", $"Are you sure?");
-
-        if (result)
-        {
-            result = await _controller.Delete();
-        }
-
-        return result;
-    }
-
-    #endregion
-
-    private async Task<bool> AllowToLeavePage()
-    {
-        return true;
-    }
-
-
-
 
 }

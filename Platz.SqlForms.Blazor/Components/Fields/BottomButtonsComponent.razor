@@ -13,11 +13,6 @@
             continue;
         }
 
-        if (ForDelete && (btn.Action == ButtonActionTypes.Submit || btn.Action == ButtonActionTypes.Validate))
-        {
-            continue;
-        }
-
         @:&nbsp;
         <button class="@GetButtonClass(btn)" title="@btn.Hint" @onclick="@(async (args) => await ButtonClick(args, btn))">@GetButtonText(btn)</button>
     }
@@ -120,6 +115,7 @@
             {
                 var route = string.Format(btn.LinkText, NavigateFormatParameters);
                 _navi.NavigateTo(route);
+                return;
             }
             else
             {
@@ -130,6 +126,7 @@
                 {
                     var route = string.Format(buttonNavigation, NavigateFormatParameters);
                     _navi.NavigateTo(route);
+                    return;
                 }
                 // 3rd priority - button event
                 else

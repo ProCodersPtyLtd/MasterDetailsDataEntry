@@ -31,9 +31,7 @@ namespace MasterDetailsDataEntry.Demo.MyForms
                 .DialogButton(ButtonActionTypes.Validate)
                 .DialogButton(ButtonActionTypes.Submit);
 
-                e.DialogButtonNavigation("QueryResult", ButtonActionTypes.Delete, ButtonActionTypes.Submit);
-
-                e.DialogButtonNavigation("CustAddrList/{1}", ButtonActionTypes.Cancel);
+                e.DialogButtonNavigation("CustAddrList/{1}", ButtonActionTypes.Delete, ButtonActionTypes.Cancel, ButtonActionTypes.Submit);
 
                 e.AfterSave(SaveToCustomerAddress);
             });
@@ -42,7 +40,7 @@ namespace MasterDetailsDataEntry.Demo.MyForms
         public void SaveToCustomerAddress(Address model, DataOperationArgs args)
         {
             int customerId = (int)args.Parameters[0];
-            var item = new CustomerAddress { AddressId = model.AddressId, CustomerId = customerId, ModifiedDate = DateTime.Now };
+            var item = new CustomerAddress { AddressId = model.AddressId, CustomerId = customerId, ModifiedDate = DateTime.Now, AddressType = "Test" };
             args.DbContext.Add(item);
             args.DbContext.SaveChanges();
         }

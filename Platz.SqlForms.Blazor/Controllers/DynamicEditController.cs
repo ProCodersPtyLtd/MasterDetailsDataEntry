@@ -16,6 +16,7 @@ namespace Platz.SqlForms.Blazor
         protected object[] _serviceParameters;
         protected Dictionary<string, FieldState> _fieldStates = new Dictionary<string, FieldState>();
         private IEnumerable<ValidationResult> _validations = new ValidationResult[0];
+        private Func<Task> _dataChanged;
 
         public object ModelItem { get; private set; }
         public IEnumerable<DataField> Fields { get; private set; }
@@ -30,8 +31,9 @@ namespace Platz.SqlForms.Blazor
             _dataValidationProvider = dataValidationProvider;
         }
 
-        public void SetParameters(IDynamicEditForm form, int id, object[] serviceParameters)
+        public void SetParameters(IDynamicEditForm form, int id, object[] serviceParameters, Func<Task> dataChanged)
         {
+            _dataChanged = dataChanged;
             _form = form;
             _id = id;
             _serviceParameters = serviceParameters;
@@ -54,7 +56,7 @@ namespace Platz.SqlForms.Blazor
             }
             catch (Exception exc)
             {
-                LogException(exc);
+                await LogException(exc);
                 success = false;
             }
 
@@ -83,7 +85,7 @@ namespace Platz.SqlForms.Blazor
                 }
                 catch(Exception exc)
                 {
-                    LogException(exc);
+                    await LogException(exc);
                     valid = false;
                 }
             }
@@ -91,7 +93,7 @@ namespace Platz.SqlForms.Blazor
             return valid;
         }
 
-        private void LogException(Exception exc)
+        private async Task LogException(Exception exc)
         {
             Error = exc.Message;
 
@@ -100,6 +102,8 @@ namespace Platz.SqlForms.Blazor
                 Error += "\r\n";
                 Error += exc.InnerException.Message;
             }
+
+            await _dataChanged?.Invoke();
         }
 
         public async Task Validate()

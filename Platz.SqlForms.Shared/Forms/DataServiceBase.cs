@@ -8,10 +8,16 @@ using System.Text;
 
 namespace Platz.SqlForms
 {
-    public abstract class DataServiceBase
+    public abstract class DataServiceBase : IDataForm
     {
         protected readonly IDataFieldProcessor _dataFieldProcessor;
         protected DataServiceFormBuilder _builder;
+
+        private Dictionary<Type, string> _formats = new Dictionary<Type, string>()
+        {
+            { typeof(DateTime), "dd/MM/yyyy" }
+            ,{ typeof(DateTime?), "dd/MM/yyyy" }
+        };
 
         public DataServiceBase()
         {
@@ -74,20 +80,53 @@ namespace Platz.SqlForms
             return fields;
         }
 
-        private Type GetEntityType()
+        public IEnumerable<DialogButtonDetails> GetButtons()
+        {
+            var result = _builder.Builders.SelectMany(b => b.DialogButtons);
+            return result;
+        }
+
+        public IEnumerable<DialogButtonNavigationDetails> GetButtonNavigations()
+        {
+            var result = _builder.Builders.SelectMany(b => b.DialogButtonNavigations);
+            return result;
+        }
+
+        public Type GetEntityType()
         {
             return _builder.Entities.First();
         }
+        public string GetFieldFormat(DataField field)
+        {
+            var format = field.Format ?? FindDefaultFormat(field.DataType);
+            return format;
+        }
+
+        public abstract Type GetDbContextType();
+
+        private string FindDefaultFormat(Type dataType)
+        {
+            if (_formats.ContainsKey(dataType))
+            {
+                return _formats[dataType];
+            }
+
+            return "";
+        }
+
     }
 
     public abstract class DataServiceBase<T> : DataServiceBase where T: DbContext
     {
+        public override Type GetDbContextType()
+        {
+            return typeof(T);
+        }
+
         protected T GetDbContext()
         {
             var context = Activator.CreateInstance<T>();
             return context;
         }
-
-        
     }
 }
