@@ -14,7 +14,7 @@
             <tr>
                 @foreach (var f in _fields)
                 {
-                <th scope="col">@f.Label</th>
+                    <th scope="col">@f.Label</th>
                 }
 
                 @if (_contextMenu.Any())
@@ -40,15 +40,15 @@
                     {
                         <td>
                             <div class="dropdown">
-                              <button class="btn btn-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                  <span class="oi oi-ellipses"></span>
-                              </button>
-                              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                  @foreach (var link in _contextMenu)
-                                  {
-                                     <a class="dropdown-item" href="@GetLinkRoute(link, row)">@link.Text</a>
-                                  }
-                              </div>
+                                <button class="btn btn-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="oi oi-ellipses"></span>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                    @foreach (var link in _contextMenu)
+                                    {
+                                        <a class="dropdown-item" href="@GetLinkRoute(link, row)">@link.Text</a>
+                                    }
+                                </div>
                             </div>
                         </td>
                     }
@@ -57,6 +57,8 @@
         </tbody>
     </table>
 
+    <BottomButtonsComponent Form="_form" NavigateFormatParameters="GetNavigateFormatParameters()" ButtonActionClicked="ButtonActionClicked"
+          Buttons="_form.GetButtons()" ButtonNavigations="_form.GetButtonNavigations()" ButtonClicked="ButtonClicked" />
 </div>
 
 @code
@@ -69,6 +71,9 @@
 
     [Parameter]
     public EventCallback<ItemButtonClickedArgs> ItemButtonClicked { get; set; }
+
+    [Parameter]
+    public EventCallback<ButtonClickedArgs> ButtonClicked { get; set; }
 
     private DataServiceBase _form;
     private IEnumerable<DataField> _fields;
@@ -94,10 +99,17 @@
         _contextMenu = _form.GetContextLinks();
     }
 
+    private object[] GetNavigateFormatParameters()
+    {
+        // index [0] is always reserved for id
+        return 0.GetFormatParameters(ServiceParameters);
+    }
+
     private string GetLinkRoute(ActionRouteLink link, int row)
     {
-        var id = _modelItems[row].GetPrimaryKeyValue(_fields);
-        var result = string.Format(link.LinkText, id);
+        // var id = _modelItems[row].GetPrimaryKeyValue(_fields);
+        var keys = _modelItems[row].GetPrimaryAndFilterKeyValues(_fields);
+        var result = string.Format(link.LinkText, keys);
         return result;
     }
 
@@ -106,5 +118,11 @@
         var item = _modelItems[row];
         var result = item.GetPropertyValue(field.BindingProperty);
         return result;
+    }
+
+    private async Task<bool> ButtonActionClicked(ButtonActionArgs args)
+    {
+        StateHasChanged();
+        return true;
     }
 }

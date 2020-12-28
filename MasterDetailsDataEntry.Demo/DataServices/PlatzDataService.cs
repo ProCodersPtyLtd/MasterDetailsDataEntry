@@ -14,9 +14,8 @@ namespace Default
 
     public partial interface IMyDataService
     {
-        List<Addr> GetAddrList(params object[] parameters);
         List<Cust> GetCustList(params object[] parameters);
-        List<CustomerOrder> GetCustomerOrderList(params object[] parameters);
+        List<CustomerAddress> GetCustomerAddressList(params object[] parameters);
     }
 
     #endregion
@@ -25,33 +24,6 @@ namespace Default
 
     public partial class MyDataService : DataServiceBase<MasterDetailsDataEntry.Demo.Database.AdventureWorksContext>, IMyDataService
     {
-        public List<Addr> GetAddrList(params object[] parameters)
-        {
-            var id = (Int32)parameters[0];
-
-            using (var db = GetDbContext())
-            {
-                var query =
-                    from a in db.Address 
-                    where a.AddressId == id
-                    select new Addr
-                    {
-                        AddressId = a.AddressId,
-                        AddressLine1 = a.AddressLine1,
-                        AddressLine2 = a.AddressLine2,
-                        City = a.City,
-                        CountryRegion = a.CountryRegion,
-                        ModifiedDate = a.ModifiedDate,
-                        PostalCode = a.PostalCode,
-                        Rowguid = a.Rowguid,
-                        StateProvince = a.StateProvince,
-                    };
-
-                var result = query.ToList();
-                return result;
-            }
-        }
-
         public List<Cust> GetCustList(params object[] parameters)
         {
             var name = (String)parameters[0];
@@ -85,55 +57,33 @@ namespace Default
             }
         }
 
-        public List<CustomerOrder> GetCustomerOrderList(params object[] parameters)
+        public List<CustomerAddress> GetCustomerAddressList(params object[] parameters)
         {
-            var cid = (Int32)parameters[0];
-            var fname = (String)parameters[1];
+            var p1 = (Int32)parameters[0];
 
             using (var db = GetDbContext())
             {
                 var query =
-                    from c in db.Customer 
-                    join cu in db.CustomerAddress on c.CustomerId equals cu.CustomerId
-                    join s in db.SalesOrderHeader on c.CustomerId equals s.CustomerId
-                    where (c.CustomerId == cid) && (c.FirstName == fname)
-                    select new CustomerOrder
+                    from a in db.Address 
+                    join c in db.CustomerAddress on a.AddressId equals c.AddressId
+                    join cu in db.Customer on c.CustomerId equals cu.CustomerId
+                    where c.CustomerId == p1
+                    select new CustomerAddress
                     {
+                        AddressId = a.AddressId,
+                        AddressLine1 = a.AddressLine1,
+                        AddressLine2 = a.AddressLine2,
+                        City = a.City,
+                        CountryRegion = a.CountryRegion,
+                        ModifiedDate = a.ModifiedDate,
+                        PostalCode = a.PostalCode,
+                        Rowguid = a.Rowguid,
+                        StateProvince = a.StateProvince,
                         CustomerId = c.CustomerId,
-                        CompanyName = c.CompanyName,
-                        EmailAddress = c.EmailAddress,
-                        FirstName = c.FirstName,
-                        LastName = c.LastName,
-                        MiddleName = c.MiddleName,
-                        ModifiedDate = c.ModifiedDate,
-                        NameStyle = c.NameStyle,
-                        PasswordHash = c.PasswordHash,
-                        PasswordSalt = c.PasswordSalt,
-                        Phone = c.Phone,
-                        Rowguid = c.Rowguid,
-                        SalesPerson = c.SalesPerson,
-                        Suffix = c.Suffix,
-                        Title = c.Title,
-                        AddressId = cu.AddressId,
-                        SalesOrderId = s.SalesOrderId,
-                        AccountNumber = s.AccountNumber,
-                        BillToAddressId = s.BillToAddressId,
-                        Comment = s.Comment,
-                        CreditCardApprovalCode = s.CreditCardApprovalCode,
-                        DueDate = s.DueDate,
-                        Freight = s.Freight,
-                        OnlineOrderFlag = s.OnlineOrderFlag,
-                        OrderDate = s.OrderDate,
-                        PurchaseOrderNumber = s.PurchaseOrderNumber,
-                        RevisionNumber = s.RevisionNumber,
-                        SalesOrderNumber = s.SalesOrderNumber,
-                        ShipDate = s.ShipDate,
-                        ShipMethod = s.ShipMethod,
-                        ShipToAddressId = s.ShipToAddressId,
-                        Status = s.Status,
-                        SubTotal = s.SubTotal,
-                        TaxAmt = s.TaxAmt,
-                        TotalDue = s.TotalDue,
+                        AddressType = c.AddressType,
+                        Title = cu.Title,
+                        FirstName = cu.FirstName,
+                        LastName = cu.LastName,
                     };
 
                 var result = query.ToList();
@@ -146,19 +96,6 @@ namespace Default
     #endregion
 
     #region Entities
-
-    public partial class Addr
-    {
-        public Int32 AddressId { get; set; }
-        public String AddressLine1 { get; set; }
-        public String AddressLine2 { get; set; }
-        public String City { get; set; }
-        public String CountryRegion { get; set; }
-        public DateTime ModifiedDate { get; set; }
-        public String PostalCode { get; set; }
-        public Guid Rowguid { get; set; }
-        public String StateProvince { get; set; }
-    }
 
     public partial class Cust
     {
@@ -179,43 +116,22 @@ namespace Default
         public String Title { get; set; }
     }
 
-    public partial class CustomerOrder
+    public partial class CustomerAddress
     {
+        public Int32 AddressId { get; set; }
+        public String AddressLine1 { get; set; }
+        public String AddressLine2 { get; set; }
+        public String City { get; set; }
+        public String CountryRegion { get; set; }
+        public DateTime ModifiedDate { get; set; }
+        public String PostalCode { get; set; }
+        public Guid Rowguid { get; set; }
+        public String StateProvince { get; set; }
         public Int32 CustomerId { get; set; }
-        public String CompanyName { get; set; }
-        public String EmailAddress { get; set; }
+        public String AddressType { get; set; }
+        public String Title { get; set; }
         public String FirstName { get; set; }
         public String LastName { get; set; }
-        public String MiddleName { get; set; }
-        public DateTime ModifiedDate { get; set; }
-        public Boolean NameStyle { get; set; }
-        public String PasswordHash { get; set; }
-        public String PasswordSalt { get; set; }
-        public String Phone { get; set; }
-        public Guid Rowguid { get; set; }
-        public String SalesPerson { get; set; }
-        public String Suffix { get; set; }
-        public String Title { get; set; }
-        public Int32 AddressId { get; set; }
-        public Int32 SalesOrderId { get; set; }
-        public String AccountNumber { get; set; }
-        public Int32? BillToAddressId { get; set; }
-        public String Comment { get; set; }
-        public String CreditCardApprovalCode { get; set; }
-        public DateTime DueDate { get; set; }
-        public Decimal Freight { get; set; }
-        public Boolean? OnlineOrderFlag { get; set; }
-        public DateTime OrderDate { get; set; }
-        public String PurchaseOrderNumber { get; set; }
-        public Byte RevisionNumber { get; set; }
-        public String SalesOrderNumber { get; set; }
-        public DateTime? ShipDate { get; set; }
-        public String ShipMethod { get; set; }
-        public Int32? ShipToAddressId { get; set; }
-        public Byte Status { get; set; }
-        public Decimal SubTotal { get; set; }
-        public Decimal TaxAmt { get; set; }
-        public Decimal TotalDue { get; set; }
     }
 
     #endregion

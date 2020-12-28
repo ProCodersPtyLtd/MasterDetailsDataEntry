@@ -7,6 +7,7 @@ namespace Platz.SqlForms
     public enum ButtonActionTypes
     {
         Submit = 1, // OK navigation
+        Add,
         Delete,     // OK navigation
         Cancel,     // Reject navigation
         Close,

@@ -42,6 +42,12 @@ namespace Platz.SqlForms
             return result;
         }
 
+        public IEnumerable<EntityDataOperationDetails> GetDataOperationActions()
+        {
+            var result = _builder.Builders.SelectMany(b => b.DataOperationActions);
+            return result;
+        }
+
         IEnumerable<DataField> IDynamicEditForm.GetFields()
         {
             var fields = new List<DataField>();
@@ -98,6 +104,16 @@ namespace Platz.SqlForms
             }
 
             return "";
+        }
+
+        public void AfterInsert(object model, DataOperationArgs args)
+        {
+            var action = GetDataOperationActions().FirstOrDefault(a => a.OperationEvent == DataOperationEvents.AfterInsert);
+
+            if (action != null)
+            {
+                action.Method(model, args);
+            }
         }
     }
 

@@ -23,7 +23,7 @@ namespace MasterDetailsDataEntry.Demo.MyForms
 
                 e.Property(p => p.Administrator).Dropdown<Person>().Set(c => c.PersonId, c => c.FullName).IsRequired();
 
-                e.Button("Details", "Details...");
+                e.InlineButton("Details", "Details...");
             });
         }
     }

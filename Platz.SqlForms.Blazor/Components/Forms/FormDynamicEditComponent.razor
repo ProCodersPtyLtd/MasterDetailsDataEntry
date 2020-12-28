@@ -45,33 +45,17 @@
             </div>
         </div>
 
+        <hr />
+
         <div class="row">
+
             <div class="col-md-2"></div>
 
             <div class="col-md-10">
-                @foreach (var btn in _controller.Buttons)
-                {
-                    if (ForDelete && (btn.Action == ButtonActionTypes.Submit || btn.Action == ButtonActionTypes.Validate))
-                    {
-                        continue;
-                    }
 
-                    if (ForDelete && (btn.Action == ButtonActionTypes.Submit || btn.Action == ButtonActionTypes.Validate))
-                    {
-                        continue;
-                    }
+                <BottomButtonsComponent Form="_form" ButtonActionClicked="ButtonActionClicked" NavigateFormatParameters="_controller.NavigateFormatParameters" 
+                       ForDelete="ForDelete" Buttons="_controller.Buttons" ButtonNavigations="_controller.ButtonNavigations" ButtonClicked="ButtonClicked"/>
 
-                    @:&nbsp;
-                    <button class="@GetButtonClass(btn)" title="@btn.Hint" @onclick="@(async (args) => await ButtonClick(args, btn))">@GetButtonText(btn)</button>
-                }
-
-                @if (ForDelete)
-                {
-                    var btn = GetGenericDeleteButton();
-
-                    @:&nbsp;
-                    <button class="@GetButtonClass(btn)" title="@btn.Hint" @onclick="@(async (args) => await ButtonClick(args, btn))">@GetButtonText(btn)</button>
-                }
             </div>
         </div>
 
@@ -83,23 +67,23 @@
 @code
 {
 
-        [Parameter]
-        public int Id { get; set; }
+    [Parameter]
+    public int Id { get; set; }
 
-        [Parameter]
-        public bool ReadOnly { get; set; }
+    [Parameter]
+    public object[] ServiceParameters { get; set; }
 
-        [Parameter]
-        public bool ForDelete { get; set; }
+    [Parameter]
+    public bool ReadOnly { get; set; }
 
-        [Parameter]
-        public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }
+    [Parameter]
+    public bool ForDelete { get; set; }
 
-        //[Parameter]
-        //public EventCallback<ItemsChangedArgs> ItemsChanged { get; set; }
+    [Parameter]
+    public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }
 
-        [Parameter]
-        public EventCallback<ButtonClickedArgs> ButtonClicked { get; set; }
+    [Parameter]
+    public EventCallback<ButtonClickedArgs> ButtonClicked { get; set; }
 
     private object _modelItem { get; set; }
     private IDynamicEditForm _form;
@@ -118,7 +102,7 @@
     private void LoadForm()
     {
         _form = Activator.CreateInstance<TForm>() as IDynamicEditForm;
-        _controller.SetParameters(_form, Id);
+        _controller.SetParameters(_form, Id, ServiceParameters, ControllerDataChanged);
     }
 
     private bool AllowEdit()
@@ -131,31 +115,26 @@
         return !ReadOnly;
     }
 
-    private DialogButtonDetails GetGenericDeleteButton()
+    private async Task ControllerDataChanged()
     {
-        return new DialogButtonDetails { Action = ButtonActionTypes.Delete };
+        StateHasChanged();
     }
 
-    private string GetButtonClass(DialogButtonDetails btn)
+    private async Task<bool> ButtonActionClicked(ButtonActionArgs args)
     {
-        switch (btn.Action)
+        switch (args.ActionType)
         {
             case ButtonActionTypes.Submit:
-                return "btn btn-primary";
-            case ButtonActionTypes.Cancel:
-            case ButtonActionTypes.Close:
-                return "btn btn-info";
+                return await _controller.Submit();
+            case ButtonActionTypes.Validate:
+                await _controller.Validate();
+                StateHasChanged();
+                return true;
             case ButtonActionTypes.Delete:
-                return "btn btn-danger";
-            default:
-                return "btn btn-secondary";
+                return await _controller.Delete();
         }
-    }
 
-    private string GetButtonText(DialogButtonDetails btn)
-    {
-        var result = btn.Text ?? Enum.GetName(typeof(ButtonActionTypes), btn.Action);
-        return result;
+        return true;
     }
 
     #region events
@@ -167,85 +146,5 @@
     }
 
     #endregion
-
-    #region clicks
-
-    private async Task ButtonClick(MouseEventArgs e, DialogButtonDetails btn)
-    {
-        var canContinue = true;
-
-        switch (btn.Action)
-        {
-            case ButtonActionTypes.Submit:
-                canContinue = await _controller.Submit();
-                break;
-            case ButtonActionTypes.Validate:
-                await _controller.Validate();
-                await ButtonClicked.InvokeAsync(new ButtonClickedArgs { Entity = _form.GetEntityType(), Button = GetButtonText(btn) });
-                StateHasChanged();
-                return;
-            case ButtonActionTypes.Cancel:
-            case ButtonActionTypes.Close:
-                canContinue = await AllowToLeavePage();
-                break;
-            case ButtonActionTypes.Delete:
-                canContinue = await Delete();
-                break;
-            default:
-                break;
-        }
-
-        if (canContinue)
-        {
-            // 1st priority - button link
-            if (btn.LinkText != null)
-            {
-                _navi.NavigateTo($"{btn.LinkText}");
-            }
-            else
-            {
-                var buttonNavigation = FindButtonNavigationLink(btn);
-
-                // 2nd priority - button navigation
-                if (buttonNavigation != null)
-                {
-                    _navi.NavigateTo($"{buttonNavigation}");
-                }
-                // 3rd priority - button event
-                else
-                {
-                    await ButtonClicked.InvokeAsync(new ButtonClickedArgs { Entity = _form.GetEntityType(), Button = GetButtonText(btn) });
-                }
-            }
-        }
-    }
-
-    private string FindButtonNavigationLink(DialogButtonDetails btn)
-    {
-        var nav = _controller.ButtonNavigations.FirstOrDefault(n => n.Actions.Contains(btn.Action));
-        return nav?.LinkText;
-    }
-
-    private async Task<bool> Delete()
-    {
-        var result = await JS.InvokeAsync<bool>("confirm", $"Are you sure?");
-
-        if (result)
-        {
-            result = await _controller.Delete();
-        }
-
-        return result;
-    }
-
-    #endregion
-
-    private async Task<bool> AllowToLeavePage()
-    {
-        return true;
-    }
-
-
-
 
 }

@@ -18,13 +18,18 @@ namespace Platz.SqlForms
         public IEnumerable<ActionRouteLink> ContextLinks{  get { return _contextLinks; } }
         public List<DialogButtonDetails> DialogButtons { get; private set; }  = new List<DialogButtonDetails>();
         public List<DialogButtonNavigationDetails> DialogButtonNavigations { get; private set; }  = new List<DialogButtonNavigationDetails>();
+        public List<EntityDataOperationDetails> DataOperationActions { get; private set; } = new List<EntityDataOperationDetails>();
     }
 
     public class FormEntityTypeBuilder<TEntity> : FormEntityTypeBuilder where TEntity : class
     {
+        protected int _propertyOrder;
+
         public FormEntityTypeBuilder()
         {
-            int order = 0;
+            // order of properties in the Entity has a low priority - all mentioned properties will be moved up 
+            int order = 1000;
+            _propertyOrder = 0;
             // pre-populate all fields
             var fields = typeof(TEntity).GetSimpleTypeProperties().Select(p => new DataField { BindingProperty = p.Name, DataType = p.PropertyType, Order = order++ });
             _fields = fields.ToDictionary(f => f.BindingProperty, f => f);
@@ -32,7 +37,10 @@ namespace Platz.SqlForms
 
         public virtual FieldBuilder<TProperty, TEntity> Property<TProperty>([NotNullAttribute] Expression<Func<TEntity, TProperty>> propertyExpression)
         {
+            _propertyOrder++;
             var bindingProperty = propertyExpression.Body.ToString().ReplaceLambdaVar();
+            _fields[bindingProperty].Order = _propertyOrder;
+
             // explicitly mentioned property is not hidden anymore
             _fields[bindingProperty].Hidden = false;
             var result = new FieldBuilder<TProperty, TEntity>(_fields[bindingProperty]);
@@ -40,7 +48,7 @@ namespace Platz.SqlForms
             return result;
         }
 
-        public virtual void Button(string buttonText, string hint = null)
+        public virtual void InlineButton(string buttonText, string hint = null)
         {
             var bindingProperty = buttonText;
             _fields[bindingProperty] = new DataField { Button = true, BindingProperty = bindingProperty, Label = hint };
@@ -57,6 +65,16 @@ namespace Platz.SqlForms
             DialogButtons.Add(new DialogButtonDetails { Action = actionType, Text = buttonText, Hint = hint, LinkText = actionLinkText });
             return this;
         }
+
+        #region CRUD delegates
+        public virtual FormEntityTypeBuilder<TEntity> AfterSave(Action<TEntity, DataOperationArgs> method)
+        {
+            Action<object, DataOperationArgs> action = new Action<object, DataOperationArgs>((f,a) => method((TEntity)f, a));
+            var op = new EntityDataOperationDetails { EntityType = typeof(TEntity), Method = action, OperationEvent = DataOperationEvents.AfterInsert };
+            DataOperationActions.Add(op);
+            return this;
+        }
+        #endregion
 
         public virtual FormEntityTypeBuilder<TEntity> DialogButton(string actionLinkText, ButtonActionTypes actionType, string buttonText = null, string hint = null)
         {

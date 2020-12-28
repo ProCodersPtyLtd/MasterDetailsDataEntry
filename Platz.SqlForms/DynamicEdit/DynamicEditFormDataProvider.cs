@@ -9,6 +9,13 @@ namespace Platz.SqlForms
 {
     public class DynamicEditFormDataProvider : IDynamicEditFormDataProvider
     {
+        private object[] _serviceParameters;
+
+        public void SetParameters(object[] serviceParameters)
+        {
+            _serviceParameters = serviceParameters;
+        }
+
         public IEnumerable<DataField> GetFormFields(IDynamicEditForm form)
         {
             var fieldSet = form.GetFields();
@@ -52,6 +59,11 @@ namespace Platz.SqlForms
             {
                 db.Add(item);
                 db.SaveChanges();
+
+                // after save action
+                var args = new DataOperationArgs { DbContext = db, OperationEvent = DataOperationEvents.AfterInsert, Parameters = _serviceParameters };
+                form.AfterInsert(item, args);
+
                 return item;
             }
         }

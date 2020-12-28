@@ -1,0 +1,189 @@
+﻿@using Microsoft.JSInterop
+
+@inject NavigationManager _navi
+@inject IJSRuntime JS
+
+@namespace Platz.SqlForms.Blazor
+
+<div class="BottomButtonsComponent">
+    @foreach (var btn in Buttons)
+    {
+        if (ForDelete && (btn.Action == ButtonActionTypes.Submit || btn.Action == ButtonActionTypes.Validate))
+        {
+            continue;
+        }
+
+        @:&nbsp;
+        <button class="@GetButtonClass(btn)" title="@btn.Hint" @onclick="@(async (args) => await ButtonClick(args, btn))">@GetButtonText(btn)</button>
+    }
+
+    @if (ForDelete)
+    {
+        var btn = GetGenericDeleteButton();
+
+        @:&nbsp;
+        <button class="@GetButtonClass(btn)" title="@btn.Hint" @onclick="@(async (args) => await ButtonClick(args, btn))">@GetButtonText(btn)</button>
+    }
+</div>
+
+@code
+{
+    [Parameter]
+    public IDataForm Form { get; set; }
+
+    [Parameter]
+    public bool ForDelete { get; set; }
+
+    [Parameter]
+    public IEnumerable<DialogButtonDetails> Buttons { get; set; }
+
+    [Parameter]
+    public object[] NavigateFormatParameters { get; set; }
+
+    [Parameter]
+    public IEnumerable<DialogButtonNavigationDetails> ButtonNavigations { get;  set; }
+
+    [Parameter]
+    public EventCallback<ButtonClickedArgs> ButtonClicked { get; set; }
+
+    [Parameter]
+    public Func<ButtonActionArgs, Task<bool>> ButtonActionClicked { get; set; }
+
+    private DialogButtonDetails GetGenericDeleteButton()
+    {
+        return new DialogButtonDetails { Action = ButtonActionTypes.Delete };
+    }
+
+    private string GetButtonText(DialogButtonDetails btn)
+    {
+        var result = btn.Text ?? Enum.GetName(typeof(ButtonActionTypes), btn.Action);
+        return result;
+    }
+
+    private string GetButtonClass(DialogButtonDetails btn)
+    {
+        switch (btn.Action)
+        {
+            case ButtonActionTypes.Submit:
+                return "btn btn-primary";
+            case ButtonActionTypes.Cancel:
+            case ButtonActionTypes.Close:
+                return "btn btn-info";
+            case ButtonActionTypes.Delete:
+                return "btn btn-danger";
+            default:
+                return "btn btn-secondary";
+        }
+    }
+
+    private async Task<bool> AllowToLeavePage()
+    {
+        return true;
+    }
+
+    private async Task ButtonClick(MouseEventArgs e, DialogButtonDetails btn)
+    {
+        var canContinue = true;
+
+        switch (btn.Action)
+        {
+            case ButtonActionTypes.Submit:
+                // canContinue = await Controller.Submit();
+                canContinue = await ButtonActionClicked?.Invoke(new ButtonActionArgs { ActionType = ButtonActionTypes.Submit });
+                break;
+            case ButtonActionTypes.Validate:
+                // await Controller.Validate();
+                await ButtonActionClicked?.Invoke(new ButtonActionArgs { ActionType = ButtonActionTypes.Validate });
+                await ButtonClicked.InvokeAsync(new ButtonClickedArgs { Entity = Form.GetEntityType(), Button = GetButtonText(btn) });
+                StateHasChanged();
+                return;
+            case ButtonActionTypes.Cancel:
+            case ButtonActionTypes.Close:
+                canContinue = await AllowToLeavePage();
+                break;
+            case ButtonActionTypes.Delete:
+                canContinue = await Delete();
+                break;
+            default:
+                break;
+        }
+
+        if (canContinue)
+        {
+            // 1st priority - button link
+            if (btn.LinkText != null)
+            {
+                var route = string.Format(btn.LinkText, NavigateFormatParameters);
+                _navi.NavigateTo(route);
+                return;
+            }
+            else
+            {
+                var buttonNavigation = FindButtonNavigationLink(btn);
+
+                // 2nd priority - button navigation
+                if (buttonNavigation != null)
+                {
+                    var route = string.Format(buttonNavigation, NavigateFormatParameters);
+                    _navi.NavigateTo(route);
+                    return;
+                }
+                // 3rd priority - button event
+                else
+                {
+                    await ButtonClicked.InvokeAsync(new ButtonClickedArgs { Entity = Form.GetEntityType(), Button = GetButtonText(btn) });
+                }
+            }
+        }
+    }
+
+    private string FindButtonNavigationLink(DialogButtonDetails btn)
+    {
+        var nav = ButtonNavigations.FirstOrDefault(n => n.Actions.Contains(btn.Action));
+        return nav?.LinkText;
+    }
+
+    private async Task<bool> Delete()
+    {
+        var result = await JS.InvokeAsync<bool>("confirm", $"Are you sure?");
+
+        if (result)
+        {
+            // result = await Controller.Delete();
+            result = await ButtonActionClicked?.Invoke(new ButtonActionArgs { ActionType = ButtonActionTypes.Delete });
+        }
+
+        return result;
+    }
+
+
+
+
+
+
+
+
+
+
+
+    public DataField Field { get; set; }
+
+    [Parameter]
+    public FieldState State { get; set; }
+
+    [Parameter]
+    public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }
+
+    private string GetValue()
+    {
+        var result = (bool?)State.Value == true ? "checked" : null;
+        return result;
+    }
+
+    private async Task ValueChanged(ChangeEventArgs a)
+    {
+        State.Value = a.Value;
+        var args = new ValueChangedArgs { Field = Field, State = State, NewValue = a.Value };
+        await ModelValueChanged.InvokeAsync(args);
+    }
+}

@@ -250,6 +250,8 @@ namespace Platz.ObjectBuilder.Blazor
 
             var newJoins = joins.Where(j => !FromTableJoins.Any(f => f.Source.GetJoinString() == j.GetJoinString()));
             FromTableJoins.AddRange(newJoins.Select(j => new TableJoinModel { Source = j, JoinType = "Inner" }));
+            var lostJoins = FromTableJoins.Where(j => !FromTables.Any(t => t.Alias == j.Source.LeftObjectAlias) || !FromTables.Any(t => t.Alias == j.Source.RightObjectAlias));
+            FromTableJoins = FromTableJoins.Except(lostJoins).ToList();
 
             foreach (var fj in FromTableJoins.Where(f => !f.IsDeleted))
             {
