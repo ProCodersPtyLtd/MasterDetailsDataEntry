@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>Platz.ObjectBuilder</id>
-    <version>0.1.4</version>
+    <version>0.1.5</version>
     <authors>Pro Coders Australia</authors>
     <owners>Pro Coders Australia</owners>
     <projectUrl>https://github.com/ProCodersPtyLtd/MasterDetailsDataEntry</projectUrl>
@@ -39,8 +39,5 @@
     <file src="contentFiles\any\any\Platz.Example.Link\*" target="contentFiles\any\any\Platz.Example.Link"/>
     <file src="..\bin\Release\netstandard2.1\Platz.ObjectBuilder.Blazor.dll" target="lib\netstandard2.1\Platz.ObjectBuilder.Blazor.dll" />
     <file src="..\bin\Release\netstandard2.1\Platz.ObjectBuilder.dll" target="lib\netstandard2.1\Platz.ObjectBuilder.dll" />
-    <file src="..\..\Platz.ObjectBuilder.Templates\bin\Release\Platz.ObjectBuilder.Templates.dll" target="lib\Platz.ObjectBuilder.Templates.dll" />
-    <file src="build\Platz.ObjectBuilder.props" target="build\Platz.ObjectBuilder.props" />
-    <file src="tools\Platz.ObjectBuilder.Templates.dll" target="tools\Platz.ObjectBuilder.Templates.dll" />
   </files>
 </package>

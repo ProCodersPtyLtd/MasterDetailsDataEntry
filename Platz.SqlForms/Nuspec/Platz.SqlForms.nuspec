@@ -27,6 +27,8 @@
       <files include="**\*.sql" buildAction="None" />
       <files include="**\*.cs" buildAction="None" />
       <files include="**\*.razor" buildAction="None" />
+      <files include="**\*.tt" buildAction="None" />
+      <files include="**\*.ttinclude" buildAction="None" />
     </contentFiles>
   </metadata>
   <files>
@@ -36,5 +38,9 @@
     <file src="..\bin\Release\netcoreapp3.1\Platz.SqlForms.dll" target="lib\netcoreapp3.1\Platz.SqlForms.dll" />
     <file src="..\bin\Release\netcoreapp3.1\Platz.SqlForms.Blazor.dll" target="lib\netcoreapp3.1\Platz.SqlForms.Blazor.dll" />
     <file src="..\bin\Release\netcoreapp3.1\Platz.SqlForms.Shared.dll" target="lib\netcoreapp3.1\Platz.SqlForms.Shared.dll" />
+    <file src="build\Platz.SqlForms.props" target="build\Platz.SqlForms.props" />
+    <file src="tools\System.Text.Encodings.Web.dll" target="tools\System.Text.Encodings.Web.dll" />
+    <file src="tools\System.Text.Json.dll" target="tools\System.Text.Json.dll" />
+    <file src="tools\Platz.ObjectBuilder.Templates.dll" target="tools\Platz.ObjectBuilder.Templates.dll" />
   </files>
 </package>
