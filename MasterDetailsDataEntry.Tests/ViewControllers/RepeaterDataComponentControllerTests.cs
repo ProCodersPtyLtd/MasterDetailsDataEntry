@@ -61,8 +61,8 @@ namespace MasterDetailsDataEntry.Tests.ViewControllers
 
             var cont = new RepeaterDataComponentController(new Mock<IDataValidationProvider>().Object);
             cont.SetParameters(form, new FormViewOptions { }, form.GetDetailsType(), fields, items);
-            var field = fields.First();
-            var state = cont.CreateFieldState(fields.First(), 0);
+            var field = fields.First(f => f.BindingProperty == "Id");
+            var state = cont.CreateFieldState(field, 0);
             state.Value = 17;
             cont.SetItemValue(field, state);
             var value = cont.GetItemValue(field, 0);
