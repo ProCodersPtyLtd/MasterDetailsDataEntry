@@ -114,15 +114,19 @@ namespace Platz.SqlForms.Blazor
 
         public object GetItem()
         {
-            var result = _dataProvider.GetItem(_form, _id) ?? CreateItem();
-            return result;
+            var item = _dataProvider.GetItem(_form, _id) ?? CreateItem();
+            _validations = _dataValidationProvider.ValidateCustomRules(_form, item, 0, Fields, FormRuleTriggers.Load);
+            UpdateFieldStateValidations(_validations, 0);
+            return item;
         }
 
         private object CreateItem()
         {
             var type = _form.GetEntityType();
-            var result = Activator.CreateInstance(type);
-            return result;
+            var item = Activator.CreateInstance(type);
+            _validations = _dataValidationProvider.ValidateCustomRules(_form, item, 0, Fields, FormRuleTriggers.Create);
+            UpdateFieldStateValidations(_validations, 0);
+            return item;
         }
 
         public IEnumerable<DataField> GetFields()

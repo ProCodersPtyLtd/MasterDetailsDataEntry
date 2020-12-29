@@ -16,6 +16,7 @@ using Platz.ObjectBuilder.Blazor.Controllers;
 using Platz.ObjectBuilder.Blazor.Controllers.Logic;
 using Platz.ObjectBuilder.Expressions;
 using Platz.ObjectBuilder.Blazor.Controllers.Validation;
+using Platz.ObjectBuilder;
 
 namespace MasterDetailsDataEntry.Demo
 {
@@ -37,15 +38,7 @@ namespace MasterDetailsDataEntry.Demo
             services.AddSingleton<WeatherForecastService>();
 
             services.AddPlatzSqlForms();
-            services.AddBlazorDragDrop();
-
-            services.AddTransient<IObjectResolver, SqlJsonObjectResolver>();
-            services.AddTransient<IObjectBuilderRuleFactory, ObjectBuilderRuleFactory>();
-            services.AddTransient<ISqlExpressionEngine, SqlExpressionEngine>();
-            services.AddTransient<IQueryBuilderEngine, QueryBuilderEngine>();
-            services.AddTransient<IQueryController, EntityFrameworkQueryController>();
-
-            var t = typeof(MasterDetailsDataEntry.Demo.Database.AdventureWorksContext);
+            services.AddPlatzObjectBuilder();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,23 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <id>Platz.SqlForms</id>
-    <version>0.2.0</version>
+    <id>Platz.ObjectBuilder</id>
+    <version>0.1.6</version>
     <authors>Pro Coders Australia</authors>
     <owners>Pro Coders Australia</owners>
     <projectUrl>https://github.com/ProCodersPtyLtd/MasterDetailsDataEntry</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Platz.SqlForms is a declarative Dynamic Forms framework that allows to create Blazor UI for EF entities</description>
+    <description>Platz.ObjectBuilder is a Blazor UI component that allows to build Models and Queries visually and generate C# code based on saved json data.</description>
     <copyright>Copyright (c) 2020 Pro Coders PTY LTD</copyright>
-    <tags>platz blazor declarative dynamic form framework</tags>
+    <tags>platz blazor model visual query component framework object builder</tags>
     <license type="expression">MIT</license>
     <dependencies>
-		<group targetFramework="netcoreapp3.1">
+		<group targetFramework="netstandard2.1">
 			<dependency id="Microsoft.AspNetCore.Components" version="3.1.9" />
 			<dependency id="Microsoft.AspNetCore.Components.Web" version="3.1.9" />
       <dependency id="Microsoft.EntityFrameworkCore" version="3.1.9" />
 			<dependency id="Microsoft.EntityFrameworkCore.Relational" version="3.1.9" />
-			<dependency id="System.Linq.Dynamic.Core" version="1.2.5" />
+			<dependency id="System.ComponentModel.Annotations" version="5.0.0" />
+			<dependency id="System.Text.Json" version="5.0.0" />
+			<dependency id="blazor-dragdrop" version="2.2.0" />
 		</group>
     </dependencies>
     <contentFiles>
@@ -33,14 +35,8 @@
   </metadata>
   <files>
     <file src="readme.txt" />
-    <file src="contentFiles\any\any\Platz.Config.Link\*" target="contentFiles\any\any\Platz.Config.Link"/>
-    <file src="contentFiles\any\any\Platz.Example.Link\*" target="contentFiles\any\any\Platz.Example.Link"/>
-    <file src="..\bin\Release\netcoreapp3.1\Platz.SqlForms.dll" target="lib\netcoreapp3.1\Platz.SqlForms.dll" />
-    <file src="..\bin\Release\netcoreapp3.1\Platz.SqlForms.Blazor.dll" target="lib\netcoreapp3.1\Platz.SqlForms.Blazor.dll" />
-    <file src="..\bin\Release\netcoreapp3.1\Platz.SqlForms.Shared.dll" target="lib\netcoreapp3.1\Platz.SqlForms.Shared.dll" />
-    <file src="build\Platz.SqlForms.props" target="build\Platz.SqlForms.props" />
-    <file src="tools\System.Text.Encodings.Web.dll" target="tools\System.Text.Encodings.Web.dll" />
-    <file src="tools\System.Text.Json.dll" target="tools\System.Text.Json.dll" />
-    <file src="tools\Platz.ObjectBuilder.Templates.dll" target="tools\Platz.ObjectBuilder.Templates.dll" />
+    <file src="contentFiles\any\any\Platz.ObjectBuilder.Link\*" target="contentFiles\any\any\Platz.ObjectBuilder.Link"/>
+    <file src="..\bin\Release\netstandard2.1\Platz.ObjectBuilder.Blazor.dll" target="lib\netstandard2.1\Platz.ObjectBuilder.Blazor.dll" />
+    <file src="..\bin\Release\netstandard2.1\Platz.ObjectBuilder.dll" target="lib\netstandard2.1\Platz.ObjectBuilder.dll" />
   </files>
 </package>

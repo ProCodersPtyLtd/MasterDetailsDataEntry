@@ -18,6 +18,7 @@
     "Fields": {
       "CustomerId": {
         "FieldAlias": "CustomerId",
+        "IsOutput": true,
         "Field": {
           "ObjectAlias": "c",
           "FieldName": "CustomerId"
@@ -27,6 +28,7 @@
       },
       "CompanyName": {
         "FieldAlias": "CompanyName",
+        "IsOutput": true,
         "Field": {
           "ObjectAlias": "c",
           "FieldName": "CompanyName"
@@ -36,6 +38,7 @@
       },
       "EmailAddress": {
         "FieldAlias": "EmailAddress",
+        "IsOutput": true,
         "Field": {
           "ObjectAlias": "c",
           "FieldName": "EmailAddress"
@@ -45,6 +48,7 @@
       },
       "FirstName": {
         "FieldAlias": "FirstName",
+        "IsOutput": true,
         "Field": {
           "ObjectAlias": "c",
           "FieldName": "FirstName"
@@ -54,6 +58,7 @@
       },
       "LastName": {
         "FieldAlias": "LastName",
+        "IsOutput": true,
         "Field": {
           "ObjectAlias": "c",
           "FieldName": "LastName"
@@ -63,6 +68,7 @@
       },
       "MiddleName": {
         "FieldAlias": "MiddleName",
+        "IsOutput": true,
         "Field": {
           "ObjectAlias": "c",
           "FieldName": "MiddleName"
@@ -72,6 +78,7 @@
       },
       "ModifiedDate": {
         "FieldAlias": "ModifiedDate",
+        "IsOutput": true,
         "Field": {
           "ObjectAlias": "c",
           "FieldName": "ModifiedDate"
@@ -81,6 +88,7 @@
       },
       "NameStyle": {
         "FieldAlias": "NameStyle",
+        "IsOutput": true,
         "Field": {
           "ObjectAlias": "c",
           "FieldName": "NameStyle"
@@ -90,6 +98,7 @@
       },
       "PasswordHash": {
         "FieldAlias": "PasswordHash",
+        "IsOutput": true,
         "Field": {
           "ObjectAlias": "c",
           "FieldName": "PasswordHash"
@@ -99,6 +108,7 @@
       },
       "PasswordSalt": {
         "FieldAlias": "PasswordSalt",
+        "IsOutput": true,
         "Field": {
           "ObjectAlias": "c",
           "FieldName": "PasswordSalt"
@@ -108,6 +118,7 @@
       },
       "Phone": {
         "FieldAlias": "Phone",
+        "IsOutput": true,
         "Field": {
           "ObjectAlias": "c",
           "FieldName": "Phone"
@@ -117,6 +128,7 @@
       },
       "Rowguid": {
         "FieldAlias": "Rowguid",
+        "IsOutput": true,
         "Field": {
           "ObjectAlias": "c",
           "FieldName": "Rowguid"
@@ -126,6 +138,7 @@
       },
       "SalesPerson": {
         "FieldAlias": "SalesPerson",
+        "IsOutput": true,
         "Field": {
           "ObjectAlias": "c",
           "FieldName": "SalesPerson"
@@ -135,6 +148,7 @@
       },
       "Suffix": {
         "FieldAlias": "Suffix",
+        "IsOutput": true,
         "Field": {
           "ObjectAlias": "c",
           "FieldName": "Suffix"
@@ -144,6 +158,7 @@
       },
       "Title": {
         "FieldAlias": "Title",
+        "IsOutput": true,
         "Field": {
           "ObjectAlias": "c",
           "FieldName": "Title"
@@ -171,6 +186,7 @@
           "Value": null,
           "QueryField": {
             "FieldAlias": null,
+            "IsOutput": false,
             "Field": {
               "ObjectAlias": "c",
               "FieldName": "FirstName"

@@ -6,6 +6,8 @@ namespace Platz.SqlForms
 {
     public enum FormRuleTriggers
     {
+        Load,
+        Create,
         Change,
         Submit,
         ChangeSubmit
