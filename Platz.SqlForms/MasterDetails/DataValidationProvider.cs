@@ -15,6 +15,18 @@ namespace Platz.SqlForms
             _dataEntryProvider = dataEntryProvider;
         }
 
+        public IEnumerable<ValidationResult> ValidateCustomRules(IDataForm form, object item, int rowIndex, IEnumerable<DataField> fields, FormRuleTriggers trigger)
+        {
+            var result = new List<ValidationResult>();
+
+            foreach (var field in fields)
+            {
+                CustomRule(form, item, rowIndex, field, result, trigger);
+            }
+
+            return result;
+        }
+
         public IEnumerable<ValidationResult> ValidateModel(IDataForm form, object item, int rowIndex, IEnumerable<DataField> fields)
         {
             var result = new List<ValidationResult>();
@@ -23,7 +35,7 @@ namespace Platz.SqlForms
             {
                 RequiredRule(item, rowIndex, field, result);
                 UniqueRule(form, item, rowIndex, field, result);
-                CustomRule(form, item, rowIndex, field, result);
+                CustomRule(form, item, rowIndex, field, result, FormRuleTriggers.Submit);
             }
 
             return result;
@@ -36,14 +48,17 @@ namespace Platz.SqlForms
 
             RequiredRule(item, rowIndex, field, result);
             UniqueRule(form, item, rowIndex, field, result);
-            CustomRule(form, item, rowIndex, field, result);
+            CustomRule(form, item, rowIndex, field, result, FormRuleTriggers.Change);
             
             return result;
         }
 
-        private void CustomRule(IDataForm form, object item, int rowIndex, DataField field, List<ValidationResult> result)
+        private void CustomRule(IDataForm form, object item, int rowIndex, DataField field, List<ValidationResult> result, FormRuleTriggers trigger)
         {
-            foreach (var rule in field.Rules)
+            var rules = field.Rules.Where(r => r.Trigger == trigger 
+                || (trigger == FormRuleTriggers.ChangeSubmit && (r.Trigger == FormRuleTriggers.Change || r.Trigger == FormRuleTriggers.Submit)));
+
+            foreach (var rule in rules)
             {
                 var vr = rule.Method(item);
 

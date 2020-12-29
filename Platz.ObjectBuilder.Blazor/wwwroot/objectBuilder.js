@@ -25,3 +25,7 @@ ConvertToSvg = (element, rect) => {
 HideModal = (name) => {
     $(name).modal('hide');
 }
+
+ShowToast = (name) => {
+    $(name).toast('show');
+}

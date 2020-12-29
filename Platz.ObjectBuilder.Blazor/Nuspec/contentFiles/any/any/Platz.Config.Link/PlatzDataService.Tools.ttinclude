@@ -1,0 +1,3 @@
+<#@ assembly name="$(PlatzObjectBuilderToolDirectory)System.Text.Json.dll" #>
+<#@ assembly name="$(PlatzObjectBuilderToolDirectory)System.Text.Encodings.Web.dll" #>
+<#@ assembly name="$(PlatzObjectBuilderToolDirectory)Platz.ObjectBuilder.Templates.dll" #>

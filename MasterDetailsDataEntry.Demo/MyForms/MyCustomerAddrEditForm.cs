@@ -22,14 +22,13 @@ namespace MasterDetailsDataEntry.Demo.MyForms
 
                 e.Property(p => p.City).IsRequired();
 
-                e.Property(p => p.CountryRegion);
+                e.Property(p => p.CountryRegion).IsRequired();
 
                 e.Property(p => p.PostalCode).IsRequired();
 
-                e
-                .DialogButton(ButtonActionTypes.Cancel)
-                .DialogButton(ButtonActionTypes.Validate)
-                .DialogButton(ButtonActionTypes.Submit);
+                e.Property(p => p.ModifiedDate).IsReadOnly().Rule(DefaultModifiedDate, FormRuleTriggers.Create);
+
+                e.DialogButton(ButtonActionTypes.Cancel).DialogButton(ButtonActionTypes.Validate).DialogButton(ButtonActionTypes.Submit);
 
                 e.DialogButtonNavigation("CustAddrList/{1}", ButtonActionTypes.Delete, ButtonActionTypes.Cancel, ButtonActionTypes.Submit);
 
@@ -45,13 +44,9 @@ namespace MasterDetailsDataEntry.Demo.MyForms
             args.DbContext.SaveChanges();
         }
 
-        public FormRuleResult CheckEmail(Customer model)
+        public FormRuleResult DefaultModifiedDate(Address model)
         {
-            if (model.EmailAddress != null && !model.EmailAddress.Contains("@"))
-            {
-                return new FormRuleResult("Email should contain '@' symbol");
-            }
-
+            model.ModifiedDate = DateTime.Now;
             return null;
         }
     }
