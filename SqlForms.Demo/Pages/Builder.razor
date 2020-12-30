@@ -1,0 +1,14 @@
+﻿@page "/builder"
+
+@using Platz.ObjectBuilder.Blazor
+
+<QueryComponent DbContextType="typeof(MasterDetailsDataEntry.Demo.Database.AdventureWorksContext)" StoreDataPath="StoreData"
+                DataService="MyDataService" Namespace="Default" />
+
+
+@code {
+    private Type GetContextType()
+    {
+        return typeof(MasterDetailsDataEntry.Demo.Database.AdventureWorksContext);
+    }
+}

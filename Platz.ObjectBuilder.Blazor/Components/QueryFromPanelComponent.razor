@@ -1,10 +1,14 @@
 ﻿@using Plk.Blazor.DragDrop
-@namespace Platz.ObjectBuilder.Blazor
+
 @inject IJSRuntime JS
+
+@implements IAsyncDisposable
+
+@namespace Platz.ObjectBuilder.Blazor
 
 <h6>From</h6>
 
-<div class="plk-flex overflow-auto" style="min-height: 300px; height: @(Height)px; width: 100%;" @onscroll="() => Refresh()">
+<div class="plk-flex overflow-auto my-test-component" style="min-height: 300px; height: @(Height)px; width: 100%;" @onscroll="() => Refresh()">
     <div class="svg-panel-container" style="z-index: -10; position: absolute; opacity: 0.9;">
         <svg @ref="_svgRef" width="1600" height="@(Height)">
 
@@ -41,7 +45,19 @@
 
     private ElementReference _svgRef;
 
-    private TableAliasFieldsComponent[] _refs = new TableAliasFieldsComponent[10];
+    private TableAliasFieldsComponent[] _refs = new TableAliasFieldsComponent[100];
+
+    private Task<IJSObjectReference> _module;
+    private Task<IJSObjectReference> Module => _module ??= JS.InvokeAsync<IJSObjectReference>("import", "./_content/Platz.ObjectBuilder.Blazor/objectBuilder.js").AsTask();
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_module != null)
+        {
+            var module = await _module;
+            await module.DisposeAsync();
+        }
+    }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -102,13 +118,19 @@
 
     private async Task<LinePoints> GetLinkPoints(TableLink link)
     {
-        var startRect = await JS.InvokeAsync<BoundingClientRect>("MyIdGetBoundingClientRect", new object[] { link.PrimaryRefId });
-        var sp = new Point { X = startRect.X + 0.5 * startRect.Width, Y = startRect.Y + 0.5 * startRect.Height };
-        var spConv = await JS.InvokeAsync<Point>("ConvertToSvg", new object[] { _svgRef, sp });
+        var module = await Module;
 
-        var endRect = await JS.InvokeAsync<BoundingClientRect>("MyIdGetBoundingClientRect", new object[] { link.ForeignRefId });
+        //var startRect = await JS.InvokeAsync<BoundingClientRect>("MyIdGetBoundingClientRect", new object[] { link.PrimaryRefId });
+        var startRect = await module.InvokeAsync<BoundingClientRect>("MyIdGetBoundingClientRect", new object[] { link.PrimaryRefId });
+        var sp = new Point { X = startRect.X + 0.5 * startRect.Width, Y = startRect.Y + 0.5 * startRect.Height };
+        //var spConv = await JS.InvokeAsync<Point>("ConvertToSvg", new object[] { _svgRef, sp });
+        var spConv = await module.InvokeAsync<Point>("ConvertToSvg", new object[] { _svgRef, sp });
+
+        //var endRect = await JS.InvokeAsync<BoundingClientRect>("MyIdGetBoundingClientRect", new object[] { link.ForeignRefId });
+        var endRect = await module.InvokeAsync<BoundingClientRect>("MyIdGetBoundingClientRect", new object[] { link.ForeignRefId });
         var ep = new Point { X = endRect.X + 0.5 * endRect.Width, Y = endRect.Y + 0.5 * endRect.Height };
-        var epConv = await JS.InvokeAsync<Point>("ConvertToSvg", new object[] { _svgRef, ep });
+        //var epConv = await JS.InvokeAsync<Point>("ConvertToSvg", new object[] { _svgRef, ep });
+        var epConv = await module.InvokeAsync<Point>("ConvertToSvg", new object[] { _svgRef, ep });
 
         var result = new LinePoints { X1 = spConv.X, Y1 = spConv.Y, X2 = epConv.X, Y2 = epConv.Y };
         return result;

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MasterDetailsDataEntry.Demo.Database\MasterDetailsDataEntry.Demo.Database.csproj" />
+    <ProjectReference Include="..\Platz.ObjectBuilder.Blazor\Platz.ObjectBuilder.Blazor.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="StoreData\" />
+  </ItemGroup>
+
+</Project>

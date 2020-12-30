@@ -1,13 +1,13 @@
-﻿MyDOMGetBoundingClientRect = (element, parm) => {
+﻿export function MyDOMGetBoundingClientRect(element, parm) {
     return element.getBoundingClientRect();
 };
 
-MyIdGetBoundingClientRect = (id, parm) => {
+export function MyIdGetBoundingClientRect(id, parm) {
     var element = document.getElementById(id);
     return element.getBoundingClientRect();
 };
 
-ConvertToSvg = (element, rect) => {
+export function ConvertToSvg(element, rect) {
     const svg = element;
     const pt = svg.createSVGPoint();
 
@@ -22,10 +22,10 @@ ConvertToSvg = (element, rect) => {
     return res;
 }
 
-HideModal = (name) => {
+export function HideModal(name) {
     $(name).modal('hide');
 }
 
-ShowToast = (name) => {
+export function ShowToast(name) {
     $(name).toast('show');
 }

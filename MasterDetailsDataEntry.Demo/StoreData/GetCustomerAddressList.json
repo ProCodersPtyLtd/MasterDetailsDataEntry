@@ -174,17 +174,17 @@
     "SubQueries": null,
     "Joins": [
       {
-        "LeftObjectAlias": "a",
-        "LeftField": "AddressId",
-        "RightObjectAlias": "c",
-        "RightField": "AddressId",
-        "JoinType": "Inner"
-      },
-      {
         "LeftObjectAlias": "cu",
         "LeftField": "CustomerId",
         "RightObjectAlias": "c",
         "RightField": "CustomerId",
+        "JoinType": "Inner"
+      },
+      {
+        "LeftObjectAlias": "a",
+        "LeftField": "AddressId",
+        "RightObjectAlias": "c",
+        "RightField": "AddressId",
         "JoinType": "Inner"
       }
     ],

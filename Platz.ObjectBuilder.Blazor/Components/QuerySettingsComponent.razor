@@ -1,7 +1,10 @@
 ﻿@using Platz.ObjectBuilder.Blazor.Controllers
 @using System.Text.Json
 @using System.IO
+
 @inject IJSRuntime JS
+
+@implements IAsyncDisposable
 
 @namespace Platz.ObjectBuilder.Blazor
 
@@ -40,15 +43,15 @@
 
                         @if (_query?.Query?.Parameters != null)
                         {
-                            <table cellpadding="3">
-                                @foreach (var p in _query.Query.Parameters.Values)
+                        <table cellpadding="3">
+                            @foreach (var p in _query.Query.Parameters.Values)
                                 {
-                                    <tr>
-                                        <td>@p.Name</td>
-                                        <td>@p.Type</td>
-                                    </tr>
+                            <tr>
+                                <td>@p.Name</td>
+                                <td>@p.Type</td>
+                            </tr>
                                 }
-                            </table>
+                        </table>
                         }
                     </td>
                     <td style="width: 100%; vertical-align: top;">
@@ -108,8 +111,8 @@
                             {
                                 var rowIndex = i;
 
-                                <a class="list-group-item list-group-item-action" @onclick="() => FileClick(rowIndex)" @ondblclick="async(a) => await FileDblClick(a, rowIndex)"
-                                   data-toggle="list" href="#list-home" role="tab" aria-controls="home">@data[i]</a>
+                            <a class="list-group-item list-group-item-action" @onclick="() => FileClick(rowIndex)" @ondblclick="async(a) => await FileDblClick(a, rowIndex)"
+                               data-toggle="list" href="#list-home" role="tab" aria-controls="home">@data[i]</a>
                             }
                         </div>
                     </div>
@@ -123,25 +126,25 @@
     </div>
 </div>
 
-    <!-- Position it -->
-    <div style="position: absolute; top: 0; right: 0; min-width: 300px;">
+<!-- Position it -->
+<div style="position: absolute; top: 0; right: 0; min-width: 300px;">
 
-        <!-- Then put toasts within -->
-        <div id="saveToast" class="toast" role="banner" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="3000" style="background-color: lightgreen;">
-            <div class="toast-header">
-                @*<img src="file" class="rounded mr-2" alt="...">*@
-                @*<span class="oi oi-file"></span>*@
-                <strong class="mr-auto">Information</strong>
-                <small class="text-muted">just now</small>
-                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="toast-body">
-                File saved successfully.
-            </div>
+    <!-- Then put toasts within -->
+    <div id="saveToast" class="toast" role="banner" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="3000" style="background-color: lightgreen;">
+        <div class="toast-header">
+            @*<img src="file" class="rounded mr-2" alt="...">*@
+            @*<span class="oi oi-file"></span>*@
+            <strong class="mr-auto">Information</strong>
+            <small class="text-muted">just now</small>
+            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="toast-body">
+            File saved successfully.
         </div>
     </div>
+</div>
 
 @code {
     [CascadingParameter]
@@ -164,6 +167,18 @@
     private List<string> _files;
     private bool _fileNameChanged;
 
+    private Task<IJSObjectReference> _module;
+    private Task<IJSObjectReference> Module => _module ??= JS.InvokeAsync<IJSObjectReference>("import", "./_content/Platz.ObjectBuilder.Blazor/objectBuilder.js").AsTask();
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_module != null)
+        {
+            var module = await _module;
+            await module.DisposeAsync();
+        }
+    }
+
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
@@ -182,8 +197,10 @@
 
     private async Task FileDblClick(MouseEventArgs args, int row)
     {
+        var module = await Module;
+
         _selectedFileName = _files[row];
-        await JS.InvokeAsync<object>("HideModal", new object[] { "#loadModal" });
+        await module.InvokeVoidAsync("HideModal", new object[] { "#loadModal" });
         await LoadFile(args);
     }
 
@@ -212,6 +229,7 @@
 
     private async Task SaveClick(MouseEventArgs args)
     {
+        var module = await Module;
         bool canSave = true;
 
         if (_fileNameChanged && QueryController.FileExists(StoreDataPath))
@@ -226,7 +244,7 @@
             QueryController.SaveSchema(StoreDataPath);
             QueryController.SaveQuery(StoreDataPath);
             _fileNameChanged = false;
-            await JS.InvokeAsync<object>("ShowToast", new object[] { "#saveToast" });
+            await module.InvokeVoidAsync("ShowToast", new object[] { "#saveToast" });
         }
     }
 
