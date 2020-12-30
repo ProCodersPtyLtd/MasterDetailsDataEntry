@@ -27,10 +27,10 @@
                 <tr>
                     <td style="vertical-align: top;">
                         <label>Data Service name</label>
-                        <input @bind="QueryController.StoreParameters.DataService" readonly="readonly"/>
+                        <input @bind="QueryController.StoreParameters.DataService" readonly="readonly" />
 
                         <label>Namespace</label>
-                        <input @bind="QueryController.StoreParameters.Namespace" readonly="readonly"/>
+                        <input @bind="QueryController.StoreParameters.Namespace" readonly="readonly" />
 
                         <label>Query Return Type name</label>
                         <input value="@QueryController.StoreParameters.QueryReturnType" @onchange="QueryReturnTypeCahnged" />
@@ -43,15 +43,15 @@
 
                         @if (_query?.Query?.Parameters != null)
                         {
-                        <table cellpadding="3">
-                            @foreach (var p in _query.Query.Parameters.Values)
+                            <table cellpadding="3">
+                                @foreach (var p in _query.Query.Parameters.Values)
                                 {
-                            <tr>
-                                <td>@p.Name</td>
-                                <td>@p.Type</td>
-                            </tr>
+                                    <tr>
+                                        <td>@p.Name</td>
+                                        <td>@p.Type</td>
+                                    </tr>
                                 }
-                        </table>
+                            </table>
                         }
                     </td>
                     <td style="width: 100%; vertical-align: top;">
@@ -111,8 +111,8 @@
                             {
                                 var rowIndex = i;
 
-                            <a class="list-group-item list-group-item-action" @onclick="() => FileClick(rowIndex)" @ondblclick="async(a) => await FileDblClick(a, rowIndex)"
-                               data-toggle="list" href="#list-home" role="tab" aria-controls="home">@data[i]</a>
+                                <a class="list-group-item list-group-item-action" @onclick="() => FileClick(rowIndex)" @ondblclick="async(a) => await FileDblClick(a, rowIndex)"
+                                   data-toggle="list" href="#list-home" role="tab" aria-controls="home">@data[i]</a>
                             }
                         </div>
                     </div>
@@ -141,7 +141,7 @@
             </button>
         </div>
         <div class="toast-body">
-            File saved successfully.
+            File  '@(_fileNameSaved)' saved successfully.
         </div>
     </div>
 </div>
@@ -166,6 +166,7 @@
     private string _selectedFileName;
     private List<string> _files;
     private bool _fileNameChanged;
+    private string _fileNameSaved;
 
     private Task<IJSObjectReference> _module;
     private Task<IJSObjectReference> Module => _module ??= JS.InvokeAsync<IJSObjectReference>("import", "./_content/Platz.ObjectBuilder.Blazor/objectBuilder.js").AsTask();
@@ -188,11 +189,18 @@
         QueryController.StoreParameters.StoreDataPath = StoreDataPath;
     }
 
+    private async Task CollapseSettings()
+    {
+        var module = await Module;
+        await module.InvokeVoidAsync("Collapse", "#collapseExample");
+    }
+
     private async Task LoadFile(MouseEventArgs args)
     {
         QueryController.LoadFromFile(StoreDataPath, _selectedFileName);
         await ModelChanged.InvokeAsync(null);
         _fileNameChanged = false;
+        await CollapseSettings();
     }
 
     private async Task FileDblClick(MouseEventArgs args, int row)
@@ -238,11 +246,11 @@
 
         var module = await Module;
         bool canSave = true;
+        var fileName = QueryController.GenerateFileName(StoreDataPath);
+        fileName = Path.GetFileName(fileName);
 
         if (_fileNameChanged && QueryController.FileExists(StoreDataPath))
         {
-            var fileName = QueryController.GenerateFileName(StoreDataPath);
-            fileName = Path.GetFileName(fileName);
             canSave = await JS.InvokeAsync<bool>("confirm", $"File '{fileName}' already exists. Are you sure you want to overwrite it?");
         }
 
@@ -250,8 +258,10 @@
         {
             QueryController.SaveSchema(StoreDataPath);
             QueryController.SaveQuery(StoreDataPath);
+            _fileNameSaved = fileName;
             _fileNameChanged = false;
             await module.InvokeVoidAsync("ShowToast", new object[] { "#saveToast" });
+            await CollapseSettings();
         }
     }
 

@@ -29,3 +29,7 @@ export function HideModal(name) {
 export function ShowToast(name) {
     $(name).toast('show');
 }
+
+export function Collapse(name) {
+    $(name).collapse('hide');
+}
