@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>Platz.ObjectBuilder</id>
-    <version>0.1.6</version>
+    <version>0.1.11</version>
     <authors>Pro Coders Australia</authors>
     <owners>Pro Coders Australia</owners>
     <projectUrl>https://github.com/ProCodersPtyLtd/MasterDetailsDataEntry</projectUrl>
@@ -12,14 +12,13 @@
     <tags>platz blazor model visual query component framework object builder</tags>
     <license type="expression">MIT</license>
     <dependencies>
-		<group targetFramework="netstandard2.1">
-			<dependency id="Microsoft.AspNetCore.Components" version="3.1.9" />
-			<dependency id="Microsoft.AspNetCore.Components.Web" version="3.1.9" />
+		<group targetFramework="net5.0">
+			<dependency id="Microsoft.AspNetCore.Components" version="5.0.1" />
+			<dependency id="Microsoft.AspNetCore.Components.Web" version="5.0.1" />
       <dependency id="Microsoft.EntityFrameworkCore" version="3.1.9" />
 			<dependency id="Microsoft.EntityFrameworkCore.Relational" version="3.1.9" />
 			<dependency id="System.ComponentModel.Annotations" version="5.0.0" />
 			<dependency id="System.Text.Json" version="5.0.0" />
-			<dependency id="blazor-dragdrop" version="2.2.0" />
 		</group>
     </dependencies>
     <contentFiles>
@@ -35,8 +34,17 @@
   </metadata>
   <files>
     <file src="readme.txt" />
-    <file src="contentFiles\any\any\Platz.ObjectBuilder.Link\*" target="contentFiles\any\any\Platz.ObjectBuilder.Link"/>
-    <file src="..\bin\Release\netstandard2.1\Platz.ObjectBuilder.Blazor.dll" target="lib\netstandard2.1\Platz.ObjectBuilder.Blazor.dll" />
-    <file src="..\bin\Release\netstandard2.1\Platz.ObjectBuilder.dll" target="lib\netstandard2.1\Platz.ObjectBuilder.dll" />
+    <file src="..\wwwroot\background.png" target="staticwebassets\background.png" />
+    <file src="..\wwwroot\objectBuilder.js" target="staticwebassets\objectBuilder.js" />
+    <file src="..\obj\Release\net5.0\scopedcss\projectbundle\Platz.ObjectBuilder.Blazor.bundle.scp.css" target="staticwebassets\Platz.ObjectBuilder.Blazor.bundle.scp.css" />
+
+    <file src="build\Microsoft.AspNetCore.StaticWebAssets.props" target="build\Microsoft.AspNetCore.StaticWebAssets.props" />
+    <file src="build\Platz.ObjectBuilder.Blazor.props" target="build\Platz.ObjectBuilder.Blazor.props" />
+    <file src="build\buildTransitive.Platz.ObjectBuilder.Blazor.props" target="buildTransitive\Platz.ObjectBuilder.Blazor.props" />
+    <file src="build\buildMultiTargeting.Platz.ObjectBuilder.Blazor.props" target="buildMultiTargeting\Platz.ObjectBuilder.Blazor.props" />
+
+    <file src="..\bin\Release\net5.0\Platz.ObjectBuilder.Blazor.dll" target="lib\net5.0\Platz.ObjectBuilder.Blazor.dll" />
+    <file src="..\bin\Release\net5.0\Platz.ObjectBuilder.dll" target="lib\net5.0\Platz.ObjectBuilder.dll" />
+    
   </files>
 </package>

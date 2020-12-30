@@ -1,0 +1,18 @@
+﻿@page "/CustomerAddrEdit/{AddressId:int}/{CustomerId:int}"
+
+<h1>Customer Address Edit</h1>
+
+<div>
+    <label>Customer Id</label>
+    <input class="form-control" value="@CustomerId.ToString()" readonly="readonly" />
+</div>
+
+<FormDynamicEditComponent TForm="MyCustomerAddrEditForm" Id="@AddressId" ServiceParameters="@(new object[] { CustomerId })" />
+
+@code {
+    [Parameter]
+    public int AddressId { get; set; }
+
+    [Parameter]
+    public int CustomerId { get; set; }
+}

@@ -16,7 +16,7 @@ namespace Platz.ObjectBuilder
     {
         public static IServiceCollection AddPlatzObjectBuilder([NotNullAttribute] this IServiceCollection services)
         {
-            services.AddBlazorDragDrop();
+            services.AddScoped(typeof(DragDropService<>));
             services.AddTransient<IObjectResolver, SqlJsonObjectResolver>();
             services.AddTransient<IObjectBuilderRuleFactory, ObjectBuilderRuleFactory>();
             services.AddTransient<ISqlExpressionEngine, SqlExpressionEngine>();

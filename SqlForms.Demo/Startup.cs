@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Platz.ObjectBuilder;
+using Platz.SqlForms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,7 @@ namespace SqlForms.Demo
             services.AddRazorPages();
             services.AddServerSideBlazor();
 
+            services.AddPlatzSqlForms();
             services.AddPlatzObjectBuilder();
         }
 
