@@ -27,10 +27,10 @@
                 <tr>
                     <td style="vertical-align: top;">
                         <label>Data Service name</label>
-                        <input @bind="QueryController.StoreParameters.DataService" />
+                        <input @bind="QueryController.StoreParameters.DataService" readonly="readonly"/>
 
                         <label>Namespace</label>
-                        <input @bind="QueryController.StoreParameters.Namespace" />
+                        <input @bind="QueryController.StoreParameters.Namespace" readonly="readonly"/>
 
                         <label>Query Return Type name</label>
                         <input value="@QueryController.StoreParameters.QueryReturnType" @onchange="QueryReturnTypeCahnged" />
@@ -229,6 +229,13 @@
 
     private async Task SaveClick(MouseEventArgs args)
     {
+        ValidateClick(null);
+
+        if (QueryController.ValidationResults.Any())
+        {
+            return;
+        }
+
         var module = await Module;
         bool canSave = true;
 
