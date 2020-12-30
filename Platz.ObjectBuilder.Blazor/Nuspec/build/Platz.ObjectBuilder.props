@@ -1,6 +1,0 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<PropertyGroup>
-    <PlatzObjectBuilderTemplateDirectory>$(MSBuildThisFileDirectory)..\contentFiles\any\any\Platz.Config.Link\</PlatzObjectBuilderTemplateDirectory>
-    <PlatzObjectBuilderToolDirectory>$(MSBuildThisFileDirectory)..\tools\</PlatzObjectBuilderToolDirectory>
-	</PropertyGroup>
-</Project>

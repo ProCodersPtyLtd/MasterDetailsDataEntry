@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30611.23
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MasterDetailsDataEntry.Demo", "MasterDetailsDataEntry.Demo\MasterDetailsDataEntry.Demo.csproj", "{B3E89103-CE1A-4604-9F04-B6F362F01FD3}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MasterDetailsDataEntry.Tests", "MasterDetailsDataEntry.Tests\MasterDetailsDataEntry.Tests.csproj", "{D79D130E-B462-4BB8-867F-B13F89808127}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MasterDetailsDataEntry.Demo.Database", "MasterDetailsDataEntry.Demo.Database\MasterDetailsDataEntry.Demo.Database.csproj", "{3C9818AD-FCB1-4C28-9F82-98454959CCF4}"
@@ -29,16 +27,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ObjectBuilder", "ObjectBuil
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platz.ObjectBuilder.Templates", "Platz.ObjectBuilder.Templates\Platz.ObjectBuilder.Templates.csproj", "{92A9C8E4-2110-4B00-BC10-A53468BE8B51}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlForms.Demo", "SqlForms.Demo\SqlForms.Demo.csproj", "{3F5364F6-9D31-4861-88CF-761EBA12AB32}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B3E89103-CE1A-4604-9F04-B6F362F01FD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B3E89103-CE1A-4604-9F04-B6F362F01FD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B3E89103-CE1A-4604-9F04-B6F362F01FD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B3E89103-CE1A-4604-9F04-B6F362F01FD3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D79D130E-B462-4BB8-867F-B13F89808127}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D79D130E-B462-4BB8-867F-B13F89808127}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D79D130E-B462-4BB8-867F-B13F89808127}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -75,6 +71,10 @@ Global
 		{92A9C8E4-2110-4B00-BC10-A53468BE8B51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92A9C8E4-2110-4B00-BC10-A53468BE8B51}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92A9C8E4-2110-4B00-BC10-A53468BE8B51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F5364F6-9D31-4861-88CF-761EBA12AB32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F5364F6-9D31-4861-88CF-761EBA12AB32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F5364F6-9D31-4861-88CF-761EBA12AB32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F5364F6-9D31-4861-88CF-761EBA12AB32}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

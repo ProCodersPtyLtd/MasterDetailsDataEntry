@@ -5,17 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="blazor-dragdrop" Version="2.2.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.9" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.9">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\MasterDetailsDataEntry.Demo.Database\MasterDetailsDataEntry.Demo.Database.csproj" />
     <ProjectReference Include="..\Platz.ObjectBuilder.Blazor\Platz.ObjectBuilder.Blazor.csproj" />
+    <ProjectReference Include="..\Platz.ObjectBuilder\Platz.ObjectBuilder.csproj" />
     <ProjectReference Include="..\Platz.SqlForms.Blazor\Platz.SqlForms.Blazor.csproj" />
     <ProjectReference Include="..\Platz.SqlForms.Shared\Platz.SqlForms.Shared.csproj" />
     <ProjectReference Include="..\Platz.SqlForms\Platz.SqlForms.csproj" />
@@ -30,10 +22,6 @@
 
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="StoreData\" />
   </ItemGroup>
 
   <ItemGroup>

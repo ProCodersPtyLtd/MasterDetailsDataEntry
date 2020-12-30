@@ -1,0 +1,62 @@
+﻿<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">SqlForms.Demo</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="builder">
+                <span class="oi oi-home" aria-hidden="true"></span> Object Builder
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="QueryResult">
+                <span class="oi oi-home" aria-hidden="true"></span> Query Result
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="CustomerList/">
+                <span class="oi oi-home" aria-hidden="true"></span> Dynamic Customers
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="CustomerEdit/0">
+                <span class="oi oi-home" aria-hidden="true"></span> Dynamic Customer Edit
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="DepartmentDetails">
+                <span class="oi oi-plus" aria-hidden="true"></span> Department Details
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="OrderDetails">
+                <span class="oi oi-plus" aria-hidden="true"></span> Order Details
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="OrderItemsDetails">
+                <span class="oi oi-plus" aria-hidden="true"></span> Order Items Details
+            </NavLink>
+        </li>
+    </ul>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

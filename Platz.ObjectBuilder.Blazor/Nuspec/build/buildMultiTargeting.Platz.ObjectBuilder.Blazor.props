@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Platz.ObjectBuilder.Blazor.props" />
+</Project>
