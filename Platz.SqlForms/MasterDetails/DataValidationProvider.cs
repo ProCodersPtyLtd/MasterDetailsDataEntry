@@ -56,7 +56,9 @@ namespace Platz.SqlForms
         private void CustomRule(IDataForm form, object item, int rowIndex, DataField field, List<ValidationResult> result, FormRuleTriggers trigger)
         {
             var rules = field.Rules.Where(r => r.Trigger == trigger 
-                || (trigger == FormRuleTriggers.ChangeSubmit && (r.Trigger == FormRuleTriggers.Change || r.Trigger == FormRuleTriggers.Submit)));
+                || (trigger == FormRuleTriggers.ChangeSubmit && (r.Trigger == FormRuleTriggers.Change || r.Trigger == FormRuleTriggers.Submit))
+                || (trigger == FormRuleTriggers.Submit && (r.Trigger == FormRuleTriggers.Change || r.Trigger == FormRuleTriggers.Submit || r.Trigger == FormRuleTriggers.ChangeSubmit))
+                );
 
             foreach (var rule in rules)
             {

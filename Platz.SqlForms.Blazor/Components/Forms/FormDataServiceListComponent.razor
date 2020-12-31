@@ -63,17 +63,17 @@
 
 @code
 {
-    //[Parameter]
-    //public Type FormType { get; set; }
+        //[Parameter]
+        //public Type FormType { get; set; }
 
-    [Parameter]
-    public object[] ServiceParameters { get; set; }
+        [Parameter]
+        public object[] ServiceParameters { get; set; }
 
-    [Parameter]
-    public EventCallback<ItemButtonClickedArgs> ItemButtonClicked { get; set; }
+        [Parameter]
+        public EventCallback<ItemButtonClickedArgs> ItemButtonClicked { get; set; }
 
-    [Parameter]
-    public EventCallback<ButtonClickedArgs> ButtonClicked { get; set; }
+        [Parameter]
+        public EventCallback<ButtonClickedArgs> ButtonClicked { get; set; }
 
     private DataServiceBase _form;
     private IEnumerable<DataField> _fields;
@@ -117,6 +117,13 @@
     {
         var item = _modelItems[row];
         var result = item.GetPropertyValue(field.BindingProperty);
+        var format = _form.GetFieldFormat(field);
+
+        if (format != null)
+        {
+            result = string.Format($"{{0:{format}}}", result);
+        }
+
         return result;
     }
 

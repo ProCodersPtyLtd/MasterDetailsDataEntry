@@ -125,6 +125,7 @@
         switch (args.ActionType)
         {
             case ButtonActionTypes.Submit:
+                StateHasChanged();
                 return await _controller.Submit();
             case ButtonActionTypes.Validate:
                 await _controller.Validate();
