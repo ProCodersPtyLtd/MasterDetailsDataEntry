@@ -6,10 +6,10 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.IO" #>
-<#@ output extension=".cs" #>
+<#@ output extension=".txt" #>
 <#@ import namespace="Platz.ObjectBuilder" #>
 <# // ================================================================ Set JsonStorePath here, relative to solution folder ================================== #>
-<#      var JsonStorePath = @"<YOUR_PROJECT>\StoreData"; #>
+<#      var JsonStorePath = @"SqlForms.Demo\StoreData"; #>
 <# // ======================================================================================================================================================= #>
 <# 
         StoreSchema Schema = null;
