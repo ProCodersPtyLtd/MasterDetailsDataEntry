@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>Platz.ObjectBuilder</id>
-    <version>0.1.11</version>
+    <version>0.2.0</version>
     <authors>Pro Coders Australia</authors>
     <owners>Pro Coders Australia</owners>
     <projectUrl>https://github.com/ProCodersPtyLtd/MasterDetailsDataEntry</projectUrl>
@@ -39,7 +39,7 @@
     <file src="..\obj\Release\net5.0\scopedcss\projectbundle\Platz.ObjectBuilder.Blazor.bundle.scp.css" target="staticwebassets\Platz.ObjectBuilder.Blazor.bundle.scp.css" />
 
     <file src="build\Microsoft.AspNetCore.StaticWebAssets.props" target="build\Microsoft.AspNetCore.StaticWebAssets.props" />
-    <file src="build\Platz.ObjectBuilder.Blazor.props" target="build\Platz.ObjectBuilder.Blazor.props" />
+    <file src="build\Platz.ObjectBuilder.props" target="build\Platz.ObjectBuilder.props" />
     <file src="build\buildTransitive.Platz.ObjectBuilder.Blazor.props" target="buildTransitive\Platz.ObjectBuilder.Blazor.props" />
     <file src="build\buildMultiTargeting.Platz.ObjectBuilder.Blazor.props" target="buildMultiTargeting\Platz.ObjectBuilder.Blazor.props" />
 

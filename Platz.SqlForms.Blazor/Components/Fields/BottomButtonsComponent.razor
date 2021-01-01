@@ -135,6 +135,10 @@
                 }
             }
         }
+        else
+        {
+            await ModelValueChanged.InvokeAsync(null);
+        }
     }
 
     private string FindButtonNavigationLink(DialogButtonDetails btn)

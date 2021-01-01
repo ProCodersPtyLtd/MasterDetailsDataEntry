@@ -1,22 +1,22 @@
-﻿<Project>
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <StaticWebAsset Include="$(MSBuildThisFileDirectory)..\staticwebassets\background.png">
       <SourceType>Package</SourceType>
-      <SourceId>Platz.ObjectBuilder.Blazor</SourceId>
+      <SourceId>Platz.ObjectBuilder</SourceId>
       <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
       <BasePath>_content/Platz.ObjectBuilder.Blazor</BasePath>
       <RelativePath>background.png</RelativePath>
     </StaticWebAsset>
     <StaticWebAsset Include="$(MSBuildThisFileDirectory)..\staticwebassets\objectBuilder.js">
       <SourceType>Package</SourceType>
-      <SourceId>Platz.ObjectBuilder.Blazor</SourceId>
+      <SourceId>Platz.ObjectBuilder</SourceId>
       <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
       <BasePath>_content/Platz.ObjectBuilder.Blazor</BasePath>
       <RelativePath>objectBuilder.js</RelativePath>
     </StaticWebAsset>
     <StaticWebAsset Include="$(MSBuildThisFileDirectory)..\staticwebassets\Platz.ObjectBuilder.Blazor.bundle.scp.css">
       <SourceType>Package</SourceType>
-      <SourceId>Platz.ObjectBuilder.Blazor</SourceId>
+      <SourceId>Platz.ObjectBuilder</SourceId>
       <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
       <BasePath>_content/Platz.ObjectBuilder.Blazor</BasePath>
       <RelativePath>Platz.ObjectBuilder.Blazor.bundle.scp.css</RelativePath>

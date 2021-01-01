@@ -15,7 +15,12 @@ namespace Platz.SqlForms.Shared
             var result = selectorString.Trim();
             var values = result.Split('.');
 
-            if (values.Length > 0)
+            // only when 2 or more parts, plane value like 'g' returned as string.Empty
+            if (values.Length == 1)
+            {
+                return string.Empty;
+            }
+            else if (values.Length > 1)
             {
                 result = result.Substring(values[0].Length + 1);
             }
@@ -69,26 +74,43 @@ namespace Platz.SqlForms.Shared
                 }
                 else
                 {
-                    var dataTypeName = property.PropertyType.Name;
+                    var dataType = property.PropertyType;
+                    var isNullable = Nullable.GetUnderlyingType(dataType) != null;
 
-                    if (dataTypeName == "Nullable`1")
+                    if (isNullable)
                     {
-                        dataTypeName = Nullable.GetUnderlyingType(property.PropertyType).Name;
+                        dataType = Nullable.GetUnderlyingType(dataType);
                     }
 
-                    switch (dataTypeName)
+                    if (dataType.IsEnum)
                     {
-                        case "Int32":
-                            convertedValue = Convert.ToInt32(value);
-                            break;
+                        if (isNullable && value.ToString() == "0")
+                        {
+                            property.SetValue(target, null);
+                            return;
+                        }
 
-                        case "Boolean":
-                            convertedValue = Convert.ToBoolean(value);
-                            break;
+                        convertedValue = Enum.Parse(dataType, value.ToString());
+                        //property.SetValue(target, convertedValue);
+                    }
+                    else
+                    {
+                        var dataTypeName = dataType.Name;
 
-                        case "Decimal":
-                            convertedValue = Convert.ToDecimal(value);
-                            break;
+                        switch (dataTypeName)
+                        {
+                            case "Int32":
+                                convertedValue = Convert.ToInt32(value);
+                                break;
+
+                            case "Boolean":
+                                convertedValue = Convert.ToBoolean(value);
+                                break;
+
+                            case "Decimal":
+                                convertedValue = Convert.ToDecimal(value);
+                                break;
+                        }
                     }
                 }
 
@@ -101,6 +123,11 @@ namespace Platz.SqlForms.Shared
 
         public static object GetPropertyValue(this object target, string bindingProperty)
         {
+            if (bindingProperty == string.Empty)
+            {
+                return target;
+            }
+
             var property = target.GetType().GetProperty(bindingProperty);
             var result = property.GetValue(target);
             return result;

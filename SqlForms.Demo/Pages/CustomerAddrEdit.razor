@@ -2,11 +2,7 @@
 
 <h1>Customer Address Edit</h1>
 
-<div>
-    <label>Customer Id</label>
-    <input class="form-control" value="@CustomerId.ToString()" readonly="readonly" />
-</div>
-
+<FormDynamicEditComponent TForm="MyCustomerHeaderForm" Id="@CustomerId" />
 <FormDynamicEditComponent TForm="MyCustomerAddrEditForm" Id="@AddressId" ServiceParameters="@(new object[] { CustomerId })" />
 
 @code {

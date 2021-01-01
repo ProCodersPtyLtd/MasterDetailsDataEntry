@@ -9,7 +9,7 @@ namespace Platz.ObjectBuilder.Templates
 {
     public class GenerationLogic
     {
-        string JsonStorePath = @"MasterDetailsDataEntry.Demo\StoreData";
+        string JsonStorePath = @"SqlForms.Demo\StoreData";
         StoreSchema Schema;
         List<StoreQuery> Queries = new List<StoreQuery>();
         TemplateJoin From;

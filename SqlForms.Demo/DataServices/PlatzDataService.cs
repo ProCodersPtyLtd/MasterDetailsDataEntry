@@ -7,6 +7,7 @@ using System.Text;
 using System.Linq;
 using Platz.ObjectBuilder;
 using Platz.SqlForms;
+using MasterDetailsDataEntry.Demo.Database;
 
 namespace Default
 {
@@ -22,7 +23,7 @@ namespace Default
 
     #region Data Service 
 
-    public partial class MyDataService : DataServiceBase<MasterDetailsDataEntry.Demo.Database.AdventureWorksContext>, IMyDataService
+    public partial class MyDataService : DataServiceBase<AdventureWorksContext>, IMyDataService
     {
         public List<Cust> GetCustList(params object[] parameters)
         {

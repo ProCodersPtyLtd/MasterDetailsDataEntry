@@ -7,6 +7,7 @@ using System.Text;
 using System.Linq;
 using Platz.ObjectBuilder;
 using Platz.SqlForms;
+using MasterDetailsDataEntry.Demo.Database;
 
 namespace Default
 {
@@ -22,7 +23,7 @@ namespace Default
 
     #region Data Service 
 
-    public partial class MyDataService : DataServiceBase<MasterDetailsDataEntry.Demo.Database.AdventureWorksContext>, IMyDataService
+    public partial class MyDataService : DataServiceBase<AdventureWorksContext>, IMyDataService
     {
         public List<Cust> GetCustList(params object[] parameters)
         {
@@ -64,9 +65,9 @@ namespace Default
             using (var db = GetDbContext())
             {
                 var query =
-                    from a in db.Address 
-                    join c in db.CustomerAddress on a.AddressId equals c.AddressId
-                    join cu in db.Customer on c.CustomerId equals cu.CustomerId
+                    from cu in db.Customer 
+                    join c in db.CustomerAddress on cu.CustomerId equals c.CustomerId
+                    join a in db.Address on c.AddressId equals a.AddressId
                     where c.CustomerId == p1
                     select new CustomerAddress
                     {

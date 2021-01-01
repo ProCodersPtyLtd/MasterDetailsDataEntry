@@ -14,9 +14,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="DataServices\PlatzDataServiceTemp.tt">
+      <LastGenOutput>PlatzDataServiceTemp.txt</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="DataServices\PlatzDataService.tt">
       <LastGenOutput>PlatzDataService.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="DataServices\PlatzDataServiceTemp.txt">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PlatzDataServiceTemp.tt</DependentUpon>
     </None>
   </ItemGroup>
 
