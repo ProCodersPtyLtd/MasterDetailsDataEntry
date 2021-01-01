@@ -54,7 +54,8 @@
             <div class="col-md-10">
 
                 <BottomButtonsComponent Form="_form" ButtonActionClicked="ButtonActionClicked" NavigateFormatParameters="_controller.NavigateFormatParameters"
-                                        ForDelete="ForDelete" Buttons="_controller.Buttons" ButtonNavigations="_controller.ButtonNavigations" ButtonClicked="ButtonClicked" />
+                                        ModelValueChanged="LocalModelValueChanged" ForDelete="ForDelete" Buttons="_controller.Buttons" 
+                                        ButtonNavigations="_controller.ButtonNavigations" ButtonClicked="ButtonClicked" />
 
             </div>
         </div>
@@ -67,23 +68,23 @@
 @code
 {
 
-    [Parameter]
-    public int Id { get; set; }
+        [Parameter]
+        public int Id { get; set; }
 
-    [Parameter]
-    public object[] ServiceParameters { get; set; }
+        [Parameter]
+        public object[] ServiceParameters { get; set; }
 
-    [Parameter]
-    public bool ReadOnly { get; set; }
+        [Parameter]
+        public bool ReadOnly { get; set; }
 
-    [Parameter]
-    public bool ForDelete { get; set; }
+        [Parameter]
+        public bool ForDelete { get; set; }
 
-    [Parameter]
-    public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }
+        [Parameter]
+        public EventCallback<ValueChangedArgs> ModelValueChanged { get; set; }
 
-    [Parameter]
-    public EventCallback<ButtonClickedArgs> ButtonClicked { get; set; }
+        [Parameter]
+        public EventCallback<ButtonClickedArgs> ButtonClicked { get; set; }
 
     private object _modelItem { get; set; }
     private IDynamicEditForm _form;
@@ -131,8 +132,9 @@
         switch (args.ActionType)
         {
             case ButtonActionTypes.Submit:
+                var result = await _controller.Submit();
                 StateHasChanged();
-                return await _controller.Submit();
+                return result;
             case ButtonActionTypes.Validate:
                 await _controller.Validate();
                 StateHasChanged();
@@ -148,8 +150,13 @@
 
     private async Task LocalModelValueChanged(ValueChangedArgs args)
     {
-        _controller.LocalModelValueChanged(args);
-        await ModelValueChanged.InvokeAsync(args);
+        if (args != null)
+        {
+            _controller.LocalModelValueChanged(args);
+            await ModelValueChanged.InvokeAsync(args);
+        }
+
+        StateHasChanged();
     }
 
     #endregion

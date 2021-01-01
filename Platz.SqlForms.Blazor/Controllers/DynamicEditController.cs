@@ -73,8 +73,9 @@ namespace Platz.SqlForms.Blazor
                 try
                 {
                     Error = null;
+                    var pkField = Fields.FirstOrDefault(f => f.PrimaryKey);
 
-                    if (ModelItem.GetPrimaryKeyValue(Fields) == 0)
+                    if (GetFieldState(pkField).IsNew)
                     {
                         ModelItem = _dataProvider.InsertItem(_form, ModelItem);
                     }
@@ -108,13 +109,32 @@ namespace Platz.SqlForms.Blazor
 
         public async Task Validate()
         {
-            _validations = _dataValidationProvider.ValidateModel(_form, ModelItem, 0, Fields);
+            _validations = _dataValidationProvider.ValidateModel(_form, ModelItem, 0, Fields, _fieldStates);
             UpdateFieldStateValidations(_validations, 0);
         }
 
         public object GetItem()
         {
-            var item = _dataProvider.GetItem(_form, _id) ?? CreateItem();
+            bool isNew = false;
+            var item = _dataProvider.GetItem(_form, _id);
+
+            if (item == null)
+            {
+                item = CreateItem();
+                isNew = true;
+            }
+
+            // Setup Primary Key
+            var pkField = Fields.FirstOrDefault(f => f.PrimaryKey);
+
+            if (pkField == null)
+            {
+                throw new SqlFormException($"Form '{_form.GetType().Name}' doesn't have PK");
+            }
+
+            var pkState = new FieldState(pkField) { IsEditing = true, IsNew = isNew };
+            _fieldStates[pkField.BindingProperty] = pkState;
+
             _validations = _dataValidationProvider.ValidateCustomRules(_form, item, 0, Fields, FormRuleTriggers.Load);
             UpdateFieldStateValidations(_validations, 0);
             return item;
@@ -124,21 +144,15 @@ namespace Platz.SqlForms.Blazor
         {
             var type = _form.GetEntityType();
             var item = Activator.CreateInstance(type);
+
+            // Set Filter Key values
             item.SetFilterKeyValues(Fields, _serviceParameters);
+
+            // run default validations
             _validations = _dataValidationProvider.ValidateCustomRules(_form, item, 0, Fields, FormRuleTriggers.Create);
             UpdateFieldStateValidations(_validations, 0);
             return item;
         }
-
-        //private void SetFilterKeyValues(object item)
-        //{
-        //    var filterFields = Fields.Where(f => f.Filter).ToList();
-
-        //    for (int i = 0; i < filterFields.Count; i++)
-        //    {
-        //        item.SetFilterKeyValue(filterFields[i], _serviceParameters[i]);
-        //    }
-        //}
 
         public IEnumerable<DataField> GetFields()
         {
