@@ -11,16 +11,23 @@ https://github.com/ProCodersPtyLtd/MasterDetailsDataEntry/wiki
 Programming reference:
 https://github.com/ProCodersPtyLtd/MasterDetailsDataEntry/wiki/Platz.SqlForms-programming-reference
 
-NuGet package available:
+NuGet packages available:
 https://www.nuget.org/packages/Platz.SqlForms
+https://www.nuget.org/packages/Platz.ObjectBuilder
 
 Demo run (download or clone this repository):
+1. https://github.com/euklad/BlogCode/tree/main/DemoSqlForms-story6
+2. Open DemoSqlForms.sln
+3. Set DemoSqlForms.App as Stratup Project and run
 
-1. Goto https://docs.microsoft.com/en-us/ef/ef6/resources/school-database and create the School database 
-2. Change connection string in MasterDetailsDataEntry.Demo.Database\School\SchoolContext.cs if needed
-3. Set  MasterDetailsDataEntry.Demo as StartUp Project
-4. Run (F5)
-5. Click on [Department Details] menu
+Another demo with inline edit:
+1. Clone or download this repository https://github.com/ProCodersPtyLtd/MasterDetailsDataEntry
+2. Open MasterDetailsDataEntry.sln
+3. Goto https://docs.microsoft.com/en-us/ef/ef6/resources/school-database and create the School database 
+4. Change connection string in MasterDetailsDataEntry.Demo.Database\School\SchoolContext.cs if needed
+5. Set  SqlForms.Demo as StartUp Project
+6. Run (F5)
+7. Click on [Department Details] menu
 
 <img src="https://github.com/ProCodersPtyLtd/MasterDetailsDataEntry/blob/main/MasterDetails3.gif">
 
