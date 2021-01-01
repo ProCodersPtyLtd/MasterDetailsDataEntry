@@ -74,6 +74,12 @@ namespace Platz.SqlForms
 
         public System.Collections.IList GetEntityData(IDataForm form, Type entity)
         {
+            if (entity.IsEnum)
+            {
+                var result = Enum.GetValues(entity);
+                return result;
+            }
+
             using (var db = GetDbContext(form))
             {
                 var result = db.FindSet(entity).ToDynamicList<object>();

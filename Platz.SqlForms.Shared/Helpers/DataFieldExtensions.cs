@@ -34,5 +34,23 @@ namespace Platz.SqlForms.Shared
                 item.SetPropertyValue(fields.First(f => f.Filter).BindingProperty, id.Value);
             }
         }
+
+        public static void SetFilterKeyValue(this object item, DataField field, object value)
+        {
+            if (value != null && field.Filter)
+            {
+                item.SetPropertyValue(field.BindingProperty, value);
+            }
+        }
+
+        public static void SetFilterKeyValues(this object item, IEnumerable<DataField> fields, object[] values)
+        {
+            var filterFields = fields.Where(f => f.Filter).ToList();
+
+            for (int i = 0; i < filterFields.Count; i++)
+            {
+                item.SetFilterKeyValue(filterFields[i], values[i]);
+            }
+        }
     }
 }

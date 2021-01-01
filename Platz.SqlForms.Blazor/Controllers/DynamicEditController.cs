@@ -124,10 +124,21 @@ namespace Platz.SqlForms.Blazor
         {
             var type = _form.GetEntityType();
             var item = Activator.CreateInstance(type);
+            item.SetFilterKeyValues(Fields, _serviceParameters);
             _validations = _dataValidationProvider.ValidateCustomRules(_form, item, 0, Fields, FormRuleTriggers.Create);
             UpdateFieldStateValidations(_validations, 0);
             return item;
         }
+
+        //private void SetFilterKeyValues(object item)
+        //{
+        //    var filterFields = Fields.Where(f => f.Filter).ToList();
+
+        //    for (int i = 0; i < filterFields.Count; i++)
+        //    {
+        //        item.SetFilterKeyValue(filterFields[i], _serviceParameters[i]);
+        //    }
+        //}
 
         public IEnumerable<DataField> GetFields()
         {

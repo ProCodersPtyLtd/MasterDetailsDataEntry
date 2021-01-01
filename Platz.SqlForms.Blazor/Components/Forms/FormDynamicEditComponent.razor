@@ -53,8 +53,8 @@
 
             <div class="col-md-10">
 
-                <BottomButtonsComponent Form="_form" ButtonActionClicked="ButtonActionClicked" NavigateFormatParameters="_controller.NavigateFormatParameters" 
-                       ForDelete="ForDelete" Buttons="_controller.Buttons" ButtonNavigations="_controller.ButtonNavigations" ButtonClicked="ButtonClicked"/>
+                <BottomButtonsComponent Form="_form" ButtonActionClicked="ButtonActionClicked" NavigateFormatParameters="_controller.NavigateFormatParameters"
+                                        ForDelete="ForDelete" Buttons="_controller.Buttons" ButtonNavigations="_controller.ButtonNavigations" ButtonClicked="ButtonClicked" />
 
             </div>
         </div>
@@ -102,6 +102,12 @@
     private void LoadForm()
     {
         _form = Activator.CreateInstance<TForm>() as IDynamicEditForm;
+
+        if (_form == null)
+        {
+            throw new SqlFormException($"Cannot create IDynamicEditForm of type '{typeof(TForm).FullName}'");
+        }
+
         _controller.SetParameters(_form, Id, ServiceParameters, ControllerDataChanged);
     }
 
