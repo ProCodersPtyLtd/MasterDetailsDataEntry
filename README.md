@@ -11,12 +11,15 @@ https://github.com/ProCodersPtyLtd/MasterDetailsDataEntry/wiki
 Programming reference:
 https://github.com/ProCodersPtyLtd/MasterDetailsDataEntry/wiki/Platz.SqlForms-programming-reference
 
+Please submit bugs or feature requests here: 
+https://github.com/ProCodersPtyLtd/MasterDetailsDataEntry/issues
+
 NuGet packages available:
 https://www.nuget.org/packages/Platz.SqlForms
 https://www.nuget.org/packages/Platz.ObjectBuilder
 
-Demo run (download or clone this repository):
-1. https://github.com/euklad/BlogCode/tree/main/DemoSqlForms-story6
+Demo run:
+1. Download or clone repository https://github.com/euklad/BlogCode/tree/main/DemoSqlForms-story6
 2. Open DemoSqlForms.sln
 3. Set DemoSqlForms.App as Stratup Project and run
 
