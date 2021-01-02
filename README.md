@@ -6,16 +6,21 @@ Please visit our web site https://www.procoders.com.au
 Framework for generating dynamic UI for master-details CRUD operations
 
 Wiki:
+
 https://github.com/ProCodersPtyLtd/MasterDetailsDataEntry/wiki
 
 Programming reference:
+
 https://github.com/ProCodersPtyLtd/MasterDetailsDataEntry/wiki/Platz.SqlForms-programming-reference
 
 Please submit bugs or feature requests here: 
+
 https://github.com/ProCodersPtyLtd/MasterDetailsDataEntry/issues
 
 NuGet packages available:
+
 https://www.nuget.org/packages/Platz.SqlForms
+
 https://www.nuget.org/packages/Platz.ObjectBuilder
 
 Demo run:
