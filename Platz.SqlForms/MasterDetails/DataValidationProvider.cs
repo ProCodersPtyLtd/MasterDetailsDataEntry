@@ -66,6 +66,7 @@ namespace Platz.SqlForms
             var rules = field.Rules.Where(r => r.Trigger == trigger 
                 || (trigger == FormRuleTriggers.ChangeSubmit && (r.Trigger == FormRuleTriggers.Change || r.Trigger == FormRuleTriggers.Submit))
                 || (trigger == FormRuleTriggers.Submit && (r.Trigger == FormRuleTriggers.Change || r.Trigger == FormRuleTriggers.Submit || r.Trigger == FormRuleTriggers.ChangeSubmit))
+                || (trigger == FormRuleTriggers.Change && (r.Trigger == FormRuleTriggers.Change || r.Trigger == FormRuleTriggers.Submit || r.Trigger == FormRuleTriggers.ChangeSubmit))
                 );
 
             foreach (var rule in rules)
