@@ -38,10 +38,13 @@ namespace SqlForms.Demo.MyForms
 
         public void SaveToCustomerAddress(Address model, DataOperationArgs args)
         {
-            int customerId = (int)args.Parameters[0];
-            var item = new CustomerAddress { AddressId = model.AddressId, CustomerId = customerId, ModifiedDate = DateTime.Now, AddressType = "Test" };
-            args.DbContext.Add(item);
-            args.DbContext.SaveChanges();
+            if (args.Operation == DataOperations.Insert)
+            {
+                int customerId = (int)args.Parameters[0];
+                var item = new CustomerAddress { AddressId = model.AddressId, CustomerId = customerId, ModifiedDate = DateTime.Now, AddressType = "Test" };
+                args.DbContext.Add(item);
+                args.DbContext.SaveChanges();
+            }
         }
 
         public FormRuleResult DefaultModifiedDate(Address model)
