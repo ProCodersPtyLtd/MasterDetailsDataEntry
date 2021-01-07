@@ -32,6 +32,7 @@ namespace Platz.ObjectBuilder.Blazor
         void LoadSchema();
         void AddFromTable(StoreDefinition table);
         void RemoveFromTable(string tableName, string alias);
+        QueryFromTable FindFromTable(string tableName, string alias);
         void AddSelectionProperty(QueryFromTable table, QueryFromProperty property);
         void RemoveSelectionProperty(QueryFromTable table, QueryFromProperty property);
         void ApplySelectPropertyFilter(QuerySelectProperty property, string filter);
@@ -120,6 +121,18 @@ namespace Platz.ObjectBuilder.Blazor
             FromTables = queryModel.FromTables;
             RegenerateTableLinks();
             SelectionProperties = queryModel.SelectionProperties;
+
+            foreach (var sp in SelectionProperties)
+            {
+                // var t = FindFromTable(sp.);
+                var prop = sp.FromTable.Properties.SingleOrDefault(p => p.StoreProperty.Name == sp.StoreProperty.Name);
+
+                if (prop != null)
+                {
+                    prop.Selected = true;
+                }
+            }
+
             WhereClause = queryModel.WhereClause;
         }
 
@@ -137,6 +150,9 @@ namespace Platz.ObjectBuilder.Blazor
 
         public void AliasChanged(string oldAlias, string newAlias)
         {
+            var table = FromTables.Single(t => t.Alias == oldAlias);
+            table.Alias = newAlias;
+
             foreach (var j in FromTableJoins)
             {
                 if (j.Source.LeftObjectAlias == oldAlias)
@@ -149,6 +165,7 @@ namespace Platz.ObjectBuilder.Blazor
                     j.Source.RightObjectAlias = newAlias;
                 }
             }
+
         }
 
         public string GenerateObjectId(string prefix, int objId, int propId = 0)
@@ -241,6 +258,12 @@ namespace Platz.ObjectBuilder.Blazor
             var table = FromTables.Single(t => t.Alias == alias && t.StoreDefinition.Name == tableName);
             FromTables.Remove(table);
             RegenerateTableLinks();
+        }
+
+        public QueryFromTable FindFromTable(string tableName, string alias)
+        {
+            var table = FromTables.SingleOrDefault(t => t.Alias == alias && t.StoreDefinition.Name == tableName);
+            return table;
         }
 
         public void RegenerateTableLinks()

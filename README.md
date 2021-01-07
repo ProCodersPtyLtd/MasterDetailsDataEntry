@@ -53,3 +53,7 @@ https://docs.microsoft.com/en-us/sql/samples/adventureworks-install-configure?vi
 - UI form to entry/edit business objects
 - ObjectBuilder definition of business object - entity mappings and CRUD operations
 - ObjectBuilder T4 tempalte to generate business object CRUD operations' C# code
+- ObjectBuiler Select functions
+- ObjectBuilder Group By queries
+- ObjectBuilder Subqueries
+

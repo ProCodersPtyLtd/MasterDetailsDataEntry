@@ -147,20 +147,20 @@
 </div>
 
 @code {
-    [CascadingParameter]
-    public IQueryController QueryController { get; set; }
+        [CascadingParameter]
+        public IQueryController QueryController { get; set; }
 
-    [Parameter]
-    public string StoreDataPath { get; set; }
+        [Parameter]
+        public string StoreDataPath { get; set; }
 
-    [Parameter]
-    public string Namespace { get; set; }
+        [Parameter]
+        public string Namespace { get; set; }
 
-    [Parameter]
-    public string DataService { get; set; }
+        [Parameter]
+        public string DataService { get; set; }
 
-    [Parameter]
-    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+        [Parameter]
+        public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 
     private StoreQuery _query;
     private string _selectedFileName;
@@ -197,10 +197,13 @@
 
     private async Task LoadFile(MouseEventArgs args)
     {
-        QueryController.LoadFromFile(StoreDataPath, _selectedFileName);
-        await ModelChanged.InvokeAsync(null);
-        _fileNameChanged = false;
-        await CollapseSettings();
+        if (!string.IsNullOrWhiteSpace(_selectedFileName))
+        {
+            QueryController.LoadFromFile(StoreDataPath, _selectedFileName);
+            await ModelChanged.InvokeAsync(null);
+            _fileNameChanged = false;
+            await CollapseSettings();
+        }
     }
 
     private async Task FileDblClick(MouseEventArgs args, int row)
@@ -219,14 +222,6 @@
 
     private List<string> GetLoadFiles()
     {
-        //return new List<string>(new string[] { "GetCustList", "GetAddressList", "GetProductList" });
-        //var result = new List<string>();
-
-        //for(int i = 0; i < 100; i++)
-        //{
-        //    result.Add($"GetCustList{i}");
-        //}
-
         var result = QueryController.GetFileList(StoreDataPath);
         _files = result;
         return result;
