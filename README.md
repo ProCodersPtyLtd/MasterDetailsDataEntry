@@ -56,4 +56,5 @@ https://docs.microsoft.com/en-us/sql/samples/adventureworks-install-configure?vi
 - ObjectBuiler Select functions
 - ObjectBuilder Group By queries
 - ObjectBuilder Subqueries
+- SqlForms custom rules to change field properties (hidden, required, read-only, etc.)
 
