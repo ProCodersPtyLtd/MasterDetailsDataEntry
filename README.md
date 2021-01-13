@@ -5,6 +5,10 @@ Please visit our web site https://www.procoders.com.au
 
 Framework for generating dynamic UI for master-details CRUD operations
 
+CodeProject Blog:
+
+https://www.codeproject.com/Articles/5291832/Microsoft-Blazor-Rapid-Development-with-SQL-Forms
+
 Wiki:
 
 https://github.com/ProCodersPtyLtd/MasterDetailsDataEntry/wiki
