@@ -1,0 +1,84 @@
+{
+  "Name": "GetProdModelList",
+  "DataService": "MyDataService",
+  "Namespace": "Default",
+  "ReturnTypeName": "ProdModel",
+  "SchemaName": null,
+  "SchemaVersion": null,
+  "Tags": null,
+  "Query": {
+    "QueryAlias": null,
+    "Comment": null,
+    "Parameters": {},
+    "Fields": {
+      "ProductModelId": {
+        "FieldAlias": "ProductModelId",
+        "IsOutput": true,
+        "GroupByFunction": "Group By",
+        "Field": {
+          "ObjectAlias": "p",
+          "FieldName": "ProductModelId"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "CatalogDescription": {
+        "FieldAlias": "CatalogDescription",
+        "IsOutput": true,
+        "GroupByFunction": "Group By",
+        "Field": {
+          "ObjectAlias": "p",
+          "FieldName": "CatalogDescription"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "ModifiedDate": {
+        "FieldAlias": "ModifiedDate",
+        "IsOutput": false,
+        "GroupByFunction": null,
+        "Field": {
+          "ObjectAlias": "p",
+          "FieldName": "ModifiedDate"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "Name": {
+        "FieldAlias": "Name",
+        "IsOutput": true,
+        "GroupByFunction": "Group By",
+        "Field": {
+          "ObjectAlias": "p",
+          "FieldName": "Name"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "Rowguid": {
+        "FieldAlias": "Rowguid",
+        "IsOutput": false,
+        "GroupByFunction": null,
+        "Field": {
+          "ObjectAlias": "p",
+          "FieldName": "Rowguid"
+        },
+        "Operation": null,
+        "RawExpression": null
+      }
+    },
+    "Tables": {
+      "p": {
+        "ObjectAlias": "p",
+        "TableName": "ProductModel"
+      }
+    },
+    "SubQueries": null,
+    "Joins": [],
+    "GroupByFields": null,
+    "Having": null,
+    "Where": {
+      "Expression": null
+    }
+  }
+}

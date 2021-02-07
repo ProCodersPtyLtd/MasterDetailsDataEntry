@@ -10,7 +10,7 @@
                 <th style="width: 60px">Output</th>
                 <th>Alias</th>
                 <th>Filter</th>
-                <th>GroupBy</th>
+                <th>Group By</th>
             </tr>
 
             @for (int rowIndex = 0; rowIndex < _properties.Count; rowIndex++)
@@ -23,16 +23,34 @@
                         @GetPropertyName(row)
                     </td>
                     <td style="text-align: center">
-                        <input type="checkbox" checked="@GetOutputValue(row)" @onchange="@(async (args) => await OutputClick(args, row))" />
+                        <input type="checkbox" checked="@GetOutputValue(row)" @onchange="@(async (args) => await OutputClick(args, row))"/>
                     </td>
                     <td>
-                        <input style="width: 120px;" @bind-value="@_properties[row].Alias"/>
+                        <input style="width: 120px; height: 31px;" class="form-control" @bind-value="@_properties[row].Alias" />
                     </td>
                     <td>
-                        <input style="width: 120px;" value="@_properties[row].Filter" @onchange="@(async (args) => await FilterChanged(args, row))" />
+                        <input style="width: 120px; height: 31px;" class="form-control" value="@_properties[row].Filter" @onchange="@(async (args) => await FilterChanged(args, row))" />
                     </td>
                     <td style="text-align: center">
-                        <input type="checkbox" checked="@GetGroupByValue(row)" @onchange="@(async (args) => await GroupByClick(args, row))" />
+                        <select style="width: 120px; height: 31px;" value="@_properties[row].GroupByFunction" @onchange="@(async (args) => await GroupByChanged(args, row))"
+                                class="form-control selectpicker">
+                            <option value=""></option>
+
+                            @foreach (var f in GetGroupByFunctions())
+                            {
+                                <option value="@f">@f</option>
+                            }
+                        </select>
+
+                        @*<input type="checkbox" checked="@GetGroupByValue(row)" @onchange="@(async (args) => await GroupByClick(args, row))" />*@
+                        
+                        @*<input list=groupByFunc style="width: 120px;" value="@_properties[row].GroupByFunction" @onchange="@(async (args) => await GroupByChanged(args, row))">
+                        <datalist id=groupByFunc>
+                            @foreach (var f in GetGroupByFunctions())
+                            {
+                                <option value="@f"></option>
+                            }
+                        </datalist>*@
                     </td>
                 </tr>
             }
@@ -40,54 +58,64 @@
     </div>
 </div>
 
-    @code {
-        [CascadingParameter]
-        public IQueryController QueryController { get; set; }
+@code {
+    [CascadingParameter]
+    public IQueryController QueryController { get; set; }
 
-        [Parameter]
-        public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 
-        private List<QuerySelectProperty> _properties
+    private List<QuerySelectProperty> _properties
+    {
+        get
         {
-            get
-            {
-                return QueryController.SelectionProperties;
-            }
+            return QueryController.SelectionProperties;
         }
-
-        private string GetPropertyName(int rowIndex)
-        {
-            var item = _properties[rowIndex];
-            var result = $"{item.FromTable.Alias}.{item.StoreProperty.Name}";
-            return result;
-        }
-
-        private string GetOutputValue(int rowIndex)
-        {
-            var result = _properties[rowIndex].IsOutput == true ? "checked" : null;
-            return result;
-        }
-
-        private async Task OutputClick(ChangeEventArgs e, int rowIndex)
-        {
-            _properties[rowIndex].IsOutput = (bool)e.Value;
-        }
-
-        private string GetGroupByValue(int rowIndex)
-        {
-            var result = _properties[rowIndex].IsGroup == true ? "checked" : null;
-            return result;
-        }
-
-        private async Task GroupByClick(ChangeEventArgs e, int rowIndex)
-        { }
-
-        private async Task FilterChanged(ChangeEventArgs e, int rowIndex)
-        {
-            QueryController.ApplySelectPropertyFilter(_properties[rowIndex], (string)e.Value);
-            _properties[rowIndex].Filter = (string)e.Value;
-            await ModelChanged.InvokeAsync(null);
-        }
-
-
     }
+
+    private string GetPropertyName(int rowIndex)
+    {
+        var item = _properties[rowIndex];
+        var result = $"{item.FromTable.Alias}.{item.StoreProperty.Name}";
+        return result;
+    }
+
+    private string GetOutputValue(int rowIndex)
+    {
+        var result = _properties[rowIndex].IsOutput == true ? "checked" : null;
+        return result;
+    }
+
+    private async Task OutputClick(ChangeEventArgs e, int rowIndex)
+    {
+        _properties[rowIndex].IsOutput = (bool)e.Value;
+    }
+
+    private string GetGroupByValue(int rowIndex)
+    {
+        var result = _properties[rowIndex].IsGroup == true ? "checked" : null;
+        return result;
+    }
+
+    //private async Task GroupByClick(ChangeEventArgs e, int rowIndex)
+    //{ }
+
+    private async Task FilterChanged(ChangeEventArgs e, int rowIndex)
+    {
+        QueryController.ApplySelectPropertyFilter(_properties[rowIndex], (string)e.Value);
+        _properties[rowIndex].Filter = (string)e.Value;
+        await ModelChanged.InvokeAsync(null);
+    }
+
+    private async Task GroupByChanged(ChangeEventArgs e, int rowIndex)
+    {
+        QueryController.SetGroupByFunction(_properties[rowIndex], (string)e.Value);
+        await ModelChanged.InvokeAsync(null);
+        // StateHasChanged();
+    }
+
+    private IEnumerable<string> GetGroupByFunctions()
+    {
+        return new string[] { "Group By", "Group By All", "Group By None", "Sum", "Avg", "Min", "Max", "Count", "Where", "Having" };
+    }
+}
