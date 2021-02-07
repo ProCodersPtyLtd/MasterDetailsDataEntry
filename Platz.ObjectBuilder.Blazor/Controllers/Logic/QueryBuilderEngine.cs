@@ -77,6 +77,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
                 var newSelectionProperty = new QuerySelectProperty(table, storeProperty.StoreProperty)
                 {
                     IsOutput = f.IsOutput,
+                    GroupByFunction = f.GroupByFunction,
                     Alias = f.FieldAlias != f.Field.FieldName ? f.FieldAlias : ""
                     // ToDo: Filter is not stored and cannot be loaded
                 };
@@ -126,6 +127,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
                     {
                         FieldAlias = p.OutputName,
                         IsOutput = p.IsOutput,
+                        GroupByFunction = p.GroupByFunction,
                         Field = new StoreFieldReference { FieldName = p.StoreProperty.Name, ObjectAlias = p.FromTable.Alias }
                     });
 

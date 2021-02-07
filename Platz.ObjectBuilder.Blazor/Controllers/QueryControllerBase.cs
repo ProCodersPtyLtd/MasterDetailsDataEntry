@@ -36,6 +36,7 @@ namespace Platz.ObjectBuilder.Blazor
         void AddSelectionProperty(QueryFromTable table, QueryFromProperty property);
         void RemoveSelectionProperty(QueryFromTable table, QueryFromProperty property);
         void ApplySelectPropertyFilter(QuerySelectProperty property, string filter);
+        void SetGroupByFunction(QuerySelectProperty property, string filter);
         void SetWhereClause(string text);
 
         StoreQuery GenerateQuery();
@@ -402,6 +403,22 @@ namespace Platz.ObjectBuilder.Blazor
             catch(Exception exc)
             {
                 Errors += "\r\n" + exc.Message;
+            }
+        }
+
+        public void SetGroupByFunction(QuerySelectProperty property, string func)
+        {
+            property.GroupByFunction = func;
+
+            if (func == "Group By All")
+            {
+                SelectionProperties.Where(p => p.IsOutput).ToList().ForEach(p => p.GroupByFunction = "Group By");
+                SelectionProperties.Where(p => !String.IsNullOrWhiteSpace(p.Filter)).ToList().ForEach(p => p.GroupByFunction = "Where");
+            }
+
+            if (func == "Group By None")
+            {
+                SelectionProperties.ToList().ForEach(p => p.GroupByFunction = "");
             }
         }
     }

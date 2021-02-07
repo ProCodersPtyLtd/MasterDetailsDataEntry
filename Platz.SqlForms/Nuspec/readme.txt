@@ -27,3 +27,6 @@ Installation process.
 
 *. Working example you can download from our GitHub page:
     https://github.com/ProCodersPtyLtd/MasterDetailsDataEntry/tree/main
+
+Release 0.2.2 Summary:
+Fixed CopyMe.PlatzDataService.tt.txt incorrect path issue
