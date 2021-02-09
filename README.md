@@ -56,9 +56,11 @@ https://docs.microsoft.com/en-us/sql/samples/adventureworks-install-configure?vi
 ### Release 0.3.0
 - UI form to entry/edit business objects
 - ObjectBuilder definition of business object - entity mappings and CRUD operations
-- ObjectBuilder T4 tempalte to generate business object CRUD operations' C# code
+- ObjectBuilder T4 template to generate business object CRUD operations' C# code
 - ObjectBuiler Select functions
 - ObjectBuilder Group By queries
 - ObjectBuilder Subqueries
 - SqlForms custom rules to change field properties (hidden, required, read-only, etc.)
-
+- SchemaDesigner prototype, that allows to design database entities and save the schema to json
+- T4 template to geneate SchemaDesigner entities and data access layer
+- Upgrade ObjectBuilder to support SchemaDesigner entities
