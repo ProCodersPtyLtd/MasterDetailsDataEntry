@@ -47,20 +47,21 @@ This is another good database to try:
 https://docs.microsoft.com/en-us/sql/samples/adventureworks-install-configure?view=sql-server-ver15&tabs=ssms
 
 ## Official roadmap 
-### Release 0.2.0
+### Release 0.2.0 - done
 - Support data services that returns business objects that may differ from EF entities
 - UI component to show a list of business objects and context menu
 - UI form to entry/edit EF entities
 - Platz.ObjectBuilder library to define data services using visual interface
 - ObjectBuilder T4 template to generate data services C# code
-### Release 0.3.0
+### Release 0.3.0 - Mar'21 
+- SqlForms custom rules to change field properties (hidden, required, read-only, etc.)
+- SchemaDesigner prototype, that allows to design database entities and save the schema to json
+- T4 template to geneate SchemaDesigner entities and data access layer
+- Upgrade ObjectBuilder to support SchemaDesigner entities
+### Release 0.4.0 - Jun-21
 - UI form to entry/edit business objects
 - ObjectBuilder definition of business object - entity mappings and CRUD operations
 - ObjectBuilder T4 template to generate business object CRUD operations' C# code
 - ObjectBuiler Select functions
 - ObjectBuilder Group By queries
 - ObjectBuilder Subqueries
-- SqlForms custom rules to change field properties (hidden, required, read-only, etc.)
-- SchemaDesigner prototype, that allows to design database entities and save the schema to json
-- T4 template to geneate SchemaDesigner entities and data access layer
-- Upgrade ObjectBuilder to support SchemaDesigner entities
