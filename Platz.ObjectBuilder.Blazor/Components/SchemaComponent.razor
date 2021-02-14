@@ -1,0 +1,120 @@
+﻿@using Platz.ObjectBuilder.Blazor.Controllers
+@using System.IO
+@namespace Platz.ObjectBuilder
+@inject ISchemaController _schemaController
+
+    <CascadingValue Value="@_schemaController">
+
+        <SchemaFileSettingComponent StoreDataPath="@_fullStoreDataPath" DataService="@DataService" Namespace="@Namespace" ModelChanged="ModelChanged"/>
+
+        <table style="width: 100%">
+            <tr>
+                <th style="width: 240px"></th>
+                <th style="width: 650px"></th>
+                <th style="width: Auto"></th>
+            </tr>
+            <tr>
+                <td style="vertical-align: top">
+                    <SchemaTableListComponent ModelChanged="ModelChanged"/>
+                </td>
+                <td style="vertical-align: top">
+                    <div style="vertical-align: top">
+
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item">
+                                <a class=@GetEditTabNavLink("Schema") data-toggle="tab" href="#schemaEdit">Schema</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class=@GetEditTabNavLink("Table") data-toggle="tab" href="#tableEdit">Table</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class=@GetEditTabNavLink("Log") data-toggle="tab" href="#schemaEditLog">Log</a>
+                            </li>
+                        </ul>
+
+
+                        @*<ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#tables">Entities</a></li>
+                            <li><a data-toggle="tab" href="#joins">Relationships</a></li>
+                        </ul>*@
+
+                        <div class="tab-content">
+                            <div id="tableEdit" class=@GetEditTabContentNavLink("Table")>
+                                <SchemaDesignTableComponent ModelChanged="ModelChanged" />
+                            </div>
+                            <div id="schemaEdit" class=@GetEditTabContentNavLink("Schema")>
+                                <SchemaSettingsComponent ModelChanged="ModelChanged" />
+                            </div>
+                            <div id="schemaEditLog" class=@GetEditTabContentNavLink("Log")>
+                                <SchemaChangeLogComponent ModelChanged="ModelChanged" />
+                            </div>
+                        </div>
+
+
+                    </div>
+                </td>
+                <td style="vertical-align: top">
+                    <SchemaDiagramComponent ModelChanged="ModelChanged"/>
+                </td>
+            </tr>
+        </table>
+    </CascadingValue>
+
+    @code {
+        [Parameter]
+        public string StoreDataPath { get; set; }
+
+        [Parameter]
+        public string Namespace { get; set; }
+
+        [Parameter]
+        public string DataService { get; set; }
+
+        private string _fullStoreDataPath { get; set; }
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+
+            InitController();
+            _fullStoreDataPath = Path.Combine(Directory.GetCurrentDirectory(), StoreDataPath);
+            _fullStoreDataPath = Path.GetFullPath(_fullStoreDataPath);
+        }
+
+        private void InitController()
+        {
+            var ps = new SchemaControllerParameters { DataService = DataService, Namespace = Namespace, StoreDataPath = StoreDataPath };
+            _schemaController.SetParameters(ps);
+            _schemaController.NewSchema();
+        }
+
+        private async Task ModelChanged(ChangeEventArgs args)
+        {
+            StateHasChanged();
+        }
+
+        private void Click()
+        {
+            StateHasChanged();
+        }
+
+        private string GetEditTabNavLink(string tab)
+        {
+            if (_schemaController.SelectedEditTab == tab)
+            {
+                return "nav-link active";
+            }
+
+            return "nav-link";
+        }
+
+        private string GetEditTabContentNavLink(string tab)
+        {
+            if (_schemaController.SelectedEditTab == tab)
+            {
+                return "container tab-pane active";
+            }
+
+            return "container tab-pane fade";
+        }
+    }

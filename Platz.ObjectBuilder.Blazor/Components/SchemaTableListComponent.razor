@@ -1,0 +1,113 @@
+﻿@using Platz.ObjectBuilder.Blazor.Controllers
+
+@implements IAsyncDisposable
+
+@inject IJSRuntime JS
+
+@namespace Platz.ObjectBuilder
+
+<h5>Schema Tables:</h5>
+
+@{
+    var data = GetObjectList();
+}
+
+<div>
+    <button class="btn btn-success" type="button" @onclick="AddTableClick">Add Table</button>
+</div>
+
+<br />
+
+<div class="list-group overflow-auto" id="list-tab" role="tablist" style="max-height: 600px;">
+    @for (int i = 0; i < data.Count; i++)
+    {
+        var rowIndex = i;
+
+        <a class="list-group-item list-group-item-action @GetActive(rowIndex)" @onclick="async(a) => await ObjectClick(rowIndex)" @ondblclick="async(a) => await ObjectDblClick(a, rowIndex)"
+           data-toggle="list" href="#list-home" role="tab" aria-controls="home">@data[i]</a>
+    }
+</div>
+
+@code {
+    [CascadingParameter]
+    public ISchemaController SchemaController { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    private string _selectedObjectName;
+    private int _selectedRow;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        _selectedRow = 0;
+    }
+
+    private Task<IJSObjectReference> _module;
+    private Task<IJSObjectReference> Module => _module ??= JS.InvokeAsync<IJSObjectReference>("import", "./_content/Platz.ObjectBuilder.Blazor/objectBuilder.js").AsTask();
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_module != null)
+        {
+            var module = await _module;
+            await module.DisposeAsync();
+        }
+    }
+
+    private string GetActive(int rowIndex)
+    {
+        return rowIndex == _selectedRow ? "active" : "";
+    }
+
+    private List<string> GetObjectList()
+    {
+        var result = new List<string>();
+        var schema = SchemaController.Schema;
+        result.Add($"Schema: {schema.Name}");
+
+        foreach (var d in schema.Tables)
+        {
+            result.Add($"{d.Name}");
+        }
+
+        return result;
+    }
+
+    private async Task AddTableClick(MouseEventArgs args)
+    {
+        var table = SchemaController.CreateTable();
+        _selectedRow = SchemaController.Schema.Tables.IndexOf(table) + 1;
+        SchemaController.SelectTable(table);
+        SchemaController.SelectTableTab(_selectedRow);
+
+        await ModelChanged.InvokeAsync(null);
+
+        var module = await Module;
+        await module.InvokeVoidAsync("FocusElement", "TableNameInput");
+    }
+
+    private async Task ObjectDblClick(MouseEventArgs args, int row)
+    {
+        await ModelChanged.InvokeAsync(null);
+    }
+
+    private async Task ObjectClick(int row)
+    {
+        _selectedRow = row;
+
+        if (row == 0)
+        {
+            SchemaController.SelectSchemaTab();
+        }
+        else
+        {
+            SchemaController.SelectTableTab(row - 1);
+            SchemaController.SelectTable(SchemaController.Schema.Tables[row - 1]);
+        }
+
+        await ModelChanged.InvokeAsync(null);
+    }
+}

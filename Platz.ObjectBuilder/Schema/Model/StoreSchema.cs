@@ -41,6 +41,9 @@ namespace Platz.ObjectBuilder
 
         // types: string, number
         public string Type { get; set; }
+
+        public bool Nullable { get; set; }
+
         public string Comment { get; set; }
 
         public int MinLength { get; set; }

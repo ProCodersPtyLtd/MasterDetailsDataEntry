@@ -1,0 +1,15 @@
+﻿@using Platz.ObjectBuilder.Blazor.Controllers
+@using System.IO
+@namespace Platz.ObjectBuilder
+@inject ISchemaController _schemaController
+
+
+    <h5>SchemaDiagramComponent</h5>
+
+@code {
+    [CascadingParameter]
+    public ISchemaController SchemaController { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+}

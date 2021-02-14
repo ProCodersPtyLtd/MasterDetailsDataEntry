@@ -1,0 +1,182 @@
+﻿@inject SchemaTableEditController _controller
+
+@namespace Platz.ObjectBuilder.Blazor
+
+@if (Table != null)
+{
+
+    <div>
+        <button class="btn btn-danger" type="button" @onclick="DeleteTableClick" style="display: block; margin-left: auto; margin-right: 2px; margin-top: 2px;">Delete Table</button>
+
+        <label>Table name</label>
+        <input id="TableNameInput" value="@_controller.Table.Name" @onchange="NameChanged" />
+        <label>@GetStatus()</label>
+
+    </div>
+
+    <div class="plk-flex overflow-auto" style="min-height: 300px; height: 300px">
+        <div style="background-color: lightgreen; min-height: 300px; ">
+            <table>
+                <tr>
+                    <th>Column</th>
+                    <th>Type</th>
+                    <th>Null</th>
+                    <th>Reference</th>
+                    <th></th>
+                </tr>
+
+                @for (int rowIndex = 0; rowIndex < _controller.Columns.Count; rowIndex++)
+                {
+                    var item = _controller.Columns[rowIndex];
+                    var row = rowIndex;
+
+                    <tr>
+                        <td>
+                            <input style="width: 200px; height: 34px;" class="form-control" value="@item.Name"
+                                   @onchange="@(async (args) => await ColumnNameChanged(args, row))" disabled="@GetDisabled(row)" />
+                        </td>
+                        <td style="text-align: center">
+
+                            @*<div class="select-editable">*@
+                            <select style="width: 120px; height: 34px;" value="@item.Type" disabled="@item.Disabled"
+                                    @onchange="@(async (args) => await TypeChanged(args, row))" class="form-control selectpicker">
+                                <option value=""></option>
+
+                                @foreach (var f in _controller.GetDataTypes())
+                                {
+                                    <option value="@f">@f</option>
+                                }
+                            </select>
+                            @*<input type="text" name="format" value="" />
+                                        https://stackoverflow.com/questions/2141357/editable-select-element
+                                </div>*@
+
+                            @*<input type="checkbox" checked="@GetGroupByValue(row)" @onchange="@(async (args) => await GroupByClick(args, row))" />*@
+
+                            @*<input list=groupByFunc style="width: 120px;" value="@item.Type" @onchange="@(async (args) => await TypeChanged(args, row))" disabled="@item.Disabled">
+                                <datalist id=groupByFunc>
+                                    @foreach (var f in @_controller.GetDataTypes())
+                                    {
+                                        <option value="@f"></option>
+                                    }
+                                </datalist>*@
+                        </td>
+                        <td style="text-align: center">
+                            <input type="checkbox" checked="@GetNullable(row)" @onchange="@(async (args) => await NullableClick(args, row))" disabled="@GetDisabled(row)" />
+                        </td>
+                        <td>
+                            <select style="width: 220px; height: 34px;" value="@item.Reference" @onchange="@(async (args) => await ReferenceChanged(args, row))"
+                                    class="form-control selectpicker" disabled="@GetDisabled(row)">
+                                <option value=""></option>
+
+                                @foreach (var f in _controller.GetTablePrimaryKeys())
+                                {
+                                    <option value="@f">@f</option>
+                                }
+                            </select>
+                        </td>
+                        <td>
+                            <button class="btn btn-light btn-sm" title="Add" @onclick="DeleteClick" disabled="@GetDisabled(row)">
+                                <span class="oi oi-trash"></span>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+
+    <br/>
+
+    <div class="plk-flex">
+        <label>Table Script</label>
+        <textarea id="exampleFormControlTextarea1" rows="9" style="width: 100%" @bind="@_controller.TableScript" />
+    </div>
+}
+
+@code {
+    [Parameter]
+    public DesignTable Table { get; set; }
+
+    [Parameter]
+    public DesignSchema Schema { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Load();
+        // await ModelChanged.InvokeAsync(null);
+    }
+
+    private void Load()
+    {
+        _controller.Load(Schema, Table);
+    }
+
+    private bool GetNullable(int row)
+    {
+        return Table.Columns[row].Nullable;
+    }
+
+    public bool GetDisabled(int row)
+    {
+        var item = Table.Columns[row];
+        var result = string.IsNullOrWhiteSpace(item.Reference) && item.Disabled;
+        return result;
+    }
+
+    private async Task NullableClick(ChangeEventArgs args, int row)
+    {
+        Table.Columns[row].Nullable = (bool)args.Value;
+        _controller.Update();
+        await ModelChanged.InvokeAsync(null);
+    }
+
+    private async Task DeleteClick(MouseEventArgs args)
+    {
+        await ModelChanged.InvokeAsync(null);
+    }
+
+    private async Task DeleteTableClick(MouseEventArgs args)
+    {
+        await ModelChanged.InvokeAsync(null);
+    }
+
+    private async Task NameChanged(ChangeEventArgs args)
+    {
+        _controller.Table.Name = (string)args.Value;
+        _controller.Update();
+        await ModelChanged.InvokeAsync(null);
+    }
+
+    private async Task ColumnNameChanged(ChangeEventArgs e, int rowIndex)
+    {
+        _controller.Table.Columns[rowIndex].Name = (string)e.Value;
+        _controller.Update();
+        await ModelChanged.InvokeAsync(null);
+    }
+
+    private async Task ReferenceChanged(ChangeEventArgs e, int rowIndex)
+    {
+        _controller.Table.Columns[rowIndex].Reference = (string)e.Value;
+        _controller.Update();
+        await ModelChanged.InvokeAsync(null);
+    }
+
+    private async Task TypeChanged(ChangeEventArgs e, int rowIndex)
+    {
+        _controller.Table.Columns[rowIndex].Type = (string)e.Value;
+        _controller.Update();
+        await ModelChanged.InvokeAsync(null);
+    }
+
+    private string GetStatus()
+    {
+        var result = _controller.Table.Changed ? "*" : "";
+        return result;
+    }
+}
+
+

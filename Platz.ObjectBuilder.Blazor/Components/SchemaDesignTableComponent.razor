@@ -1,0 +1,13 @@
+﻿@using Platz.ObjectBuilder.Blazor.Controllers
+
+@namespace Platz.ObjectBuilder
+
+<SchemaTableEditComponent Schema="SchemaController.Schema" Table="SchemaController.SelectedTable" ModelChanged="ModelChanged"/>
+
+@code {
+    [CascadingParameter]
+    public ISchemaController SchemaController { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+}

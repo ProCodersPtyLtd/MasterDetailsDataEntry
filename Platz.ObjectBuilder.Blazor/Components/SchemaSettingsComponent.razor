@@ -1,0 +1,48 @@
+﻿@using Platz.ObjectBuilder.Blazor.Controllers
+@using System.Text.Json
+@using System.IO
+
+@namespace Platz.ObjectBuilder
+
+<table cellpadding="10">
+    <tr>
+        <th style="vertical-align: top;">
+        </th>
+    </tr>
+    <tr>
+        <td>
+            <label>Schema name</label><br />
+            <input value="@SchemaController.Schema.Name" @onchange="NameChanged" />
+        </td>
+        @*<td>
+            <label>Data Service name</label><br />
+            <input @bind="SchemaController.Parameters.DataService" readonly="readonly" />
+        </td>
+
+        <td>
+            <label>Namespace</label><br />
+            <input @bind="SchemaController.Parameters.Namespace" readonly="readonly" />
+        </td>*@
+    </tr>
+    <tr>
+        <td>
+            <label>Use BIGINT for Id (it will be GUID by default)</label>
+            <br />
+            <input type="checkbox" value="@SchemaController.UseBigIntId" @onchange="ModelChanged" />
+        </td>
+    </tr>
+</table>
+
+@code {
+    [CascadingParameter]
+    public ISchemaController SchemaController { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    private async Task NameChanged(ChangeEventArgs args)
+    {
+        SchemaController.Schema.Name = (string)args.Value;
+        await ModelChanged.InvokeAsync(null);
+    }
+}

@@ -1,0 +1,13 @@
+﻿@using Platz.ObjectBuilder.Blazor.Controllers
+
+@namespace Platz.ObjectBuilder
+
+<h3>SchemaChangeLogComponent</h3>
+
+@code {
+    [CascadingParameter]
+    public ISchemaController SchemaController { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+}
