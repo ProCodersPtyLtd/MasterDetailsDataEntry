@@ -90,7 +90,7 @@
 
     <div class="plk-flex">
         <label>Table Script</label>
-        <textarea id="exampleFormControlTextarea1" rows="9" style="width: 100%" @bind="@_controller.TableScript" />
+        <textarea id="exampleFormControlTextarea1" rows="9" style="width: 100%" value="@_controller.TableScript" @onchange="ScriptChanged" />
     </div>
 }
 
@@ -169,6 +169,12 @@
     {
         _controller.Table.Columns[rowIndex].Type = (string)e.Value;
         _controller.Update();
+        await ModelChanged.InvokeAsync(null);
+    }
+
+    private async Task ScriptChanged(ChangeEventArgs e)
+    {
+        _controller.SetScript((string)e.Value);
         await ModelChanged.InvokeAsync(null);
     }
 

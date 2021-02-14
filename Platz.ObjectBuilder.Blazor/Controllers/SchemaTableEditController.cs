@@ -23,6 +23,11 @@ namespace Platz.ObjectBuilder.Blazor
             Table = table;
         }
 
+        public void SetScript(string script)
+        {
+            // ToDo: Parse script and update columns
+        }
+
         public List<string> GetTablePrimaryKeys()
         {
             var result = _schema.Tables.OrderBy(t => t.Name).Select(t => $"{t.Name}.{t.Columns.First().Name}").ToList();
@@ -41,6 +46,30 @@ namespace Platz.ObjectBuilder.Blazor
         {
             CheckNewColumnDefault(Table);
             CheckReferenceColumnDefaults(Table);
+            TableScript = GenerateScript(Table);
+        }
+
+        private string GenerateScript(DesignTable table)
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendLine($"TABLE {table.Name} (");
+
+            foreach (var c in table.Columns)
+            {
+                if (c.IsEmpty())
+                {
+                    continue;
+                }
+                    
+                var nullable = c.Nullable ? "?" : "";
+                var reference = string.IsNullOrWhiteSpace(c.Reference) ? "" : $" {c.Reference}";
+                sb.AppendLine($"    {c.Name} {c.Type}{nullable}{reference},");
+            }
+
+            sb.AppendLine(")");
+
+            return sb.ToString();
         }
 
         private void CheckReferenceColumnDefaults(DesignTable table)
@@ -73,7 +102,8 @@ namespace Platz.ObjectBuilder.Blazor
         {
             var last = table.Columns.Last();
 
-            if (!string.IsNullOrWhiteSpace(last.Name) || last.Nullable || !string.IsNullOrWhiteSpace(last.Type) || !string.IsNullOrWhiteSpace(last.Reference))
+            //if (!string.IsNullOrWhiteSpace(last.Name) || last.Nullable || !string.IsNullOrWhiteSpace(last.Type) || !string.IsNullOrWhiteSpace(last.Reference))
+            if (!last.IsEmpty())
             {
                 table.Columns.Add(new DesignColumn {});
             }

@@ -20,6 +20,8 @@ namespace Platz.ObjectBuilder.Blazor
         public string Name { get; set; }
         public List<DesignColumn> Columns { get; set; } = new List<DesignColumn>();
         public bool Changed { get; set; }
+
+        
     }
 
     public class DesignColumn
@@ -31,6 +33,12 @@ namespace Platz.ObjectBuilder.Blazor
         public string ColumnReference { get; set; }
         public bool Disabled { get; set; }
         public bool Pk { get; set; }
+
+        public bool IsEmpty()
+        {
+            var res = string.IsNullOrWhiteSpace(Name) && !Nullable && string.IsNullOrWhiteSpace(Type) && string.IsNullOrWhiteSpace(Reference);
+            return res;
+        }
 
         private string _reference;
         public string Reference { get { return _reference; }
