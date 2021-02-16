@@ -1,13 +1,12 @@
 # Platz.SqlForms
 
+If this project help you reduce time to develop, you can give me a cup of coffee :)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate?hosted_button_id=Q7XEPGTBQFWNG)
+
 Created by Pro Coders team.
 Please visit our web site https://www.procoders.com.au
 
 Framework for generating dynamic UI for master-details CRUD operations
-
-If this project help you reduce time to develop, you can give me a cup of coffee :)
-
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate?hosted_button_id=Q7XEPGTBQFWNG)
 
 CodeProject Blog:
 
