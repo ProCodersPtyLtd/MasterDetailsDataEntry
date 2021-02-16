@@ -1,18 +1,34 @@
-﻿@inject SchemaTableEditController _controller
+﻿@using Platz.ObjectBuilder.Blazor.Controllers
+
+@inject SchemaTableDesignController _controller
 
 @namespace Platz.ObjectBuilder.Blazor
 
 @if (Table != null)
 {
+    <br />
+    <table style="width: 100%">
 
-    <div>
-        <button class="btn btn-danger" type="button" @onclick="DeleteTableClick" style="display: block; margin-left: auto; margin-right: 2px; margin-top: 2px;">Delete Table</button>
+        <tr>
+            <td>
+                <label>Table name</label>
 
-        <label>Table name</label>
-        <input id="TableNameInput" value="@_controller.Table.Name" @onchange="NameChanged" />
-        <label>@GetStatus()</label>
+            </td>
+            <td>
+                <button class="btn btn-danger" type="button" @onclick="DeleteTableClick" style="display: block; margin-left: auto; margin-right: 2px;">Delete Table</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input id="TableNameInput" value="@_controller.Table.Name" class="form-control" @onchange="NameChanged" />
+                @*<label>@GetStatus()</label>*@
+                <br />
+            </td>
+        </tr>
+    </table>
 
-    </div>
+
+
 
     <div class="plk-flex overflow-auto" style="min-height: 300px; height: 300px">
         <div style="background-color: lightgreen; min-height: 300px; ">
@@ -76,7 +92,7 @@
                             </select>
                         </td>
                         <td>
-                            <button class="btn btn-light btn-sm" title="Add" @onclick="DeleteClick" disabled="@GetDisabled(row)">
+                            <button class="btn btn-light btn-sm" title="Add" @onclick="@(async (args) => await DeleteClick(args, row))" disabled="@(GetDisabled(row) || item.IsEmpty())">
                                 <span class="oi oi-trash"></span>
                             </button>
                         </td>
@@ -86,7 +102,7 @@
         </div>
     </div>
 
-    <br/>
+    <br />
 
     <div class="plk-flex">
         <label>Table Script</label>
@@ -95,6 +111,9 @@
 }
 
 @code {
+    [CascadingParameter]
+    public ISchemaController SchemaController { get; set; }
+
     [Parameter]
     public DesignTable Table { get; set; }
 
@@ -134,13 +153,18 @@
         await ModelChanged.InvokeAsync(null);
     }
 
-    private async Task DeleteClick(MouseEventArgs args)
+    private async Task DeleteClick(MouseEventArgs args, int row)
     {
+        var item = Table.Columns[row];
+        SchemaController.UpdateLog(DesignOperation.DeleteColumn, Table, item);
+        Table.Columns.Remove(item);
+        _controller.Update();
         await ModelChanged.InvokeAsync(null);
     }
 
     private async Task DeleteTableClick(MouseEventArgs args)
     {
+        SchemaController.DeleteTable(_controller.Table);
         await ModelChanged.InvokeAsync(null);
     }
 

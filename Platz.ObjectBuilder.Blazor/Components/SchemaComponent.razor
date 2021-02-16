@@ -9,7 +9,7 @@
 
         <table style="width: 100%">
             <tr>
-                <th style="width: 240px"></th>
+                <th style="width: 260px"></th>
                 <th style="width: 650px"></th>
                 <th style="width: Auto"></th>
             </tr>
@@ -22,13 +22,13 @@
 
                         <ul class="nav nav-tabs" role="tablist">
                             <li class="nav-item">
-                                <a class=@GetEditTabNavLink("Schema") data-toggle="tab" href="#schemaEdit">Schema</a>
+                                <a class="nav-link @GetEditTabNavLink("Schema")" data-toggle="tab" href="#schemaEdit">Schema</a>
                             </li>
                             <li class="nav-item">
-                                <a class=@GetEditTabNavLink("Table") data-toggle="tab" href="#tableEdit">Table</a>
+                                <a class="nav-link @GetEditTabNavLink("Table")" data-toggle="tab" href="#tableEdit">Table</a>
                             </li>
                             <li class="nav-item">
-                                <a class=@GetEditTabNavLink("Log") data-toggle="tab" href="#schemaEditLog">Log</a>
+                                <a class="nav-link @GetEditTabNavLink("Log")" data-toggle="tab" href="#schemaEditLog">Log</a>
                             </li>
                         </ul>
 
@@ -38,17 +38,17 @@
                             <li><a data-toggle="tab" href="#joins">Relationships</a></li>
                         </ul>*@
 
-                        <div class="tab-content">
-                            <div id="tableEdit" class=@GetEditTabContentNavLink("Table")>
-                                <SchemaDesignTableComponent ModelChanged="ModelChanged" />
-                            </div>
-                            <div id="schemaEdit" class=@GetEditTabContentNavLink("Schema")>
-                                <SchemaSettingsComponent ModelChanged="ModelChanged" />
-                            </div>
-                            <div id="schemaEditLog" class=@GetEditTabContentNavLink("Log")>
-                                <SchemaChangeLogComponent ModelChanged="ModelChanged" />
-                            </div>
+                    <div class="tab-content">
+                        <div id="schemaEdit" class=@GetEditTabContentNavLink("Schema")>
+                            <SchemaSettingsComponent ModelChanged="ModelChanged" />
                         </div>
+                        <div id="tableEdit" class=@GetEditTabContentNavLink("Table")>
+                            <SchemaDesignTableComponent ModelChanged="ModelChanged" />
+                        </div>
+                        <div id="schemaEditLog" class=@GetEditTabContentNavLink("Log")>
+                            <SchemaChangeLogComponent ModelChanged="ModelChanged" />
+                        </div>
+                    </div>
 
 
                     </div>
@@ -102,10 +102,10 @@
         {
             if (_schemaController.SelectedEditTab == tab)
             {
-                return "nav-link active";
+                return "active";
             }
 
-            return "nav-link";
+            return "";
         }
 
         private string GetEditTabContentNavLink(string tab)

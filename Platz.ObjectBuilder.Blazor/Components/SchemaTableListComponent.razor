@@ -6,17 +6,28 @@
 
 @namespace Platz.ObjectBuilder
 
-<h5>Schema Tables:</h5>
+<table style="width: 100%">
+    <tr>
+    <td>
+        <h5>Schema Tables:</h5>
+    </td>
+    <td>
+        <button class="btn btn-success" type="button" @onclick="AddTableClick" style="display: block; margin-left: auto; margin-right: 2px; margin-top: 2px;">Add</button>
+     </td>
+    </tr>
+</table>
+
+
+<div>
+    
+</div>
+
+<br />
 
 @{
     var data = GetObjectList();
 }
 
-<div>
-    <button class="btn btn-success" type="button" @onclick="AddTableClick">Add Table</button>
-</div>
-
-<br />
 
 <div class="list-group overflow-auto" id="list-tab" role="tablist" style="max-height: 600px;">
     @for (int i = 0; i < data.Count; i++)
@@ -36,13 +47,12 @@
     public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 
     private string _selectedObjectName;
-    private int _selectedRow;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
-        _selectedRow = 0;
+        SchemaController.ListSelectedRow = 0;
     }
 
     private Task<IJSObjectReference> _module;
@@ -59,18 +69,37 @@
 
     private string GetActive(int rowIndex)
     {
-        return rowIndex == _selectedRow ? "active" : "";
+        return rowIndex == SchemaController.ListSelectedRow ? "active" : "";
     }
 
     private List<string> GetObjectList()
     {
         var result = new List<string>();
         var schema = SchemaController.Schema;
-        result.Add($"Schema: {schema.Name}");
+        var changed = schema.Changed ? "*" : "";
+        result.Add($"Schema: {schema.Name}{changed}");
 
-        foreach (var d in schema.Tables)
+        if (schema.Tables.Any())
         {
-            result.Add($"{d.Name}");
+            DesignTable active = null;
+
+            if (SchemaController.ListSelectedRow > 0)
+            {
+                active = schema.Tables[SchemaController.ListSelectedRow - 1];
+            }
+
+            schema.Tables = schema.Tables.OrderBy(t => t.Name).ToList();
+
+            if (active != null)
+            {
+                SchemaController.ListSelectedRow = schema.Tables.IndexOf(active) + 1;
+            }
+
+            foreach (var d in schema.Tables)
+            {
+                changed = d.Changed ? "*" : "";
+                result.Add($"{d.Name}{changed}");
+            }
         }
 
         return result;
@@ -79,9 +108,9 @@
     private async Task AddTableClick(MouseEventArgs args)
     {
         var table = SchemaController.CreateTable();
-        _selectedRow = SchemaController.Schema.Tables.IndexOf(table) + 1;
+        SchemaController.ListSelectedRow = SchemaController.Schema.Tables.IndexOf(table) + 1;
         SchemaController.SelectTable(table);
-        SchemaController.SelectTableTab(_selectedRow);
+        SchemaController.SelectTableTab(SchemaController.ListSelectedRow);
 
         await ModelChanged.InvokeAsync(null);
 
@@ -96,7 +125,7 @@
 
     private async Task ObjectClick(int row)
     {
-        _selectedRow = row;
+        SchemaController.ListSelectedRow = row;
 
         if (row == 0)
         {

@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace Platz.ObjectBuilder.Blazor
 {
-    public class SchemaTableEditController
+    public class SchemaTableDesignController
     {
         public DesignTable Table { get; protected set; }
         public string TableScript { get; set; }
 
         private DesignSchema _schema;
-
+        
         public List<DesignColumn> Columns { get { return Table.Columns; } }
 
         public string[] DataTypes = new string[] { "string", "int", "date", "money", "guid", "reference" };
 
-        public void Load (DesignSchema schema, DesignTable table)
+        public void Load(DesignSchema schema, DesignTable table)
         {
             _schema = schema;
             Table = table;

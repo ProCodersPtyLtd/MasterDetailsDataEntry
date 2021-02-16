@@ -4,31 +4,94 @@
 
 @namespace Platz.ObjectBuilder
 
-<table cellpadding="10">
+<br />
+<table>
     <tr>
-        <th style="vertical-align: top;">
+        <th style="width: 340px;">
+        </th>
+        <th style="width: 120px;">
+        </th>
+        <th style="width: 170px;">
         </th>
     </tr>
     <tr>
-        <td>
-            <label>Schema name</label><br />
-            <input value="@SchemaController.Schema.Name" @onchange="NameChanged" />
+        <td style="vertical-align: bottom;">
+            <label for="SchemaName">Schema name</label><br />
+            <input name="SchemaName" value="@SchemaController.Schema.Name" class="form-control" @onchange="NameChanged" />
         </td>
-        @*<td>
-            <label>Data Service name</label><br />
-            <input @bind="SchemaController.Parameters.DataService" readonly="readonly" />
+        <td style="padding: 0px 0px 0px 10px;">
+            <label>Version</label>
+            <input value="@SchemaController.Schema.Version" class="form-control" readonly="readonly" @onchange="NameChanged" />
+        </td>
+        <td style="padding: 0px 0px 0px 10px; vertical-align: bottom;">
+            <button class="btn btn-primary" type="button" @onclick="SaveClick" style="width: 100%">Save</button>
         </td>
 
-        <td>
-            <label>Namespace</label><br />
-            <input @bind="SchemaController.Parameters.Namespace" readonly="readonly" />
-        </td>*@
     </tr>
     <tr>
         <td>
-            <label>Use BIGINT for Id (it will be GUID by default)</label>
             <br />
-            <input type="checkbox" value="@SchemaController.UseBigIntId" @onchange="ModelChanged" />
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked="@SchemaController.Schema.UseBigIntId" @onchange="IntIdClicked">
+                <label class="form-check-label" for="flexRadioDefault1">
+                    Use INT autoincrement Id
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked="@(!SchemaController.Schema.UseBigIntId)" @onchange="GuidIdClicked">
+                <label class="form-check-label" for="flexRadioDefault2">
+                    Use GUID Id
+                </label>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3">
+            <br />
+            <label>Path</label><br />
+            <input @bind="SchemaController.Parameters.StoreDataPath" readonly="readonly" class="form-control" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+        </td>
+        <td style="padding: 10px 0px 0px 10px; vertical-align: bottom;">
+            <button class="btn btn-secondary" type="button" @onclick="NewClick" style="width: 100%">New</button>
+        </td>
+        <td style="padding: 10px 0px 0px 10px; vertical-align: bottom;">
+            <button class="btn btn-secondary" type="button" @onclick="LoadClick" style="width: 100%">Load...</button>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label>Data Context Name</label><br />
+            <input @bind="SchemaController.Schema.DataContextName" readonly="readonly" class="form-control" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label>Namespace</label><br />
+            <input @bind="SchemaController.Parameters.Namespace" readonly="readonly" class="form-control" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <br />
+            <label>Target Connection String</label>
+            <input @bind="SchemaController.Parameters.ConnectionString" readonly="readonly" class="form-control" />
+        </td>
+        <td style="padding: 0px 0px 0px 10px; vertical-align: bottom;">
+            <button class="btn btn-danger" type="button" @onclick="CreateMigrationClick" style="width: 100%">Recreate Schema</button>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <br />
+            <label>Migrations</label>
+        </td>
+        <td></td>
+        <td colspan="1" style="padding: 0px 0px 0px 10px; vertical-align: bottom;">
+            <button class="btn btn-warning" type="button" @onclick="CreateMigrationClick" style="width: 100%">Create Migration</button>
         </td>
     </tr>
 </table>
@@ -44,5 +107,30 @@
     {
         SchemaController.Schema.Name = (string)args.Value;
         await ModelChanged.InvokeAsync(null);
+    }
+
+    private async Task IntIdClicked(ChangeEventArgs args)
+    {
+        SchemaController.Schema.UseBigIntId = "on" == (string)args.Value;
+        await ModelChanged.InvokeAsync(null);
+    }
+
+    private async Task GuidIdClicked(ChangeEventArgs args)
+    {
+        SchemaController.Schema.UseBigIntId = !("on" == (string)args.Value);
+        await ModelChanged.InvokeAsync(null);
+    }
+
+    private async Task NewClick(MouseEventArgs args)
+    { }
+
+    private async Task SaveClick(MouseEventArgs args)
+    { }
+
+    private async Task LoadClick(MouseEventArgs args)
+    { }
+
+    private async Task CreateMigrationClick(MouseEventArgs args)
+    {
     }
 }

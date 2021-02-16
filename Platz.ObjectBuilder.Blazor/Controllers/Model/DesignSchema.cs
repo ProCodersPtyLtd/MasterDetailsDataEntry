@@ -13,6 +13,8 @@ namespace Platz.ObjectBuilder.Blazor
         public string DataContextName { get; set; }
         public List<DesignTable> Tables { get; set; } = new List<DesignTable>();
         public bool UseBigIntId { get; set; }
+        public bool Changed { get; set; }
+        public bool IsNew { get; set; }
     }
 
     public class DesignTable
@@ -20,8 +22,7 @@ namespace Platz.ObjectBuilder.Blazor
         public string Name { get; set; }
         public List<DesignColumn> Columns { get; set; } = new List<DesignColumn>();
         public bool Changed { get; set; }
-
-        
+        public bool IsNew { get; set; }
     }
 
     public class DesignColumn
@@ -33,6 +34,8 @@ namespace Platz.ObjectBuilder.Blazor
         public string ColumnReference { get; set; }
         public bool Disabled { get; set; }
         public bool Pk { get; set; }
+        public bool Changed { get; set; }
+        public bool IsNew { get; set; }
 
         public bool IsEmpty()
         {
@@ -60,5 +63,24 @@ namespace Platz.ObjectBuilder.Blazor
                 }
             } 
         }
+    }
+
+    public class DesignLogRecord
+    {
+        public DesignOperation Operation { get; set; }
+    }
+
+    public enum DesignOperation
+    {
+        CreateSchema = 1,
+        SetSchemaName,
+        CreateTable,
+        SetTableName,
+        DeleteTable,
+        SetColumnName,
+        DeleteColumn,
+        SetColumnType,
+        SetColumnNullable,
+        SetColumnReference
     }
 }

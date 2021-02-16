@@ -21,12 +21,15 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
     {
         DesignSchema Schema { get; }
         SchemaControllerParameters Parameters { get; }
+        int ListSelectedRow { get; set; }
 
         void SetParameters(SchemaControllerParameters parameters);
         void LoadSchema();
         void NewSchema();
 
         DesignTable CreateTable();
+        void DeleteTable(DesignTable table);
+        void UpdateLog(DesignOperation operation, DesignTable table = null, DesignColumn column = null);
     }
 
     public class SchemaControllerParameters
@@ -36,20 +39,34 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         public string Namespace { get; set; }
 
         public string DataService { get; set; }
+        public string ConnectionString { get; set; }
     }
 
-    public class SchemaControllerBase : ISchemaController
+    public class SchemaController : ISchemaController
     {
-        protected readonly SchemaTableEditController _tableEditController;
+        private readonly SchemaTableDesignController _tableController;
 
-        public SchemaControllerBase(SchemaTableEditController tableEditController)
-        {
-            _tableEditController = tableEditController;
-        }
+        private List<DesignLogRecord> _designRecords = new List<DesignLogRecord>();
 
         public SchemaControllerParameters Parameters { get; protected set; }
-
         public DesignSchema Schema { get; protected set; } 
+        public int ListSelectedRow { get; set; }
+
+        public SchemaController(SchemaTableDesignController tableController)
+        {
+            _tableController = tableController;
+        }
+
+        /// <summary>
+        /// Keeps log that allows to record migrations and undo/redo
+        /// </summary>
+        /// <param name="operation"></param>
+        /// <param name="table"></param>
+        /// <param name="column"></param>
+        public void UpdateLog(DesignOperation operation, DesignTable table = null, DesignColumn column = null)
+        {
+        }
+
 
         #region Mvvm
 
@@ -65,6 +82,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         public void SelectSchemaTab()
         {
             SelectedEditTab = "Schema";
+            ListSelectedRow = 0;
         }
 
         public void SelectTableTab(int row)
@@ -76,9 +94,18 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
 
         public DesignTable CreateTable()
         {
-            var table = _tableEditController.CreateTable(Schema);
+            var table = _tableController.CreateTable(Schema);
             Schema.Tables.Add(table);
+            UpdateLog(DesignOperation.CreateTable, table);
             return table;
+        }
+
+        public void DeleteTable(DesignTable table)
+        {
+            Schema.Tables.Remove(table);
+            SelectedTable = null;
+            SelectSchemaTab();
+            UpdateLog(DesignOperation.DeleteTable, table);
         }
 
         public void SetParameters(SchemaControllerParameters parameters)
@@ -92,8 +119,8 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
 
         public void NewSchema()
         {
-            Schema = new DesignSchema { Name = "New Schema", Version = "0.1", DataContextName = Parameters.DataService };
-            // Schema.Tables.Add(new DesignTable { Name = "Table1" });
+            Schema = new DesignSchema { Name = "New Schema", Version = "1.0", DataContextName = Parameters.DataService, Changed = true, IsNew = true };
+            UpdateLog(DesignOperation.CreateSchema);
         }
     }
 }
