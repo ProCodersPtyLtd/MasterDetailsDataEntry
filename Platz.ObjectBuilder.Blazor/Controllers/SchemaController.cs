@@ -30,6 +30,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         DesignTable CreateTable();
         void DeleteTable(DesignTable table);
         void UpdateLog(DesignOperation operation, DesignTable table = null, DesignColumn column = null);
+        string GetDesignLog();
     }
 
     public class SchemaControllerParameters
@@ -65,6 +66,19 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         /// <param name="column"></param>
         public void UpdateLog(DesignOperation operation, DesignTable table = null, DesignColumn column = null)
         {
+            _designRecords.Add(new DesignLogRecord { Operation = operation });
+        }
+
+        public string GetDesignLog()
+        {
+            var sb = new StringBuilder();
+
+            for (int i = 0; i < _designRecords.Count; i++)
+            {
+                sb.AppendLine($"{i} {Enum.GetName(_designRecords[i].Operation)}");
+            }
+
+            return sb.ToString();
         }
 
 

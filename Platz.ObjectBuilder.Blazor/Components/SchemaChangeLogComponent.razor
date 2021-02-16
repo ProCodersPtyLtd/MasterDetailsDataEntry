@@ -4,6 +4,11 @@
 
 <h3>SchemaChangeLogComponent</h3>
 
+<div class="plk-flex">
+    <label>Table Script</label>
+    <textarea id="exampleFormControlTextarea1" rows="9" style="width: 100%" value="@SchemaController.GetDesignLog()" readonly="readonly"/>
+</div>
+
 @code {
     [CascadingParameter]
     public ISchemaController SchemaController { get; set; }

@@ -149,6 +149,8 @@
     private async Task NullableClick(ChangeEventArgs args, int row)
     {
         Table.Columns[row].Nullable = (bool)args.Value;
+        var item = Table.Columns[row];
+        SchemaController.UpdateLog(DesignOperation.SetColumnNullable, Table, item);
         _controller.Update();
         await ModelChanged.InvokeAsync(null);
     }
@@ -171,27 +173,34 @@
     private async Task NameChanged(ChangeEventArgs args)
     {
         _controller.Table.Name = (string)args.Value;
+        SchemaController.UpdateLog(DesignOperation.SetTableName, Table);
         _controller.Update();
         await ModelChanged.InvokeAsync(null);
     }
 
-    private async Task ColumnNameChanged(ChangeEventArgs e, int rowIndex)
+    private async Task ColumnNameChanged(ChangeEventArgs e, int row)
     {
-        _controller.Table.Columns[rowIndex].Name = (string)e.Value;
+        _controller.Table.Columns[row].Name = (string)e.Value;
+        var item = Table.Columns[row];
+        SchemaController.UpdateLog(DesignOperation.SetColumnName, Table, item);
         _controller.Update();
         await ModelChanged.InvokeAsync(null);
     }
 
-    private async Task ReferenceChanged(ChangeEventArgs e, int rowIndex)
+    private async Task ReferenceChanged(ChangeEventArgs e, int row)
     {
-        _controller.Table.Columns[rowIndex].Reference = (string)e.Value;
+        _controller.Table.Columns[row].Reference = (string)e.Value;
+        var item = Table.Columns[row];
+        SchemaController.UpdateLog(DesignOperation.SetColumnReference, Table, item);
         _controller.Update();
         await ModelChanged.InvokeAsync(null);
     }
 
-    private async Task TypeChanged(ChangeEventArgs e, int rowIndex)
+    private async Task TypeChanged(ChangeEventArgs e, int row)
     {
-        _controller.Table.Columns[rowIndex].Type = (string)e.Value;
+        _controller.Table.Columns[row].Type = (string)e.Value;
+        var item = Table.Columns[row];
+        SchemaController.UpdateLog(DesignOperation.SetColumnType, Table, item);
         _controller.Update();
         await ModelChanged.InvokeAsync(null);
     }
