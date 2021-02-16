@@ -19,14 +19,26 @@ namespace Platz.ObjectBuilder.Blazor
 
     public class DesignTable
     {
+        public Guid Id { get; private set; }
         public string Name { get; set; }
         public List<DesignColumn> Columns { get; set; } = new List<DesignColumn>();
         public bool Changed { get; set; }
         public bool IsNew { get; set; }
+
+        public DesignTable()
+        {
+            Id = Guid.NewGuid();
+        }
+
+        public DesignTable(Guid id)
+        {
+            Id = id;
+        }
     }
 
     public class DesignColumn
     {
+        public Guid Id { get; private set; }
         public string Name { get; set; }
         public string Type { get; set; }
         public bool Nullable { get; set; }
@@ -36,6 +48,16 @@ namespace Platz.ObjectBuilder.Blazor
         public bool Pk { get; set; }
         public bool Changed { get; set; }
         public bool IsNew { get; set; }
+
+        public DesignColumn()
+        {
+            Id = Guid.NewGuid();
+        }
+
+        public DesignColumn(Guid id)
+        {
+            Id = id;
+        }
 
         public bool IsEmpty()
         {
@@ -68,6 +90,12 @@ namespace Platz.ObjectBuilder.Blazor
     public class DesignLogRecord
     {
         public DesignOperation Operation { get; set; }
+        public string OldValue { get; set; }
+        public string NewValue { get; set; }
+        public string TableId { get; set; }
+        public string TableName { get; set; }
+        public string ColumnId { get; set; }
+        public string ColumnName { get; set; }
     }
 
     public enum DesignOperation

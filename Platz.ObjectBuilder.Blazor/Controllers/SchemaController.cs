@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Platz.SqlForms.Shared;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -53,9 +54,21 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         public DesignSchema Schema { get; protected set; } 
         public int ListSelectedRow { get; set; }
 
+        private Dictionary<Guid, object> _objectClones = new Dictionary<Guid, object>();
+
         public SchemaController(SchemaTableDesignController tableController)
         {
             _tableController = tableController;
+        }
+
+        private T FindClone<T>(Guid id) where T: class
+        {
+            if (_objectClones.ContainsKey(id))
+            {
+                return (T)_objectClones[id];
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -66,7 +79,49 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         /// <param name="column"></param>
         public void UpdateLog(DesignOperation operation, DesignTable table = null, DesignColumn column = null)
         {
-            _designRecords.Add(new DesignLogRecord { Operation = operation });
+            string old = null;
+            string newValue = null;
+
+            switch (operation)
+            {
+                case DesignOperation.SetTableName:
+                    newValue = table.Name;
+                    old = FindClone<DesignTable>(table.Id)?.Name;
+                    break;
+
+                case DesignOperation.SetColumnName:
+                    newValue = column.Name;
+                    old = FindClone<DesignColumn>(column.Id)?.Name;
+                    break;
+
+                case DesignOperation.SetColumnNullable:
+                    newValue = column.Nullable.ToString();
+                    old = FindClone<DesignColumn>(column.Id)?.Nullable.ToString();
+                    break;
+
+                case DesignOperation.SetColumnType:
+                    newValue = column.Type;
+                    old = FindClone<DesignColumn>(column.Id)?.Type;
+                    break;
+
+                case DesignOperation.SetColumnReference:
+                    newValue = column.Reference;
+                    old = FindClone<DesignColumn>(column.Id)?.Reference;
+                    break;
+            }
+
+            _designRecords.Add(new DesignLogRecord { Operation = operation, TableName = table?.Name, ColumnName = column?.Name, OldValue = old, NewValue = newValue });
+
+            // save clones
+            if (table != null)
+            {
+                _objectClones[table.Id] = table.GetCopy(table.Id);
+            }
+
+            if (column != null)
+            {
+                _objectClones[column.Id] = column.GetCopy(column.Id);
+            }
         }
 
         public string GetDesignLog()
@@ -75,7 +130,30 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
 
             for (int i = 0; i < _designRecords.Count; i++)
             {
-                sb.AppendLine($"{i} {Enum.GetName(_designRecords[i].Operation)}");
+                var r = _designRecords[i];
+                sb.Append($"{i} {Enum.GetName(r.Operation)}");
+
+                if (r.TableName != null)
+                {
+                    sb.Append($" Table '{r.TableName}'");
+                }
+
+                if (r.ColumnName != null)
+                {
+                    sb.Append($" Column '{r.ColumnName}'");
+                }
+
+                if (r.OldValue != null)
+                {
+                    sb.Append($" from '{r.OldValue}'");
+                }
+
+                if (r.NewValue != null)
+                {
+                    sb.Append($" to '{r.NewValue}'");
+                }
+
+                sb.AppendLine();
             }
 
             return sb.ToString();
@@ -109,6 +187,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         public DesignTable CreateTable()
         {
             var table = _tableController.CreateTable(Schema);
+            _objectClones[table.Id] = table.GetCopy(table.Id);
             Schema.Tables.Add(table);
             UpdateLog(DesignOperation.CreateTable, table);
             return table;

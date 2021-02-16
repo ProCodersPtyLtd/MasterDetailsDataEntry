@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\Platz.SqlForms.Shared\Helpers\ObjectCloner.cs" Link="Shared\ObjectCloner.cs" />
     <Compile Include="..\Platz.SqlForms.Shared\Helpers\StackTraceHelper.cs" Link="Shared\StackTraceHelper.cs" />
   </ItemGroup>
 
