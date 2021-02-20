@@ -18,6 +18,8 @@ namespace Platz.ObjectBuilder
         public string Version { get; set; }
 
         public Dictionary<string, StoreDefinition> Definitions { get; set; }
+
+        public Dictionary<string, string> Settings { get; set; }
     }
 
     // The first property in these classes is a Key in Dictionary

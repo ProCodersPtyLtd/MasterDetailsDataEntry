@@ -2,6 +2,10 @@
 @using System.Text.Json
 @using System.IO
 
+@inject IJSRuntime JS
+
+@implements IAsyncDisposable
+
 @namespace Platz.ObjectBuilder
 
 <br />
@@ -20,7 +24,9 @@
             <input name="SchemaName" value="@SchemaController.Schema.Name" class="form-control" @onchange="NameChanged" />
         </td>
         <td style="padding: 0px 0px 0px 10px;">
-            <label>Version</label>
+            <label title="Version can be changed by adding migrations">
+                Version <span class="oi oi-info"></span>
+            </label>
             <input value="@SchemaController.Schema.Version" class="form-control" readonly="readonly" @onchange="NameChanged" />
         </td>
         <td style="padding: 0px 0px 0px 10px; vertical-align: bottom;">
@@ -32,13 +38,13 @@
         <td>
             <br />
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked="@SchemaController.Schema.UseBigIntId" @onchange="IntIdClicked">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked="@SchemaController.Schema.UseIntId" @onchange="IntIdClicked">
                 <label class="form-check-label" for="flexRadioDefault1">
                     Use INT autoincrement Id
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked="@(!SchemaController.Schema.UseBigIntId)" @onchange="GuidIdClicked">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked="@(!SchemaController.Schema.UseIntId)" @onchange="GuidIdClicked">
                 <label class="form-check-label" for="flexRadioDefault2">
                     Use GUID Id
                 </label>
@@ -49,7 +55,7 @@
         <td colspan="3">
             <br />
             <label>Path</label><br />
-            <input @bind="SchemaController.Parameters.StoreDataPath" readonly="readonly" class="form-control" />
+            <input @bind="SchemaController.FullStoreDataPath" readonly="readonly" class="form-control" />
         </td>
     </tr>
     <tr>
@@ -59,7 +65,7 @@
             <button class="btn btn-secondary" type="button" @onclick="NewClick" style="width: 100%">New</button>
         </td>
         <td style="padding: 10px 0px 0px 10px; vertical-align: bottom;">
-            <button class="btn btn-secondary" type="button" @onclick="LoadClick" style="width: 100%">Load...</button>
+            <button class="btn btn-secondary" type="button" data-toggle="modal" data-target="#loadModal" @onclick="LoadClick" style="width: 100%">Load...</button>
         </td>
     </tr>
     <tr>
@@ -96,28 +102,118 @@
     </tr>
 </table>
 
+<div class="modal fade" id="loadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Load schema</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Path:</label>
+                        <input readonly="readonly" @bind="FullStoreDataPath" style="width: 100%" />
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Files:</label>
+                        @{
+                            var data = GetLoadFiles();
+                        }
+
+                        <div class="list-group overflow-auto" id="list-tab" role="tablist" style="max-height: 400px;">
+                            @for (int i = 0; i < data.Count; i++)
+                            {
+                                var rowIndex = i;
+
+                                <a class="list-group-item list-group-item-action" @onclick="() => FileClick(rowIndex)" @ondblclick="async(a) => await FileDblClick(a, rowIndex)"
+                                   data-toggle="list" href="#list-home" role="tab" aria-controls="home">@data[i]</a>
+                            }
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" @onclick="LoadFile">Load</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Position it -->
+<div style="position: absolute; top: 0; right: 0; min-width: 300px;z-index: 100">
+
+    <!-- Then put toasts within -->
+    <div id="saveToast" class="toast" role="banner" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="3000" style="background-color: lightgreen;">
+        <div class="toast-header">
+            @*<img src="file" class="rounded mr-2" alt="...">*@
+            @*<span class="oi oi-file"></span>*@
+            <strong class="mr-auto">Information</strong>
+            <small class="text-muted">just now</small>
+            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="toast-body">
+            File  '@(_fileNameSaved)' saved successfully.
+        </div>
+    </div>
+</div>
+
 @code {
     [CascadingParameter]
     public ISchemaController SchemaController { get; set; }
 
     [Parameter]
+    public string FullStoreDataPath { get; set; }
+
+    [Parameter]
     public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    private string _selectedFileName;
+    private List<string> _files;
+    private bool _fileNameChanged;
+    private string _fileNameSaved;
+
+    private Task<IJSObjectReference> _module;
+    private Task<IJSObjectReference> Module => _module ??= JS.InvokeAsync<IJSObjectReference>("import", "./_content/Platz.ObjectBuilder.Blazor/objectBuilder.js").AsTask();
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_module != null)
+        {
+            var module = await _module;
+            await module.DisposeAsync();
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        SchemaController.FullStoreDataPath = FullStoreDataPath;
+    }
 
     private async Task NameChanged(ChangeEventArgs args)
     {
         SchemaController.Schema.Name = (string)args.Value;
+        _fileNameChanged = true;
+        SchemaController.UpdateLog(DesignOperation.SetSchemaName);
         await ModelChanged.InvokeAsync(null);
     }
 
     private async Task IntIdClicked(ChangeEventArgs args)
     {
-        SchemaController.Schema.UseBigIntId = "on" == (string)args.Value;
+        SchemaController.Schema.UseIntId = "on" == (string)args.Value;
         await ModelChanged.InvokeAsync(null);
     }
 
     private async Task GuidIdClicked(ChangeEventArgs args)
     {
-        SchemaController.Schema.UseBigIntId = !("on" == (string)args.Value);
+        SchemaController.Schema.UseIntId = !("on" == (string)args.Value);
         await ModelChanged.InvokeAsync(null);
     }
 
@@ -125,12 +221,91 @@
     { }
 
     private async Task SaveClick(MouseEventArgs args)
-    { }
+    {
+        ValidateClick(null);
+
+        if (SchemaController.ValidationResults.Any())
+        {
+            return;
+        }
+
+        var module = await Module;
+        bool canSave = true;
+        var fileName = SchemaController.GenerateFileName(FullStoreDataPath);
+        fileName = Path.GetFileName(fileName);
+
+        if (_fileNameChanged && SchemaController.FileExists(FullStoreDataPath))
+        {
+            canSave = await JS.InvokeAsync<bool>("confirm", $"File '{fileName}' already exists. Are you sure you want to overwrite it?");
+        }
+
+        if (canSave)
+        {
+            SchemaController.SaveSchema(FullStoreDataPath);
+            SchemaController.SaveMigrations(FullStoreDataPath);
+            _fileNameSaved = fileName;
+            _fileNameChanged = false;
+            await module.InvokeVoidAsync("ShowToast", new object[] { "#saveToast" });
+        }
+    }
+
+    private void ValidateClick(MouseEventArgs args)
+    {
+        SchemaController.Validate();
+        ShowErrors();
+        StateHasChanged();
+    }
+
+    private void ShowErrors()
+    {
+        if (SchemaController.ValidationResults.Any())
+        {
+            foreach (var r in SchemaController.ValidationResults)
+            {
+                SchemaController.Errors += "\r\n" + r.Message;
+            }
+        }
+        else
+        {
+            SchemaController.Errors += "\r\n" + "Validation result: pass";
+        }
+    }
+
+    private List<string> GetLoadFiles()
+    {
+        var result = SchemaController.GetFileList(FullStoreDataPath);
+        _files = result;
+        return result;
+    }
 
     private async Task LoadClick(MouseEventArgs args)
     { }
 
     private async Task CreateMigrationClick(MouseEventArgs args)
     {
+    }
+
+    private async Task FileDblClick(MouseEventArgs args, int row)
+    {
+        var module = await Module;
+
+        _selectedFileName = _files[row];
+        await module.InvokeVoidAsync("HideModal", new object[] { "#loadModal" });
+        await LoadFile(args);
+    }
+
+    private void FileClick(int row)
+    {
+        _selectedFileName = _files[row];
+    }
+
+    private async Task LoadFile(MouseEventArgs args)
+    {
+        if (!string.IsNullOrWhiteSpace(_selectedFileName))
+        {
+            SchemaController.LoadFromFile(FullStoreDataPath, _selectedFileName);
+            await ModelChanged.InvokeAsync(null);
+            _fileNameChanged = false;
+        }
     }
 }

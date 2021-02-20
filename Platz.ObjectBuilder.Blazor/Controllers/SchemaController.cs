@@ -1,6 +1,8 @@
-﻿using Platz.SqlForms.Shared;
+﻿using Platz.ObjectBuilder.Blazor.Controllers.Validation;
+using Platz.SqlForms.Shared;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,16 +24,28 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
     {
         DesignSchema Schema { get; }
         SchemaControllerParameters Parameters { get; }
+        string FullStoreDataPath { get; set; }
         int ListSelectedRow { get; set; }
 
         void SetParameters(SchemaControllerParameters parameters);
-        void LoadSchema();
+        //void LoadSchema();
         void NewSchema();
 
         DesignTable CreateTable();
         void DeleteTable(DesignTable table);
         void UpdateLog(DesignOperation operation, DesignTable table = null, DesignColumn column = null);
         string GetDesignLog();
+
+        // Files
+        List<RuleValidationResult> ValidationResults { get; }
+        string Errors { get; set; }
+        void SaveSchema(string path);
+        void SaveMigrations(string path);
+        void Validate();
+        List<string> GetFileList(string path);
+        void LoadFromFile(string path, string fileName);
+        bool FileExists(string path);
+        string GenerateFileName(string path);
     }
 
     public class SchemaControllerParameters
@@ -46,18 +60,27 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
 
     public class SchemaController : ISchemaController
     {
+        private const string SchemaFileSuffix = ".schema.json";
+        private const string SchemaMigrationsFileSuffix = ".schema.migrations.json";
+
         private readonly SchemaTableDesignController _tableController;
+        private readonly IStoreSchemaStorage _schemaStorage;
 
         private List<DesignLogRecord> _designRecords = new List<DesignLogRecord>();
 
+        public string FullStoreDataPath { get; set; }
         public SchemaControllerParameters Parameters { get; protected set; }
         public DesignSchema Schema { get; protected set; } 
         public int ListSelectedRow { get; set; }
+        public List<RuleValidationResult> ValidationResults { get; set; } = new List<RuleValidationResult>();
+        public string Errors { get; set; }
+
 
         private Dictionary<Guid, object> _objectClones = new Dictionary<Guid, object>();
 
-        public SchemaController(SchemaTableDesignController tableController)
+        public SchemaController(IStoreSchemaStorage schemaStorage, SchemaTableDesignController tableController)
         {
+            _schemaStorage = schemaStorage;
             _tableController = tableController;
         }
 
@@ -69,6 +92,12 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             }
 
             return null;
+        }
+
+        #region log
+        public void ClearLog()
+        {
+            _designRecords.Clear();
         }
 
         /// <summary>
@@ -158,7 +187,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
 
             return sb.ToString();
         }
-
+        #endregion
 
         #region Mvvm
 
@@ -214,6 +243,54 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         {
             Schema = new DesignSchema { Name = "New Schema", Version = "1.0", DataContextName = Parameters.DataService, Changed = true, IsNew = true };
             UpdateLog(DesignOperation.CreateSchema);
+        }
+
+        public void SaveSchema(string path)
+        {
+            var fileName = Path.Combine(path, GenerateFileName(path));
+            var parameters = new StorageParameters { FileName = fileName };
+            var schema = DesignSchema.ToStoreSchema(Schema);
+            _schemaStorage.SaveSchema(schema, parameters);
+
+            // set all changed properties
+            Schema.Changed = false;
+            Schema.Tables.ForEach(t => t.Changed = false);
+
+            // clear logs ?
+        }
+
+        public void SaveMigrations(string path)
+        {
+            // ToDo:
+        }
+
+        public void Validate()
+        {
+            ValidationResults.Clear();
+            // ToDo:
+        }
+
+        public List<string> GetFileList(string path)
+        {
+            //return (new string[] { "a", "b", "c" }).ToList();
+            var result = _schemaStorage.GetFileNames(new StorageParameters { Path = path });
+            result = result.Where(f => f.Contains(SchemaFileSuffix) && !f.Contains(SchemaMigrationsFileSuffix)).ToList();
+            return result;
+        }
+
+        public void LoadFromFile(string path, string fileName)
+        {
+            // ToDo:
+        }
+
+        public bool FileExists(string path)
+        {
+            return _schemaStorage.FileExists(new StorageParameters { Path = path, FileName = GenerateFileName(path) });
+        }
+
+        public string GenerateFileName(string path)
+        {
+            return Path.Combine(path, $"{Schema.Name}{SchemaFileSuffix}");
         }
     }
 }

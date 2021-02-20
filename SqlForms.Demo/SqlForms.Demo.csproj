@@ -41,4 +41,8 @@
     </Compile>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="StoreNew\" />
+  </ItemGroup>
+
 </Project>

@@ -5,7 +5,7 @@
 
     <CascadingValue Value="@_schemaController">
 
-        <SchemaFileSettingComponent StoreDataPath="@_fullStoreDataPath" DataService="@DataService" Namespace="@Namespace" ModelChanged="ModelChanged"/>
+        @*<SchemaFileSettingComponent StoreDataPath="@_fullStoreDataPath" DataService="@DataService" Namespace="@Namespace" ModelChanged="ModelChanged"/>*@
 
         <table style="width: 100%">
             <tr>
@@ -40,7 +40,7 @@
 
                     <div class="tab-content">
                         <div id="schemaEdit" class=@GetEditTabContentNavLink("Schema")>
-                            <SchemaSettingsComponent ModelChanged="ModelChanged" />
+                            <SchemaSettingsComponent ModelChanged="ModelChanged" FullStoreDataPath="@_fullStoreDataPath" />
                         </div>
                         <div id="tableEdit" class=@GetEditTabContentNavLink("Table")>
                             <SchemaDesignTableComponent ModelChanged="ModelChanged" />

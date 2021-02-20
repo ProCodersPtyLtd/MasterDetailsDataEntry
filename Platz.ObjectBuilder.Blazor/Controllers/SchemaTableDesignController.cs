@@ -92,7 +92,7 @@ namespace Platz.ObjectBuilder.Blazor
             // Set Id column
             var PkColumn = table.Columns[0];
             PkColumn.Name = "Id";
-            PkColumn.Type = _schema.UseBigIntId ? "int" : "guid";
+            PkColumn.Type = _schema.UseIntId ? "int" : "guid";
             PkColumn.Pk = true;
 
             CheckNewColumnDefault(table);

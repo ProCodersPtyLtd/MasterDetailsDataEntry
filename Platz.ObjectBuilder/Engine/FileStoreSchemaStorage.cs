@@ -46,6 +46,14 @@ namespace Platz.ObjectBuilder.Engine
             }
         }
 
+        public StoreSchema LoadSchema(StorageParameters parameters)
+        {
+            var fileName = Path.Combine(parameters.Path, parameters.FileName);
+            var json = File.ReadAllText(fileName);
+            var result = JsonSerializer.Deserialize<StoreSchema>(json);
+            return result;
+        }
+
         public void SaveSchema(StoreSchema schema, StorageParameters parameters)
         {
             var options = new JsonSerializerOptions()

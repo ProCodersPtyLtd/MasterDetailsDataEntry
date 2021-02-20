@@ -1,0 +1,49 @@
+{
+  "Name": "s12",
+  "DbContextName": "MyRepository",
+  "Title": null,
+  "Type": null,
+  "Comment": null,
+  "Tags": [],
+  "Version": "1.0",
+  "Definitions": {
+    "t2": {
+      "Name": "t2",
+      "Type": null,
+      "Comment": null,
+      "Properties": {
+        "Id": {
+          "Name": "Id",
+          "Type": "guid",
+          "Nullable": false,
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": true,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 0,
+          "ForeignKeys": []
+        },
+        "name2": {
+          "Name": "name2",
+          "Type": null,
+          "Nullable": false,
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 1,
+          "ForeignKeys": []
+        }
+      }
+    }
+  },
+  "Settings": {
+    "UseIntId": "False"
+  }
+}

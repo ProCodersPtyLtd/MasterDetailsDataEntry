@@ -3,6 +3,7 @@ using Platz.ObjectBuilder.Blazor;
 using Platz.ObjectBuilder.Blazor.Controllers;
 using Platz.ObjectBuilder.Blazor.Controllers.Logic;
 using Platz.ObjectBuilder.Blazor.Controllers.Validation;
+using Platz.ObjectBuilder.Engine;
 using Platz.ObjectBuilder.Expressions;
 using Plk.Blazor.DragDrop;
 using System;
@@ -24,6 +25,7 @@ namespace Platz.ObjectBuilder
             services.AddTransient<IQueryController, EntityFrameworkQueryController>();
             services.AddTransient<ISchemaController, SchemaController>();
             services.AddTransient<SchemaTableDesignController, SchemaTableDesignController>();
+            services.AddSingleton<IStoreSchemaStorage, FileStoreSchemaStorage>();
             return services;
         }
     }
