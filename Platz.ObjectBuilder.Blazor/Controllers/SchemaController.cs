@@ -16,6 +16,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         DesignTable SelectedTable { get; }
 
         void SelectSchemaTab();
+        void SelectLogTab();
         void SelectTableTab(int row);
         void SelectTable(DesignTable table);
     }
@@ -198,6 +199,8 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         public void SelectTable(DesignTable table)
         {
             SelectedTable = table;
+            _tableController.Load(Schema, SelectedTable);
+            _tableController.Update();
         }
 
         public void SelectSchemaTab()
@@ -206,9 +209,19 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             ListSelectedRow = 0;
         }
 
+        public void SelectLogTab()
+        {
+            SelectedEditTab = "Log";
+        }
+
         public void SelectTableTab(int row)
         {
             SelectedEditTab = "Table";
+
+            if (SelectedTable != null)
+            {
+                _tableController.Update();
+            }
         }
 
         #endregion
@@ -218,6 +231,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             var table = _tableController.CreateTable(Schema);
             _objectClones[table.Id] = table.GetCopy(table.Id);
             Schema.Tables.Add(table);
+            _tableController.Changed();
             UpdateLog(DesignOperation.CreateTable, table);
             return table;
         }
@@ -235,13 +249,15 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             Parameters = parameters;
         }
 
-        public void LoadSchema()
-        {
-        }
+        //public void LoadSchema()
+        //{
+        //}
 
         public void NewSchema()
         {
             Schema = new DesignSchema { Name = "New Schema", Version = "1.0", DataContextName = Parameters.DataService, Changed = true, IsNew = true };
+            SelectedTable = null;
+            ClearLog();
             UpdateLog(DesignOperation.CreateSchema);
         }
 
@@ -253,10 +269,26 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             _schemaStorage.SaveSchema(schema, parameters);
 
             // set all changed properties
-            Schema.Changed = false;
-            Schema.Tables.ForEach(t => t.Changed = false);
+            ClearChanged();
 
             // clear logs ?
+        }
+
+        private void ClearChanged()
+        {
+            Schema.Changed = false;
+            Schema.Tables.ForEach(t => 
+            { 
+                t.Changed = false;
+                var last = t.Columns.Last();
+
+                if (!last.IsEmpty())
+                {
+                    t.Columns.Add(new DesignColumn { });
+                }
+            });
+
+            SelectedTable = null;
         }
 
         public void SaveMigrations(string path)
@@ -280,7 +312,10 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
 
         public void LoadFromFile(string path, string fileName)
         {
-            // ToDo:
+            var schema = _schemaStorage.LoadSchema(new StorageParameters { FileName = fileName, Path = path });
+            Schema = DesignSchema.FromStoreSchema(schema);
+            ClearChanged();
+            ClearLog();
         }
 
         public bool FileExists(string path)

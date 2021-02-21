@@ -40,10 +40,11 @@ namespace Platz.ObjectBuilder.Blazor
 
                 ds.Tables.Add(t);
 
-                d.Properties.Select(x => x.Value).OrderBy(x => x.Order).Select(c => new DesignColumn() 
+                t.Columns = d.Properties.Select(x => x.Value).OrderBy(x => x.Order).Select(c => new DesignColumn() 
                 { 
                     Name = c.Name,
                     Pk = c.Pk,
+                    Type = c.Type,
                     Nullable = c.Nullable,
                     Reference = GetDesignForeignKey(c),
                 }).ToList();

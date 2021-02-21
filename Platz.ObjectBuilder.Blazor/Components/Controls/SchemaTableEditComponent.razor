@@ -92,7 +92,7 @@
                             </select>
                         </td>
                         <td>
-                            <button class="btn btn-light btn-sm" title="Add" @onclick="@(async (args) => await DeleteClick(args, row))" disabled="@(GetDisabled(row) || item.IsEmpty())">
+                            <button class="btn btn-light btn-sm" title="Add" @onclick="@(async (args) => await DeleteColumnClick(args, row))" disabled="@(GetDisabled(row) || item.IsEmpty())">
                                 <span class="oi oi-trash"></span>
                             </button>
                         </td>
@@ -106,7 +106,7 @@
 
     <div class="plk-flex">
         <label>Table Script</label>
-        <textarea id="exampleFormControlTextarea1" rows="9" style="width: 100%" value="@_controller.TableScript" @onchange="ScriptChanged" />
+        <textarea id="exampleFormControlTextarea1" rows="9" style="width: 100%" value="@_controller.GetTableScript()" @onchange="ScriptChanged" />
     </div>
 }
 
@@ -148,6 +148,7 @@
 
     private async Task NullableClick(ChangeEventArgs args, int row)
     {
+        _controller.Changed(Table);
         Table.Columns[row].Nullable = (bool)args.Value;
         var item = Table.Columns[row];
         SchemaController.UpdateLog(DesignOperation.SetColumnNullable, Table, item);
@@ -155,8 +156,9 @@
         await ModelChanged.InvokeAsync(null);
     }
 
-    private async Task DeleteClick(MouseEventArgs args, int row)
+    private async Task DeleteColumnClick(MouseEventArgs args, int row)
     {
+        _controller.Changed(Table);
         var item = Table.Columns[row];
         SchemaController.UpdateLog(DesignOperation.DeleteColumn, Table, item);
         Table.Columns.Remove(item);
@@ -166,12 +168,14 @@
 
     private async Task DeleteTableClick(MouseEventArgs args)
     {
+        _controller.Changed();
         SchemaController.DeleteTable(_controller.Table);
         await ModelChanged.InvokeAsync(null);
     }
 
     private async Task NameChanged(ChangeEventArgs args)
     {
+        _controller.Changed(Table);
         _controller.Table.Name = (string)args.Value;
         SchemaController.UpdateLog(DesignOperation.SetTableName, Table);
         _controller.Update();
@@ -180,6 +184,7 @@
 
     private async Task ColumnNameChanged(ChangeEventArgs e, int row)
     {
+        _controller.Changed(Table);
         _controller.Table.Columns[row].Name = (string)e.Value;
         var item = Table.Columns[row];
         SchemaController.UpdateLog(DesignOperation.SetColumnName, Table, item);
@@ -189,6 +194,7 @@
 
     private async Task ReferenceChanged(ChangeEventArgs e, int row)
     {
+        _controller.Changed(Table);
         _controller.Table.Columns[row].Reference = (string)e.Value;
         var item = Table.Columns[row];
         SchemaController.UpdateLog(DesignOperation.SetColumnReference, Table, item);
@@ -198,6 +204,7 @@
 
     private async Task TypeChanged(ChangeEventArgs e, int row)
     {
+        _controller.Changed(Table);
         _controller.Table.Columns[row].Type = (string)e.Value;
         var item = Table.Columns[row];
         SchemaController.UpdateLog(DesignOperation.SetColumnType, Table, item);
@@ -207,6 +214,7 @@
 
     private async Task ScriptChanged(ChangeEventArgs e)
     {
+        _controller.Changed();
         _controller.SetScript((string)e.Value);
         await ModelChanged.InvokeAsync(null);
     }

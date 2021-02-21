@@ -157,9 +157,7 @@
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        <div class="toast-body">
-            File  '@(_fileNameSaved)' saved successfully.
-        </div>
+        <div class="toast-body">@_toastMessage</div>
     </div>
 </div>
 
@@ -177,6 +175,7 @@
     private List<string> _files;
     private bool _fileNameChanged;
     private string _fileNameSaved;
+    private string _toastMessage;
 
     private Task<IJSObjectReference> _module;
     private Task<IJSObjectReference> Module => _module ??= JS.InvokeAsync<IJSObjectReference>("import", "./_content/Platz.ObjectBuilder.Blazor/objectBuilder.js").AsTask();
@@ -200,6 +199,7 @@
     private async Task NameChanged(ChangeEventArgs args)
     {
         SchemaController.Schema.Name = (string)args.Value;
+        SchemaController.Schema.Changed = true;
         _fileNameChanged = true;
         SchemaController.UpdateLog(DesignOperation.SetSchemaName);
         await ModelChanged.InvokeAsync(null);
@@ -218,7 +218,13 @@
     }
 
     private async Task NewClick(MouseEventArgs args)
-    { }
+    {
+        SchemaController.NewSchema();
+        await ModelChanged.InvokeAsync(null);
+        var module = await Module;
+        _toastMessage = $"New schema created.";
+        await module.InvokeVoidAsync("ShowToast", new object[] { "#saveToast" });
+    }
 
     private async Task SaveClick(MouseEventArgs args)
     {
@@ -245,8 +251,11 @@
             SchemaController.SaveMigrations(FullStoreDataPath);
             _fileNameSaved = fileName;
             _fileNameChanged = false;
+            _toastMessage = $"File  '{_fileNameSaved}' saved successfully.";
             await module.InvokeVoidAsync("ShowToast", new object[] { "#saveToast" });
         }
+
+        await ModelChanged.InvokeAsync(null);
     }
 
     private void ValidateClick(MouseEventArgs args)

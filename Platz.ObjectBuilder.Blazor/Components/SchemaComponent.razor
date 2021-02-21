@@ -22,13 +22,13 @@
 
                         <ul class="nav nav-tabs" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link @GetEditTabNavLink("Schema")" data-toggle="tab" href="#schemaEdit">Schema</a>
+                                <a class="nav-link @GetEditTabNavLink("Schema")" data-toggle="tab" href="#schemaEdit" @onclick="SchemaTabClick">Schema</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link @GetEditTabNavLink("Table")" data-toggle="tab" href="#tableEdit">Table</a>
+                                <a class="nav-link @GetEditTabNavLink("Table")" data-toggle="tab" href="#tableEdit" @onclick="TableTabClick">Table</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link @GetEditTabNavLink("Log")" data-toggle="tab" href="#schemaEditLog">Log</a>
+                                <a class="nav-link @GetEditTabNavLink("Log")" data-toggle="tab" href="#schemaEditLog" @onclick="LogTabClick">Log</a>
                             </li>
                         </ul>
 
@@ -86,6 +86,21 @@
             var ps = new SchemaControllerParameters { DataService = DataService, Namespace = Namespace, StoreDataPath = StoreDataPath };
             _schemaController.SetParameters(ps);
             _schemaController.NewSchema();
+        }
+
+        private async Task SchemaTabClick(MouseEventArgs args)
+        {
+            _schemaController.SelectSchemaTab();
+        }
+
+        private async Task TableTabClick(MouseEventArgs args)
+        {
+            _schemaController.SelectTableTab(0);
+        }
+
+        private async Task LogTabClick(MouseEventArgs args)
+        {
+            _schemaController.SelectLogTab();
         }
 
         private async Task ModelChanged(ChangeEventArgs args)

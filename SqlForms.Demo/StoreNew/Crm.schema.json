@@ -1,5 +1,5 @@
 {
-  "Name": "s1",
+  "Name": "Crm",
   "DbContextName": "MyRepository",
   "Title": null,
   "Type": null,
@@ -7,6 +7,97 @@
   "Tags": [],
   "Version": "1.0",
   "Definitions": {
+    "Address": {
+      "Name": "Address",
+      "Type": null,
+      "Comment": null,
+      "Properties": {
+        "Id": {
+          "Name": "Id",
+          "Type": null,
+          "Nullable": false,
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": true,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 0,
+          "ForeignKeys": []
+        },
+        "Line1": {
+          "Name": "Line1",
+          "Type": "string",
+          "Nullable": false,
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 1,
+          "ForeignKeys": []
+        },
+        "Suburb": {
+          "Name": "Suburb",
+          "Type": "string",
+          "Nullable": false,
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 2,
+          "ForeignKeys": []
+        },
+        "City": {
+          "Name": "City",
+          "Type": "string",
+          "Nullable": false,
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 3,
+          "ForeignKeys": []
+        },
+        "PostCode": {
+          "Name": "PostCode",
+          "Type": "string",
+          "Nullable": false,
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 4,
+          "ForeignKeys": []
+        },
+        "Deleted": {
+          "Name": "Deleted",
+          "Type": "bool",
+          "Nullable": false,
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 5,
+          "ForeignKeys": []
+        }
+      }
+    },
     "Person": {
       "Name": "Person",
       "Type": null,
@@ -71,7 +162,7 @@
         "Dob": {
           "Name": "Dob",
           "Type": "date",
-          "Nullable": false,
+          "Nullable": true,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -81,61 +172,6 @@
           "ExternalId": false,
           "Order": 4,
           "ForeignKeys": []
-        }
-      }
-    },
-    "t2": {
-      "Name": "t2",
-      "Type": null,
-      "Comment": null,
-      "Properties": {
-        "Id": {
-          "Name": "Id",
-          "Type": null,
-          "Nullable": false,
-          "Comment": null,
-          "MinLength": 0,
-          "MaxLength": null,
-          "Pk": true,
-          "AutoIncrement": true,
-          "Fk": false,
-          "ExternalId": false,
-          "Order": 0,
-          "ForeignKeys": []
-        },
-        "name2": {
-          "Name": "name2",
-          "Type": null,
-          "Nullable": false,
-          "Comment": null,
-          "MinLength": 0,
-          "MaxLength": null,
-          "Pk": false,
-          "AutoIncrement": false,
-          "Fk": false,
-          "ExternalId": false,
-          "Order": 1,
-          "ForeignKeys": []
-        },
-        "parentId": {
-          "Name": "parentId",
-          "Type": "reference",
-          "Nullable": false,
-          "Comment": null,
-          "MinLength": 0,
-          "MaxLength": null,
-          "Pk": false,
-          "AutoIncrement": false,
-          "Fk": true,
-          "ExternalId": false,
-          "Order": 2,
-          "ForeignKeys": [
-            {
-              "DefinitionName": "t2",
-              "PropertyName": "Id",
-              "CompositePropertyNames": null
-            }
-          ]
         }
       }
     }

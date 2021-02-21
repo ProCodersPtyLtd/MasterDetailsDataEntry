@@ -9,13 +9,13 @@ namespace Platz.ObjectBuilder.Blazor
     public class SchemaTableDesignController
     {
         public DesignTable Table { get; protected set; }
-        public string TableScript { get; set; }
+        //public string TableScript { get; set; }
 
         private DesignSchema _schema;
         
         public List<DesignColumn> Columns { get { return Table.Columns; } }
 
-        public string[] DataTypes = new string[] { "string", "int", "date", "money", "guid", "reference" };
+        public string[] DataTypes = new string[] { "string", "int", "date", "decimal", "bool", "guid", "reference" };
 
         public void Load(DesignSchema schema, DesignTable table)
         {
@@ -26,6 +26,7 @@ namespace Platz.ObjectBuilder.Blazor
         public void SetScript(string script)
         {
             // ToDo: Parse script and update columns
+            // ToDo: set Changed = true for all objects
         }
 
         public List<string> GetTablePrimaryKeys()
@@ -42,11 +43,27 @@ namespace Platz.ObjectBuilder.Blazor
             return Table;
         }
 
+        public void Changed(DesignTable table = null)
+        {
+            _schema.Changed = true;
+
+            if (table != null)
+            {
+                table.Changed = true;
+            }
+        }
+
         public void Update()
         {
+            CheckFirstColumnDefault(Table); 
             CheckNewColumnDefault(Table);
             CheckReferenceColumnDefaults(Table);
-            TableScript = GenerateScript(Table);
+            //TableScript = GenerateScript(Table);
+        }
+
+        public string GetTableScript()
+        {
+            return GenerateScript(Table);
         }
 
         private string GenerateScript(DesignTable table)
@@ -97,15 +114,24 @@ namespace Platz.ObjectBuilder.Blazor
 
             CheckNewColumnDefault(table);
         }
+        private void CheckFirstColumnDefault(DesignTable table)
+        {
+            if (table != null && table.Columns.Any() && table.Columns.First().Pk)
+            {
+                table.Columns.First().Disabled = true;
+            }
+        }
 
         private void CheckNewColumnDefault(DesignTable table)
         {
-            var last = table.Columns.Last();
-
-            //if (!string.IsNullOrWhiteSpace(last.Name) || last.Nullable || !string.IsNullOrWhiteSpace(last.Type) || !string.IsNullOrWhiteSpace(last.Reference))
-            if (!last.IsEmpty())
+            if (table != null)
             {
-                table.Columns.Add(new DesignColumn {});
+                var last = table.Columns.Last();
+
+                if (!last.IsEmpty())
+                {
+                    table.Columns.Add(new DesignColumn { });
+                }
             }
         }
     }
