@@ -24,7 +24,7 @@ namespace Default
 
     public partial class Address
     { 
-        public Guid Id { get; set; }
+        public long Id { get; set; }
         public string Line1 { get; set; }
         public string Suburb { get; set; }
         public string City { get; set; }
@@ -34,7 +34,7 @@ namespace Default
 
     public partial class Person
     { 
-        public Guid Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
         public string Phone { get; set; }
