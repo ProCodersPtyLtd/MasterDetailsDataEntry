@@ -15,7 +15,7 @@
       "Properties": {
         "Id": {
           "Name": "Id",
-          "Type": "guid",
+          "Type": "int",
           "Nullable": false,
           "Comment": null,
           "MinLength": 0,
@@ -106,7 +106,7 @@
       "Properties": {
         "Id": {
           "Name": "Id",
-          "Type": "guid",
+          "Type": "int",
           "Nullable": false,
           "Comment": null,
           "MinLength": 0,
@@ -178,6 +178,6 @@
     }
   },
   "Settings": {
-    "UseIntId": "False"
+    "UseIntId": "True"
   }
 }
