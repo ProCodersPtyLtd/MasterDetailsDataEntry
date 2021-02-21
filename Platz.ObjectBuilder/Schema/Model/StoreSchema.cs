@@ -10,6 +10,7 @@ namespace Platz.ObjectBuilder
     {
         public string Name { get; set; }
         public string DbContextName { get; set; }
+        public string Namespace { get; set; }
 
         public string Title { get; set; }
         public string Type { get; set; }
@@ -18,6 +19,8 @@ namespace Platz.ObjectBuilder
         public string Version { get; set; }
 
         public Dictionary<string, StoreDefinition> Definitions { get; set; }
+
+        public Dictionary<string, string> Settings { get; set; }
     }
 
     // The first property in these classes is a Key in Dictionary
@@ -41,6 +44,9 @@ namespace Platz.ObjectBuilder
 
         // types: string, number
         public string Type { get; set; }
+
+        public bool Nullable { get; set; }
+
         public string Comment { get; set; }
 
         public int MinLength { get; set; }

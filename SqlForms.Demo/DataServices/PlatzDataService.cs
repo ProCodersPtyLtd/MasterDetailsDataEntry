@@ -17,6 +17,7 @@ namespace Default
     {
         List<Cust> GetCustList(params object[] parameters);
         List<CustomerAddress> GetCustomerAddressList(params object[] parameters);
+        List<ProdModel> GetProdModelList();
     }
 
     #endregion
@@ -92,6 +93,24 @@ namespace Default
             }
         }
 
+        public List<ProdModel> GetProdModelList()
+        {
+            using (var db = GetDbContext())
+            {
+                var query =
+                    from p in db.ProductModel 
+                    select new ProdModel
+                    {
+                        ProductModelId = p.ProductModelId,
+                        CatalogDescription = p.CatalogDescription,
+                        Name = p.Name,
+                    };
+
+                var result = query.ToList();
+                return result;
+            }
+        }
+
     }
 
     #endregion
@@ -133,6 +152,15 @@ namespace Default
         public String Title { get; set; }
         public String FirstName { get; set; }
         public String LastName { get; set; }
+    }
+
+    public partial class ProdModel
+    {
+        public Int32 ProductModelId { get; set; }
+        public String CatalogDescription { get; set; }
+        public DateTime ModifiedDate { get; set; }
+        public String Name { get; set; }
+        public Guid Rowguid { get; set; }
     }
 
     #endregion

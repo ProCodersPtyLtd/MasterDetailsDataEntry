@@ -1,0 +1,18 @@
+﻿@using Platz.ObjectBuilder.Blazor.Controllers
+
+@namespace Platz.ObjectBuilder
+
+<br />
+
+<div class="plk-flex">
+    <label>Schema changes</label>
+    <textarea id="exampleFormControlTextarea1" rows="9" style="width: 100%" value="@SchemaController.GetDesignLog()" readonly="readonly"/>
+</div>
+
+@code {
+    [CascadingParameter]
+    public ISchemaController SchemaController { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+}

@@ -27,7 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ObjectBuilder", "ObjectBuil
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Platz.ObjectBuilder.Templates", "Platz.ObjectBuilder.Templates\Platz.ObjectBuilder.Templates.csproj", "{92A9C8E4-2110-4B00-BC10-A53468BE8B51}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlForms.Demo", "SqlForms.Demo\SqlForms.Demo.csproj", "{3F5364F6-9D31-4861-88CF-761EBA12AB32}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlForms.Demo", "SqlForms.Demo\SqlForms.Demo.csproj", "{3F5364F6-9D31-4861-88CF-761EBA12AB32}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

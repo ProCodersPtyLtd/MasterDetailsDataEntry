@@ -1,0 +1,13 @@
+﻿@page "/designer"
+
+@using Platz.ObjectBuilder
+
+<SchemaComponent StoreDataPath="StoreNew" DataService="MyRepository" Namespace="Default" />
+
+
+@code {
+    private Type GetContextType()
+    {
+        return typeof(MasterDetailsDataEntry.Demo.Database.AdventureWorksContext);
+    }
+}

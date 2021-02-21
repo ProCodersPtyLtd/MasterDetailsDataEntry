@@ -11,6 +11,7 @@ namespace Platz.ObjectBuilder
         List<string> GetFileNames(StorageParameters parameters);
         bool FileExists(StorageParameters parameters);
         StoreQuery LoadQuery(StorageParameters parameters);
+        StoreSchema LoadSchema(StorageParameters parameters);
     }
 
     public class StorageParameters

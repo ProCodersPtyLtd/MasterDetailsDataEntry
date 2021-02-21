@@ -33,3 +33,10 @@ export function ShowToast(name) {
 export function Collapse(name) {
     $(name).collapse('hide');
 }
+
+export function FocusElement(id) {
+    //const element = document.getElementById(id);
+    //element.focus();
+    //element.select();
+    $('#' + id).focus().select();
+}

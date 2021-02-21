@@ -1,0 +1,142 @@
+﻿@using Platz.ObjectBuilder.Blazor.Controllers
+
+@implements IAsyncDisposable
+
+@inject IJSRuntime JS
+
+@namespace Platz.ObjectBuilder
+
+<table style="width: 100%">
+    <tr>
+    <td>
+        <h5>Schema Tables:</h5>
+    </td>
+    <td>
+        <button class="btn btn-success" type="button" @onclick="AddTableClick" style="display: block; margin-left: auto; margin-right: 2px; margin-top: 2px;">Add</button>
+     </td>
+    </tr>
+</table>
+
+
+<div>
+    
+</div>
+
+<br />
+
+@{
+    var data = GetObjectList();
+}
+
+
+<div class="list-group overflow-auto" id="list-tab" role="tablist" style="max-height: 600px;">
+    @for (int i = 0; i < data.Count; i++)
+    {
+        var rowIndex = i;
+
+        <a class="list-group-item list-group-item-action @GetActive(rowIndex)" @onclick="async(a) => await ObjectClick(rowIndex)" @ondblclick="async(a) => await ObjectDblClick(a, rowIndex)"
+           data-toggle="list" href="#list-home" role="tab" aria-controls="home">@data[i]</a>
+    }
+</div>
+
+@code {
+    [CascadingParameter]
+    public ISchemaController SchemaController { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    private string _selectedObjectName;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        SchemaController.ListSelectedRow = 0;
+    }
+
+    private Task<IJSObjectReference> _module;
+    private Task<IJSObjectReference> Module => _module ??= JS.InvokeAsync<IJSObjectReference>("import", "./_content/Platz.ObjectBuilder.Blazor/objectBuilder.js").AsTask();
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_module != null)
+        {
+            var module = await _module;
+            await module.DisposeAsync();
+        }
+    }
+
+    private string GetActive(int rowIndex)
+    {
+        return rowIndex == SchemaController.ListSelectedRow ? "active" : "";
+    }
+
+    private List<string> GetObjectList()
+    {
+        var result = new List<string>();
+        var schema = SchemaController.Schema;
+        var changed = schema.Changed ? "*" : "";
+        result.Add($"Schema: {schema.Name}{changed}");
+
+        if (schema.Tables.Any())
+        {
+            DesignTable active = null;
+
+            if (SchemaController.ListSelectedRow > 0)
+            {
+                active = schema.Tables[SchemaController.ListSelectedRow - 1];
+            }
+
+            schema.Tables = schema.Tables.OrderBy(t => t.Name).ToList();
+
+            if (active != null)
+            {
+                SchemaController.ListSelectedRow = schema.Tables.IndexOf(active) + 1;
+            }
+
+            foreach (var d in schema.Tables)
+            {
+                changed = d.Changed ? "*" : "";
+                result.Add($"{d.Name}{changed}");
+            }
+        }
+
+        return result;
+    }
+
+    private async Task AddTableClick(MouseEventArgs args)
+    {
+        var table = SchemaController.CreateTable();
+        SchemaController.ListSelectedRow = SchemaController.Schema.Tables.IndexOf(table) + 1;
+        SchemaController.SelectTable(table);
+        SchemaController.SelectTableTab(SchemaController.ListSelectedRow);
+
+        await ModelChanged.InvokeAsync(null);
+
+        var module = await Module;
+        await module.InvokeVoidAsync("FocusElement", "TableNameInput");
+    }
+
+    private async Task ObjectDblClick(MouseEventArgs args, int row)
+    {
+        await ModelChanged.InvokeAsync(null);
+    }
+
+    private async Task ObjectClick(int row)
+    {
+        SchemaController.ListSelectedRow = row;
+
+        if (row == 0)
+        {
+            SchemaController.SelectSchemaTab();
+        }
+        else
+        {
+            SchemaController.SelectTableTab(row - 1);
+            SchemaController.SelectTable(SchemaController.Schema.Tables[row - 1]);
+        }
+
+        await ModelChanged.InvokeAsync(null);
+    }
+}
