@@ -180,5 +180,42 @@ namespace Platz.ObjectBuilder
             { "=", "==" },
             { "<>", "!=" },
         };
+
+        public string DesignShemaTypeToCSharp(StoreProperty p)
+        {
+            if (p.Pk && p.Type == "int")
+            {
+                return "long";
+            }
+
+            string result;
+
+            if (DesignSchemaTypesMap.ContainsKey(p.Type))
+            {
+                result = DesignSchemaTypesMap[p.Type];
+            }
+            else
+            {
+                result = p.Type;
+            }
+
+            if (result != "string" && p.Nullable)
+            {
+                result = result + "?";
+            }
+
+            return result;
+        }
+
+        public static Dictionary<string, string> DesignSchemaTypesMap = new Dictionary<string, string>()
+        {
+            { "guid", "Guid" },
+            { "string", "string" },
+            { "int", "int" },
+            { "date", "DateTime" },
+            { "decimal", "decimal" },
+            { "money", "decimal" },
+            { "bool", "bool" },
+        };
     }
 }

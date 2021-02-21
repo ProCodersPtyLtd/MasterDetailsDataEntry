@@ -10,6 +10,7 @@ namespace Platz.ObjectBuilder
     {
         public string Name { get; set; }
         public string DbContextName { get; set; }
+        public string Namespace { get; set; }
 
         public string Title { get; set; }
         public string Type { get; set; }

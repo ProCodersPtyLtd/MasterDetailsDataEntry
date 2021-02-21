@@ -14,6 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="DataServices\CrmDataContext.tt">
+      <LastGenOutput>CrmDataContext.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="DataServices\PlatzDataServiceTemp.tt">
       <LastGenOutput>PlatzDataServiceTemp.txt</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -34,6 +38,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="DataServices\CrmDataContext.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CrmDataContext.tt</DependentUpon>
+    </Compile>
     <Compile Update="DataServices\PlatzDataService.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

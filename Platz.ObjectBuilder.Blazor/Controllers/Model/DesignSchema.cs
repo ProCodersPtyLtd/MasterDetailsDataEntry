@@ -11,6 +11,7 @@ namespace Platz.ObjectBuilder.Blazor
         public string Name { get; set; }
         public string Version { get; set; }
         public string DataContextName { get; set; }
+        public string Namespace { get; set; }
         public List<DesignTable> Tables { get; set; } = new List<DesignTable>();
         public bool UseIntId { get; set; }
         public bool Changed { get; set; }
@@ -23,6 +24,7 @@ namespace Platz.ObjectBuilder.Blazor
             {
                 Name = s.Name,
                 DataContextName = s.DbContextName,
+                Namespace = s.Namespace,
                 Version = s.Version,
             };
 
@@ -71,6 +73,7 @@ namespace Platz.ObjectBuilder.Blazor
                 Name = s.Name,
                 Version = s.Version,
                 DbContextName = s.DataContextName,
+                Namespace = s.Namespace,
                 Definitions = new Dictionary<string, StoreDefinition>(),
                 Settings = new Dictionary<string, string>(),
             };
