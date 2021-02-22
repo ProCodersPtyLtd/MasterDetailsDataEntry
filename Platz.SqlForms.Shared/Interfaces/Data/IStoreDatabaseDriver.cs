@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Platz.SqlForms
 {
-    public abstract class DataContextBase
+    public interface IStoreDatabaseDriver
     {
     }
 }

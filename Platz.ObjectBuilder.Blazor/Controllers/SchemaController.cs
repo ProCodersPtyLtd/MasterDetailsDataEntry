@@ -265,7 +265,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         {
             var fileName = Path.Combine(path, GenerateFileName(path));
             var parameters = new StorageParameters { FileName = fileName };
-            var schema = DesignSchema.ToStoreSchema(Schema);
+            var schema = DesignSchemaConvert.ToStoreSchema(Schema);
             _schemaStorage.SaveSchema(schema, parameters);
 
             // set all changed properties
@@ -313,7 +313,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         public void LoadFromFile(string path, string fileName)
         {
             var schema = _schemaStorage.LoadSchema(new StorageParameters { FileName = fileName, Path = path });
-            Schema = DesignSchema.FromStoreSchema(schema);
+            Schema = DesignSchemaConvert.FromStoreSchema(schema);
             ClearChanged();
             ClearLog();
         }
