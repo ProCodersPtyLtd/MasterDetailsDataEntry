@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace Platz.ObjectBuilder
+namespace Platz.SqlForms
 {
     public class StoreQuery
     {

@@ -13,6 +13,7 @@
     <license type="expression">MIT</license>
     <dependencies>
 		<group targetFramework="net5.0">
+      <dependency id="Platz.SqlForms" version="0.3.0" />
 			<dependency id="Microsoft.AspNetCore.Components" version="5.0.1" />
 			<dependency id="Microsoft.AspNetCore.Components.Web" version="5.0.1" />
       <dependency id="Microsoft.EntityFrameworkCore" version="3.1.9" />

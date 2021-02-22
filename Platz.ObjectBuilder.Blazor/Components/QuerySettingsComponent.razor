@@ -1,4 +1,5 @@
-﻿@using Platz.ObjectBuilder.Blazor.Controllers
+﻿@using Platz.SqlForms
+@using Platz.ObjectBuilder.Blazor.Controllers
 @using System.Text.Json
 @using System.IO
 
@@ -43,15 +44,15 @@
 
                         @if (_query?.Query?.Parameters != null)
                         {
-                            <table cellpadding="3">
-                                @foreach (var p in _query.Query.Parameters.Values)
+                        <table cellpadding="3">
+                            @foreach (var p in _query.Query.Parameters.Values)
                                 {
-                                    <tr>
-                                        <td>@p.Name</td>
-                                        <td>@p.Type</td>
-                                    </tr>
+                            <tr>
+                                <td>@p.Name</td>
+                                <td>@p.Type</td>
+                            </tr>
                                 }
-                            </table>
+                        </table>
                         }
                     </td>
                     <td style="width: 100%; vertical-align: top;">
@@ -111,8 +112,8 @@
                             {
                                 var rowIndex = i;
 
-                                <a class="list-group-item list-group-item-action" @onclick="() => FileClick(rowIndex)" @ondblclick="async(a) => await FileDblClick(a, rowIndex)"
-                                   data-toggle="list" href="#list-home" role="tab" aria-controls="home">@data[i]</a>
+                            <a class="list-group-item list-group-item-action" @onclick="() => FileClick(rowIndex)" @ondblclick="async(a) => await FileDblClick(a, rowIndex)"
+                               data-toggle="list" href="#list-home" role="tab" aria-controls="home">@data[i]</a>
                             }
                         </div>
                     </div>
