@@ -65,6 +65,9 @@
         public string StoreDataPath { get; set; }
 
         [Parameter]
+        public string TargetConnectionString { get; set; }
+
+        [Parameter]
         public string Namespace { get; set; }
 
         [Parameter]
@@ -83,7 +86,7 @@
 
         private void InitController()
         {
-            var ps = new SchemaControllerParameters { DataService = DataService, Namespace = Namespace, StoreDataPath = StoreDataPath };
+            var ps = new SchemaControllerParameters { DataService = DataService, Namespace = Namespace, StoreDataPath = StoreDataPath, ConnectionString = TargetConnectionString };
             _schemaController.SetParameters(ps);
             _schemaController.NewSchema();
         }

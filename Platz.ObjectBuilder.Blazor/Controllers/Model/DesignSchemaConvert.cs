@@ -57,6 +57,26 @@ namespace Platz.ObjectBuilder.Blazor
             return null;
         }
 
+        public static StoreDefinition ToStoreDefinition(DesignTable t)
+        {
+            var d = new StoreDefinition { Name = t.Name, Properties = new Dictionary<string, StoreProperty>() };
+            int i = 0;
+
+            d.Properties = t.Columns.Where(c => !c.IsEmpty()).ToDictionary(c => c.Name, c => new StoreProperty
+            {
+                Name = c.Name,
+                Type = c.Type,
+                Pk = c.Pk,
+                Fk = !string.IsNullOrWhiteSpace(c.Reference),
+                Nullable = c.Nullable,
+                AutoIncrement = c.Pk,
+                ForeignKeys = GetForeignKeysForColumn(t, c),
+                Order = i++
+            });
+
+            return d;
+        }
+
         public static StoreSchema ToStoreSchema(DesignSchema s)
         {
             var schema = new StoreSchema

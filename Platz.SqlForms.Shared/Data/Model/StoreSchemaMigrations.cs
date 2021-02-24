@@ -22,6 +22,8 @@ namespace Platz.SqlForms
     public class MigrationCommand
     {
         public MigrationOperation Operation { get; set; }
+        // Text value of operation for readability
+        public string OperationCode { get; set; }
         public string SchemaName { get; set; }
         public string TableName { get; set; }
         public string ColumnName { get; set; }
@@ -49,6 +51,6 @@ namespace Platz.SqlForms
         AddColumn = 20,
         DeleteColumn,
         AlterColumnName,
-        AlterColumnType,
+        AlterColumn,
     }
 }

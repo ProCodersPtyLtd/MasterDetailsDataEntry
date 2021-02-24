@@ -13,6 +13,7 @@ namespace Platz.ObjectBuilder
         bool FileExists(StorageParameters parameters);
         StoreQuery LoadQuery(StorageParameters parameters);
         StoreSchema LoadSchema(StorageParameters parameters);
+        void SaveMigration(StoreSchemaMigrations package, StorageParameters parameters);
     }
 
     public class StorageParameters

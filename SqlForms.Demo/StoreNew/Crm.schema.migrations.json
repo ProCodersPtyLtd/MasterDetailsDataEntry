@@ -1,0 +1,202 @@
+{
+  "Version": "1.0",
+  "VersionKey": "00000000-0000-0000-0000-000000000000",
+  "Commands": [
+    {
+      "Operation": 1,
+      "OperationCode": null,
+      "SchemaName": "Crm",
+      "TableName": null,
+      "ColumnName": null,
+      "NewValue": null,
+      "Table": null,
+      "Column": null
+    },
+    {
+      "Operation": 10,
+      "OperationCode": null,
+      "SchemaName": "Crm",
+      "TableName": null,
+      "ColumnName": null,
+      "NewValue": null,
+      "Table": {
+        "Name": "Address",
+        "Type": null,
+        "Comment": null,
+        "Properties": {
+          "Id": {
+            "Name": "Id",
+            "Type": "int",
+            "Nullable": false,
+            "Comment": null,
+            "MinLength": 0,
+            "MaxLength": null,
+            "Pk": true,
+            "AutoIncrement": true,
+            "Fk": false,
+            "ExternalId": false,
+            "Order": 0,
+            "ForeignKeys": []
+          },
+          "Line1": {
+            "Name": "Line1",
+            "Type": "string",
+            "Nullable": false,
+            "Comment": null,
+            "MinLength": 0,
+            "MaxLength": null,
+            "Pk": false,
+            "AutoIncrement": false,
+            "Fk": false,
+            "ExternalId": false,
+            "Order": 1,
+            "ForeignKeys": []
+          },
+          "Suburb": {
+            "Name": "Suburb",
+            "Type": "string",
+            "Nullable": false,
+            "Comment": null,
+            "MinLength": 0,
+            "MaxLength": null,
+            "Pk": false,
+            "AutoIncrement": false,
+            "Fk": false,
+            "ExternalId": false,
+            "Order": 2,
+            "ForeignKeys": []
+          },
+          "City": {
+            "Name": "City",
+            "Type": "string",
+            "Nullable": false,
+            "Comment": null,
+            "MinLength": 0,
+            "MaxLength": null,
+            "Pk": false,
+            "AutoIncrement": false,
+            "Fk": false,
+            "ExternalId": false,
+            "Order": 3,
+            "ForeignKeys": []
+          },
+          "PostCode": {
+            "Name": "PostCode",
+            "Type": "string",
+            "Nullable": false,
+            "Comment": null,
+            "MinLength": 0,
+            "MaxLength": null,
+            "Pk": false,
+            "AutoIncrement": false,
+            "Fk": false,
+            "ExternalId": false,
+            "Order": 4,
+            "ForeignKeys": []
+          },
+          "Deleted": {
+            "Name": "Deleted",
+            "Type": "bool",
+            "Nullable": false,
+            "Comment": null,
+            "MinLength": 0,
+            "MaxLength": null,
+            "Pk": false,
+            "AutoIncrement": false,
+            "Fk": false,
+            "ExternalId": false,
+            "Order": 5,
+            "ForeignKeys": []
+          }
+        }
+      },
+      "Column": null
+    },
+    {
+      "Operation": 10,
+      "OperationCode": null,
+      "SchemaName": "Crm",
+      "TableName": null,
+      "ColumnName": null,
+      "NewValue": null,
+      "Table": {
+        "Name": "Person",
+        "Type": null,
+        "Comment": null,
+        "Properties": {
+          "Id": {
+            "Name": "Id",
+            "Type": "int",
+            "Nullable": false,
+            "Comment": null,
+            "MinLength": 0,
+            "MaxLength": null,
+            "Pk": true,
+            "AutoIncrement": true,
+            "Fk": false,
+            "ExternalId": false,
+            "Order": 0,
+            "ForeignKeys": []
+          },
+          "Name": {
+            "Name": "Name",
+            "Type": "string",
+            "Nullable": false,
+            "Comment": null,
+            "MinLength": 0,
+            "MaxLength": null,
+            "Pk": false,
+            "AutoIncrement": false,
+            "Fk": false,
+            "ExternalId": false,
+            "Order": 1,
+            "ForeignKeys": []
+          },
+          "Surname": {
+            "Name": "Surname",
+            "Type": "string",
+            "Nullable": false,
+            "Comment": null,
+            "MinLength": 0,
+            "MaxLength": null,
+            "Pk": false,
+            "AutoIncrement": false,
+            "Fk": false,
+            "ExternalId": false,
+            "Order": 2,
+            "ForeignKeys": []
+          },
+          "Phone": {
+            "Name": "Phone",
+            "Type": "string",
+            "Nullable": false,
+            "Comment": null,
+            "MinLength": 0,
+            "MaxLength": null,
+            "Pk": false,
+            "AutoIncrement": false,
+            "Fk": false,
+            "ExternalId": false,
+            "Order": 3,
+            "ForeignKeys": []
+          },
+          "Dob": {
+            "Name": "Dob",
+            "Type": "date",
+            "Nullable": true,
+            "Comment": null,
+            "MinLength": 0,
+            "MaxLength": null,
+            "Pk": false,
+            "AutoIncrement": false,
+            "Fk": false,
+            "ExternalId": false,
+            "Order": 4,
+            "ForeignKeys": []
+          }
+        }
+      },
+      "Column": null
+    }
+  ]
+}

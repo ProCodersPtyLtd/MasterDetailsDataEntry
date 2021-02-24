@@ -5,6 +5,7 @@ using Platz.ObjectBuilder.Blazor.Controllers.Logic;
 using Platz.ObjectBuilder.Blazor.Controllers.Validation;
 using Platz.ObjectBuilder.Engine;
 using Platz.ObjectBuilder.Expressions;
+using Platz.SqlForms;
 using Plk.Blazor.DragDrop;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,8 @@ namespace Platz.ObjectBuilder
             services.AddTransient<ISchemaController, SchemaController>();
             services.AddTransient<SchemaTableDesignController, SchemaTableDesignController>();
             services.AddSingleton<IStoreSchemaStorage, FileStoreSchemaStorage>();
+            services.AddSingleton<IDataMigrationManager, DataMigrationManager>();
+            services.AddSingleton<IStoreDatabaseDriver, SqlJsonStoreDatabaseDriver>();
             return services;
         }
     }

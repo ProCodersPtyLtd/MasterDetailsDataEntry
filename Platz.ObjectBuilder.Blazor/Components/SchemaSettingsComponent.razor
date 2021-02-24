@@ -87,7 +87,7 @@
             <input @bind="SchemaController.Parameters.ConnectionString" readonly="readonly" class="form-control" />
         </td>
         <td style="padding: 0px 0px 0px 10px; vertical-align: bottom;">
-            <button class="btn btn-danger" type="button" @onclick="CreateMigrationClick" style="width: 100%">Recreate Schema</button>
+            <button class="btn btn-danger" type="button" @onclick="ApplySchemaChangesClick" style="width: 100%">Apply Changes</button>
         </td>
     </tr>
     <tr>
@@ -161,21 +161,40 @@
     </div>
 </div>
 
+<!-- Position it -->
+<div style="position: absolute; top: 0; right: 0; min-width: 300px;z-index: 100">
+
+    <!-- Then put toasts within -->
+    <div id="errorToast" class="toast" role="banner" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="3000" style="background-color: lightcoral;">
+        <div class="toast-header">
+            @*<img src="file" class="rounded mr-2" alt="...">*@
+            @*<span class="oi oi-file"></span>*@
+            <strong class="mr-auto">Error</strong>
+            <small class="text-muted">just now</small>
+            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="toast-body">@_toastErrorMessage</div>
+    </div>
+</div>
+
 @code {
-    [CascadingParameter]
-    public ISchemaController SchemaController { get; set; }
+        [CascadingParameter]
+        public ISchemaController SchemaController { get; set; }
 
-    [Parameter]
-    public string FullStoreDataPath { get; set; }
+        [Parameter]
+        public string FullStoreDataPath { get; set; }
 
-    [Parameter]
-    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+        [Parameter]
+        public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 
     private string _selectedFileName;
     private List<string> _files;
     private bool _fileNameChanged;
     private string _fileNameSaved;
     private string _toastMessage;
+    private string _toastErrorMessage;
 
     private Task<IJSObjectReference> _module;
     private Task<IJSObjectReference> Module => _module ??= JS.InvokeAsync<IJSObjectReference>("import", "./_content/Platz.ObjectBuilder.Blazor/objectBuilder.js").AsTask();
@@ -247,8 +266,8 @@
 
         if (canSave)
         {
-            SchemaController.SaveSchema(FullStoreDataPath);
             SchemaController.SaveMigrations(FullStoreDataPath);
+            SchemaController.SaveSchema(FullStoreDataPath);
             _fileNameSaved = fileName;
             _fileNameChanged = false;
             _toastMessage = $"File  '{_fileNameSaved}' saved successfully.";
@@ -292,6 +311,20 @@
 
     private async Task CreateMigrationClick(MouseEventArgs args)
     {
+
+    }
+
+    private async Task ApplySchemaChangesClick(MouseEventArgs args)
+    {
+        if (SchemaController.Schema.Changed)
+        {
+            var module = await Module;
+            _toastErrorMessage = $"Schema must be saved before applying.";
+            await module.InvokeVoidAsync("ShowToast", new object[] { "#errorToast" });
+            return;
+        }
+
+        SchemaController.ApplyMigrations();
     }
 
     private async Task FileDblClick(MouseEventArgs args, int row)

@@ -10,6 +10,7 @@ namespace Platz.ObjectBuilder.Blazor
     {
         public string Name { get; set; }
         public string Version { get; set; }
+        public Guid VersionKey { get; set; }
         public string DataContextName { get; set; }
         public string Namespace { get; set; }
         public List<DesignTable> Tables { get; set; } = new List<DesignTable>();

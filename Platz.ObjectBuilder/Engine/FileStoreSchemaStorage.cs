@@ -69,5 +69,19 @@ namespace Platz.ObjectBuilder.Engine
                 sw.Write(json);
             }
         }
+        public void SaveMigration(StoreSchemaMigrations package, StorageParameters parameters)
+        {
+            var options = new JsonSerializerOptions()
+            {
+                WriteIndented = true
+            };
+
+            var json = System.Text.Json.JsonSerializer.Serialize(package, options);
+
+            using (var sw = new StreamWriter(parameters.FileName, false))
+            {
+                sw.Write(json);
+            }
+        }
     }
 }
