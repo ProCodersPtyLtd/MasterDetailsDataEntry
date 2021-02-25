@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Platz.SqlForms
@@ -11,6 +14,7 @@ namespace Platz.SqlForms
     /// </summary>
     public class SqlJsonStoreDatabaseDriver : IStoreDatabaseDriver
     {
+        public const string DATA_COLUMN = "data";
         private StoreDatabaseDriverSettings _settings;
 
         public void Configure(StoreDatabaseDriverSettings settings)
@@ -33,17 +37,87 @@ namespace Platz.SqlForms
 
         public void CreateSchema(string schemaName)
         {
-            throw new NotImplementedException();
+            var sql = @$"
+IF NOT EXISTS ( SELECT  *
+                FROM    sys.schemas
+                WHERE   name = N'{schemaName}' )
+    EXEC('CREATE SCHEMA [{schemaName}]');
+";
+
+            ExecuteNonQuery(sql);
         }
 
         public void CreateTable<T>(string schema, string tableName = null)
         {
-            throw new NotImplementedException();
+            var table = GetTableFromType(typeof(T));
+            table.Name = tableName ?? table.Name;
+            CreateTable(schema, table);
+        }
+
+        private StoreDefinition GetTableFromType(Type entityType)
+        {
+            var d = new StoreDefinition { Name = entityType.Name };
+            int i = 0;
+
+            d.Properties = entityType.GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                .Select(p => new StoreProperty { Name = p.Name, Type = p.PropertyType.Name, Pk = i == 0, Order = i++ })
+                .ToDictionary(p => p.Name, p => p);
+
+            return d;
         }
 
         public void CreateTable(string schema, StoreDefinition table)
         {
-            throw new NotImplementedException();
+            var columns = table.Properties.Values.OrderBy(p => p.Order).ToList();
+            var pkColumn = GetPkColumn(columns[0]);
+            
+            var sql = @$"
+CREATE TABLE [{schema}].[{table.Name}] ({pkColumn}, {DATA_COLUMN} nvarchar(max));
+
+ALTER TABLE [{schema}].[{table.Name}]
+    ADD CONSTRAINT [{schema}_{table.Name}_JSON]
+                   CHECK (ISJSON({DATA_COLUMN})=1);
+";
+
+            ExecuteNonQuery(sql);
+        }
+
+        private void ExecuteNonQuery(string sql)
+        {
+            using (var conn = new SqlConnection(_settings.ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    conn.Open();
+                    var e = cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        private void ExecuteNonQueryP1(string sql, string p1)
+        {
+            using (var conn = new SqlConnection(_settings.ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    conn.Open();
+                    cmd.Parameters.AddWithValue("p1", p1);
+                    var e = cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        private string GetPkColumn(StoreProperty pk)
+        {
+            switch (pk.Type)
+            {
+                case "int":
+                    return $"{pk.Name} bigint IDENTITY(1,1) PRIMARY KEY";
+                case "Guid":
+                    return $"{pk.Name} uniqueidentifier PRIMARY KEY";
+                default:
+                    return $"{pk.Name} varchar(32) PRIMARY KEY";
+            }
         }
 
         public void DeleteColumn(string schemaName, string tableName, string columnName)
@@ -68,7 +142,25 @@ namespace Platz.SqlForms
 
         public bool TableExists(string schema, string tableName)
         {
-            throw new NotImplementedException();
+            var sql = $"SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = @p1 AND  TABLE_NAME = @p2";
+
+            using (var conn = new SqlConnection(_settings.ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    conn.Open();
+                    cmd.Parameters.AddWithValue("p1", schema);
+                    cmd.Parameters.AddWithValue("p2", tableName);
+                    var e = cmd.ExecuteScalar();
+
+                    if (e != null && Convert.ToInt32(e) == 1)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         #endregion
@@ -97,6 +189,29 @@ namespace Platz.SqlForms
         public long Insert(string schema, object record, string tableName)
         {
             throw new NotImplementedException();
+        }
+
+        public long Insert(string schema, object record, string idValue, string tableName)
+        {
+            var type = record.GetType();
+            var table = GetTableFromType(type);
+            var columns = table.Properties.Values.OrderBy(p => p.Order).ToList();
+            string json = System.Text.Json.JsonSerializer.Serialize(record, type);
+            string sql;
+
+            switch (columns[0].Type)
+            {
+                case "int":
+                    throw new NotImplementedException();
+                case "guid":
+                    throw new NotImplementedException();
+                default:
+                    sql = SqlScriptHelper.InsertJsonTablePkString(tableName, schema, idValue, "p1");
+                    break;
+            }
+
+            ExecuteNonQueryP1(sql, json);
+            return 0;
         }
         #endregion
 

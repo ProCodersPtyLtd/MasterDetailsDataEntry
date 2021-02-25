@@ -42,6 +42,7 @@ namespace Platz.SqlForms
                 {
                     case MigrationOperation.CreateSchema:
                         _storeDatabaseDriver.CreateSchema(command.SchemaName);
+                        _storeDatabaseDriver.CreateTable<MigrationVersionEntity>(schema, VERSION_TABLE);
                         break;
                     case MigrationOperation.CreateTable:
                         _storeDatabaseDriver.CreateTable(command.SchemaName, command.Table);
@@ -74,14 +75,14 @@ namespace Platz.SqlForms
 
             // save to version table
             var vesionRecord = new MigrationVersionEntity { Applied = DateTime.UtcNow, Version = migration.Version, VersionKey = migration.VersionKey };
-            _storeDatabaseDriver.Insert(schema, vesionRecord, VERSION_TABLE);
+            _storeDatabaseDriver.Insert(schema, vesionRecord, migration.Version, VERSION_TABLE);
         }
 
         public bool MigrationApplied(string schema, StoreMigration migration)
         {
             if (!_storeDatabaseDriver.TableExists(schema, VERSION_TABLE))
             {
-                _storeDatabaseDriver.CreateTable<MigrationVersionEntity>(schema, VERSION_TABLE);
+                //_storeDatabaseDriver.CreateTable<MigrationVersionEntity>(schema, VERSION_TABLE);
                 return false;
             }
 

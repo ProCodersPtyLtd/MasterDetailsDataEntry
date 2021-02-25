@@ -15,6 +15,7 @@ namespace Platz.SqlForms
         T Find<T>(string schema, object pkValue);
         long Insert(string schema, object record);
         long Insert(string schema, object record, string tableName);
+        long Insert(string schema, object record, string idValue, string tableName);
         void CreateSchema(string schemaName);
         void RenameTable(string schemaName, string tableName, string newValue);
         void DeleteTable(string schemaName, string tableName);
