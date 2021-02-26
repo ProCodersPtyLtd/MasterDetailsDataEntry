@@ -3,7 +3,7 @@
   "Migrations": [
     {
       "Version": "1.0",
-      "VersionKey": "13e0af4f-cf2b-4f2f-b078-bf44ee97e08b",
+      "VersionKey": "070723ab-f9d9-456c-838c-51ef7cceebaf",
       "Commands": [
         {
           "Operation": 1,

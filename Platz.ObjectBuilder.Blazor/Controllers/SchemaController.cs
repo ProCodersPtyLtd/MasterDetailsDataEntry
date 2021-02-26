@@ -270,6 +270,12 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
 
         public void SaveSchema(string path)
         {
+            // Schema.VersionKey set during migration generation
+            //if (Schema.Changed)
+            //{
+            //    Schema.VersionKey = Guid.NewGuid();
+            //}
+
             var fileName = Path.Combine(path, GenerateFileName(path));
             var parameters = new StorageParameters { FileName = fileName };
             var schema = DesignSchemaConvert.ToStoreSchema(Schema);
@@ -392,7 +398,6 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             var package = GenerateMigrations(Schema, _designRecords);
             _migrationManager.Configure(new StoreDatabaseDriverSettings { ConnectionString = Parameters.ConnectionString });
             _migrationManager.ApplyMigrations(package);
-            throw new NotImplementedException();
         }
     }
 }

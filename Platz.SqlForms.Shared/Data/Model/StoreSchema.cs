@@ -17,6 +17,7 @@ namespace Platz.SqlForms
         public string Comment { get; set; }
         public string[] Tags { get; set; }
         public string Version { get; set; }
+        public Guid VersionKey { get; set; }
 
         public Dictionary<string, StoreDefinition> Definitions { get; set; }
 

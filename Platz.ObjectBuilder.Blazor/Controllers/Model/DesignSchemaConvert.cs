@@ -17,6 +17,7 @@ namespace Platz.ObjectBuilder.Blazor
                 DataContextName = s.DbContextName,
                 Namespace = s.Namespace,
                 Version = s.Version,
+                VersionKey = s.VersionKey,
             };
 
             if (s.Settings.ContainsKey("UseIntId"))
@@ -83,6 +84,7 @@ namespace Platz.ObjectBuilder.Blazor
             {
                 Name = s.Name,
                 Version = s.Version,
+                VersionKey = s.VersionKey,
                 DbContextName = s.DataContextName,
                 Namespace = s.Namespace,
                 Definitions = new Dictionary<string, StoreDefinition>(),

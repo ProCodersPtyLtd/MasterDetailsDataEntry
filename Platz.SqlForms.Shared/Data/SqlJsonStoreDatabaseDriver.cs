@@ -1,10 +1,12 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 
 namespace Platz.SqlForms
 {
@@ -15,6 +17,7 @@ namespace Platz.SqlForms
     public class SqlJsonStoreDatabaseDriver : IStoreDatabaseDriver
     {
         public const string DATA_COLUMN = "data";
+        public const string SEQUENCE = "mainseq";
         private StoreDatabaseDriverSettings _settings;
 
         public void Configure(StoreDatabaseDriverSettings settings)
@@ -43,6 +46,9 @@ IF NOT EXISTS ( SELECT  *
                 WHERE   name = N'{schemaName}' )
     EXEC('CREATE SCHEMA [{schemaName}]');
 ";
+
+            // create sequence for autoincrement
+            sql += SqlScriptHelper.CreateSequence(schemaName, SEQUENCE);
 
             ExecuteNonQuery(sql);
         }
@@ -112,7 +118,9 @@ ALTER TABLE [{schema}].[{table.Name}]
             switch (pk.Type)
             {
                 case "int":
-                    return $"{pk.Name} bigint IDENTITY(1,1) PRIMARY KEY";
+                    //return $"{pk.Name} bigint IDENTITY(1,1) PRIMARY KEY";
+                    // we use sequence for autoincrement
+                    return $"{pk.Name} bigint PRIMARY KEY";
                 case "Guid":
                     return $"{pk.Name} uniqueidentifier PRIMARY KEY";
                 default:
@@ -168,13 +176,70 @@ ALTER TABLE [{schema}].[{table.Name}]
         #region CRUD
         public IEnumerable<T> Find<T>(string schema, string tableName, string filterColumn, object filterValue)
         {
-            throw new NotImplementedException();
+            //var table = GetTableFromType(typeof(T));
+            //var columns = table.Properties.Values.OrderBy(p => p.Order).ToList();
+
+            // ToDo: assumption that filter columns always implemented as columns or virtual columns
+            var sql = $"SELECT * FROM {schema}.{tableName} WHERE {filterColumn}=@p1";
+            var objects = ExecuteQueryP1(sql, typeof(T), filterValue);
+            var typedObjects = objects.OfType<T>();
+            return typedObjects;
+        }
+
+        private List<object> ExecuteQueryP1(string sql, Type entityType, object p1)
+        {
+            var result = new List<object>();
+            //var table = GetTableFromType(entityType);
+            //var columns = table.Properties.Values.OrderBy(p => p.Order).ToList();
+
+            using (var conn = new SqlConnection(_settings.ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    conn.Open();
+
+                    if (p1 != null)
+                    {
+                        cmd.Parameters.AddWithValue("p1", p1);
+                    }
+
+                    var dr = cmd.ExecuteReader();
+
+                    while(dr.Read())
+                    {
+                        var json = Convert.ToString(dr[DATA_COLUMN]);
+                        var e = JsonSerializer.Deserialize(json, entityType);
+                        result.Add(e);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public IList Get(string schema, Type entityType)
+        {
+            var table = GetTableFromType(entityType);
+            var sql = $"SELECT * FROM {schema}.{table.Name}";
+            var objects = ExecuteQueryP1(sql, entityType, null);
+            return objects;
+        }
+
+        public IList Find(string schema, Type entityType, object pkValue)
+        {
+            var table = GetTableFromType(entityType);
+            var columns = table.Properties.Values.OrderBy(p => p.Order).ToList();
+            var pkColumnName = GetPkColumn(columns[0]);
+            var sql = $"SELECT * FROM {schema}.{table.Name} WHERE {pkColumnName}=@p1";
+            var objects = ExecuteQueryP1(sql, entityType, pkValue);
+            return objects;
         }
 
         public IEnumerable<T> Find<T>(string schema, string filterColumn, object filterValue)
         {
             throw new NotImplementedException();
         }
+
 
         public T Find<T>(string schema, object pkValue)
         {
@@ -183,7 +248,8 @@ ALTER TABLE [{schema}].[{table.Name}]
 
         public long Insert(string schema, object record)
         {
-            throw new NotImplementedException();
+            var table = GetTableFromType(record.GetType());
+            return Insert(schema, record, table.Name);
         }
 
         public long Insert(string schema, object record, string tableName)
@@ -196,13 +262,16 @@ ALTER TABLE [{schema}].[{table.Name}]
             var type = record.GetType();
             var table = GetTableFromType(type);
             var columns = table.Properties.Values.OrderBy(p => p.Order).ToList();
+            var pkName = columns[0].Name;
             string json = System.Text.Json.JsonSerializer.Serialize(record, type);
             string sql;
 
             switch (columns[0].Type)
             {
                 case "int":
-                    throw new NotImplementedException();
+                case "long":
+                    sql = SqlScriptHelper.InsertJsonTableAutoIncrement(tableName, schema, SEQUENCE, pkName, "p1");
+                    break;
                 case "guid":
                     throw new NotImplementedException();
                 default:
