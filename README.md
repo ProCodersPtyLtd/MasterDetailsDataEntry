@@ -61,6 +61,7 @@ https://docs.microsoft.com/en-us/sql/samples/adventureworks-install-configure?vi
 - SchemaDesigner prototype, that allows to design database entities and save the schema to json
 - T4 template to geneate SchemaDesigner entities and data access layer
 - Upgrade ObjectBuilder to support SchemaDesigner entities
+- Seed projects for easy start
 ### Release 0.4.0 - May'21
 - UI SQL forms to entry/edit business objects
 - ObjectBuilder definition of business object - entity mappings and CRUD operations
