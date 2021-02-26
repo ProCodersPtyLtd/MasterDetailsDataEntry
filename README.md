@@ -70,6 +70,7 @@ https://docs.microsoft.com/en-us/sql/samples/adventureworks-install-configure?vi
 - ObjectBuilder Subqueries
 ### Release 0.5.0 - Jun'21
 - Usability and error data recovery for builders and designers
+- Support of Postgres
 - Bug fixes
 ### Release 1.0.0 - Aug'21
 - Support documentation
