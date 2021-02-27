@@ -114,6 +114,24 @@ WHERE {ID_COLUMN} = {id};
             return sql;
         }
 
+        public static string UpdateJsonTableWithParams(string name, string schema)
+        {
+            var sql = @$"
+UPDATE {schema}.{name} SET {DATA_COLUMN} = @p1
+WHERE {ID_COLUMN} = @p2;
+";
+            return sql;
+        }
+
+        public static string DeleteJsonTableWithParams(string name, string schema)
+        {
+            var sql = @$"
+DELETE {schema}.{name}
+WHERE {ID_COLUMN} = @p1;
+";
+            return sql;
+        }
+
         public static string UpsertJsonTable(string name, string schema, string sequenceName, string idColumn, long id, string jsonParamName)
         {
             var sql = @$"

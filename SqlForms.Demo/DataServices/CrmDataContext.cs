@@ -15,10 +15,12 @@ namespace Default
 
     public partial class CrmDataContext : DataContextBase
     {
-        protected override void Configure(TableCollection tables)
+        protected override void Configure(DataContextSettings settings)
         {
-            tables.Add<Address>();
-            tables.Add<Person>();
+            settings.SetSchema("Crm");
+            settings.SetDriver<SqlJsonStoreDatabaseDriver>();
+            settings.AddTable<Address>();
+            settings.AddTable<Person>();
         }
     }
 

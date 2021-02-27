@@ -92,7 +92,8 @@ namespace Platz.SqlForms
             {
                 if (versionRecord.First().VersionKey != migration.VersionKey)
                 {
-                    throw new DataMigrationException($"Incompatible migration already applied, expected key is {migration.VersionKey} but key in the database is {versionRecord.First().VersionKey}");
+                    throw new DataMigrationException(
+                        $"Incompatible migration already applied, expected key is {migration.VersionKey} but key in the database is {versionRecord.First().VersionKey}");
                 }
 
                 return true;

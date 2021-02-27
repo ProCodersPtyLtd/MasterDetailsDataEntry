@@ -81,13 +81,21 @@
         </td>
     </tr>
     <tr>
-        <td colspan="2">
+        <td colspan="3">
             <br />
-            <label>Target Connection String</label>
+            <label>Development Database - Target Connection String</label>
             <input @bind="SchemaController.Parameters.ConnectionString" readonly="readonly" class="form-control" />
         </td>
-        <td style="padding: 0px 0px 0px 10px; vertical-align: bottom;">
-            <button class="btn btn-danger" type="button" @onclick="ApplySchemaChangesClick" style="width: 100%">Apply Changes</button>
+        
+    </tr>
+    <tr>
+        <td>
+        </td>
+        <td style="padding: 10px 0px 0px 10px; vertical-align: bottom;">
+            <button class="btn btn-danger" type="button" @onclick="DeleteSchemaClick" style="width: 100%">Clear</button>
+        </td>
+        <td style="padding: 10px 0px 0px 10px; vertical-align: bottom;">
+            <button class="btn btn-warning" type="button" @onclick="ApplySchemaChangesClick" style="width: 100%">Apply Changes</button>
         </td>
     </tr>
     <tr>
@@ -165,7 +173,7 @@
 <div style="position: absolute; top: 0; right: 0; min-width: 300px;z-index: 100">
 
     <!-- Then put toasts within -->
-    <div id="errorToast" class="toast" role="banner" aria-live="assertive" aria-atomic="true" data-autohide="false" data-delay="3000" style="background-color: lightcoral;">
+    <div id="errorToast" class="toast" role="banner" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="30000" style="background-color: lightcoral;">
         <div class="toast-header">
             @*<img src="file" class="rounded mr-2" alt="...">*@
             @*<span class="oi oi-file"></span>*@
@@ -314,6 +322,9 @@
 
     }
 
+    private async Task DeleteSchemaClick(MouseEventArgs args)
+    { }
+
     private async Task ApplySchemaChangesClick(MouseEventArgs args)
     {
         var module = await Module;
@@ -331,7 +342,7 @@
         }
         catch(Exception exc)
         {
-            _toastErrorMessage = exc.Message;
+            _toastErrorMessage = exc.Message + " Try to Clear Schema first. All data will be deleted!";
             await module.InvokeVoidAsync("ShowToast", new object[] { "#errorToast" });
             return;
         }
