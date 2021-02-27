@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Platz.SqlForms;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -62,6 +63,20 @@ namespace Platz.ObjectBuilder.Engine
             };
 
             var json = System.Text.Json.JsonSerializer.Serialize(schema, options);
+
+            using (var sw = new StreamWriter(parameters.FileName, false))
+            {
+                sw.Write(json);
+            }
+        }
+        public void SaveMigration(StoreSchemaMigrations package, StorageParameters parameters)
+        {
+            var options = new JsonSerializerOptions()
+            {
+                WriteIndented = true
+            };
+
+            var json = System.Text.Json.JsonSerializer.Serialize(package, options);
 
             using (var sw = new StreamWriter(parameters.FileName, false))
             {

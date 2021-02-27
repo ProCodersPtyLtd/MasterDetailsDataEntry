@@ -81,13 +81,21 @@
         </td>
     </tr>
     <tr>
-        <td colspan="2">
+        <td colspan="3">
             <br />
-            <label>Target Connection String</label>
+            <label>Development Database - Target Connection String</label>
             <input @bind="SchemaController.Parameters.ConnectionString" readonly="readonly" class="form-control" />
         </td>
-        <td style="padding: 0px 0px 0px 10px; vertical-align: bottom;">
-            <button class="btn btn-danger" type="button" @onclick="CreateMigrationClick" style="width: 100%">Recreate Schema</button>
+        
+    </tr>
+    <tr>
+        <td>
+        </td>
+        <td style="padding: 10px 0px 0px 10px; vertical-align: bottom;">
+            <button class="btn btn-danger" type="button" @onclick="DeleteSchemaClick" style="width: 100%">Clear</button>
+        </td>
+        <td style="padding: 10px 0px 0px 10px; vertical-align: bottom;">
+            <button class="btn btn-warning" type="button" @onclick="ApplySchemaChangesClick" style="width: 100%">Apply Changes</button>
         </td>
     </tr>
     <tr>
@@ -147,7 +155,7 @@
 <div style="position: absolute; top: 0; right: 0; min-width: 300px;z-index: 100">
 
     <!-- Then put toasts within -->
-    <div id="saveToast" class="toast" role="banner" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="3000" style="background-color: lightgreen;">
+    <div id="successToast" class="toast" role="banner" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="3000" style="background-color: lightgreen;">
         <div class="toast-header">
             @*<img src="file" class="rounded mr-2" alt="...">*@
             @*<span class="oi oi-file"></span>*@
@@ -158,6 +166,24 @@
             </button>
         </div>
         <div class="toast-body">@_toastMessage</div>
+    </div>
+</div>
+
+<!-- Position it -->
+<div style="position: absolute; top: 0; right: 0; min-width: 300px;z-index: 100">
+
+    <!-- Then put toasts within -->
+    <div id="errorToast" class="toast" role="banner" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="30000" style="background-color: lightcoral;">
+        <div class="toast-header">
+            @*<img src="file" class="rounded mr-2" alt="...">*@
+            @*<span class="oi oi-file"></span>*@
+            <strong class="mr-auto">Error</strong>
+            <small class="text-muted">just now</small>
+            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="toast-body">@_toastErrorMessage</div>
     </div>
 </div>
 
@@ -176,6 +202,7 @@
     private bool _fileNameChanged;
     private string _fileNameSaved;
     private string _toastMessage;
+    private string _toastErrorMessage;
 
     private Task<IJSObjectReference> _module;
     private Task<IJSObjectReference> Module => _module ??= JS.InvokeAsync<IJSObjectReference>("import", "./_content/Platz.ObjectBuilder.Blazor/objectBuilder.js").AsTask();
@@ -223,7 +250,7 @@
         await ModelChanged.InvokeAsync(null);
         var module = await Module;
         _toastMessage = $"New schema created.";
-        await module.InvokeVoidAsync("ShowToast", new object[] { "#saveToast" });
+        await module.InvokeVoidAsync("ShowToast", new object[] { "#successToast" });
     }
 
     private async Task SaveClick(MouseEventArgs args)
@@ -247,12 +274,12 @@
 
         if (canSave)
         {
-            SchemaController.SaveSchema(FullStoreDataPath);
             SchemaController.SaveMigrations(FullStoreDataPath);
+            SchemaController.SaveSchema(FullStoreDataPath);
             _fileNameSaved = fileName;
             _fileNameChanged = false;
             _toastMessage = $"File  '{_fileNameSaved}' saved successfully.";
-            await module.InvokeVoidAsync("ShowToast", new object[] { "#saveToast" });
+            await module.InvokeVoidAsync("ShowToast", new object[] { "#successToast" });
         }
 
         await ModelChanged.InvokeAsync(null);
@@ -292,6 +319,36 @@
 
     private async Task CreateMigrationClick(MouseEventArgs args)
     {
+
+    }
+
+    private async Task DeleteSchemaClick(MouseEventArgs args)
+    { }
+
+    private async Task ApplySchemaChangesClick(MouseEventArgs args)
+    {
+        var module = await Module;
+
+        if (SchemaController.Schema.Changed)
+        {
+            _toastErrorMessage = $"Schema must be saved before applying.";
+            await module.InvokeVoidAsync("ShowToast", new object[] { "#errorToast" });
+            return;
+        }
+
+        try
+        {
+            SchemaController.ApplyMigrations();
+        }
+        catch(Exception exc)
+        {
+            _toastErrorMessage = exc.Message + " Try to Clear Schema first. All data will be deleted!";
+            await module.InvokeVoidAsync("ShowToast", new object[] { "#errorToast" });
+            return;
+        }
+
+        _toastMessage = $"Migrations applied successfully.";
+        await module.InvokeVoidAsync("ShowToast", new object[] { "#successToast" });
     }
 
     private async Task FileDblClick(MouseEventArgs args, int row)

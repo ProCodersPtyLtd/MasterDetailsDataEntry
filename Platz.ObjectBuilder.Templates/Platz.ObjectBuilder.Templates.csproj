@@ -79,10 +79,10 @@
     <Compile Include="..\Platz.ObjectBuilder\Schema\JsonStoreSchemaParser.cs">
       <Link>JsonStoreSchemaParser.cs</Link>
     </Compile>
-    <Compile Include="..\Platz.ObjectBuilder\Schema\Model\StoreQuery.cs">
+    <Compile Include="..\Platz.SqlForms.Shared\Data\Model\StoreQuery.cs">
       <Link>StoreQuery.cs</Link>
     </Compile>
-    <Compile Include="..\Platz.ObjectBuilder\Schema\Model\StoreSchema.cs">
+    <Compile Include="..\Platz.SqlForms.Shared\Data\Model\StoreSchema.cs">
       <Link>StoreSchema.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

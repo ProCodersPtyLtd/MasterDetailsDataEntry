@@ -7,6 +7,7 @@
   "Comment": null,
   "Tags": [],
   "Version": "1.0",
+  "VersionKey": "ff40d9d5-3b68-4eb7-9fb3-b4d1e219ecc6",
   "Definitions": {
     "Address": {
       "Name": "Address",
@@ -15,7 +16,7 @@
       "Properties": {
         "Id": {
           "Name": "Id",
-          "Type": "guid",
+          "Type": "int",
           "Nullable": false,
           "Comment": null,
           "MinLength": 0,
@@ -106,7 +107,7 @@
       "Properties": {
         "Id": {
           "Name": "Id",
-          "Type": "guid",
+          "Type": "int",
           "Nullable": false,
           "Comment": null,
           "MinLength": 0,
@@ -178,6 +179,6 @@
     }
   },
   "Settings": {
-    "UseIntId": "False"
+    "UseIntId": "True"
   }
 }

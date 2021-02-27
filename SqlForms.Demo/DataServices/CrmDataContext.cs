@@ -15,7 +15,14 @@ namespace Default
 
     public partial class CrmDataContext : DataContextBase
     {
+        protected override void Configure(DataContextSettings settings)
+        {
+            settings.SetSchema("Crm");
+            settings.SetDriver<SqlJsonStoreDatabaseDriver>();
 
+            settings.AddTable<Address>();
+            settings.AddTable<Person>();
+        }
     }
 
     #endregion
@@ -24,21 +31,21 @@ namespace Default
 
     public partial class Address
     { 
-        public Guid Id { get; set; }
-        public string Line1 { get; set; }
-        public string Suburb { get; set; }
-        public string City { get; set; }
-        public string PostCode { get; set; }
-        public bool Deleted { get; set; }
+        public virtual long Id { get; set; }
+        public virtual string Line1 { get; set; }
+        public virtual string Suburb { get; set; }
+        public virtual string City { get; set; }
+        public virtual string PostCode { get; set; }
+        public virtual bool Deleted { get; set; }
     }
 
     public partial class Person
     { 
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Surname { get; set; }
-        public string Phone { get; set; }
-        public DateTime? Dob { get; set; }
+        public virtual long Id { get; set; }
+        public virtual string Name { get; set; }
+        public virtual string Surname { get; set; }
+        public virtual string Phone { get; set; }
+        public virtual DateTime? Dob { get; set; }
     }
 
     #endregion

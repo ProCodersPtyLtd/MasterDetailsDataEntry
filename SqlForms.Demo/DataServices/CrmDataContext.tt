@@ -7,6 +7,7 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.IO" #>
 <#@ output extension=".cs" #>
+<#@ import namespace="Platz.SqlForms" #>
 <#@ import namespace="Platz.ObjectBuilder" #>
 <# // ================================================================ Set JsonStorePath here, relative to solution folder ================================== #>
 <#      string JsonStorePath = @"SqlForms.Demo\StoreNew\Crm.schema.json"; #>
@@ -41,7 +42,20 @@ namespace <#=namespaceName#>
 
     public partial class <#=contextName#> : DataContextBase
     {
+        protected override void Configure(DataContextSettings settings)
+        {
+            settings.SetSchema("<#=Schema.Name#>");
+            settings.SetDriver<SqlJsonStoreDatabaseDriver>();
 
+<#
+            foreach (var table in Schema.Definitions.Values)
+            {
+#>
+            settings.AddTable<<#=table.Name#>>();
+<#
+            }
+#>
+        }
     }
 
     #endregion
@@ -58,7 +72,7 @@ namespace <#=namespaceName#>
             foreach (var property in table.Properties.Values)
             {
 #>
-        public <#=Parser.DesignShemaTypeToCSharp(property)#> <#=property.Name#> { get; set; }
+        public virtual <#=Parser.DesignShemaTypeToCSharp(property)#> <#=property.Name#> { get; set; }
 <#
             }
 #>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Platz.SqlForms;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,6 +13,7 @@ namespace Platz.ObjectBuilder
         bool FileExists(StorageParameters parameters);
         StoreQuery LoadQuery(StorageParameters parameters);
         StoreSchema LoadSchema(StorageParameters parameters);
+        void SaveMigration(StoreSchemaMigrations package, StorageParameters parameters);
     }
 
     public class StorageParameters

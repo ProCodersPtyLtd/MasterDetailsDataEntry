@@ -1,8 +1,9 @@
-﻿@namespace Platz.ObjectBuilder.Blazor
+﻿@using Platz.SqlForms
 
+@namespace Platz.ObjectBuilder.Blazor
 @*<h6>Relationships</h6>*@
 
-<div class="accordion overflow-auto" id="accordionTableList" style="height: 780px;" >
+<div class="accordion overflow-auto" id="accordionTableList" style="height: 780px;">
 
     @{
         var rowIndex = 0;
@@ -41,7 +42,7 @@
                     <label>[@GetTableName(join.Source.RightObjectAlias)]</label>
                     <input readonly="readonly" value="@GetRightName(join)" />
                     <br />
-                    
+
                     <input id="@GetCheckboxName(join)" type="checkbox" checked="@GetDeletedValue(join)" @onchange="@(async (args) => await SetDeletedValue(args, join))" />
                     <label class="form-check-label" for="@GetCheckboxName(join)">Deleted</label>
                 </div>

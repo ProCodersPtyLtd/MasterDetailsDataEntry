@@ -5,14 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\Platz.SqlForms.Shared\Helpers\ObjectCloner.cs" Link="Shared\ObjectCloner.cs" />
-    <Compile Include="..\Platz.SqlForms.Shared\Helpers\StackTraceHelper.cs" Link="Shared\StackTraceHelper.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.3" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageReference Include="System.Text.Json" Version="5.0.0" />
+    <PackageReference Include="System.Text.Json" Version="5.0.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,7 +16,11 @@
 
   <ItemGroup>
     <Folder Include="Bases\" />
-    <Folder Include="Shared\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Platz.SqlForms.Shared\Platz.SqlForms.Shared.csproj" />
+    <ProjectReference Include="..\Platz.SqlForms\Platz.SqlForms.csproj" />
   </ItemGroup>
 
 </Project>
