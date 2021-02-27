@@ -40,6 +40,58 @@ namespace Platz.SqlForms
             return _db.Get(_schema, entityType);
         }
 
+        /// <summary>
+        /// Find by key
+        /// </summary>
+        /// <param name="entityType"></param>
+        /// <param name="filterColumn"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public IList Find(Type entityType, string filterColumn, object value)
+        {
+            ValidateEntityType(entityType);
+            return _db.Find(_schema, entityType, filterColumn, value);
+        }
+
+        /// <summary>
+        /// Find by primary key
+        /// </summary>
+        /// <param name="entityType"></param>
+        /// <param name="pkValue"></param>
+        /// <returns></returns>
+        public object Find(Type entityType, object pkValue)
+        {
+            ValidateEntityType(entityType);
+            return _db.Find(_schema, entityType, pkValue);
+        }
+
+        public long Insert(object record)
+        {
+            var entityType = record.GetType();
+            ValidateEntityType(entityType);
+            return _db.Insert(_schema, record);
+        }
+
+        public void Update(object record)
+        {
+            var entityType = record.GetType();
+            ValidateEntityType(entityType);
+            _db.Update(_schema, record);
+        }
+
+        public void Delete(object record)
+        {
+            var entityType = record.GetType();
+            ValidateEntityType(entityType);
+            _db.Delete(_schema, record);
+        }
+
+        public void Delete(Type entityType, object pkValue)
+        {
+            ValidateEntityType(entityType);
+            _db.Delete(_schema, entityType.Name, pkValue);
+        }
+
         private void ValidateEntityType(Type entityType)
         {
             if (!_tables.Contains(entityType))

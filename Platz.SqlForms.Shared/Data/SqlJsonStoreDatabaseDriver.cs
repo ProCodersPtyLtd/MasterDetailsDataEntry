@@ -134,6 +134,14 @@ ALTER TABLE [{schema}].[{table.Name}]
             return objects;
         }
 
+        public IList Find(string schema, Type entityType, string filterColumn, object filterValue)
+        {
+            var table = GetTableFromType(entityType);
+            var sql = $"SELECT * FROM {schema}.{table.Name} WHERE {filterColumn}=@p1";
+            var objects = ExecuteQueryP1(sql, entityType, filterValue);
+            return objects;
+        }
+
         public IEnumerable<T> Find<T>(string schema, string tableName, string filterColumn, object filterValue)
         {
             //var table = GetTableFromType(typeof(T));
@@ -191,6 +199,7 @@ ALTER TABLE [{schema}].[{table.Name}]
                     if (Guid.Empty == g)
                     {
                         g = Guid.NewGuid();
+                        record.GetType().GetProperty(pkName).SetValue(record, g);
                     }
 
                     sql = SqlScriptHelper.InsertJsonTablePkString(tableName, schema, g.ToString(), "p1");

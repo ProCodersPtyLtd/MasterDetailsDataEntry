@@ -24,6 +24,7 @@ namespace Platz.SqlForms
         // CRUD
         IList Get(string schema, Type entityType);
         IList Find(string schema, Type entityType, object pkValue);
+        IList Find(string schema, Type entityType, string filterColumn, object filterValue);
         IEnumerable<T> Find<T>(string schema, string tableName, string filterColumn, object filterValue);
         IEnumerable<T> Find<T>(string schema, string filterColumn, object filterValue);
         T Find<T>(string schema, object pkValue);
