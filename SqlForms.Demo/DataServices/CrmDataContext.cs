@@ -19,6 +19,7 @@ namespace Default
         {
             settings.SetSchema("Crm");
             settings.SetDriver<SqlJsonStoreDatabaseDriver>();
+
             settings.AddTable<Address>();
             settings.AddTable<Person>();
         }

@@ -17,12 +17,12 @@ namespace Platz.SqlForms
         public DataContextBase()
         {
             var t = this.GetType();
-            var collection = new DataContextSettings();
-            Configure(collection);
-            _tables = collection.GetTables().ToList();
-            _schema = collection.GetSchemaName();
+            var settings = new DataContextSettings();
+            Configure(settings);
+            _tables = settings.GetTables().ToList();
+            _schema = settings.GetSchemaName();
 
-            _db = Activator.CreateInstance(collection.GetDriverType()) as IStoreDatabaseDriver;
+            _db = Activator.CreateInstance(settings.GetDriverType()) as IStoreDatabaseDriver;
             _db.Configure(new StoreDatabaseDriverSettings { ConnectionString = _connectionString });
         }
 
