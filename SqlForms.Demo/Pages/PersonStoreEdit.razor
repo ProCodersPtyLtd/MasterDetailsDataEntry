@@ -1,0 +1,10 @@
+﻿@page "/PersonStoreEdit/{Id:int}"
+
+<h1>Customer Address Edit</h1>
+
+<FormDynamicEditComponent TForm="PersonStoreForm" Id="@Id" />
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+}

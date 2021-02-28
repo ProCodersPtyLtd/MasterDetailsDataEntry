@@ -43,7 +43,7 @@ namespace Platz.SqlForms
             var sql = SqlScriptHelper.CreateSchema(schemaName);
 
             // also create sequence for autoincrement
-            sql += SqlScriptHelper.CreateSequence(schemaName, SEQUENCE);
+            sql += SqlScriptHelper.CreateSequence(SEQUENCE, schemaName);
 
             ExecuteNonQuery(sql);
         }
@@ -117,6 +117,12 @@ ALTER TABLE [{schema}].[{table.Name}]
         #endregion
 
         #region CRUD
+        /// <summary>
+        /// Get all items
+        /// </summary>
+        /// <param name="schema"></param>
+        /// <param name="entityType"></param>
+        /// <returns></returns>
         public IList Get(string schema, Type entityType)
         {
             var table = GetTableFromType(entityType);
@@ -125,15 +131,30 @@ ALTER TABLE [{schema}].[{table.Name}]
             return objects;
         }
 
-        public IList Find(string schema, Type entityType, object pkValue)
+        /// <summary>
+        /// Find item by id
+        /// </summary>
+        /// <param name="schema"></param>
+        /// <param name="entityType"></param>
+        /// <param name="pkValue"></param>
+        /// <returns></returns>
+        public object Find(string schema, Type entityType, object pkValue)
         {
             var table = GetTableFromType(entityType);
             var columns = table.Properties.Values.OrderBy(p => p.Order).ToList();
             var sql = $"SELECT * FROM {schema}.{table.Name} WHERE {columns[0].Name}=@p1";
             var objects = ExecuteQueryP1(sql, entityType, pkValue);
-            return objects;
+            return objects.FirstOrDefault();
         }
 
+        /// <summary>
+        /// Find list of items by criteria
+        /// </summary>
+        /// <param name="schema"></param>
+        /// <param name="entityType"></param>
+        /// <param name="filterColumn"></param>
+        /// <param name="filterValue"></param>
+        /// <returns></returns>
         public IList Find(string schema, Type entityType, string filterColumn, object filterValue)
         {
             var table = GetTableFromType(entityType);
@@ -187,6 +208,8 @@ ALTER TABLE [{schema}].[{table.Name}]
             switch (columns[0].Type)
             {
                 case "int":
+                case "Int64":
+                case "Int32":
                 case "bigint":
                 case "long":
                     // autoincrement
@@ -213,6 +236,8 @@ ALTER TABLE [{schema}].[{table.Name}]
             
             if (result is int || result is long)
             {
+                var i32 = Convert.ToInt32(result);
+                record.GetType().GetProperty(pkName).SetValue(record, i32);
                 return Convert.ToInt64(result);
             }    
             
@@ -420,7 +445,8 @@ ALTER TABLE [{schema}].[{table.Name}]
                 case "int":
                     //return $"{pk.Name} bigint IDENTITY(1,1) PRIMARY KEY";
                     // we use sequence for autoincrement
-                    return $"{pk.Name} bigint PRIMARY KEY";
+                    //return $"{pk.Name} bigint PRIMARY KEY";
+                    return $"{pk.Name} int PRIMARY KEY";
                 case "Guid":
                     return $"{pk.Name} uniqueidentifier PRIMARY KEY";
                 default:

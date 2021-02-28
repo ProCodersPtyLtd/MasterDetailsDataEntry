@@ -130,4 +130,18 @@ namespace Platz.SqlForms
             return context;
         }
     }
+
+    public abstract class StoreDynamicEditFormBase<T> : DynamicEditFormBase where T : DataContextBase
+    {
+        public override Type GetDbContextType()
+        {
+            return typeof(T);
+        }
+
+        protected T GetDbContext()
+        {
+            var context = Activator.CreateInstance<T>();
+            return context;
+        }
+    }
 }

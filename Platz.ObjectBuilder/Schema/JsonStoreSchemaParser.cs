@@ -186,7 +186,8 @@ namespace Platz.ObjectBuilder
         {
             if (p.Pk && p.Type == "int")
             {
-                return "long";
+                //return "long";
+                return "int";
             }
 
             string result;

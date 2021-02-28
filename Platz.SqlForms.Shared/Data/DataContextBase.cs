@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Platz.SqlForms
@@ -14,8 +16,22 @@ namespace Platz.SqlForms
         protected string _connectionStringConfigKey;
         protected IStoreDatabaseDriver _db;
 
-        public DataContextBase()
+        public DataContextBase() 
+            : this (null, "DefaultConnection")
         {
+        }
+
+        public DataContextBase(string connectionString, string connectionStringConfigKey) 
+        {
+            _connectionString = connectionString;
+            _connectionStringConfigKey = connectionStringConfigKey;
+
+            if (string.IsNullOrEmpty(_connectionString))
+            {
+                IConfigurationRoot configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false).Build();
+                _connectionString = configuration.GetConnectionString(_connectionStringConfigKey);
+            }
+
             var t = this.GetType();
             var settings = new DataContextSettings();
             Configure(settings);
@@ -24,12 +40,14 @@ namespace Platz.SqlForms
 
             _db = Activator.CreateInstance(settings.GetDriverType()) as IStoreDatabaseDriver;
             _db.Configure(new StoreDatabaseDriverSettings { ConnectionString = _connectionString });
+
         }
 
-        public DataContextBase(string connectionString) :
-            this()
+        public IEnumerable<PropertyInfo> FindPrimaryKey(Type type)
         {
-            _connectionString = connectionString;
+            // Assumption first property is always PK
+            var pk = type.GetProperties().First();
+            return new PropertyInfo[] { pk };
         }
 
         protected abstract void Configure(DataContextSettings tables);

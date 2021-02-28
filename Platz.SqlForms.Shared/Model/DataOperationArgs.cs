@@ -11,6 +11,7 @@ namespace Platz.SqlForms
         public DataOperations Operation { get; set; }
         public DataOperationEvents OperationEvent { get; set; }
         public DbContext DbContext { get; set; }
+        public DataContextBase DataContext { get; set; }
     }
 
     public enum DataOperations

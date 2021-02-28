@@ -59,21 +59,21 @@ WHERE {ID_COLUMN} = {id};
             return sql;
         }
 
-        public static string InsertJsonTable(string name, string schema, long id, string idColumn, string jsonParamName)
-        {
-            var sql = @$"
-DECLARE @id bigint = {id};
-DECLARE @json_data nvarchar(max) = @{jsonParamName};
+//        public static string InsertJsonTable(string name, string schema, long id, string idColumn, string jsonParamName)
+//        {
+//            var sql = @$"
+//DECLARE @id bigint = {id};
+//DECLARE @json_data nvarchar(max) = @{jsonParamName};
 
-SET @json_data = JSON_MODIFY(@json_data, '$.{idColumn}', CAST(@id AS NVARCHAR(20)));
+//SET @json_data = JSON_MODIFY(@json_data, '$.{idColumn}', CAST(@id AS NVARCHAR(20)));
 
-INSERT INTO {schema}.{name}
-SELECT @id,  @json_data;
+//INSERT INTO {schema}.{name}
+//SELECT @id,  @json_data;
 
-SELECT @id as id;
-";
-            return sql;
-        }
+//SELECT @id as id;
+//";
+//            return sql;
+//        }
 
         public static string InsertJsonTablePkString(string name, string schema, string id, string jsonParamName)
         {
@@ -95,7 +95,7 @@ SELECT @id as id;
 DECLARE @id bigint = NEXT VALUE FOR {schema}.{sequenceName};
 DECLARE @json_data nvarchar(max) = @{jsonParamName};
 
-SET @json_data = JSON_MODIFY(@json_data, '$.{idColumn}', CAST(@id AS NVARCHAR(20)));
+SET @json_data = JSON_MODIFY(@json_data, '$.{idColumn}', @id);
 
 INSERT INTO {schema}.{name}
 SELECT @id,  @json_data;

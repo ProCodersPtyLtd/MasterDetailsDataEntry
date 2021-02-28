@@ -7,13 +7,8 @@ namespace Default
 {
     public partial class CrmDataContext
     {
-        public CrmDataContext()
+        public CrmDataContext() : base(null, "CrmConnection")
         {
-            _connectionStringConfigKey = "DefaultConnection";
-        }
-
-        public CrmDataContext(string connectionString) : base(connectionString)
-        { 
         }
     }
 }
