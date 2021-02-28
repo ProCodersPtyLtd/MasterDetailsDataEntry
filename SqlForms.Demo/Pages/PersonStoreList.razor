@@ -1,0 +1,14 @@
+﻿@page "/PersonStoreList/"
+@page "/PersonStoreList/{FirstName}"
+
+
+FirstName
+<input class="form-control" @bind-value="@FirstName" />
+
+<FormDataServiceListComponent ServiceParameters="@(new object[] { FirstName })" TForm="PersonStoreListForm" />
+
+
+@code {
+    [Parameter]
+    public string FirstName { get; set; }
+}

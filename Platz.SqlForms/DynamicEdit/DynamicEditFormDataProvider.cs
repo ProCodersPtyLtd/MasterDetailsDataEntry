@@ -10,6 +10,15 @@ namespace Platz.SqlForms
     public class DynamicEditFormDataProvider : IDynamicEditFormDataProvider
     {
         private object[] _serviceParameters;
+        private readonly CustomStoreDynamicEditFormDataProvider _storeProvider;
+        private readonly EntityFrameworkDynamicEditFormDataProvider _entityProvider;
+
+        public DynamicEditFormDataProvider()
+        {
+            // ToDo: use ServiceProvider here to instantiate them
+            _storeProvider = new CustomStoreDynamicEditFormDataProvider();
+            _entityProvider = new EntityFrameworkDynamicEditFormDataProvider();
+        }
 
         public void SetParameters(object[] serviceParameters)
         {
@@ -18,71 +27,65 @@ namespace Platz.SqlForms
 
         public IEnumerable<DataField> GetFormFields(IDynamicEditForm form)
         {
-            var fieldSet = form.GetFields();
+            var type = form.GetDbContextType();
 
-            using (var db = GetDbContext(form))
+            if (type.IsSubclassOf(typeof(DbContext)))
             {
-                var pk = db.FindSinglePrimaryKeyProperty(form.GetEntityType());
-                var pkField = fieldSet.Single(f => f.BindingProperty == pk.Name);
-                pkField.PrimaryKey = true;
-                pkField.PrimaryKeyGeneratedType = (PrimaryKeyGeneratedTypes)pk.ValueGenerated;
+                return _entityProvider.GetFormFields(form);
             }
 
-            return fieldSet;
+            return _storeProvider.GetFormFields(form);
         }
 
         // CRUD
         public object GetItem(IDynamicEditForm form, int id)
         {
-            // ToDo: check is form overrides GetItem operation
-            Type entity = form.GetEntityType();
+            var type = form.GetDbContextType();
 
-            using (var db = GetDbContext(form))
+            if (type.IsSubclassOf(typeof(DbContext)))
             {
-                var item = db.Find(entity, id);
-                return item;
+                return _entityProvider.GetItem(form, id);
             }
+
+            return _storeProvider.GetItem(form, id);
         }
 
         public void DeleteItem(IDynamicEditForm form, object item)
         {
-            using (var db = GetDbContext(form))
+            var type = form.GetDbContextType();
+
+            if (type.IsSubclassOf(typeof(DbContext)))
             {
-                db.Remove(item);
-                db.SaveChanges();
+                _entityProvider.DeleteItem(form, item);
+                return;
             }
+
+            _storeProvider.DeleteItem(form, item);
+            return;
         }
 
         public object InsertItem(IDynamicEditForm form, object item)
         {
-            using (var db = GetDbContext(form))
+            var type = form.GetDbContextType();
+
+            if (type.IsSubclassOf(typeof(DbContext)))
             {
-                db.Add(item);
-                db.SaveChanges();
-
-                // after save action
-                var args = new DataOperationArgs { DbContext = db, OperationEvent = DataOperationEvents.AfterInsert, Parameters = _serviceParameters };
-                form.AfterInsert(item, args);
-
-                return item;
+                return _entityProvider.InsertItem(form, item);
             }
+
+            return _storeProvider.InsertItem(form, item);
         }
 
         public object UpdateItem(IDynamicEditForm form, object item)
         {
-            using (var db = GetDbContext(form))
-            {
-                db.Update(item);
-                db.SaveChanges();
-                return item;
-            }
-        }
-
-        private DbContext GetDbContext(IDynamicEditForm form)
-        {
             var type = form.GetDbContextType();
-            var context = Activator.CreateInstance(type) as DbContext;
-            return context;
+
+            if (type.IsSubclassOf(typeof(DbContext)))
+            {
+                return _entityProvider.UpdateItem(form, item);
+            }
+
+            return _storeProvider.UpdateItem(form, item);
         }
     }
 }

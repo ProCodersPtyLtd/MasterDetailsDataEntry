@@ -31,7 +31,7 @@ namespace Default
 
     public partial class Address
     { 
-        public virtual long Id { get; set; }
+        public virtual int Id { get; set; }
         public virtual string Line1 { get; set; }
         public virtual string Suburb { get; set; }
         public virtual string City { get; set; }
@@ -41,7 +41,7 @@ namespace Default
 
     public partial class Person
     { 
-        public virtual long Id { get; set; }
+        public virtual int Id { get; set; }
         public virtual string Name { get; set; }
         public virtual string Surname { get; set; }
         public virtual string Phone { get; set; }
