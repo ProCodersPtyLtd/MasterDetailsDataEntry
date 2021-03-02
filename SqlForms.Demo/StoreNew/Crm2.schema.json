@@ -1,0 +1,259 @@
+{
+  "Name": "Crm2",
+  "DbContextName": "CrmDataContext",
+  "Namespace": "Default",
+  "Title": null,
+  "Type": null,
+  "Comment": null,
+  "Tags": [],
+  "Version": "1.0",
+  "VersionKey": "02476f4e-3789-419d-9237-e98f9ffc003e",
+  "Definitions": {
+    "Address": {
+      "Name": "Address",
+      "Type": null,
+      "Comment": null,
+      "Properties": {
+        "Id": {
+          "Name": "Id",
+          "Type": "int",
+          "Nullable": false,
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": true,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 0,
+          "ForeignKeys": []
+        },
+        "Line1": {
+          "Name": "Line1",
+          "Type": "string",
+          "Nullable": false,
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 1,
+          "ForeignKeys": []
+        },
+        "Suburb": {
+          "Name": "Suburb",
+          "Type": "string",
+          "Nullable": false,
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 2,
+          "ForeignKeys": []
+        },
+        "City": {
+          "Name": "City",
+          "Type": "string",
+          "Nullable": false,
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 3,
+          "ForeignKeys": []
+        },
+        "PostCode": {
+          "Name": "PostCode",
+          "Type": "string",
+          "Nullable": false,
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 4,
+          "ForeignKeys": []
+        },
+        "Deleted": {
+          "Name": "Deleted",
+          "Type": "bool",
+          "Nullable": false,
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 5,
+          "ForeignKeys": []
+        }
+      }
+    },
+    "Person": {
+      "Name": "Person",
+      "Type": null,
+      "Comment": null,
+      "Properties": {
+        "Id": {
+          "Name": "Id",
+          "Type": "int",
+          "Nullable": false,
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": true,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 0,
+          "ForeignKeys": []
+        },
+        "Name": {
+          "Name": "Name",
+          "Type": "string",
+          "Nullable": false,
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 1,
+          "ForeignKeys": []
+        },
+        "Surname": {
+          "Name": "Surname",
+          "Type": "string",
+          "Nullable": false,
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 2,
+          "ForeignKeys": []
+        },
+        "Phone": {
+          "Name": "Phone",
+          "Type": "string",
+          "Nullable": false,
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 3,
+          "ForeignKeys": []
+        },
+        "Dob": {
+          "Name": "Dob",
+          "Type": "date",
+          "Nullable": true,
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 4,
+          "ForeignKeys": []
+        }
+      }
+    },
+    "PersonAddress": {
+      "Name": "PersonAddress",
+      "Type": null,
+      "Comment": null,
+      "Properties": {
+        "Id": {
+          "Name": "Id",
+          "Type": "int",
+          "Nullable": false,
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": true,
+          "AutoIncrement": true,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 0,
+          "ForeignKeys": []
+        },
+        "PersonId": {
+          "Name": "PersonId",
+          "Type": "reference",
+          "Nullable": true,
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": true,
+          "ExternalId": false,
+          "Order": 1,
+          "ForeignKeys": [
+            {
+              "DefinitionName": "Person",
+              "PropertyName": "Id",
+              "CompositePropertyNames": null
+            }
+          ]
+        },
+        "AddressId": {
+          "Name": "AddressId",
+          "Type": "reference",
+          "Nullable": true,
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": true,
+          "ExternalId": false,
+          "Order": 2,
+          "ForeignKeys": [
+            {
+              "DefinitionName": "Address",
+              "PropertyName": "Id",
+              "CompositePropertyNames": null
+            }
+          ]
+        },
+        "Deleted": {
+          "Name": "Deleted",
+          "Type": "bool",
+          "Nullable": false,
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": false,
+          "ExternalId": false,
+          "Order": 3,
+          "ForeignKeys": []
+        }
+      }
+    }
+  },
+  "Settings": {
+    "UseIntId": "True"
+  }
+}

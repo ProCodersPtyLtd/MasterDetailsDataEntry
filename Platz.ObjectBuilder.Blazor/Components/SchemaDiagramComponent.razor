@@ -1,15 +1,59 @@
 ﻿@using Platz.ObjectBuilder.Blazor.Controllers
 @using System.IO
+@using Plk.Blazor.DragDrop
+
 @namespace Platz.ObjectBuilder
+
 @inject ISchemaController _schemaController
 
 
-    <h5>SchemaDiagramComponent</h5>
+<h5>Schema Diagram</h5>
+
+<div class="grid-container overflow-auto" style="min-height: 300px; height: @(Height)px; width: auto;" @onscroll="() => Refresh()">
+    <div class="svg-panel-container" style="z-index: -10; position: absolute; opacity: 0.9;">
+        <svg @ref="_svgRef" width="300" height="@(Height)">
+            <line x1="0" y1="0" x2="300" y2="500" stroke="black" stroke-width="4px" stroke-linecap="round" />
+        </svg>
+    </div>
+    
+    <Dropzone Class="drag-container" Items="SchemaController.GetDiagramTables()" ItemWrapperClass="drag-item">
+        <div>
+            @*<div class="grid-item">@context.Name</div>*@
+            <SchemaDiagramTableComponent Table="@context" ModelChanged="ModelChanged" />
+        </div>
+    </Dropzone>
+</div>
 
 @code {
     [CascadingParameter]
     public ISchemaController SchemaController { get; set; }
 
     [Parameter]
+    public double Height { get; set; }
+
+    [Parameter]
     public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    private ElementReference _svgRef;
+
+    private bool _needRefreshLinks;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_needRefreshLinks)
+        {
+            _needRefreshLinks = false;
+            await GenerateLinks();
+            StateHasChanged();
+        }
+    }
+
+    private void Refresh()
+    {
+        _needRefreshLinks = true;
+        StateHasChanged();
+    }
+
+    private async Task GenerateLinks()
+    { }
 }

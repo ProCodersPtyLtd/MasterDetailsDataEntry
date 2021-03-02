@@ -20,6 +20,8 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         void SelectLogTab();
         void SelectTableTab(int row);
         void SelectTable(DesignTable table);
+
+        List<DiagramTable> GetDiagramTables();
     }
 
     public interface ISchemaController : ISchemaMvvm
@@ -398,6 +400,22 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             var package = GenerateMigrations(Schema, _designRecords);
             _migrationManager.Configure(new StoreDatabaseDriverSettings { ConnectionString = Parameters.ConnectionString });
             _migrationManager.ApplyMigrations(package);
+        }
+
+        public List<DiagramTable> GetDiagramTables()
+        {
+            var tables = Schema.Tables.Select(t => new DiagramTable 
+            { 
+                Name = t.Name,
+                Columns = t.Columns.Where(c => c.Name != null).Select(c => new Column 
+                { 
+                    Name = c.Name, Type = c.Type, IsPk = c.Pk, IsFk = c.Reference != null,
+                    FkTable = c.TableReference, FkColumn = c.ColumnReference
+                }).ToList()
+            }).ToList();
+
+
+            return tables;
         }
     }
 }
