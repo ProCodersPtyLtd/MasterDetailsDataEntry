@@ -22,6 +22,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         void SelectTable(DesignTable table);
 
         List<DiagramTable> GetDiagramTables();
+        List<TableLink> GetTableLinks();
     }
 
     public interface ISchemaController : ISchemaMvvm
@@ -242,6 +243,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             Schema.Tables.Add(table);
             _tableController.Changed();
             UpdateLog(DesignOperation.CreateTable, table);
+            UpdateDiagramTables();
             return table;
         }
 
@@ -250,6 +252,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             Schema.Tables.Remove(table);
             SelectedTable = null;
             SelectSchemaTab();
+            UpdateDiagramTables();
             UpdateLog(DesignOperation.DeleteTable, table);
         }
 
@@ -268,6 +271,8 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             SelectedTable = null;
             ClearLog();
             UpdateLog(DesignOperation.CreateSchema);
+
+            UpdateDiagramTables();
         }
 
         public void SaveSchema(string path)
@@ -378,6 +383,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             Schema = DesignSchemaConvert.FromStoreSchema(schema);
             ClearChanged();
             ClearLog();
+            UpdateDiagramTables();
         }
 
         public bool FileExists(string path)
@@ -402,7 +408,19 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             _migrationManager.ApplyMigrations(package);
         }
 
+        private List<DiagramTable> _diagramTables;
+
         public List<DiagramTable> GetDiagramTables()
+        {
+            if (_diagramTables == null)
+            {
+                UpdateDiagramTables();
+            }
+
+            return _diagramTables;
+        }
+
+        private void UpdateDiagramTables()
         {
             var tables = Schema.Tables.Select(t => new DiagramTable 
             { 
@@ -414,8 +432,43 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
                 }).ToList()
             }).ToList();
 
+            _diagramTables = tables;
+        }
 
-            return tables;
+        public List<TableLink> GetTableLinks()
+        {
+            var result  = new List<TableLink>();
+            var tables = GetDiagramTables();
+            var order = 1;
+
+            var links = tables.SelectMany(t => t.Columns, (t, c) => new { Table = t, Column = c })
+                .Where(d => d.Column.IsFk).Select(d => new { d.Table.Name, d.Column.FkTable, d.Column.FkColumn });
+
+            foreach (var link in links)
+            {
+                var forTable = tables.First(t => t.Name == link.Name);
+                var forColumnIndex = forTable.Columns.FindIndex(c => c.FkTable == link.FkTable && c.FkColumn == link.FkColumn);
+                //var forColumn = forTable.Columns.First(c => c.Name == link.FkColumn);
+                var primTable = tables.First(t => t.Name == link.FkTable);
+                //var primColumn = primTable.Columns.First();
+
+                var tl = new TableLink 
+                { 
+                    PrimaryRefId = GenerateObjectId("table_primary", primTable.Id, 0),
+                    ForeignRefId = GenerateObjectId("table_foreign", forTable.Id, forColumnIndex),
+                    Order = order++
+                };
+
+                result.Add(tl);
+            }
+
+            return result;
+        }
+
+        private string GenerateObjectId(string prefix, int objId, int propId = 0)
+        {
+            var id = $"{prefix}_{objId}_{propId}";
+            return id;
         }
     }
 }

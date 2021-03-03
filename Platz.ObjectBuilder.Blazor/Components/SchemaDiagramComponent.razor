@@ -2,20 +2,28 @@
 @using System.IO
 @using Plk.Blazor.DragDrop
 
+@inject IJSRuntime JS
+
+@implements IAsyncDisposable
+
 @namespace Platz.ObjectBuilder
-
-@inject ISchemaController _schemaController
-
 
 <h5>Schema Diagram</h5>
 
 <div class="grid-container overflow-auto" style="min-height: 300px; height: @(Height)px; width: auto;" @onscroll="() => Refresh()">
     <div class="svg-panel-container" style="z-index: -10; position: absolute; opacity: 0.9;">
         <svg @ref="_svgRef" width="300" height="@(Height)">
-            <line x1="0" y1="0" x2="300" y2="500" stroke="black" stroke-width="4px" stroke-linecap="round" />
+            @if (_lines != null)
+            {
+                @foreach (var l in _lines)
+                {
+                    <line x1="@l.X1" y1="@l.Y1" x2="@l.X2" y2="@l.Y2" stroke="black" stroke-width="4px" stroke-linecap="round" />
+                }
+            }
+            @*<line x1="0" y1="0" x2="300" y2="500" stroke="black" stroke-width="4px" stroke-linecap="round" />*@
         </svg>
     </div>
-    
+
     <Dropzone Class="drag-container" Items="SchemaController.GetDiagramTables()" ItemWrapperClass="drag-item">
         <div>
             @*<div class="grid-item">@context.Name</div>*@
@@ -35,16 +43,30 @@
     public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 
     private ElementReference _svgRef;
+    private bool _needRefreshLinks = true;
+    private List<LinePoints> _lines { get; set; }
+    private Task<IJSObjectReference> _module;
+    private Task<IJSObjectReference> Module => _module ??= JS.InvokeAsync<IJSObjectReference>("import", "./_content/Platz.ObjectBuilder.Blazor/objectBuilder.js").AsTask();
 
-    private bool _needRefreshLinks;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        await GenerateLinks();
+
         if (_needRefreshLinks)
         {
             _needRefreshLinks = false;
             await GenerateLinks();
             StateHasChanged();
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_module != null)
+        {
+            var module = await _module;
+            await module.DisposeAsync();
         }
     }
 
@@ -55,5 +77,63 @@
     }
 
     private async Task GenerateLinks()
-    { }
+    {
+        var before = _lines?.Count() ?? 0;
+
+        _lines = new List<LinePoints>();
+        var links = SchemaController.GetTableLinks();
+
+        foreach (var link in links)
+        {
+            var lines = await GetLinkLines(link);
+            _lines.AddRange(lines);
+        }
+
+        if (_lines.Count() != before)
+        {
+            StateHasChanged();
+        }
+    }
+
+    int _lineStepSize = 16;
+
+    // returns 3 lines
+    private async Task<List<LinePoints>> GetLinkLines(TableLink link)
+    {
+        //var module = await Module;
+
+        var result = new List<LinePoints>();
+        var spConv = await ConvertToSvg(link.PrimaryRefId);
+        var spConvRight = new Point { X = spConv.X + (link.Order + 1) * _lineStepSize, Y = spConv.Y };
+        var epConv = await ConvertToSvg(link.ForeignRefId);
+        var epConvRight = new Point { X = epConv.X + (link.Order + 1) * _lineStepSize, Y = epConv.Y };
+
+        var line1 = new LinePoints { X1 = spConv.X, Y1 = spConv.Y, X2 = spConvRight.X, Y2 = spConvRight.Y };
+        result.Add(line1);
+        var line2 = new LinePoints { X1 = spConvRight.X, Y1 = spConvRight.Y, X2 = epConvRight.X, Y2 = epConvRight.Y };
+        result.Add(line2);
+        var line3 = new LinePoints { X1 = epConvRight.X, Y1 = epConvRight.Y, X2 = epConv.X, Y2 = epConv.Y };
+        result.Add(line3);
+
+        //var startRect = await module.InvokeAsync<BoundingClientRect>("MyIdGetBoundingClientRect", new object[] { link.PrimaryRefId });
+        //var sp = new Point { X = startRect.X + 0.5 * startRect.Width, Y = startRect.Y + 0.5 * startRect.Height };
+        //var spConv = await module.InvokeAsync<Point>("ConvertToSvg", new object[] { _svgRef, sp });
+
+        //var endRect = await module.InvokeAsync<BoundingClientRect>("MyIdGetBoundingClientRect", new object[] { link.ForeignRefId });
+        //var ep = new Point { X = endRect.X + 0.5 * endRect.Width, Y = endRect.Y + 0.5 * endRect.Height };
+        //var epConv = await module.InvokeAsync<Point>("ConvertToSvg", new object[] { _svgRef, ep });
+
+        //var line = new LinePoints { X1 = spConv.X, Y1 = spConv.Y, X2 = epConv.X, Y2 = epConv.Y };
+        //result.Add(line);
+        return result;
+    }
+
+    private async Task<Point> ConvertToSvg(string refId)
+    {
+        var module = await Module;
+        var startRect = await module.InvokeAsync<BoundingClientRect>("MyIdGetBoundingClientRect", new object[] { refId });
+        var sp = new Point { X = startRect.X + 0.5 * startRect.Width, Y = startRect.Y + 0.5 * startRect.Height };
+        var spConv = await module.InvokeAsync<Point>("ConvertToSvg", new object[] { _svgRef, sp });
+        return spConv;
+    }
 }
