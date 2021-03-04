@@ -446,6 +446,7 @@ namespace Platz.ObjectBuilder.Blazor
 
     public class TableLink
     {
+        public int Order { get; set; }
         public string PrimaryRefId { get; set; }
         public string ForeignRefId { get; set; }
         public StoreObjectJoin Source { get; set; }

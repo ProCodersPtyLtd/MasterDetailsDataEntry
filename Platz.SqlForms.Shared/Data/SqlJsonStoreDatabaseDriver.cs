@@ -294,7 +294,7 @@ ALTER TABLE [{schema}].[{table.Name}]
             object idValue = record.GetType().GetProperty(pkName).GetValue(record);
             string json = JsonSerializer.Serialize(record);
             var sql = SqlScriptHelper.UpdateJsonTableWithParams(table.Name, schema);
-            ExecuteNonQuery(sql, idValue, json);
+            ExecuteNonQuery(sql, json, idValue);
         }
 
         public void Delete(string schema, string tableName, object pkValue)

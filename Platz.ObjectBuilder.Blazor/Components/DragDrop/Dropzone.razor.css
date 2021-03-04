@@ -105,3 +105,19 @@
     min-height: 300px;
     opacity: 0.8;
 }
+
+.drag-item {
+    margin-left: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: lightgray;
+    align-items: center;
+    justify-content: center;
+    width: 250px;
+}
+
+.drag-container {
+    /*background-color: dodgerblue;*/
+    min-height: 300px;
+    opacity: 0.8;
+}

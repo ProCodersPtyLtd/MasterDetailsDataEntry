@@ -1,0 +1,85 @@
+﻿@using Platz.ObjectBuilder.Blazor.Controllers
+
+@namespace Platz.ObjectBuilder
+
+@if (@Table != null)
+{
+
+    <table style="background-color: dodgerblue; width: 100%">
+        <tr>
+            <th style="width: 10px"></th>
+            <th>@Table.Name</th>
+            <th></th>
+        </tr>
+    </table>
+
+    <table class="table-cols" style="width: 100%">
+        @*<tr hidden="@_shortTableView">*@
+        <tr>
+            <th style="width: 28px"></th>
+            <th style="width: auto"></th>
+            <th style="width: 70px"></th>
+            <th style="width: 28px"></th>
+        </tr>
+        @for (int rowIndex = 0; rowIndex < Table.Columns.Count; rowIndex++)
+        {
+            var item = Table.Columns[rowIndex];
+            var row = rowIndex;
+
+            <tr>
+                <td>
+                    @if (item.IsPk)
+                    {
+                        @*<span id="@GetPkId(row)" class="oi oi-key"></span>*@
+                        <span><b>PK</b></span>
+                    }
+                </td>
+                <td>@item.Name</td>
+                <td>@item.Type</td>
+                <td>
+                    @if (item.IsFk)
+                    {
+                        <span id="@GetFkId(row)" class="oi oi-infinity"></span>
+                    }
+                    else if (item.IsPk)
+                    {
+                        <span id="@GetPkId(row)" class="oi oi-key"></span>
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+}
+
+@code {
+    [CascadingParameter]
+    public ISchemaController SchemaController { get; set; }
+
+    [Parameter]
+    public DiagramTable Table { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+    public string GetPkId(int i)
+    {
+        var id = GenerateObjectId("table_primary", Table.Id, i);
+        return id;
+    }
+
+    public string GetFkId(int i)
+    {
+        var id = GenerateObjectId("table_foreign", Table.Id, i);
+        return id;
+    }
+
+    private string GenerateObjectId(string prefix, int objId, int propId = 0)
+    {
+        var id = $"{prefix}_{objId}_{propId}";
+        return id;
+    }
+}
