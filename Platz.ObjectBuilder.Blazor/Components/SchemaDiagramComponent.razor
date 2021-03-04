@@ -43,21 +43,35 @@
     public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 
     private ElementReference _svgRef;
-    private bool _needRefreshLinks = true;
+    private bool _needRefreshLinks;
     private List<LinePoints> _lines { get; set; }
     private Task<IJSObjectReference> _module;
     private Task<IJSObjectReference> Module => _module ??= JS.InvokeAsync<IJSObjectReference>("import", "./_content/Platz.ObjectBuilder.Blazor/objectBuilder.js").AsTask();
 
+    private int _renderPass = 0;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await GenerateLinks();
-
-        if (_needRefreshLinks)
+        if (_renderPass == 0)
         {
-            _needRefreshLinks = false;
-            await GenerateLinks();
+            _renderPass++;
+            _needRefreshLinks = true;
             StateHasChanged();
+        }
+        else if (_renderPass == 1)
+        {
+            _renderPass++;
+
+            if (_needRefreshLinks)
+            {
+                _needRefreshLinks = false;
+                await GenerateLinks();
+                StateHasChanged();
+            }
+        }
+        else
+        {
+            _renderPass = 0;
         }
     }
 
@@ -73,13 +87,12 @@
     private void Refresh()
     {
         _needRefreshLinks = true;
+        _renderPass = 1;
         StateHasChanged();
     }
 
     private async Task GenerateLinks()
     {
-        var before = _lines?.Count() ?? 0;
-
         _lines = new List<LinePoints>();
         var links = SchemaController.GetTableLinks();
 
@@ -88,11 +101,6 @@
             var lines = await GetLinkLines(link);
             _lines.AddRange(lines);
         }
-
-        if (_lines.Count() != before)
-        {
-            StateHasChanged();
-        }
     }
 
     int _lineStepSize = 16;
@@ -100,8 +108,6 @@
     // returns 3 lines
     private async Task<List<LinePoints>> GetLinkLines(TableLink link)
     {
-        //var module = await Module;
-
         var result = new List<LinePoints>();
         var spConv = await ConvertToSvg(link.PrimaryRefId);
         var spConvRight = new Point { X = spConv.X + (link.Order + 1) * _lineStepSize, Y = spConv.Y };
@@ -115,16 +121,6 @@
         var line3 = new LinePoints { X1 = epConvRight.X, Y1 = epConvRight.Y, X2 = epConv.X, Y2 = epConv.Y };
         result.Add(line3);
 
-        //var startRect = await module.InvokeAsync<BoundingClientRect>("MyIdGetBoundingClientRect", new object[] { link.PrimaryRefId });
-        //var sp = new Point { X = startRect.X + 0.5 * startRect.Width, Y = startRect.Y + 0.5 * startRect.Height };
-        //var spConv = await module.InvokeAsync<Point>("ConvertToSvg", new object[] { _svgRef, sp });
-
-        //var endRect = await module.InvokeAsync<BoundingClientRect>("MyIdGetBoundingClientRect", new object[] { link.ForeignRefId });
-        //var ep = new Point { X = endRect.X + 0.5 * endRect.Width, Y = endRect.Y + 0.5 * endRect.Height };
-        //var epConv = await module.InvokeAsync<Point>("ConvertToSvg", new object[] { _svgRef, ep });
-
-        //var line = new LinePoints { X1 = spConv.X, Y1 = spConv.Y, X2 = epConv.X, Y2 = epConv.Y };
-        //result.Add(line);
         return result;
     }
 
