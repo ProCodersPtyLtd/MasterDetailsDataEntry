@@ -17,7 +17,7 @@ namespace Platz.ObjectBuilder.Tests.Validation
         [Fact]
         public void SelectFieldsUniqueFailTest()
         {
-            var qc = new EntityFrameworkQueryController(null);
+            var qc = new QueryController(null);
             var t1 = new QueryFromTable { Alias = "t", StoreDefinition = new StoreDefinition { Name = "table1" } };
             var p1 = new QueryFromProperty { Alias = "id", StoreProperty = new StoreProperty { Name = "x1" } };
             var p2 = new QueryFromProperty { StoreProperty = new StoreProperty { Name = "id" } };
@@ -37,7 +37,7 @@ namespace Platz.ObjectBuilder.Tests.Validation
         [Fact]
         public void SelectFieldsUniquePassTest()
         {
-            var qc = new EntityFrameworkQueryController(null);
+            var qc = new QueryController(null);
             var t1 = new QueryFromTable { Alias = "t", StoreDefinition = new StoreDefinition { Name = "table1" } };
             var p1 = new QueryFromProperty { Alias = "id2", StoreProperty = new StoreProperty { Name = "id" } };
             var p2 = new QueryFromProperty { StoreProperty = new StoreProperty { Name = "id" } };

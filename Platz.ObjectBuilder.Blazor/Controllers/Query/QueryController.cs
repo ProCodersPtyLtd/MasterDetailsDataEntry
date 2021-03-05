@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Platz.ObjectBuilder.Blazor.Controllers;
 using Platz.ObjectBuilder.Blazor.Controllers.Logic;
 using Platz.ObjectBuilder.Blazor.Controllers.Validation;
 using Platz.ObjectBuilder.Engine;
@@ -12,7 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Platz.ObjectBuilder.Blazor
+namespace Platz.ObjectBuilder
 {
     public interface IQueryModel
     {
@@ -29,7 +30,8 @@ namespace Platz.ObjectBuilder.Blazor
 
     public interface IQueryController : IQueryModel
     {
-        void SetParameters(IQueryControllerParameters parameters);
+        void Configure(IQueryControllerConfiguration config);
+        //void SetParameters(QueryControllerParameters parameters);
         void LoadSchema();
         void AddFromTable(StoreDefinition table);
         void RemoveFromTable(string tableName, string alias);
@@ -56,23 +58,7 @@ namespace Platz.ObjectBuilder.Blazor
         void Clear();
     }
  
-    public interface IQueryControllerParameters
-    { }
-
-    public class StoreQueryParameters
-    {
-        public string StoreDataPath { get; set; }
-
-        public string QueryReturnType { get; set; }
-
-        public string QueryName { get; set; }
-
-        public string Namespace { get; set; }
-
-        public string DataService { get; set; }
-    }
-
-    public abstract class QueryControllerBase : IQueryController
+    public class QueryController : IQueryController
     {
         public StoreQueryParameters StoreParameters { get; set; } = new StoreQueryParameters();
         public StoreSchema Schema { get; private set; }
@@ -84,19 +70,26 @@ namespace Platz.ObjectBuilder.Blazor
         public string WhereClause { get; private set; } = "";
         public string Errors { get; set; } = "";
 
-        protected IStoreSchemaReader _reader;
-        protected IStoreSchemaStorage _storage;
-        protected IStoreSchemaReaderParameters _readerParameters;
-        protected IObjectResolver _resolver;
-        protected SqlExpressionEngine _expressions;
+        private IStoreSchemaReader _reader;
+        private IStoreSchemaStorage _storage;
+        private IStoreSchemaReaderParameters _readerParameters;
+        private IObjectResolver _resolver;
+        private SqlExpressionEngine _expressions;
         private readonly IQueryBuilderEngine _engine;
 
-        public QueryControllerBase(IQueryBuilderEngine engine)
+        public QueryController(IQueryBuilderEngine engine)
         {
             _engine = engine;
         }
 
-        public abstract void SetParameters(IQueryControllerParameters parameters);
+        public void Configure(IQueryControllerConfiguration config)
+        {
+            _reader = config.Reader;
+            _storage = config.Storage;
+            _readerParameters = config.ReaderParameters;
+            _resolver = config.Resolver;
+            _expressions = config.ExpressionEngine;
+        }
 
         public void Clear()
         {
