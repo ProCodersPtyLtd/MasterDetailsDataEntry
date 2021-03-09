@@ -59,7 +59,7 @@ namespace Platz.SqlForms
         {
             var columns = table.Properties.Values.OrderBy(p => p.Order).ToList();
             var pkColumn = GetPkColumn(columns[0]);
-            
+
             var sql = @$"
 CREATE TABLE [{schema}].[{table.Name}] ({pkColumn}, {DATA_COLUMN} nvarchar(max));
 
@@ -67,6 +67,17 @@ ALTER TABLE [{schema}].[{table.Name}]
     ADD CONSTRAINT [{schema}_{table.Name}_JSON]
                    CHECK (ISJSON({DATA_COLUMN})=1);
 ";
+
+            foreach (var col in columns.Where(c => c.Fk))
+            {
+                var type = col.ForeignKeys[0].Type;
+                var colType = type == "int" ? "INT" : "uniqueidentifier";
+
+                sql += $@"
+ALTER TABLE [{schema}].[{table.Name}]
+ADD [{col.Name}] AS CAST(JSON_VALUE({DATA_COLUMN},'$.{col.Name}') AS {colType});
+";
+            }
 
             ExecuteNonQuery(sql);
         }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Platz.ObjectBuilder.Blazor.Controllers;
 using Platz.ObjectBuilder.Blazor.Controllers.Logic;
 using Platz.ObjectBuilder.Blazor.Controllers.Validation;
 using Platz.ObjectBuilder.Engine;
@@ -12,7 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Platz.ObjectBuilder.Blazor
+namespace Platz.ObjectBuilder
 {
     public interface IQueryModel
     {
@@ -29,7 +30,7 @@ namespace Platz.ObjectBuilder.Blazor
 
     public interface IQueryController : IQueryModel
     {
-        void SetParameters(IQueryControllerParameters parameters);
+        void Configure(IQueryControllerConfiguration config);
         void LoadSchema();
         void AddFromTable(StoreDefinition table);
         void RemoveFromTable(string tableName, string alias);
@@ -56,23 +57,7 @@ namespace Platz.ObjectBuilder.Blazor
         void Clear();
     }
  
-    public interface IQueryControllerParameters
-    { }
-
-    public class StoreQueryParameters
-    {
-        public string StoreDataPath { get; set; }
-
-        public string QueryReturnType { get; set; }
-
-        public string QueryName { get; set; }
-
-        public string Namespace { get; set; }
-
-        public string DataService { get; set; }
-    }
-
-    public abstract class QueryControllerBase : IQueryController
+    public class QueryController : IQueryController
     {
         public StoreQueryParameters StoreParameters { get; set; } = new StoreQueryParameters();
         public StoreSchema Schema { get; private set; }
@@ -84,19 +69,26 @@ namespace Platz.ObjectBuilder.Blazor
         public string WhereClause { get; private set; } = "";
         public string Errors { get; set; } = "";
 
-        protected IStoreSchemaReader _reader;
-        protected IStoreSchemaStorage _storage;
-        protected IStoreSchemaReaderParameters _readerParameters;
-        protected IObjectResolver _resolver;
-        protected SqlExpressionEngine _expressions;
+        private IStoreSchemaReader _reader;
+        private IStoreSchemaStorage _storage;
+        private IStoreSchemaReaderParameters _readerParameters;
+        private IObjectResolver _resolver;
+        private SqlExpressionEngine _expressions;
         private readonly IQueryBuilderEngine _engine;
 
-        public QueryControllerBase(IQueryBuilderEngine engine)
+        public QueryController(IQueryBuilderEngine engine)
         {
             _engine = engine;
         }
 
-        public abstract void SetParameters(IQueryControllerParameters parameters);
+        public void Configure(IQueryControllerConfiguration config)
+        {
+            _reader = config.Reader;
+            _storage = config.Storage;
+            _readerParameters = config.ReaderParameters;
+            _resolver = config.Resolver;
+            _expressions = config.ExpressionEngine;
+        }
 
         public void Clear()
         {
@@ -424,57 +416,5 @@ namespace Platz.ObjectBuilder.Blazor
         }
     }
 
-    public class QueryModel : IQueryModel
-    {
-        public StoreQueryParameters StoreParameters { get; set; } = new StoreQueryParameters();
-        public StoreSchema Schema { get; set; } = new StoreSchema();
-        public List<QueryFromTable> FromTables { get; set; } = new List<QueryFromTable>();
-        public List<QuerySelectProperty> SelectionProperties { get; set; } = new List<QuerySelectProperty>();
-        public List<TableLink> FromTableLinks { get; set; } = new List<TableLink>();
-        public List<TableJoinModel> FromTableJoins { get; set; } = new List<TableJoinModel>();
-        public List<RuleValidationResult> ValidationResults { get; set; } = new List<RuleValidationResult>();
-        public string WhereClause { get; set; } = "";
-        public string Errors { get; set; } = "";
-    }
-
-    public class TableJoinModel
-    {
-        public string JoinType { get; set; }
-        public bool IsDeleted { get; set; }
-        public StoreObjectJoin Source { get; set; }
-    }
-
-    public class TableLink
-    {
-        public int Order { get; set; }
-        public string PrimaryRefId { get; set; }
-        public string ForeignRefId { get; set; }
-        public StoreObjectJoin Source { get; set; }
-    }
-
-    public class BoundingClientRect
-    {
-        public double X { get; set; }
-        public double Y { get; set; }
-        public double Width { get; set; }
-        public double Height { get; set; }
-        public double Top { get; set; }
-        public double Right { get; set; }
-        public double Bottom { get; set; }
-        public double Left { get; set; }
-    }
-
-    public class Point
-    {
-        public double X { get; set; }
-        public double Y { get; set; }
-    }
-
-    public class LinePoints
-    {
-        public double X1 { get; set; }
-        public double Y1 { get; set; }
-        public double X2 { get; set; }
-        public double Y2 { get; set; }
-    }
+    
 }

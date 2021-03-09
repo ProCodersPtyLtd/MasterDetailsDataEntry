@@ -3,105 +3,118 @@
 @namespace Platz.ObjectBuilder
 @inject IQueryController _queryController
 
-    <CascadingValue Value="@_queryController">
+<CascadingValue Value="@_queryController">
 
-        <QuerySettingsComponent StoreDataPath="@_fullStoreDataPath" DataService="@DataService" Namespace="@Namespace" ModelChanged="ModelChanged"/>
+    <QuerySettingsComponent StoreDataPath="@_fullStoreDataPath" DataService="@DataService" Namespace="@Namespace" ModelChanged="ModelChanged" />
 
-        <table style="width: 100%">
-            <tr>
-                <th style="width: auto"></th>
-                <th style="width: 300px"></th>
-            </tr>
-            <tr>
-                <td style="vertical-align: top">
-                    <div>
-                        <QuerySelectPanelComponent ModelChanged="ModelChanged"/>
-                    </div>
-                    <div>
-                        @*<QueryFromPanelComponent QueryController="_queryController" />*@
-                        <QueryFromPanelComponent ModelChanged="ModelChanged" Height="300"/>
-                    </div>
-                    <div>
-                        <QueryWherePanelComponent ModelChanged="ModelChanged"/>
-                    </div>
-                </td>
-                <td style="vertical-align: top">
-                    <div style="vertical-align: top">
+    <table style="width: 100%">
+        <tr>
+            <th style="width: auto"></th>
+            <th style="width: 300px"></th>
+        </tr>
+        <tr>
+            <td style="vertical-align: top">
+                <div>
+                    <QuerySelectPanelComponent ModelChanged="ModelChanged" />
+                </div>
+                <div>
+                    @*<QueryFromPanelComponent QueryController="_queryController" />*@
+                    <QueryFromPanelComponent ModelChanged="ModelChanged" Height="300" />
+                </div>
+                <div>
+                    <QueryWherePanelComponent ModelChanged="ModelChanged" />
+                </div>
+            </td>
+            <td style="vertical-align: top">
+                <div style="vertical-align: top">
 
-                        <ul class="nav nav-tabs" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link active" data-toggle="tab" href="#tables">Entities</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#joins">Relationships</a>
-                            </li>
-                        </ul>
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#tables">Entities</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#joins">Relationships</a>
+                        </li>
+                    </ul>
 
 
-                        @*<ul class="nav nav-tabs">
+                    @*<ul class="nav nav-tabs">
                             <li class="active"><a data-toggle="tab" href="#tables">Entities</a></li>
                             <li><a data-toggle="tab" href="#joins">Relationships</a></li>
                         </ul>*@
 
-                        <div class="tab-content">
-                            <div id="tables" class="container tab-pane active">
-                                <QueryTableListComponent ModelChanged="ModelChanged" />
-                            </div>
-                            <div id="joins" class="container tab-pane fade">
-                                <QueryJoinListComponent ModelChanged="ModelChanged" />
-                            </div>
+                    <div class="tab-content">
+                        <div id="tables" class="container tab-pane active">
+                            <QueryTableListComponent ModelChanged="ModelChanged" />
                         </div>
-
-
+                        <div id="joins" class="container tab-pane fade">
+                            <QueryJoinListComponent ModelChanged="ModelChanged" />
+                        </div>
                     </div>
-                </td>
-            </tr>
-        </table>
-    </CascadingValue>
 
-    @code {
-        [Parameter]
-        public Type DbContextType { get; set; }
 
-        [Parameter]
-        public string StoreDataPath { get; set; }
+                </div>
+            </td>
+        </tr>
+    </table>
+</CascadingValue>
 
-        [Parameter]
-        public string Namespace { get; set; }
+@code {
+    [Parameter]
+    public Type DbContextType { get; set; }
 
-        [Parameter]
-        public string DataService { get; set; }
+    [Parameter]
+    public string SourceSchemaFile { get; set; }
 
-        private string _fullStoreDataPath { get; set; }
+    [Parameter]
+    public string StoreDataPath { get; set; }
 
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
+    [Parameter]
+    public string Namespace { get; set; }
 
-            InitController();
-            _fullStoreDataPath = Path.Combine(Directory.GetCurrentDirectory(), StoreDataPath);
-            _fullStoreDataPath = Path.GetFullPath(_fullStoreDataPath);
-        }
+    [Parameter]
+    public string DataService { get; set; }
 
-        private void InitController()
-        {
-            if (DbContextType != null)
-            {
-                var p = new EntityFrameworkQueryControllerParameters { DbContextType = DbContextType };
-                _queryController.SetParameters(p);
-            }
+    private string _fullStoreDataPath { get; set; }
 
-            _queryController.LoadSchema();
-        }
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
 
-        private async Task ModelChanged(ChangeEventArgs args)
-        {
-            StateHasChanged();
-        }
-
-        private void Click()
-        {
-            StateHasChanged();
-        }
-
+        InitController();
+        _fullStoreDataPath = Path.Combine(Directory.GetCurrentDirectory(), StoreDataPath);
+        _fullStoreDataPath = Path.GetFullPath(_fullStoreDataPath);
     }
+
+    private void InitController()
+    {
+        if (DbContextType != null)
+        {
+            var p = new QueryControllerParameters { DbContextType = DbContextType };
+            //_queryController.SetParameters(p);
+            var cfg = new EntityFrameworkQueryControllerConfiguration(p);
+            _queryController.Configure(cfg);
+        }
+        else if(SourceSchemaFile != null)
+        {
+            var fullPath = Path.Combine(Directory.GetCurrentDirectory(), SourceSchemaFile);
+            var p = new QueryControllerParameters { SchemaFilename = fullPath };
+            var cfg = new JsonSchemaQueryControllerConfiguration(p);
+            _queryController.Configure(cfg);
+            _queryController.StoreParameters.SetSchemaFileName(fullPath);
+        }
+
+        _queryController.LoadSchema();
+    }
+
+    private async Task ModelChanged(ChangeEventArgs args)
+    {
+        StateHasChanged();
+    }
+
+    private void Click()
+    {
+        StateHasChanged();
+    }
+
+}

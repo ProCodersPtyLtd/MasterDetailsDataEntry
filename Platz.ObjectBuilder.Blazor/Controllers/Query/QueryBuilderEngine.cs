@@ -117,6 +117,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
                     Namespace = qc.StoreParameters.Namespace,
                     ReturnTypeName = qc.StoreParameters.QueryReturnType,
                     SchemaName = qc.Schema.Name,
+                    SchemaFile = qc.StoreParameters.SchemaFileName,
                     SchemaVersion = qc.Schema.Version
                 };
 

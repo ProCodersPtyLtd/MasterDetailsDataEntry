@@ -40,6 +40,7 @@ namespace Platz.SqlForms
             {
                 switch (command.Operation)
                 {
+                    // ToDo: add foreign key constraints 
                     case MigrationOperation.CreateSchema:
                         _storeDatabaseDriver.CreateSchema(command.SchemaName);
                         _storeDatabaseDriver.CreateTable<MigrationVersionEntity>(schema, VERSION_TABLE);

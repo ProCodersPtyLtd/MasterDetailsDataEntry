@@ -69,6 +69,7 @@ namespace Platz.SqlForms
     {
         public string DefinitionName { get; set; }
         public string PropertyName { get; set; }
+        public string Type { get; set; }
         public List<string> CompositePropertyNames { get; set; }
     }
 }
