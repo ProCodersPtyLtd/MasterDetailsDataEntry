@@ -348,7 +348,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
 
             foreach (var t in schema.Tables)
             {
-                var tm = new MigrationCommand { Operation = MigrationOperation.CreateTable, SchemaName = schema.Name, Table = DesignSchemaConvert.ToStoreDefinition(t) };
+                var tm = new MigrationCommand { Operation = MigrationOperation.CreateTable, SchemaName = schema.Name, Table = DesignSchemaConvert.ToStoreDefinition(schema, t) };
                 tm.OperationCode = Enum.GetName(tm.Operation);
                 cmd.Add(tm);
             }

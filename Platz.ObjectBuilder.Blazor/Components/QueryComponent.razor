@@ -97,9 +97,11 @@
         }
         else if(SourceSchemaFile != null)
         {
-            var p = new QueryControllerParameters { SchemaFilename = SourceSchemaFile };
+            var fullPath = Path.Combine(Directory.GetCurrentDirectory(), SourceSchemaFile);
+            var p = new QueryControllerParameters { SchemaFilename = fullPath };
             var cfg = new JsonSchemaQueryControllerConfiguration(p);
             _queryController.Configure(cfg);
+            _queryController.StoreParameters.SetSchemaFileName(fullPath);
         }
 
         _queryController.LoadSchema();

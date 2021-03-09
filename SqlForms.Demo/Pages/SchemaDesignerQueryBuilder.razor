@@ -1,0 +1,14 @@
+﻿@page "/designerBuilder"
+
+@using Platz.ObjectBuilder
+
+<QueryComponent SourceSchemaFile="StoreNew\Crm2.schema.json" StoreDataPath="StoreNew"
+                DataService="Crm2DataService" Namespace="Default.StoreNew"  />
+
+
+@code {
+    private Type GetContextType()
+    {
+        return typeof(MasterDetailsDataEntry.Demo.Database.AdventureWorksContext);
+    }
+}

@@ -22,7 +22,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Validation.Rules
 
             if (notUnique.Any())
             {
-                var result = new RuleValidationResult(GetType().Name, $"Query output fields must have unique names, these fields are not unque: {string.Join(", ", notUnique)}");
+                var result = new RuleValidationResult(GetType().Name, $"Query output fields must have unique names, these fields are not unique: {string.Join(", ", notUnique)}");
                 return result;
             }
 

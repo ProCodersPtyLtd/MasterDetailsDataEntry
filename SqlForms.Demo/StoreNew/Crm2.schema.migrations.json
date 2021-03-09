@@ -3,7 +3,7 @@
   "Migrations": [
     {
       "Version": "1.0",
-      "VersionKey": "02476f4e-3789-419d-9237-e98f9ffc003e",
+      "VersionKey": "f1b29172-7aca-4d60-8561-9ba6515e0064",
       "Commands": [
         {
           "Operation": 1,
@@ -69,8 +69,8 @@
                 "Order": 2,
                 "ForeignKeys": []
               },
-              "City": {
-                "Name": "City",
+              "State": {
+                "Name": "State",
                 "Type": "string",
                 "Nullable": false,
                 "Comment": null,
@@ -109,6 +109,20 @@
                 "Fk": false,
                 "ExternalId": false,
                 "Order": 5,
+                "ForeignKeys": []
+              },
+              "Country": {
+                "Name": "Country",
+                "Type": "string",
+                "Nullable": false,
+                "Comment": null,
+                "MinLength": 0,
+                "MaxLength": null,
+                "Pk": false,
+                "AutoIncrement": false,
+                "Fk": false,
+                "ExternalId": false,
+                "Order": 6,
                 "ForeignKeys": []
               }
             }
@@ -243,6 +257,7 @@
                   {
                     "DefinitionName": "Person",
                     "PropertyName": "Id",
+                    "Type": "int",
                     "CompositePropertyNames": null
                   }
                 ]
@@ -263,6 +278,7 @@
                   {
                     "DefinitionName": "Address",
                     "PropertyName": "Id",
+                    "Type": "int",
                     "CompositePropertyNames": null
                   }
                 ]

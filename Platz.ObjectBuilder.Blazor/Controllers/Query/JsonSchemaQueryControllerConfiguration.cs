@@ -26,7 +26,7 @@ namespace Platz.ObjectBuilder
             Storage = new FileStoreSchemaStorage();
             Resolver = new SqlJsonObjectResolver();
             ExpressionEngine = new SqlExpressionEngine(Resolver);
-            Reader = new JsonStoreSchemaReader();
+            Reader = new JsonStoreSchemaReader(Storage);
             ReaderParameters = new JsonStoreSchemaReaderParameters { SchemaFile = parameters.SchemaFilename };
         }
     }

@@ -47,6 +47,7 @@ namespace Platz.SqlForms
         CreateTable = 10,
         DeleteTable,
         AlterTableName,
+        FkConstraint,
         
         AddColumn = 20,
         DeleteColumn,

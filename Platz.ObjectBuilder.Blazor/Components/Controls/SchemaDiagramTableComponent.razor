@@ -30,12 +30,19 @@
                 <td>
                     @if (item.IsPk)
                     {
-                        @*<span id="@GetPkId(row)" class="oi oi-key"></span>*@
-                        <span><b>PK</b></span>
+                        <b>PK</b>
+                    }
+                    @if (item.IsFk)
+                    {
+                        @:FK
                     }
                 </td>
-                <td>@item.Name</td>
-                <td>@item.Type</td>
+                <td>
+                    @item.Name
+                </td>
+                <td>
+                    @item.Type
+                </td>
                 <td>
                     @if (item.IsFk)
                     {

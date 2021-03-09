@@ -24,6 +24,9 @@
     </p>
     <div class="collapse" id="collapseExample">
         <div class="card card-body">
+
+
+
             <table cellpadding="10">
                 <tr>
                     <td style="vertical-align: top;">
@@ -34,7 +37,7 @@
                         <input @bind="QueryController.StoreParameters.Namespace" readonly="readonly" />
 
                         <label>Query Return Type name</label>
-                        <input value="@QueryController.StoreParameters.QueryReturnType" @onchange="QueryReturnTypeCahnged" />
+                        <input value="@QueryController.StoreParameters.QueryReturnType" @onchange="QueryReturnTypeChanged" />
 
                         <label>Query name</label>
                         <input @bind="QueryController.StoreParameters.QueryName" />
@@ -44,15 +47,15 @@
 
                         @if (_query?.Query?.Parameters != null)
                         {
-                        <table cellpadding="3">
-                            @foreach (var p in _query.Query.Parameters.Values)
+                            <table cellpadding="3">
+                                @foreach (var p in _query.Query.Parameters.Values)
                                 {
-                            <tr>
-                                <td>@p.Name</td>
-                                <td>@p.Type</td>
-                            </tr>
+                                    <tr>
+                                        <td>@p.Name</td>
+                                        <td>@p.Type</td>
+                                    </tr>
                                 }
-                        </table>
+                            </table>
                         }
                     </td>
                     <td style="width: 100%; vertical-align: top;">
@@ -65,6 +68,24 @@
                 </tr>
             </table>
 
+            <table>
+                <tr>
+                    <th style="width: 340px;">
+                    </th>
+                    <th style="width: 120px;">
+                    </th>
+                    <th style="width: 170px;">
+                    </th>
+                </tr>
+
+                <tr>
+                    <td colspan="3">
+                        <br />
+                        <label>Schema Path</label><br />
+                        <input value="@QueryController.StoreParameters.SchemaFileName" readonly="readonly" class="form-control" />
+                    </td>
+                </tr>
+            </table>
 
             <div class="float-right">
                 <button class="btn btn-light btn-sm" title="Add" @onclick="@(() => SettingsRightClick())">
@@ -148,20 +169,20 @@
 </div>
 
 @code {
-        [CascadingParameter]
-        public IQueryController QueryController { get; set; }
+    [CascadingParameter]
+    public IQueryController QueryController { get; set; }
 
-        [Parameter]
-        public string StoreDataPath { get; set; }
+    [Parameter]
+    public string StoreDataPath { get; set; }
 
-        [Parameter]
-        public string Namespace { get; set; }
+    [Parameter]
+    public string Namespace { get; set; }
 
-        [Parameter]
-        public string DataService { get; set; }
+    [Parameter]
+    public string DataService { get; set; }
 
-        [Parameter]
-        public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 
     private StoreQuery _query;
     private string _selectedFileName;
@@ -283,10 +304,13 @@
         }
     }
 
-    private void QueryReturnTypeCahnged(ChangeEventArgs args)
+    private void QueryReturnTypeChanged(ChangeEventArgs args)
     {
         QueryController.StoreParameters.QueryReturnType = (string)args.Value;
         QueryController.StoreParameters.QueryName = $"Get{QueryController.StoreParameters.QueryReturnType}List";
+        //var schemaFile = $"{QueryController.StoreParameters.QueryName}.schema.json";
+        //QueryController.StoreParameters.ShemaFileName = schemaFile;
+        //schemaFile = Path.Combine(QueryController.StoreParameters.StoreDataPath, schemaFile);
         _fileNameChanged = true;
     }
 

@@ -12,6 +12,7 @@ namespace Platz.SqlForms
         public string Namespace { get; set; }
         public string ReturnTypeName { get; set; }
         public string SchemaName { get; set; }
+        public string SchemaFile { get; set; }
         public string SchemaVersion { get; set; }
         public string[] Tags { get; set; }
         public StoreQueryDefinition Query { get; set; }

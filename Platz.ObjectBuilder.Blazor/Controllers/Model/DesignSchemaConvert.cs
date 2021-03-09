@@ -58,7 +58,7 @@ namespace Platz.ObjectBuilder.Blazor
             return null;
         }
 
-        public static StoreDefinition ToStoreDefinition(DesignTable t)
+        public static StoreDefinition ToStoreDefinition(DesignSchema schema, DesignTable t)
         {
             var d = new StoreDefinition { Name = t.Name, Properties = new Dictionary<string, StoreProperty>() };
             int i = 0;
@@ -71,7 +71,7 @@ namespace Platz.ObjectBuilder.Blazor
                 Fk = !string.IsNullOrWhiteSpace(c.Reference),
                 Nullable = c.Nullable,
                 AutoIncrement = c.Pk,
-                ForeignKeys = GetForeignKeysForColumn(t, c),
+                ForeignKeys = GetForeignKeysForColumn(schema, t, c),
                 Order = i++
             });
 
@@ -122,7 +122,7 @@ namespace Platz.ObjectBuilder.Blazor
                     Fk = !string.IsNullOrWhiteSpace(c.Reference),
                     Nullable = c.Nullable,
                     AutoIncrement = c.Pk,
-                    ForeignKeys = GetForeignKeysForColumn(t, c),
+                    ForeignKeys = GetForeignKeysForColumn(s, t, c),
                     Order = i++
                 });
             }
@@ -131,11 +131,12 @@ namespace Platz.ObjectBuilder.Blazor
             return schema;
         }
 
-        private static List<StoreForeignKey> GetForeignKeysForColumn(DesignTable t, DesignColumn c)
+        private static List<StoreForeignKey> GetForeignKeysForColumn(DesignSchema schema, DesignTable t, DesignColumn c)
         {
             if (!string.IsNullOrWhiteSpace(c.TableReference) && !string.IsNullOrWhiteSpace(c.ColumnReference))
             {
-                return (new StoreForeignKey[] { new StoreForeignKey { DefinitionName = c.TableReference, PropertyName = c.ColumnReference } }).ToList();
+                var type = schema.Tables.FirstOrDefault(t => t.Name == c.TableReference).Columns[0].Type;
+                return (new StoreForeignKey[] { new StoreForeignKey { DefinitionName = c.TableReference, PropertyName = c.ColumnReference, Type = type } }).ToList();
             }
 
             return new List<StoreForeignKey>();
