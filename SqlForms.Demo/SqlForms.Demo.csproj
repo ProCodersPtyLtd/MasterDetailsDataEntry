@@ -18,6 +18,10 @@
       <LastGenOutput>CrmDataContext.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+    <None Update="DataServices\PlatzSchemaStoreDataService.tt">
+      <LastGenOutput>PlatzSchemaStoreDataService.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="DataServices\PlatzDataServiceTemp.tt">
       <LastGenOutput>PlatzDataServiceTemp.txt</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -30,6 +34,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>PlatzDataServiceTemp.tt</DependentUpon>
+    </None>
+    <None Update="DataServices\PlatzSchemaDataService.txt">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PlatzSchemaDataService.tt</DependentUpon>
     </None>
   </ItemGroup>
 
@@ -47,6 +56,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>PlatzDataService.tt</DependentUpon>
+    </Compile>
+    <Compile Update="DataServices\PlatzSchemaStoreDataService.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PlatzSchemaStoreDataService.tt</DependentUpon>
     </Compile>
   </ItemGroup>
 

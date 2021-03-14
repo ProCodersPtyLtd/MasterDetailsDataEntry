@@ -192,13 +192,20 @@ namespace Platz.ObjectBuilder
 
             string result;
 
-            if (DesignSchemaTypesMap.ContainsKey(p.Type))
+            if (p.Fk)
             {
-                result = DesignSchemaTypesMap[p.Type];
+                result = DesignSchemaTypesMap[p.ForeignKeys.First().Type];
             }
             else
             {
-                result = p.Type;
+                if (DesignSchemaTypesMap.ContainsKey(p.Type))
+                {
+                    result = DesignSchemaTypesMap[p.Type];
+                }
+                else
+                {
+                    result = p.Type;
+                }
             }
 
             if (result != "string" && p.Nullable)
@@ -208,6 +215,40 @@ namespace Platz.ObjectBuilder
 
             return result;
         }
+
+        //public string DesignShemaTypeToCSharp(StoreQueryField p)
+        //{
+        //    if (p.Pk && p.Type == "int")
+        //    {
+        //        //return "long";
+        //        return "int";
+        //    }
+
+        //    string result;
+
+        //    if (p.Fk)
+        //    {
+        //        result = DesignSchemaTypesMap[p.ForeignKeys.First().Type];
+        //    }
+        //    else
+        //    {
+        //        if (DesignSchemaTypesMap.ContainsKey(p.Type))
+        //        {
+        //            result = DesignSchemaTypesMap[p.Type];
+        //        }
+        //        else
+        //        {
+        //            result = p.Type;
+        //        }
+        //    }
+
+        //    if (result != "string" && p.Nullable)
+        //    {
+        //        result = result + "?";
+        //    }
+
+        //    return result;
+        //}
 
         public static Dictionary<string, string> DesignSchemaTypesMap = new Dictionary<string, string>()
         {

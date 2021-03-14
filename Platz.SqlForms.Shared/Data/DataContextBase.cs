@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Platz.SqlForms
 {
-    public abstract class DataContextBase
+    public abstract class DataContextBase : IDisposable
     {
         private List<Type> _tables;
         private string _schema;
@@ -116,6 +116,10 @@ namespace Platz.SqlForms
             {
                 throw new DataContextException($"Type '{entityType.Name}' is not registered as a table.");
             }
+        }
+
+        public void Dispose()
+        {
         }
     }
 

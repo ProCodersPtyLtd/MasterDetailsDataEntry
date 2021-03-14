@@ -17,11 +17,12 @@ namespace Default
     {
         protected override void Configure(DataContextSettings settings)
         {
-            settings.SetSchema("Crm");
+            settings.SetSchema("Crm2");
             settings.SetDriver<SqlJsonStoreDatabaseDriver>();
 
             settings.AddTable<Address>();
             settings.AddTable<Person>();
+            settings.AddTable<PersonAddress>();
         }
     }
 
@@ -34,9 +35,10 @@ namespace Default
         public virtual int Id { get; set; }
         public virtual string Line1 { get; set; }
         public virtual string Suburb { get; set; }
-        public virtual string City { get; set; }
+        public virtual string State { get; set; }
         public virtual string PostCode { get; set; }
         public virtual bool Deleted { get; set; }
+        public virtual string Country { get; set; }
     }
 
     public partial class Person
@@ -46,6 +48,14 @@ namespace Default
         public virtual string Surname { get; set; }
         public virtual string Phone { get; set; }
         public virtual DateTime? Dob { get; set; }
+    }
+
+    public partial class PersonAddress
+    { 
+        public virtual int Id { get; set; }
+        public virtual int? PersonId { get; set; }
+        public virtual int? AddressId { get; set; }
+        public virtual bool Deleted { get; set; }
     }
 
     #endregion

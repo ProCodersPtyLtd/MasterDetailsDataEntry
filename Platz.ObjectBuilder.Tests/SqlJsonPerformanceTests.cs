@@ -11,7 +11,7 @@ namespace Platz.ObjectBuilder.Tests
     public class SqlJsonPerformanceTests
     {
         private string[] _suburbs = new string[] { "gymea", "cronulla", "manli", "caringbah", "gosford", "woy woy", "hurtsvile" };
-        private string[] _cities = new string[] { "sydney", "central coast", "melbourn", "gold coast", "brisban", "perth", "nowra" };
+        private string[] _states = new string[] { "sydney", "central coast", "melbourn", "gold coast", "brisban", "perth", "nowra" };
         private string[] _roads = new string[] { "wellingtone", "oak", "princess highway", "ewos pde", "sunset ave", "perth", "nowra" };
         private string[] _postcodes = new string[] { "1111", "2222", "2233", "3322", "2000", "2180", "1267" };
 
@@ -24,7 +24,7 @@ namespace Platz.ObjectBuilder.Tests
                 int x1 = i % 5;
                 int x2 = i % 4;
                 int x3 = i % 6 + 1;
-                var a = new Address { Line1 = $"{i} {_roads[x1]}", City = _cities[x2], Suburb = _suburbs[x3], PostCode = _postcodes[x1] };
+                var a = new Address { Line1 = $"{i} {_roads[x1]}", State = _states[x2], Suburb = _suburbs[x3], PostCode = _postcodes[x1] };
                 _addresses.Add(a);
             }
         }
