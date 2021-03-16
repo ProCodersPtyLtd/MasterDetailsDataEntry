@@ -127,6 +127,36 @@ ADD [{col.Name}] AS CAST(JSON_VALUE({DATA_COLUMN},'$.{col.Name}') AS {colType});
 
         #endregion
 
+        public List<object> ExecuteQueryParams(string sql, Type returnType, params object[] ps)
+        {
+            var result = new List<object>();
+
+            using (var conn = new SqlConnection(_settings.ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    conn.Open();
+
+                    for (int i = 0; i < ps.Length; i++)
+                    {
+                        cmd.Parameters.AddWithValue($"p{i + 1}", ps[i]);
+                    }
+
+                    var dr = cmd.ExecuteReader();
+
+                    while (dr.Read())
+                    {
+                        var json = Convert.ToString(dr[DATA_COLUMN]);
+                        var e = JsonSerializer.Deserialize(json, returnType);
+                        result.Add(e);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+
         #region CRUD
         /// <summary>
         /// Get all items

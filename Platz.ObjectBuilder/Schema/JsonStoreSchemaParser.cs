@@ -182,6 +182,48 @@ namespace Platz.ObjectBuilder
             { "<>", "!=" },
         };
 
+        public static Dictionary<string, string> SqlOperatorsMap = new Dictionary<string, string>()
+        {
+            { "or", "OR" },
+            { "and", "AND" },
+            { "=", "=" },
+            { "<>", "<>" },
+        };
+
+        public string QueryExprToSql(QueryExpression expr, Dictionary<string, string> operatorsMap = null)
+        {
+            if (expr == null)
+            {
+                return "";
+            }
+
+            if (expr.QueryField != null)
+            {
+                return $"{expr.QueryField.Field.ObjectAlias}.{expr.QueryField.Field.FieldName}";
+            }
+            else if (expr.Param != null)
+            {
+                return expr.Param;
+            }
+            else if (expr.Value != null)
+            {
+                return expr.Value.ToString();
+            }
+
+            var left = expr.Left.Operator == null ? $"{QueryExprToSql(expr.Left, operatorsMap)}" : $"({QueryExprToSql(expr.Left, operatorsMap)})";
+            var right = expr.Right.Operator == null ? $"{QueryExprToSql(expr.Right, operatorsMap)}" : $"({QueryExprToSql(expr.Right, operatorsMap)})";
+
+            var mappedOperator = expr.Operator;
+
+            if (operatorsMap != null && operatorsMap.ContainsKey(mappedOperator.ToLower()))
+            {
+                mappedOperator = operatorsMap[mappedOperator.ToLower()];
+            }
+
+            var result = $"{left} {mappedOperator} {right}";
+            return result;
+        }
+
         public string DesignShemaTypeToCSharp(StoreProperty p)
         {
             if (p.Pk && p.Type == "int")
@@ -192,13 +234,20 @@ namespace Platz.ObjectBuilder
 
             string result;
 
-            if (DesignSchemaTypesMap.ContainsKey(p.Type))
+            if (p.Fk)
             {
-                result = DesignSchemaTypesMap[p.Type];
+                result = DesignSchemaTypesMap[p.ForeignKeys.First().Type];
             }
             else
             {
-                result = p.Type;
+                if (DesignSchemaTypesMap.ContainsKey(p.Type))
+                {
+                    result = DesignSchemaTypesMap[p.Type];
+                }
+                else
+                {
+                    result = p.Type;
+                }
             }
 
             if (result != "string" && p.Nullable)
@@ -207,6 +256,45 @@ namespace Platz.ObjectBuilder
             }
 
             return result;
+        }
+
+        //public string DesignShemaTypeToCSharp(StoreQueryField p)
+        //{
+        //    if (p.Pk && p.Type == "int")
+        //    {
+        //        //return "long";
+        //        return "int";
+        //    }
+
+        //    string result;
+
+        //    if (p.Fk)
+        //    {
+        //        result = DesignSchemaTypesMap[p.ForeignKeys.First().Type];
+        //    }
+        //    else
+        //    {
+        //        if (DesignSchemaTypesMap.ContainsKey(p.Type))
+        //        {
+        //            result = DesignSchemaTypesMap[p.Type];
+        //        }
+        //        else
+        //        {
+        //            result = p.Type;
+        //        }
+        //    }
+
+        //    if (result != "string" && p.Nullable)
+        //    {
+        //        result = result + "?";
+        //    }
+
+        //    return result;
+        //}
+
+        public string ToSqlType(string type)
+        {
+            return DesignSchemaTypesToSqlMap[type];
         }
 
         public static Dictionary<string, string> DesignSchemaTypesMap = new Dictionary<string, string>()
@@ -218,6 +306,17 @@ namespace Platz.ObjectBuilder
             { "decimal", "decimal" },
             { "money", "decimal" },
             { "bool", "bool" },
+        };
+
+        public static Dictionary<string, string> DesignSchemaTypesToSqlMap = new Dictionary<string, string>()
+        {
+            { "guid", "UNIQUEIDENTIFIER" },
+            { "string", "VARCHAR(MAX)" },
+            { "int", "INT" },
+            { "date", "DATE2" },
+            { "decimal", "MONEY" },
+            { "money", "MONEY" },
+            { "bool", "BIT" },
         };
     }
 }

@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Platz.SqlForms
 {
-    public abstract class DataContextBase
+    public abstract class DataContextBase : IDisposable
     {
         private List<Type> _tables;
         private string _schema;
@@ -41,6 +41,18 @@ namespace Platz.SqlForms
             _db = Activator.CreateInstance(settings.GetDriverType()) as IStoreDatabaseDriver;
             _db.Configure(new StoreDatabaseDriverSettings { ConnectionString = _connectionString });
 
+        }
+
+        public List<T> ExecuteQuery<T>(string sql, params object[] ps) 
+        {
+            var list = _db.ExecuteQueryParams(sql, typeof(T), ps);
+            var result = list.Cast<T>().ToList();
+            return result;
+        }
+
+        public IList ExecuteQuery(string sql, Type returnType, params object[] ps)
+        {
+            throw new NotImplementedException();
         }
 
         public IEnumerable<PropertyInfo> FindPrimaryKey(Type type)
@@ -116,6 +128,10 @@ namespace Platz.SqlForms
             {
                 throw new DataContextException($"Type '{entityType.Name}' is not registered as a table.");
             }
+        }
+
+        public void Dispose()
+        {
         }
     }
 

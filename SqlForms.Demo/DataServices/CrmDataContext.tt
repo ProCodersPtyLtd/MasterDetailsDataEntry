@@ -10,7 +10,7 @@
 <#@ import namespace="Platz.SqlForms" #>
 <#@ import namespace="Platz.ObjectBuilder" #>
 <# // ================================================================ Set JsonStorePath here, relative to solution folder ================================== #>
-<#      string JsonStorePath = @"SqlForms.Demo\StoreNew\Crm.schema.json"; #>
+<#      string JsonStorePath = @"SqlForms.Demo\StoreNew\Crm2.schema.json"; #>
 <# // ======================================================================================================================================================= #>
 <# 
         StoreSchema Schema = null;

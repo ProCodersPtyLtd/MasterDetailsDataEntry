@@ -21,6 +21,9 @@ namespace Platz.SqlForms
         void RenameColumn(string schemaName, string tableName, string columnName, string newValue);
         void AlterColumn(string schemaName, string tableName, string columnName, StoreProperty column);
 
+        // Queries
+        List<object> ExecuteQueryParams(string sql, Type returnType, params object[] ps);
+
         // CRUD
         IList Get(string schema, Type entityType);
         object Find(string schema, Type entityType, object pkValue);
