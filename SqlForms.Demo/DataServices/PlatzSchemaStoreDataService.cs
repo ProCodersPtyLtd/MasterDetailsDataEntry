@@ -26,35 +26,29 @@ namespace Default.StoreNew
     {
         public List<PersonAddress> GetPersonAddressList(params object[] parameters)
         {
-            var p1 = (int)parameters[0];
-
-            using (var db = GetDbContext())
-            {
-                var query =
-                    from a in db.Address 
-                    join p in db.PersonAddress on a.Id equals p.AddressId
-                    join pe in db.Person on p.PersonId equals pe.Id
-                    where ((a.Deleted == 0) && (p.Deleted == 0)) && (pe.Id == p1)
-                    select new PersonAddress
-                    {
-                        Id = a.Id,
-                        Line1 = a.Line1,
-                        Suburb = a.Suburb,
-                        State = a.State,
-                        PostCode = a.PostCode,
-                        Country = a.Country,
-                        PersonId = p.PersonId,
-                        AddressId = p.AddressId,
-                        Name = pe.Name,
-                        Surname = pe.Surname,
-                        Phone = pe.Phone,
-                        Dob = pe.Dob,
-                        Id = pe.Id,
-                    };
-
-                var result = query.ToList();
-                return result;
-            }
+            var sql = @$"
+SELECT
+      a.Id AS AddrId
+    , JSON_VALUE(a.data, '$.Line1') AS Line1
+    , JSON_VALUE(a.data, '$.Suburb') AS Suburb
+    , JSON_VALUE(a.data, '$.State') AS State
+    , JSON_VALUE(a.data, '$.PostCode') AS PostCode
+    , JSON_VALUE(a.data, '$.Country') AS Country
+    , p.PersonId AS PersonId
+    , p.AddressId AS AddressId
+    , JSON_VALUE(pe.data, '$.Name') AS Name
+    , JSON_VALUE(pe.data, '$.Surname') AS Surname
+    , JSON_VALUE(pe.data, '$.Phone') AS Phone
+    , CAST(JSON_VALUE(pe.data, '$.Dob') AS DATE2) AS Dob
+    , pe.Id AS Id
+FROM Address a
+INNER JOIN PersonAddress p ON a.Id = p.AddressId
+INNER JOIN Person pe ON p.PersonId = pe.Id
+WHERE ((a.Deleted = 0) AND (p.Deleted = 0)) AND (pe.Id = @p1)
+";
+            using var db = GetDbContext();
+            var result = db.ExecuteQuery<PersonAddress>(sql, parameters);
+            return result;
         }
 
     }

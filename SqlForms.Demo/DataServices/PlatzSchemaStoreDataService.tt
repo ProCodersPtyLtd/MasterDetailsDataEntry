@@ -74,69 +74,62 @@ namespace <#=Queries.First().Namespace#>
         {
             var from = Parser.ReadFrom(query, Schema);
             var joins = Parser.ReadJoins(query, Schema);
-            var where = Parser.QueryExprToString(query.Query.Where.Expression, JsonStoreSchemaParser.CSharpOperatorsMap);
+            var where = Parser.QueryExprToSql(query.Query.Where.Expression, JsonStoreSchemaParser.SqlOperatorsMap);
             var parameters = Parser.ReadParameters(query);
-
-            if (query.Query.Parameters != null && query.Query.Parameters.Any())
-            {
 #>
         public List<<#=query.ReturnTypeName#>> <#=query.Name#>(params object[] parameters)
         {
+            var sql = @$"
+SELECT
 <#
-                for (int i = 0; i < parameters.Count; i++)
-                {
-                    var p = parameters[i];
-#>
-            var <#=p.Name#> = (<#=p.Type#>)parameters[<#=i#>];
-<#
-                }
-#>
+            var comma = "  ";
 
-<#
-            }
-            else
-            {
-#>
-        public List<<#=query.ReturnTypeName#>> <#=query.Name#>()
-        {
-<#
-            }
-#>
-            using (var db = GetDbContext())
-            {
-                var query =
-                    from <#=from.LeftObjectAlias#> in db.<#=from.LeftObject#> 
-<#          foreach (var j in joins) 
-            {
-#>
-                    join <#=j.RightObjectAlias#> in db.<#=j.RightObject#> on <#=j.LeftObjectAlias#>.<#=j.LeftField#> equals <#=j.RightObjectAlias#>.<#=j.RightField#>
-<#          } 
-            
-            if (!string.IsNullOrWhiteSpace(where))
-            {
-#>
-                    where <#=where#>
-<#
-            }
-#>
-                    select new <#=query.ReturnTypeName#>
-                    {
-<#
             foreach (var field in query.Query.Fields.Values.Where(f => f.IsOutput))
             {
                 var table = query.Query.Tables[field.Field.ObjectAlias];
                 var definition = Schema.Definitions[table.TableName];
                 var property = definition.Properties[field.Field.FieldName];
+                var alias = $" AS {field.FieldAlias ?? field.Field.FieldName}";
+                string sf;
+                
+                if ( property.Pk || property.Fk)
+                {
+                    sf = $"{field.Field.ObjectAlias}.{field.Field.FieldName}";
+                }
+                else
+                {
+                    sf = $"JSON_VALUE({field.Field.ObjectAlias}.data, '$.{field.Field.FieldName}')";
+
+                    if (property.Type != "string")
+                    {
+                        var sft = Parser.ToSqlType(property.Type); 
+                        sf = $"CAST({sf} AS {sft})";
+                    }
+                }
 #>
-                        <#=property.Name#> = <#=field.Field.ObjectAlias#>.<#=field.Field.FieldName#>,
+    <#=comma#><#=sf#><#=alias#>
+<#
+                comma = ", ";
+            }
+#>
+FROM <#=from.LeftObject#> <#=from.LeftObjectAlias#>
+<#          foreach (var j in joins) 
+            {
+#>
+INNER JOIN <#=j.RightObject#> <#=j.RightObjectAlias#> ON <#=j.LeftObjectAlias#>.<#=j.LeftField#> = <#=j.RightObjectAlias#>.<#=j.RightField#>
+<#          } 
+            
+            if (!string.IsNullOrWhiteSpace(where))
+            {
+#>
+WHERE <#=where#>
 <#
             }
 #>
-                    };
-
-                var result = query.ToList();
-                return result;
-            }
+";
+            using var db = GetDbContext();
+            var result = db.ExecuteQuery<<#=query.ReturnTypeName#>>(sql, parameters);
+            return result;
         }
 
 <#
