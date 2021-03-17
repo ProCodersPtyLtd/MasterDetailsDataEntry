@@ -39,7 +39,7 @@ SELECT
     , JSON_VALUE(pe.data, '$.Name') AS Name
     , JSON_VALUE(pe.data, '$.Surname') AS Surname
     , JSON_VALUE(pe.data, '$.Phone') AS Phone
-    , CAST(JSON_VALUE(pe.data, '$.Dob') AS DATE2) AS Dob
+    , TRY_CAST(JSON_VALUE(pe.data, '$.Dob') AS DATETIME) AS Dob
     , pe.Id AS Id
 FROM Address a
 INNER JOIN PersonAddress p ON a.Id = p.AddressId

@@ -28,6 +28,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
     public interface ISchemaController : ISchemaMvvm
     {
         DesignSchema Schema { get; }
+        DesignSchemaMigrations SchemaMigrations { get; }
         SchemaControllerParameters Parameters { get; }
         string FullStoreDataPath { get; set; }
         int ListSelectedRow { get; set; }
@@ -79,8 +80,9 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         private List<DesignLogRecord> _designRecords = new List<DesignLogRecord>();
 
         public string FullStoreDataPath { get; set; }
-        public SchemaControllerParameters Parameters { get; protected set; }
-        public DesignSchema Schema { get; protected set; } 
+        public SchemaControllerParameters Parameters { get; private set; }
+        public DesignSchema Schema { get; private set; } 
+        public DesignSchemaMigrations SchemaMigrations { get; private set; }
         public int ListSelectedRow { get; set; }
         public List<RuleValidationResult> ValidationResults { get; set; } = new List<RuleValidationResult>();
         public string Errors { get; set; }
@@ -268,6 +270,8 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         public void NewSchema()
         {
             Schema = new DesignSchema { Name = "New Schema", Version = "1.0", DataContextName = Parameters.DataService, Changed = true, IsNew = true };
+            SchemaMigrations = new DesignSchemaMigrations();
+            SchemaMigrations.Migrations.Add(new DesignMigration { StatusText = "Empty", VersionText = "Initial 1.0" });
             SelectedTable = null;
             ClearLog();
             UpdateLog(DesignOperation.CreateSchema);

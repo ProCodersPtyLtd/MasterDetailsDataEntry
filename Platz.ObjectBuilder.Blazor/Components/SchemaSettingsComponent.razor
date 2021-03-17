@@ -70,14 +70,14 @@
     </tr>
     <tr>
         <td>
+            <br />
+            <label>Namespace</label><br />
+            <input @bind="SchemaController.Parameters.Namespace" readonly="readonly" class="form-control" style="width: 320px;" />
+        </td>
+        <td colspan="2">
+            <br />
             <label>Data Context Name</label><br />
             <input @bind="SchemaController.Schema.DataContextName" readonly="readonly" class="form-control" />
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <label>Namespace</label><br />
-            <input @bind="SchemaController.Parameters.Namespace" readonly="readonly" class="form-control" />
         </td>
     </tr>
     <tr>
@@ -99,13 +99,47 @@
         </td>
     </tr>
     <tr>
-        <td>
+        <td colspan="3">
             <br />
-            <label>Migrations</label>
+
+            <table class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col" style="width: 120px;">Migration</th>
+                        <th scope="col" style="width: 120px;">Created</th>
+                        <th scope="col" style="width: 120px;">Status</th>
+                        <th scope="col" style="width: 60px;"></th>
+                    </tr>
+                </thead>
+                    @foreach (var m in SchemaController.SchemaMigrations.Migrations)
+                    {
+                        <tr>
+                            <td>@m.VersionText</td>
+                            <td>@m.Migration?.Created</td>
+                            <td>@m.StatusText</td>
+                            <td>
+                                @if (m.IsDeleteEnabled)
+                                {
+                                    <button class="btn btn-light btn-sm" title="Delete" @onclick="DeleteMigrationClick">
+                                        <span class="oi oi-trash"></span>
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+            </table>
+
         </td>
-        <td></td>
+    </tr>
+    <tr>
+        <td>
+            <button class="btn btn-danger" type="button" @onclick="MergeAllMigrationsClick" >Merge All Migrations</button>
+        </td>
+        <td style="padding: 0px 0px 0px 10px; vertical-align: bottom;">
+            <button class="btn btn-warning" type="button" @onclick="CreateMinorMigrationClick" style="width: 100%">Add Minor</button>
+        </td>
         <td colspan="1" style="padding: 0px 0px 0px 10px; vertical-align: bottom;">
-            <button class="btn btn-warning" type="button" @onclick="CreateMigrationClick" style="width: 100%">Create Migration</button>
+            <button class="btn btn-warning" type="button" @onclick="CreateMigrationClick" style="width: 100%">Create Major</button>
         </td>
     </tr>
 </table>
@@ -317,7 +351,21 @@
     private async Task LoadClick(MouseEventArgs args)
     { }
 
+    private async Task MergeAllMigrationsClick(MouseEventArgs args)
+    {
+
+    }
     private async Task CreateMigrationClick(MouseEventArgs args)
+    {
+
+    }
+
+    private async Task CreateMinorMigrationClick(MouseEventArgs args)
+    {
+
+    }
+
+    private async Task DeleteMigrationClick(MouseEventArgs args)
     {
 
     }

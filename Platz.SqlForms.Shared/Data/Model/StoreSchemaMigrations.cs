@@ -14,9 +14,19 @@ namespace Platz.SqlForms
 
     public class StoreMigration
     {
+        public string FromVersion { get; set; }
         public string Version { get; set; }
         public Guid VersionKey { get; set; }
         public MigrationCommand[] Commands { get; set; }
+        public DateTime Created { get; set; }
+        public MigrationStatus Status { get; set; }
+    }
+
+    public enum MigrationStatus
+    {
+        Empty = 0,
+        Editing,
+        Published
     }
 
     public class MigrationCommand

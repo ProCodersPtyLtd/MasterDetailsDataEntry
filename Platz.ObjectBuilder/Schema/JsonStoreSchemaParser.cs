@@ -313,7 +313,7 @@ namespace Platz.ObjectBuilder
             { "guid", "UNIQUEIDENTIFIER" },
             { "string", "VARCHAR(MAX)" },
             { "int", "INT" },
-            { "date", "DATE2" },
+            { "date", "DATETIME" },
             { "decimal", "MONEY" },
             { "money", "MONEY" },
             { "bool", "BIT" },
