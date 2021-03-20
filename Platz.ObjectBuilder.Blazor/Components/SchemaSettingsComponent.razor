@@ -106,9 +106,9 @@
                 <thead class="thead-light">
                     <tr>
                         <th scope="col" style="width: 120px;">Migration</th>
-                        <th scope="col" style="width: 120px;">Created</th>
-                        <th scope="col" style="width: 120px;">Status</th>
-                        <th scope="col" style="width: 60px;"></th>
+                        <th scope="col" style="width: 150px;">Created</th>
+                        <th scope="col" style="width: 100px;">Status</th>
+                        <th scope="col" style="width: 50px;"></th>
                     </tr>
                 </thead>
                     @foreach (var m in SchemaController.SchemaMigrations.Migrations)
@@ -118,6 +118,10 @@
                             <td>@m.Migration?.Created</td>
                             <td>@m.StatusText</td>
                             <td>
+                                <button class="btn btn-light btn-sm" title="View" @onclick="MigrationDetailsClick">
+                                    <span class="oi oi-eye"></span>
+                                </button>
+
                                 @if (m.IsDeleteEnabled)
                                 {
                                     <button class="btn btn-light btn-sm" title="Delete" @onclick="DeleteMigrationClick">
@@ -357,10 +361,29 @@
     }
     private async Task CreateMigrationClick(MouseEventArgs args)
     {
+        string message;
 
+        if (!SchemaController.TryAddMigration(true, out message))
+        {
+            _toastErrorMessage = message;
+            var module = await Module;
+            await module.InvokeVoidAsync("ShowToast", new object[] { "#errorToast" });
+        }
     }
 
     private async Task CreateMinorMigrationClick(MouseEventArgs args)
+    {
+        string message;
+
+        if (!SchemaController.TryAddMigration(false, out message))
+        {
+            _toastErrorMessage = message;
+            var module = await Module;
+            await module.InvokeVoidAsync("ShowToast", new object[] { "#errorToast" });
+        }
+    }
+
+    private async Task MigrationDetailsClick(MouseEventArgs args)
     {
 
     }
@@ -418,6 +441,7 @@
         if (!string.IsNullOrWhiteSpace(_selectedFileName))
         {
             SchemaController.LoadFromFile(FullStoreDataPath, _selectedFileName);
+            SchemaController.LoadMigrations(FullStoreDataPath);
             await ModelChanged.InvokeAsync(null);
             _fileNameChanged = false;
         }

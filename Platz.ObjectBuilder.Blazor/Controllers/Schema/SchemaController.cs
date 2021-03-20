@@ -23,6 +23,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
 
         List<DiagramTable> GetDiagramTables();
         List<TableLink> GetTableLinks();
+        bool TryAddMigration(bool major, out string error);
     }
 
     public interface ISchemaController : ISchemaMvvm
@@ -47,6 +48,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         string Errors { get; set; }
         void SaveSchema(string path);
         void SaveMigrations(string path);
+        void LoadMigrations(string path);
         void Validate();
         List<string> GetFileList(string path);
         void LoadFromFile(string path, string fileName);
@@ -271,12 +273,30 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         {
             Schema = new DesignSchema { Name = "New Schema", Version = "1.0", DataContextName = Parameters.DataService, Changed = true, IsNew = true };
             SchemaMigrations = new DesignSchemaMigrations();
-            SchemaMigrations.Migrations.Add(new DesignMigration { StatusText = "Empty", VersionText = "Initial 1.0" });
+            var nm = new StoreMigration { Version = DesignSchemaMigrations.InitialVersion, Created = DateTime.UtcNow };
+            //SchemaMigrations.Migrations.Add(new DesignMigration { StatusText = "Empty", VersionText = "Initial 1.0" });
+            SchemaMigrations.Migrations.Add(new DesignMigration(nm));
             SelectedTable = null;
             ClearLog();
             UpdateLog(DesignOperation.CreateSchema);
 
             UpdateDiagramTables();
+        }
+
+        public void LoadFromFile(string path, string fileName)
+        {
+            var schema = _schemaStorage.LoadSchema(new StorageParameters { FileName = fileName, Path = path });
+            Schema = DesignSchemaConvert.FromStoreSchema(schema);
+            ClearChanged();
+            ClearLog();
+            UpdateDiagramTables();
+        }
+
+        public void LoadMigrations(string path)
+        {
+            var fileName = Path.Combine(path, GenerateMigrationFileName(path));
+            var package = _schemaStorage.LoadMigrations(new StorageParameters { FileName = fileName });
+            SchemaMigrations = DesignSchemaMigrations.FromStoreMigrations(package);
         }
 
         public void SaveSchema(string path)
@@ -315,6 +335,47 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             SelectedTable = null;
         }
 
+        public bool TryAddMigration(bool major, out string error)
+        {
+            error = null;
+
+            if (Schema.Changed)
+            {
+                error = $"Schema should be saved before creating a new migration.";
+                return false;
+            }
+
+            if (SchemaMigrations.Migrations.Any() && SchemaMigrations.Migrations.Last().StatusText == Enum.GetName(typeof(MigrationStatus), MigrationStatus.Empty))
+            {
+                error = $"You already have an empty migration that created recently.";
+                return false;
+            }
+
+            if (SchemaMigrations.Migrations.Last().Migration == null)
+            {
+                error = $"Fatal error. Last migration is empty.";
+                return false;
+            }
+
+            var last = SchemaMigrations.Migrations.Last();
+            last.Migration.Status = MigrationStatus.Closed;
+            var nm = new StoreMigration { Status = MigrationStatus.Empty, FromVersion = last.Migration.Version, Version = GetNextVersion(last.Migration.Version, major) };
+            SchemaMigrations.Migrations.Add(new DesignMigration(nm));
+            
+            return true;
+        }
+
+        private string GetNextVersion(string version, bool major)
+        {
+            var s = version.Split('.');
+            var i = major ? 0 : 1;
+            int v = int.Parse(s[i]);
+            v++;
+            s[i] = v.ToString();
+            var result = string.Join('.', s);
+            return result;
+        }
+
         public void SaveMigrations(string path)
         {
             StoreSchemaMigrations package = GenerateMigrations(Schema, _designRecords);
@@ -345,7 +406,8 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
                 schema.VersionKey = Guid.NewGuid();
             }
 
-            var mp = new StoreMigration { Version = schema.Version, VersionKey = schema.VersionKey };
+            var mp = new StoreMigration { Version = schema.Version, VersionKey = schema.VersionKey, Created = DateTime.UtcNow };
+            mp.Status = schema.Tables.Any() ? MigrationStatus.Editing: MigrationStatus.Empty;
             var cmd = new List<MigrationCommand>();
 
             cmd.Add(new MigrationCommand { Operation = MigrationOperation.CreateSchema, SchemaName = schema.Name });
@@ -379,15 +441,6 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             var result = _schemaStorage.GetFileNames(new StorageParameters { Path = path });
             result = result.Where(f => f.Contains(SchemaFileSuffix) && !f.Contains(SchemaMigrationsFileSuffix)).ToList();
             return result;
-        }
-
-        public void LoadFromFile(string path, string fileName)
-        {
-            var schema = _schemaStorage.LoadSchema(new StorageParameters { FileName = fileName, Path = path });
-            Schema = DesignSchemaConvert.FromStoreSchema(schema);
-            ClearChanged();
-            ClearLog();
-            UpdateDiagramTables();
         }
 
         public bool FileExists(string path)

@@ -14,6 +14,7 @@ namespace Platz.ObjectBuilder
         StoreQuery LoadQuery(StorageParameters parameters);
         StoreSchema LoadSchema(StorageParameters parameters);
         void SaveMigration(StoreSchemaMigrations package, StorageParameters parameters);
+        StoreSchemaMigrations LoadMigrations(StorageParameters parameters);
     }
 
     public class StorageParameters

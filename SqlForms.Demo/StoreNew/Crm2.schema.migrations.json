@@ -2,6 +2,7 @@
   "SchemaName": "Crm2",
   "Migrations": [
     {
+      "FromVersion": null,
       "Version": "1.0",
       "VersionKey": "f1b29172-7aca-4d60-8561-9ba6515e0064",
       "Commands": [
@@ -301,7 +302,9 @@
           },
           "Column": null
         }
-      ]
+      ],
+      "Created": "2021-03-19T23:52:19.7243569Z",
+      "Status": 1
     }
   ]
 }

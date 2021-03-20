@@ -14,6 +14,11 @@ namespace Platz.SqlForms
 
     public class StoreMigration
     {
+        public StoreMigration()
+        {
+
+        }
+
         public string FromVersion { get; set; }
         public string Version { get; set; }
         public Guid VersionKey { get; set; }
@@ -26,7 +31,7 @@ namespace Platz.SqlForms
     {
         Empty = 0,
         Editing,
-        Published
+        Closed
     }
 
     public class MigrationCommand

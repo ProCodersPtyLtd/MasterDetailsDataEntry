@@ -83,5 +83,13 @@ namespace Platz.ObjectBuilder.Engine
                 sw.Write(json);
             }
         }
+
+        public StoreSchemaMigrations LoadMigrations(StorageParameters parameters)
+        {
+            using var sw = new StreamReader(parameters.FileName);
+            var json = sw.ReadToEnd();
+            var package = System.Text.Json.JsonSerializer.Deserialize< StoreSchemaMigrations>(json);
+            return package;
+        }
     }
 }
