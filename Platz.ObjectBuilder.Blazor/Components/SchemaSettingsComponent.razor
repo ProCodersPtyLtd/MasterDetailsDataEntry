@@ -111,25 +111,31 @@
                         <th scope="col" style="width: 50px;"></th>
                     </tr>
                 </thead>
+                    @{ var mi = 0; }
                     @foreach (var m in SchemaController.SchemaMigrations.Migrations)
                     {
+                        var mindex = mi;
+
                         <tr>
                             <td>@m.VersionText</td>
                             <td>@m.Migration?.Created</td>
                             <td>@m.StatusText</td>
                             <td>
-                                <button class="btn btn-light btn-sm" title="View" @onclick="MigrationDetailsClick">
+                                <button class="btn btn-light btn-sm" title="View" data-toggle="modal" data-target="#migrationsModal" 
+                                        @onclick="async (args) => await MigrationDetailsClick(args, mindex)">
                                     <span class="oi oi-eye"></span>
                                 </button>
 
                                 @if (m.IsDeleteEnabled)
                                 {
-                                    <button class="btn btn-light btn-sm" title="Delete" @onclick="DeleteMigrationClick">
+                                    <button class="btn btn-light btn-sm" title="Delete" @onclick="async (args) => await DeleteMigrationClick(args, mindex)">
                                         <span class="oi oi-trash"></span>
                                     </button>
                                 }
                             </td>
                         </tr>
+
+                        mi++;
                     }
             </table>
 
@@ -189,6 +195,29 @@
     </div>
 </div>
 
+<div class="modal fade" id="migrationsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">@_migrationVersion Migration Commands</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <textarea id="exampleFormControlTextarea1" rows="20" readonly="readonly" style="width: 100%" value="@_migrationData" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Position it -->
 <div style="position: absolute; top: 0; right: 0; min-width: 300px;z-index: 100">
 
@@ -241,6 +270,8 @@
     private string _fileNameSaved;
     private string _toastMessage;
     private string _toastErrorMessage;
+    private string _migrationVersion;
+    private string _migrationData;
 
     private Task<IJSObjectReference> _module;
     private Task<IJSObjectReference> Module => _module ??= JS.InvokeAsync<IJSObjectReference>("import", "./_content/Platz.ObjectBuilder.Blazor/objectBuilder.js").AsTask();
@@ -383,12 +414,14 @@
         }
     }
 
-    private async Task MigrationDetailsClick(MouseEventArgs args)
+    private async Task MigrationDetailsClick(MouseEventArgs args, int row)
     {
-
+        var m = SchemaController.SchemaMigrations.Migrations[row];
+        _migrationVersion = m.VersionText;
+        _migrationData = "bla bla bla";
     }
 
-    private async Task DeleteMigrationClick(MouseEventArgs args)
+    private async Task DeleteMigrationClick(MouseEventArgs args, int row)
     {
 
     }

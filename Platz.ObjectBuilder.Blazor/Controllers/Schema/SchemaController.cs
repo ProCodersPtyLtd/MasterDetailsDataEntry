@@ -154,7 +154,12 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
                     break;
             }
 
-            _designRecords.Add(new DesignLogRecord { Operation = operation, TableName = table?.Name, ColumnName = column?.Name, OldValue = old, NewValue = newValue });
+            _designRecords.Add(
+                new DesignLogRecord 
+                { 
+                    Operation = operation, TableName = table?.Name, TableId = table?.Id, ColumnName = column?.Name, ColumnId = column?.Id, 
+                    OldValue = old, NewValue = newValue 
+                });
 
             // save clones
             if (table != null)
@@ -431,9 +436,50 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
 
         private static StoreMigration GenerateIncrementalMigration(DesignSchema schema, List<DesignLogRecord> designRecords)
         {
-            throw new NotImplementedException();
+            var result = new StoreMigration {  };
+            var commands = new List<MigrationCommand>();
+            var i = 0;
+            var records = designRecords.ToList();
+
+            while (i < records.Count)
+            {
+                switch (records[i].Operation)
+                {
+                    case DesignOperation.CreateTable:
+                        ExtractCreateTable(schema, records[i], commands, records);
+                        break;
+                    case DesignOperation.SetSchemaName:
+                        break;
+                    case DesignOperation.SetTableName:
+                        break;
+                }
+
+                i++;
+            }
+
+            result.Commands = commands.ToArray();
+            return result;
         }
 
+        private static void ExtractCreateTable(DesignSchema schema, DesignLogRecord record, List<MigrationCommand> commands, List<DesignLogRecord> records)
+        {
+            var id = record.TableId;
+
+            // because this is a new table we can use it from schema
+            var table = schema.Tables.FirstOrDefault(t => t.Id == id);
+
+            // table can be created and then deleted
+            if (table != null)
+            {
+                var tm = new MigrationCommand { Operation = MigrationOperation.CreateTable, SchemaName = schema.Name, Table = DesignSchemaConvert.ToStoreDefinition(schema, table) };
+                tm.OperationCode = Enum.GetName(tm.Operation);
+                commands.Add(tm);
+            }
+
+            // remove all logs about this table
+            var tableLogs = records.Where(r => r.TableId == id).ToList();
+            tableLogs.ForEach(r => records.Remove(r));
+        }
 
         public void Validate()
         {
