@@ -361,7 +361,8 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             last.Migration.Status = MigrationStatus.Closed;
             var nm = new StoreMigration { Status = MigrationStatus.Empty, FromVersion = last.Migration.Version, Version = GetNextVersion(last.Migration.Version, major) };
             SchemaMigrations.Migrations.Add(new DesignMigration(nm));
-            
+            Schema.Version = nm.Version;
+
             return true;
         }
 
@@ -378,14 +379,14 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
 
         public void SaveMigrations(string path)
         {
-            StoreSchemaMigrations package = GenerateMigrations(Schema, _designRecords);
+            StoreSchemaMigrations package = GenerateMigrations(Schema, SchemaMigrations, _designRecords);
             var fileName = Path.Combine(path, GenerateMigrationFileName(path));
             var parameters = new StorageParameters { FileName = fileName };
             var schema = DesignSchemaConvert.ToStoreSchema(Schema);
             _schemaStorage.SaveMigration(package, parameters);
         }
 
-        private static StoreSchemaMigrations GenerateMigrations(DesignSchema schema, List<DesignLogRecord> log)
+        private static StoreSchemaMigrations GenerateMigrations(DesignSchema schema, DesignSchemaMigrations src, List<DesignLogRecord> log)
         {
             if (schema.Version == INITIAL_VERSION)
             {
@@ -394,8 +395,13 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             }
             else
             {
-                //return GenerateIncrementalMigration(schema, log);
-                throw new NotImplementedException();
+                var package = new StoreSchemaMigrations { SchemaName = schema.Name, Migrations = src.GetStoreMigrations() };
+                var lastMigration = package.Migrations[package.Migrations.Length - 1];
+                var lastCommands = new List<MigrationCommand>(lastMigration.Commands);
+                var newMigration = GenerateIncrementalMigration(schema, log);
+                lastCommands.AddRange(newMigration.Commands);
+                lastMigration.Commands = lastCommands.ToArray();
+                return package;
             }
         }
 
@@ -460,7 +466,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
 
         public void ApplyMigrations()
         {
-            var package = GenerateMigrations(Schema, _designRecords);
+            var package = GenerateMigrations(Schema, SchemaMigrations, _designRecords);
             _migrationManager.Configure(new StoreDatabaseDriverSettings { ConnectionString = Parameters.ConnectionString });
             _migrationManager.ApplyMigrations(package);
         }

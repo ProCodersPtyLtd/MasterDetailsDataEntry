@@ -36,8 +36,21 @@ namespace Platz.SqlForms
 
         public void ApplyMigration(string schema, StoreMigration migration)
         {
-            foreach (var command in migration.Commands)
+            int nextIndex = 0;
+            var lastVersionRecord = _storeDatabaseDriver.Find<MigrationVersionEntity>(schema, VERSION_TABLE, VERSION_ID, migration.Version);
+
+            if (lastVersionRecord.Any())
             {
+                nextIndex = lastVersionRecord.First().NextIndex;
+            }
+
+            // skip migrations that already applied;
+            var commands = migration.Commands.Skip(nextIndex);
+
+            foreach (var command in commands)
+            {
+                nextIndex++;
+
                 switch (command.Operation)
                 {
                     // ToDo: add foreign key constraints 
@@ -75,7 +88,9 @@ namespace Platz.SqlForms
             }
 
             // save to version table
-            var vesionRecord = new MigrationVersionEntity { Applied = DateTime.UtcNow, Version = migration.Version, VersionKey = migration.VersionKey };
+            var vesionRecord = new MigrationVersionEntity { 
+                Applied = DateTime.UtcNow, Version = migration.Version, VersionKey = migration.VersionKey, NextIndex = nextIndex };
+
             _storeDatabaseDriver.Insert(schema, vesionRecord, migration.Version, VERSION_TABLE);
         }
 
@@ -91,10 +106,16 @@ namespace Platz.SqlForms
 
             if (versionRecord.Any())
             {
-                if (versionRecord.First().VersionKey != migration.VersionKey)
+                if (migration.Version == "1.0" && versionRecord.First().VersionKey != migration.VersionKey)
                 {
                     throw new DataMigrationException(
-                        $"Incompatible migration already applied, expected key is {migration.VersionKey} but key in the database is {versionRecord.First().VersionKey}");
+                        $"Incompatible initial migration already applied, expected key is {migration.VersionKey} but key in the database is {versionRecord.First().VersionKey}. Clear target database and try again.");
+                }
+
+                // edititng incrementatl migration can be partially applied
+                if (migration.Commands.Length != versionRecord.First().NextIndex) 
+                {
+                    return false;
                 }
 
                 return true;
@@ -110,5 +131,6 @@ namespace Platz.SqlForms
         public string Version { get; set; }
         public Guid VersionKey { get; set; }
         public DateTime Applied { get; set; }
+        public int NextIndex { get; set; }
     }
 }
