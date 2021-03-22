@@ -418,7 +418,16 @@
     {
         var m = SchemaController.SchemaMigrations.Migrations[row];
         _migrationVersion = m.VersionText;
-        _migrationData = "bla bla bla";
+        var migrations = SchemaController.GetCurrentMigrations();
+        var commands = migrations.Migrations[row].Commands;
+        var sb = new System.Text.StringBuilder();
+
+        foreach (var c in commands)
+        {
+            sb.AppendLine($"{c.OperationCode}");
+        }
+
+        _migrationData = sb.ToString();
     }
 
     private async Task DeleteMigrationClick(MouseEventArgs args, int row)

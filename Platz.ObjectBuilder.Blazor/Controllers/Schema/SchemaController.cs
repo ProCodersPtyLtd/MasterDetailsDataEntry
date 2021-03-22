@@ -24,6 +24,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         List<DiagramTable> GetDiagramTables();
         List<TableLink> GetTableLinks();
         bool TryAddMigration(bool major, out string error);
+        StoreSchemaMigrations GetCurrentMigrations();
     }
 
     public interface ISchemaController : ISchemaMvvm
@@ -121,8 +122,9 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         /// <param name="operation"></param>
         /// <param name="table"></param>
         /// <param name="column"></param>
-        public void UpdateLog(DesignOperation operation, DesignTable table = null, DesignColumn column = null)
+        public void UpdateLog(DesignOperation op, DesignTable table = null, DesignColumn column = null)
         {
+            var operation = op;
             string old = null;
             string newValue = null;
 
@@ -152,6 +154,14 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
                     newValue = column.Reference;
                     old = FindClone<DesignColumn>(column.Id)?.Reference;
                     break;
+            }
+
+            if (op == DesignOperation.SetColumnName || op == DesignOperation.SetColumnNullable || op == DesignOperation.SetColumnType || op == DesignOperation.SetColumnReference)
+            {
+                if (FindClone<DesignColumn>(column.Id) == null)
+                {
+                    operation = DesignOperation.AddColumn;
+                }
             }
 
             _designRecords.Add(
@@ -382,6 +392,12 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             return result;
         }
 
+        public StoreSchemaMigrations GetCurrentMigrations()
+        {
+            StoreSchemaMigrations package = GenerateMigrations(Schema, SchemaMigrations, _designRecords);
+            return package;
+        }
+
         public void SaveMigrations(string path)
         {
             StoreSchemaMigrations package = GenerateMigrations(Schema, SchemaMigrations, _designRecords);
@@ -402,7 +418,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             {
                 var package = new StoreSchemaMigrations { SchemaName = schema.Name, Migrations = src.GetStoreMigrations() };
                 var lastMigration = package.Migrations[package.Migrations.Length - 1];
-                var lastCommands = new List<MigrationCommand>(lastMigration.Commands);
+                var lastCommands = new List<MigrationCommand>(lastMigration.Commands ?? new MigrationCommand[0]);
                 var newMigration = GenerateIncrementalMigration(schema, log);
                 lastCommands.AddRange(newMigration.Commands);
                 lastMigration.Commands = lastCommands.ToArray();
@@ -447,10 +463,27 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
                 {
                     case DesignOperation.CreateTable:
                         ExtractCreateTable(schema, records[i], commands, records);
+                        i--;
                         break;
                     case DesignOperation.SetSchemaName:
                         break;
                     case DesignOperation.SetTableName:
+                        break;
+                    case DesignOperation.DeleteTable:
+                        break;
+                    case DesignOperation.AddColumn:
+                        ExtractAddColumn(schema, records[i], commands, records);
+                        i--;
+                        break;
+                    case DesignOperation.SetColumnName:
+                        break;
+                    case DesignOperation.DeleteColumn:
+                        break;
+                    case DesignOperation.SetColumnType:
+                        break;
+                    case DesignOperation.SetColumnNullable:
+                        break;
+                    case DesignOperation.SetColumnReference:
                         break;
                 }
 
@@ -458,7 +491,40 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             }
 
             result.Commands = commands.ToArray();
+            // log moved to migration
+            designRecords.Clear();
             return result;
+        }
+        private static void ExtractAddColumn(DesignSchema schema, DesignLogRecord record, List<MigrationCommand> commands, List<DesignLogRecord> records)
+        {
+            var cid = record.ColumnId;
+            var tid = record.TableId;
+
+            // because this is a new column we can use it from schema
+            var table = schema.Tables.FirstOrDefault(t => t.Id == tid);
+
+            // table can be deleted after that
+            if (table != null)
+            {
+                var column = table.Columns.FirstOrDefault(c => c.Id == cid);
+
+                // column can be deleted after that
+                if (column != null)
+                {
+                    var tm = new MigrationCommand 
+                    { 
+                        Operation = MigrationOperation.AddColumn, SchemaName = schema.Name, TableName = table.Name, 
+                        Column = DesignSchemaConvert.ToStoreProperty(schema, table, column) 
+                    };
+                    
+                    tm.OperationCode = Enum.GetName(tm.Operation);
+                    commands.Add(tm);
+                }
+            }
+
+            // remove all logs about this column
+            var colLogs = records.Where(r => r.ColumnId == cid).ToList();
+            colLogs.ForEach(r => records.Remove(r));
         }
 
         private static void ExtractCreateTable(DesignSchema schema, DesignLogRecord record, List<MigrationCommand> commands, List<DesignLogRecord> records)
@@ -471,7 +537,12 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             // table can be created and then deleted
             if (table != null)
             {
-                var tm = new MigrationCommand { Operation = MigrationOperation.CreateTable, SchemaName = schema.Name, Table = DesignSchemaConvert.ToStoreDefinition(schema, table) };
+                var tm = new MigrationCommand 
+                { 
+                    Operation = MigrationOperation.CreateTable, SchemaName = schema.Name, 
+                    Table = DesignSchemaConvert.ToStoreDefinition(schema, table) 
+                };
+
                 tm.OperationCode = Enum.GetName(tm.Operation);
                 commands.Add(tm);
             }

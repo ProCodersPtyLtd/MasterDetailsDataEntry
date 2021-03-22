@@ -113,6 +113,7 @@ namespace Platz.ObjectBuilder.Blazor
         DeleteColumn,
         SetColumnType,
         SetColumnNullable,
-        SetColumnReference
+        SetColumnReference,
+        AddColumn,
     }
 }

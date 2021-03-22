@@ -38,7 +38,14 @@ namespace Platz.SqlForms
     {
         public MigrationOperation Operation { get; set; }
         // Text value of operation for readability
-        public string OperationCode { get; set; }
+        public string OperationCode //{ get; set; }
+        {
+            get
+            {
+                return Enum.GetName(typeof(MigrationOperation), Operation);
+            }
+            set { }
+        }
         public string SchemaName { get; set; }
         public string TableName { get; set; }
         public string ColumnName { get; set; }
