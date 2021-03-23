@@ -117,6 +117,24 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             _designRecords.Clear();
         }
 
+        private void LoadCloneObjects()
+        {
+            foreach (var table in Schema.Tables)
+            {
+                _objectClones[table.Id] = table.GetCopy(table.Id);
+
+                foreach (var column in table.Columns)
+                {
+                    if (column.IsEmpty())
+                    {
+                        continue;
+                    }
+
+                    _objectClones[column.Id] = column.GetCopy(column.Id);
+                }
+            }
+        }
+
         /// <summary>
         /// Keeps log that allows to record migrations and undo/redo
         /// </summary>
@@ -163,12 +181,21 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
                     break;
             }
 
-            if (op == DesignOperation.SetColumnName || op == DesignOperation.SetColumnNullable || op == DesignOperation.SetColumnType || op == DesignOperation.SetColumnReference)
+            if (op == DesignOperation.SetColumnName)
             {
-                if (FindClone<DesignColumn>(column.Id) == null)
+                if (string.IsNullOrWhiteSpace(old))
                 {
                     operation = DesignOperation.AddColumn;
                 }
+                else
+                {
+                    operation = DesignOperation.SetColumnName;
+                }
+            }
+            else if ((op == DesignOperation.SetColumnNullable || op == DesignOperation.SetColumnType || op == DesignOperation.SetColumnReference)
+                        && FindClone<DesignColumn>(column.Id) == null)
+            {
+                operation = DesignOperation.AddColumn;
             }
 
             _designRecords.Add(
@@ -311,6 +338,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             Schema = DesignSchemaConvert.FromStoreSchema(schema);
             ClearChanged();
             ClearLog();
+            LoadCloneObjects();
             UpdateDiagramTables();
         }
 
@@ -492,18 +520,19 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
                     case DesignOperation.DeleteTable:
                         break;
                     case DesignOperation.AddColumn:
-                        ExtractAddColumn(schema, records[i], commands, records);
+                        ExtractColumnOperation(schema, records[i], commands, records, MigrationOperation.AddColumn);
                         i--;
-                        break;
-                    case DesignOperation.SetColumnName:
                         break;
                     case DesignOperation.DeleteColumn:
                         break;
+                    case DesignOperation.SetColumnName:
+                        GenerateRenameColumnOperation(schema, records[i], commands, records);
+                        break;
                     case DesignOperation.SetColumnType:
-                        break;
                     case DesignOperation.SetColumnNullable:
-                        break;
                     case DesignOperation.SetColumnReference:
+                        ExtractColumnOperation(schema, records[i], commands, records, MigrationOperation.AlterColumn);
+                        i--;
                         break;
                 }
 
@@ -515,7 +544,40 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             //designRecords.Clear();
             return result;
         }
-        private static void ExtractAddColumn(DesignSchema schema, DesignLogRecord record, List<MigrationCommand> commands, List<DesignLogRecord> records)
+
+        private static void GenerateRenameColumnOperation(DesignSchema schema, DesignLogRecord record, List<MigrationCommand> commands, List<DesignLogRecord> records)
+        {
+            var cid = record.ColumnId;
+            var tid = record.TableId;
+
+            // because this is a new column we can use it from schema
+            var table = schema.Tables.FirstOrDefault(t => t.Id == tid);
+
+            // table can be deleted after that
+            if (table != null)
+            {
+                var column = table.Columns.FirstOrDefault(c => c.Id == cid);
+
+                // column can be deleted after that
+                if (column != null)
+                {
+                    var tm = new MigrationCommand
+                    {
+                        Operation = MigrationOperation.AlterColumnName,
+                        SchemaName = schema.Name,
+                        TableName = table.Name,
+                        ColumnName = record.OldValue,
+                        NewValue = record.NewValue
+                    };
+
+                    tm.OperationCode = Enum.GetName(tm.Operation);
+                    commands.Add(tm);
+                }
+            }
+        }
+
+        private static void ExtractColumnOperation(DesignSchema schema, DesignLogRecord record, List<MigrationCommand> commands, List<DesignLogRecord> records,
+            MigrationOperation op)
         {
             var cid = record.ColumnId;
             var tid = record.TableId;
@@ -533,7 +595,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
                 {
                     var tm = new MigrationCommand 
                     { 
-                        Operation = MigrationOperation.AddColumn, SchemaName = schema.Name, TableName = table.Name, 
+                        Operation = op, SchemaName = schema.Name, TableName = table.Name, 
                         Column = DesignSchemaConvert.ToStoreProperty(schema, table, column) 
                     };
                     

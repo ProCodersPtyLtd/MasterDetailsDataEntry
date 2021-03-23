@@ -137,7 +137,13 @@ namespace Platz.SqlForms
                         GenerateTableScript(sb, cmd.Table);
                         break;
                     case MigrationOperation.AddColumn:
-                        GenerateColumnScript(sb, cmd.TableName, cmd.Column);
+                        GenerateColumnScript(sb, cmd.TableName, cmd.Column, "ADD");
+                        break;
+                    case MigrationOperation.AlterColumn:
+                        GenerateColumnScript(sb, cmd.TableName, cmd.Column, "ALTER");
+                        break;
+                    case MigrationOperation.AlterColumnName:
+                        GenerateColumnRenameScript(sb, cmd.TableName, cmd.ColumnName, cmd.NewValue);
                         break;
                     case MigrationOperation.CreateSchema:
 
@@ -146,8 +152,6 @@ namespace Platz.SqlForms
                     case MigrationOperation.AlterTableName:
 
                     case MigrationOperation.DeleteColumn:
-                    case MigrationOperation.AlterColumnName:
-                    case MigrationOperation.AlterColumn:
                     default:
                         sb.AppendLine($"{cmd.OperationCode}");
                         break;
@@ -159,7 +163,12 @@ namespace Platz.SqlForms
             return sb.ToString();
         }
 
-        private void GenerateColumnScript(StringBuilder sb, string tableName, StoreProperty c)
+        private void GenerateColumnRenameScript(StringBuilder sb, string tableName, string colName, string newValue)
+        {
+            sb.AppendLine($"RENAME COLUMN {tableName}.{colName} ({newValue})");
+        }
+
+        private void GenerateColumnScript(StringBuilder sb, string tableName, StoreProperty c, string op)
         {
             var nullable = c.Nullable ? "?" : "";
             var reference = "";
@@ -171,24 +180,26 @@ namespace Platz.SqlForms
                 type = c.ForeignKeys[0].Type;
             }
 
-            sb.AppendLine($"ADD COLUMN ({tableName}.{c.Name} {type}{nullable}{reference})");
+            sb.AppendLine($"{op} COLUMN {tableName}.{c.Name} ({type}{nullable}{reference})");
         }
 
         private void GenerateTableScript(StringBuilder sb, StoreDefinition table)
         {
-            sb.AppendLine($"CREATE TABLE {table.Name} (");
+            sb.AppendLine($"ADD TABLE {table.Name} (");
 
             foreach (var c in table.Properties.Values.OrderBy(v => v.Order))
             {
                 var nullable = c.Nullable ? "?" : "";
                 var reference = "";
+                var type = c.Type;
 
                 if (c.Fk)
                 {
                     reference = $" FK {c.ForeignKeys[0].DefinitionName}.{c.ForeignKeys[0].PropertyName}";
+                    type = c.ForeignKeys[0].Type;
                 }
 
-                sb.AppendLine($"    {c.Name} {c.Type}{nullable}{reference},");
+                sb.AppendLine($"    {c.Name} {type}{nullable}{reference},");
             }
 
             sb.AppendLine(")");
