@@ -123,6 +123,76 @@ namespace Platz.SqlForms
 
             return false;
         }
+
+        public string MigrationToString(StoreMigration migration)
+        {
+            var sb = new StringBuilder();
+
+            foreach (var cmd in migration.Commands)
+            {
+                switch (cmd.Operation)
+                {
+                    // ToDo: add foreign key constraints 
+                    case MigrationOperation.CreateTable:
+                        GenerateTableScript(sb, cmd.Table);
+                        break;
+                    case MigrationOperation.AddColumn:
+                        GenerateColumnScript(sb, cmd.TableName, cmd.Column);
+                        break;
+                    case MigrationOperation.CreateSchema:
+
+                    // V1.0+ migrations
+                    case MigrationOperation.DeleteTable:
+                    case MigrationOperation.AlterTableName:
+
+                    case MigrationOperation.DeleteColumn:
+                    case MigrationOperation.AlterColumnName:
+                    case MigrationOperation.AlterColumn:
+                    default:
+                        sb.AppendLine($"{cmd.OperationCode}");
+                        break;
+                }
+
+                sb.AppendLine();
+            }
+
+            return sb.ToString();
+        }
+
+        private void GenerateColumnScript(StringBuilder sb, string tableName, StoreProperty c)
+        {
+            var nullable = c.Nullable ? "?" : "";
+            var reference = "";
+            var type = c.Type;
+
+            if (c.Fk)
+            {
+                reference = $" FK {c.ForeignKeys[0].DefinitionName}.{c.ForeignKeys[0].PropertyName}";
+                type = c.ForeignKeys[0].Type;
+            }
+
+            sb.AppendLine($"ADD COLUMN ({tableName}.{c.Name} {type}{nullable}{reference})");
+        }
+
+        private void GenerateTableScript(StringBuilder sb, StoreDefinition table)
+        {
+            sb.AppendLine($"CREATE TABLE {table.Name} (");
+
+            foreach (var c in table.Properties.Values.OrderBy(v => v.Order))
+            {
+                var nullable = c.Nullable ? "?" : "";
+                var reference = "";
+
+                if (c.Fk)
+                {
+                    reference = $" FK {c.ForeignKeys[0].DefinitionName}.{c.ForeignKeys[0].PropertyName}";
+                }
+
+                sb.AppendLine($"    {c.Name} {c.Type}{nullable}{reference},");
+            }
+
+            sb.AppendLine(")");
+        }
     }
 
     public class MigrationVersionEntity

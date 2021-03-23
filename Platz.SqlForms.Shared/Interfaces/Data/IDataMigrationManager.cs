@@ -9,6 +9,7 @@ namespace Platz.SqlForms
         void Configure(StoreDatabaseDriverSettings settings);
         void ApplyMigrations(StoreSchemaMigrations package);
         bool MigrationApplied(string schema, StoreMigration migration);
+        string MigrationToString(StoreMigration migration);
     }
 
     public class DataMigrationException : Exception

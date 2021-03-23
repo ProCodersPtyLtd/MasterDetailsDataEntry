@@ -416,18 +416,20 @@
 
     private async Task MigrationDetailsClick(MouseEventArgs args, int row)
     {
-        var m = SchemaController.SchemaMigrations.Migrations[row];
+        var package = SchemaController.GetCurrentMigrations();
+        var m = package.Migrations[row];
         _migrationVersion = m.VersionText;
-        var migrations = SchemaController.GetCurrentMigrations();
-        var commands = migrations.Migrations[row].Commands;
-        var sb = new System.Text.StringBuilder();
+        //var migrations = SchemaController.GetCurrentMigrations();
+        //var commands = migrations.Migrations[row].Commands;
+        //var sb = new System.Text.StringBuilder();
 
-        foreach (var c in commands)
-        {
-            sb.AppendLine($"{c.OperationCode}");
-        }
+        //foreach (var c in commands)
+        //{
+        //    sb.AppendLine($"{c.OperationCode}");
+        //}
 
-        _migrationData = sb.ToString();
+        //_migrationData = sb.ToString();
+        _migrationData = SchemaController.MigrationToString(m.Migration);
     }
 
     private async Task DeleteMigrationClick(MouseEventArgs args, int row)

@@ -24,7 +24,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         List<DiagramTable> GetDiagramTables();
         List<TableLink> GetTableLinks();
         bool TryAddMigration(bool major, out string error);
-        StoreSchemaMigrations GetCurrentMigrations();
+        DesignSchemaMigrations GetCurrentMigrations();
     }
 
     public interface ISchemaController : ISchemaMvvm
@@ -36,6 +36,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         int ListSelectedRow { get; set; }
 
         void SetParameters(SchemaControllerParameters parameters);
+        string MigrationToString(StoreMigration migration);
         //void LoadSchema();
         void NewSchema();
 
@@ -124,6 +125,12 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         /// <param name="column"></param>
         public void UpdateLog(DesignOperation op, DesignTable table = null, DesignColumn column = null)
         {
+            if (SchemaMigrations.Migrations.Any())
+            {
+                var last = SchemaMigrations.Migrations.Last();
+                last.Migration.Status = MigrationStatus.Editing;
+            }
+
             var operation = op;
             string old = null;
             string newValue = null;
@@ -374,7 +381,13 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
 
             var last = SchemaMigrations.Migrations.Last();
             last.Migration.Status = MigrationStatus.Closed;
-            var nm = new StoreMigration { Status = MigrationStatus.Empty, FromVersion = last.Migration.Version, Version = GetNextVersion(last.Migration.Version, major) };
+
+            var nm = new StoreMigration 
+            { 
+                Status = MigrationStatus.Empty, FromVersion = last.Migration.Version, Version = GetNextVersion(last.Migration.Version, major),
+                Created = DateTime.UtcNow
+            };
+
             SchemaMigrations.Migrations.Add(new DesignMigration(nm));
             Schema.Version = nm.Version;
 
@@ -392,10 +405,11 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             return result;
         }
 
-        public StoreSchemaMigrations GetCurrentMigrations()
+        public DesignSchemaMigrations GetCurrentMigrations()
         {
             StoreSchemaMigrations package = GenerateMigrations(Schema, SchemaMigrations, _designRecords);
-            return package;
+            var result = DesignSchemaMigrations.FromStoreMigrations(package);
+            return result;
         }
 
         public void SaveMigrations(string path)
@@ -405,6 +419,8 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             var parameters = new StorageParameters { FileName = fileName };
             var schema = DesignSchemaConvert.ToStoreSchema(Schema);
             _schemaStorage.SaveMigration(package, parameters);
+            SchemaMigrations = DesignSchemaMigrations.FromStoreMigrations(package);
+            ClearLog();
         }
 
         private static StoreSchemaMigrations GenerateMigrations(DesignSchema schema, DesignSchemaMigrations src, List<DesignLogRecord> log)
@@ -417,7 +433,11 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             else
             {
                 var package = new StoreSchemaMigrations { SchemaName = schema.Name, Migrations = src.GetStoreMigrations() };
+
                 var lastMigration = package.Migrations[package.Migrations.Length - 1];
+                // we clone it to make sure we don't modify SchemaMigrations data
+                lastMigration = lastMigration.GetCopy() as StoreMigration;
+                package.Migrations[package.Migrations.Length - 1] = lastMigration;
                 var lastCommands = new List<MigrationCommand>(lastMigration.Commands ?? new MigrationCommand[0]);
                 var newMigration = GenerateIncrementalMigration(schema, log);
                 lastCommands.AddRange(newMigration.Commands);
@@ -492,7 +512,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
 
             result.Commands = commands.ToArray();
             // log moved to migration
-            designRecords.Clear();
+            //designRecords.Clear();
             return result;
         }
         private static void ExtractAddColumn(DesignSchema schema, DesignLogRecord record, List<MigrationCommand> commands, List<DesignLogRecord> records)
@@ -649,6 +669,11 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         {
             var id = $"{prefix}_{objId}_{propId}";
             return id;
+        }
+
+        public string MigrationToString(StoreMigration migration)
+        {
+            return _migrationManager.MigrationToString(migration);
         }
     }
 }
