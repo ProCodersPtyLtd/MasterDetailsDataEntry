@@ -2,6 +2,7 @@
 using Platz.ObjectBuilder.Blazor;
 using Platz.ObjectBuilder.Blazor.Controllers;
 using Platz.ObjectBuilder.Blazor.Controllers.Logic;
+using Platz.ObjectBuilder.Blazor.Controllers.Schema;
 using Platz.ObjectBuilder.Blazor.Controllers.Validation;
 using Platz.ObjectBuilder.Engine;
 using Platz.ObjectBuilder.Expressions;
@@ -29,6 +30,7 @@ namespace Platz.ObjectBuilder
             services.AddSingleton<IStoreSchemaStorage, FileStoreSchemaStorage>();
             services.AddSingleton<IDataMigrationManager, DataMigrationManager>();
             services.AddSingleton<IStoreDatabaseDriver, SqlJsonStoreDatabaseDriver>();
+            services.AddSingleton<IMigrationAggregator, MigrationAggregator>();
             return services;
         }
     }
