@@ -294,10 +294,10 @@
 
     private async Task NameChanged(ChangeEventArgs args)
     {
+        SchemaController.UpdateLog(DesignOperation.SetSchemaName, null, null, (string)args.Value);
         SchemaController.Schema.Name = (string)args.Value;
         SchemaController.Schema.Changed = true;
         _fileNameChanged = true;
-        SchemaController.UpdateLog(DesignOperation.SetSchemaName);
         await ModelChanged.InvokeAsync(null);
     }
 

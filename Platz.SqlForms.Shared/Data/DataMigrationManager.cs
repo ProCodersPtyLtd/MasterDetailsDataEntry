@@ -137,7 +137,7 @@ namespace Platz.SqlForms
                         GenerateTableScript(sb, cmd.Table);
                         break;
                     case MigrationOperation.AddColumn:
-                        GenerateColumnScript(sb, cmd.TableName, cmd.Column, "ADD");
+                        GenerateColumnScript(sb, cmd.TableName, cmd.Column, "CREATE");
                         break;
                     case MigrationOperation.AlterColumn:
                         GenerateColumnScript(sb, cmd.TableName, cmd.Column, "ALTER");
@@ -146,12 +146,22 @@ namespace Platz.SqlForms
                         GenerateColumnRenameScript(sb, cmd.TableName, cmd.ColumnName, cmd.NewValue);
                         break;
                     case MigrationOperation.CreateSchema:
+                        sb.AppendLine($"CREATE SCHEMA ({cmd.SchemaName})");
+                        break;
+                    case MigrationOperation.AlterSchemaName:
+                        sb.AppendLine($"ALTER SCHEMA {cmd.SchemaName} ({cmd.NewValue})");
+                        break;
 
                     // V1.0+ migrations
                     case MigrationOperation.DeleteTable:
+                        sb.AppendLine($"DELETE TABLE ({cmd.TableName})");
+                        break;
                     case MigrationOperation.AlterTableName:
-
+                        sb.AppendLine($"RENAME TABLE {cmd.TableName} ({cmd.NewValue})");
+                        break;
                     case MigrationOperation.DeleteColumn:
+                        sb.AppendLine($"DELETE COLUMN ({cmd.TableName}.{cmd.ColumnName})");
+                        break;
                     default:
                         sb.AppendLine($"{cmd.OperationCode}");
                         break;
@@ -185,7 +195,7 @@ namespace Platz.SqlForms
 
         private void GenerateTableScript(StringBuilder sb, StoreDefinition table)
         {
-            sb.AppendLine($"ADD TABLE {table.Name} (");
+            sb.AppendLine($"CREATE TABLE {table.Name} (");
 
             foreach (var c in table.Properties.Values.OrderBy(v => v.Order))
             {

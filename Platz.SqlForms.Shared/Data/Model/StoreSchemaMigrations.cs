@@ -64,7 +64,7 @@ namespace Platz.SqlForms
     public enum MigrationOperation
     {
         CreateSchema = 1,
-        //AlterSchemaName,
+        AlterSchemaName,
 
         CreateTable = 10,
         DeleteTable,
