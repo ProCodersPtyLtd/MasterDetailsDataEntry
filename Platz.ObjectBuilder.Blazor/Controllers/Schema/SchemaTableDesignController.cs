@@ -38,7 +38,7 @@ namespace Platz.ObjectBuilder.Blazor
         public DesignTable CreateTable(DesignSchema schema, string name = null)
         {
             _schema = schema;
-            Table = new DesignTable { Name = name ?? "New Table", Changed = true };
+            Table = new DesignTable { Name = name ?? "New Table", Changed = true, IsNew = true };
             SetTableDefaults(Table);
             return Table;
         }

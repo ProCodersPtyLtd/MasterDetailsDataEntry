@@ -70,14 +70,14 @@
     </tr>
     <tr>
         <td>
+            <br />
+            <label>Namespace</label><br />
+            <input @bind="SchemaController.Parameters.Namespace" readonly="readonly" class="form-control" style="width: 320px;" />
+        </td>
+        <td colspan="2">
+            <br />
             <label>Data Context Name</label><br />
             <input @bind="SchemaController.Schema.DataContextName" readonly="readonly" class="form-control" />
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <label>Namespace</label><br />
-            <input @bind="SchemaController.Parameters.Namespace" readonly="readonly" class="form-control" />
         </td>
     </tr>
     <tr>
@@ -99,13 +99,57 @@
         </td>
     </tr>
     <tr>
-        <td>
+        <td colspan="3">
             <br />
-            <label>Migrations</label>
+
+            <table class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col" style="width: 120px;">Migration</th>
+                        <th scope="col" style="width: 150px;">Created</th>
+                        <th scope="col" style="width: 100px;">Status</th>
+                        <th scope="col" style="width: 50px;"></th>
+                    </tr>
+                </thead>
+                    @{ var mi = 0; }
+                    @foreach (var m in SchemaController.SchemaMigrations.Migrations)
+                    {
+                        var mindex = mi;
+
+                        <tr>
+                            <td>@m.VersionText</td>
+                            <td>@m.Migration?.Created</td>
+                            <td>@m.StatusText</td>
+                            <td>
+                                <button class="btn btn-light btn-sm" title="View" data-toggle="modal" data-target="#migrationsModal" 
+                                        @onclick="async (args) => await MigrationDetailsClick(args, mindex)">
+                                    <span class="oi oi-eye"></span>
+                                </button>
+
+                                @if (m.IsDeleteEnabled)
+                                {
+                                    <button class="btn btn-light btn-sm" title="Delete" @onclick="async (args) => await DeleteMigrationClick(args, mindex)">
+                                        <span class="oi oi-trash"></span>
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+
+                        mi++;
+                    }
+            </table>
+
         </td>
-        <td></td>
+    </tr>
+    <tr>
+        <td>
+            <button class="btn btn-danger" type="button" @onclick="MergeAllMigrationsClick" >Merge All Migrations</button>
+        </td>
+        <td style="padding: 0px 0px 0px 10px; vertical-align: bottom;">
+            <button class="btn btn-warning" type="button" @onclick="CreateMinorMigrationClick" style="width: 100%">Add Minor</button>
+        </td>
         <td colspan="1" style="padding: 0px 0px 0px 10px; vertical-align: bottom;">
-            <button class="btn btn-warning" type="button" @onclick="CreateMigrationClick" style="width: 100%">Create Migration</button>
+            <button class="btn btn-warning" type="button" @onclick="CreateMigrationClick" style="width: 100%">Create Major</button>
         </td>
     </tr>
 </table>
@@ -146,6 +190,29 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal" @onclick="LoadFile">Load</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="migrationsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">@_migrationVersion Migration Commands</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <textarea id="exampleFormControlTextarea1" rows="20" readonly="readonly" style="width: 100%" value="@_migrationData" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -203,6 +270,8 @@
     private string _fileNameSaved;
     private string _toastMessage;
     private string _toastErrorMessage;
+    private string _migrationVersion;
+    private string _migrationData;
 
     private Task<IJSObjectReference> _module;
     private Task<IJSObjectReference> Module => _module ??= JS.InvokeAsync<IJSObjectReference>("import", "./_content/Platz.ObjectBuilder.Blazor/objectBuilder.js").AsTask();
@@ -225,10 +294,10 @@
 
     private async Task NameChanged(ChangeEventArgs args)
     {
+        SchemaController.UpdateLog(DesignOperation.SetSchemaName, null, null, (string)args.Value);
         SchemaController.Schema.Name = (string)args.Value;
         SchemaController.Schema.Changed = true;
         _fileNameChanged = true;
-        SchemaController.UpdateLog(DesignOperation.SetSchemaName);
         await ModelChanged.InvokeAsync(null);
     }
 
@@ -317,7 +386,53 @@
     private async Task LoadClick(MouseEventArgs args)
     { }
 
+    private async Task MergeAllMigrationsClick(MouseEventArgs args)
+    {
+
+    }
     private async Task CreateMigrationClick(MouseEventArgs args)
+    {
+        string message;
+
+        if (!SchemaController.TryAddMigration(true, out message))
+        {
+            _toastErrorMessage = message;
+            var module = await Module;
+            await module.InvokeVoidAsync("ShowToast", new object[] { "#errorToast" });
+        }
+    }
+
+    private async Task CreateMinorMigrationClick(MouseEventArgs args)
+    {
+        string message;
+
+        if (!SchemaController.TryAddMigration(false, out message))
+        {
+            _toastErrorMessage = message;
+            var module = await Module;
+            await module.InvokeVoidAsync("ShowToast", new object[] { "#errorToast" });
+        }
+    }
+
+    private async Task MigrationDetailsClick(MouseEventArgs args, int row)
+    {
+        var package = SchemaController.GetCurrentMigrations();
+        var m = package.Migrations[row];
+        _migrationVersion = m.VersionText;
+        //var migrations = SchemaController.GetCurrentMigrations();
+        //var commands = migrations.Migrations[row].Commands;
+        //var sb = new System.Text.StringBuilder();
+
+        //foreach (var c in commands)
+        //{
+        //    sb.AppendLine($"{c.OperationCode}");
+        //}
+
+        //_migrationData = sb.ToString();
+        _migrationData = SchemaController.MigrationToString(m.Migration);
+    }
+
+    private async Task DeleteMigrationClick(MouseEventArgs args, int row)
     {
 
     }
@@ -370,6 +485,7 @@
         if (!string.IsNullOrWhiteSpace(_selectedFileName))
         {
             SchemaController.LoadFromFile(FullStoreDataPath, _selectedFileName);
+            SchemaController.LoadMigrations(FullStoreDataPath);
             await ModelChanged.InvokeAsync(null);
             _fileNameChanged = false;
         }

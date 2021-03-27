@@ -78,6 +78,40 @@ namespace Platz.ObjectBuilder.Blazor
             return d;
         }
 
+        public static StoreProperty ToStoreProperty(DesignSchema schema, DesignTable t, DesignColumn c)
+        {
+            var i = t.Columns.IndexOf(c);
+
+            var result = new StoreProperty
+            {
+                Name = c.Name,
+                Type = c.Type,
+                Pk = c.Pk,
+                Fk = !string.IsNullOrWhiteSpace(c.Reference),
+                Nullable = c.Nullable,
+                AutoIncrement = c.Pk,
+                ForeignKeys = GetForeignKeysForColumn(schema, t, c),
+                Order = i++
+            };
+
+            return result;
+        }
+
+        public static StoreProperty ToStorePropertyMin(DesignColumn c)
+        {
+            var result = new StoreProperty
+            {
+                Name = c.Name,
+                Type = c.Type,
+                Pk = c.Pk,
+                Fk = !string.IsNullOrWhiteSpace(c.Reference),
+                Nullable = c.Nullable,
+                AutoIncrement = c.Pk,
+            };
+
+            return result;
+        }
+
         public static StoreSchema ToStoreSchema(DesignSchema s)
         {
             var schema = new StoreSchema

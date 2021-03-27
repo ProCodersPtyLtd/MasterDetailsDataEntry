@@ -103,7 +103,7 @@ SELECT
                     if (property.Type != "string")
                     {
                         var sft = Parser.ToSqlType(property.Type); 
-                        sf = $"CAST({sf} AS {sft})";
+                        sf = $"TRY_CAST({sf} AS {sft})";
                     }
                 }
 #>

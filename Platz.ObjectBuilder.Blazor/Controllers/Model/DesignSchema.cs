@@ -96,10 +96,11 @@ namespace Platz.ObjectBuilder.Blazor
         public DesignOperation Operation { get; set; }
         public string OldValue { get; set; }
         public string NewValue { get; set; }
-        public string TableId { get; set; }
+        public Guid? TableId { get; set; }
         public string TableName { get; set; }
-        public string ColumnId { get; set; }
+        public Guid? ColumnId { get; set; }
         public string ColumnName { get; set; }
+        public DesignColumn OldColumn { get; set; }
     }
 
     public enum DesignOperation
@@ -113,6 +114,9 @@ namespace Platz.ObjectBuilder.Blazor
         DeleteColumn,
         SetColumnType,
         SetColumnNullable,
-        SetColumnReference
+        SetColumnReference,
+        AddColumn,
+
+        ExistingTableChanged = 100,
     }
 }

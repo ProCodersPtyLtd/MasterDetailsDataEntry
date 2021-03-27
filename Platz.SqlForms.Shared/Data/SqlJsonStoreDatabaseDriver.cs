@@ -30,12 +30,29 @@ namespace Platz.SqlForms
         #region DDL
         public void AddColumn(string schemaName, string tableName, StoreProperty column)
         {
-            throw new NotImplementedException();
+            // only computed FK columns require schema change
+            if (column.Fk)
+            {
+                var type = column.ForeignKeys[0].Type;
+                var colType = type == "int" ? "INT" : "uniqueidentifier";
+
+                var sql = $@"
+ALTER TABLE [{schemaName}].[{tableName}]
+ADD [{column.Name}] AS CAST(JSON_VALUE({DATA_COLUMN},'$.{column.Name}') AS {colType});
+";
+                ExecuteNonQuery(sql);
+            }
         }
 
-        public void AlterColumn(string schemaName, string tableName, string columnName, StoreProperty column)
+        public void AlterColumn(string schemaName, string tableName, StoreProperty column)
         {
-            throw new NotImplementedException();
+            // only computed FK columns require schema change
+            if (column.Fk)
+            {
+                // computed column must be dropped and recreated
+                DeleteColumn(schemaName, tableName, column.Name, column);
+                AddColumn(schemaName, tableName, column);
+            }
         }
 
         public void CreateSchema(string schemaName)
@@ -82,29 +99,37 @@ ADD [{col.Name}] AS CAST(JSON_VALUE({DATA_COLUMN},'$.{col.Name}') AS {colType});
             ExecuteNonQuery(sql);
         }
 
-        public void DeleteColumn(string schemaName, string tableName, string columnName)
+        public void DeleteColumn(string schemaName, string tableName, string columnName, StoreProperty column)
         {
-            throw new NotImplementedException();
+            // only computed FK columns require schema change
+            if (column.Fk)
+            {
+                var sql = @$"ALTER TABLE [{schemaName}].[{tableName}] DROP COLUMN [{columnName}];";
+                ExecuteNonQuery(sql);
+            }
         }
 
         public void DeleteTable(string schemaName, string tableName)
         {
-            throw new NotImplementedException();
+            var sql = @$"DROP TABLE [{schemaName}].[{tableName}];";
+            ExecuteNonQuery(sql);
         }
 
         public void RenameColumn(string schemaName, string tableName, string columnName, string newValue)
         {
-            throw new NotImplementedException();
+            var sql = @$"EXEC sp_rename {schemaName}.{tableName}.{columnName}, {schemaName}.{tableName}.{newValue};";
+            ExecuteNonQuery(sql);
         }
 
         public void RenameTable(string schemaName, string tableName, string newValue)
         {
-            throw new NotImplementedException();
+            var sql = @$"EXEC sp_rename {schemaName}.{tableName}, {schemaName}.{tableName};";
+            ExecuteNonQuery(sql);
         }
 
         public bool TableExists(string schema, string tableName)
         {
-            var sql = $"SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = @p1 AND  TABLE_NAME = @p2";
+            var sql = $"SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = @p1 AND TABLE_NAME = @p2";
 
             using (var conn = new SqlConnection(_settings.ConnectionString))
             {
@@ -337,6 +362,17 @@ ADD [{col.Name}] AS CAST(JSON_VALUE({DATA_COLUMN},'$.{col.Name}') AS {colType});
             var sql = SqlScriptHelper.UpdateJsonTableWithParams(table.Name, schema);
             ExecuteNonQuery(sql, json, idValue);
         }
+
+        public void Update(string schema, object record, string tableName)
+        {
+            var table = GetTableFromType(record.GetType());
+            var columns = table.Properties.Values.OrderBy(p => p.Order).ToList();
+            var pkName = columns[0].Name;
+            object idValue = record.GetType().GetProperty(pkName).GetValue(record);
+            string json = JsonSerializer.Serialize(record);
+            var sql = SqlScriptHelper.UpdateJsonTableByIdWithParams(tableName, schema, pkName);
+            ExecuteNonQuery(sql, json, idValue);
+        }   
 
         public void Delete(string schema, string tableName, object pkValue)
         {
