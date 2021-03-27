@@ -115,5 +115,7 @@ namespace Platz.ObjectBuilder.Blazor
         SetColumnNullable,
         SetColumnReference,
         AddColumn,
+
+        ExistingTableChanged = 100,
     }
 }

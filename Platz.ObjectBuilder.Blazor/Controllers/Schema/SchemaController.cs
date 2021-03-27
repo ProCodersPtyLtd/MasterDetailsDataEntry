@@ -138,6 +138,9 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             }
         }
 
+        private DesignOperation[] _changeOperations = new DesignOperation[] { DesignOperation.SetTableName, DesignOperation.SetColumnName, 
+            DesignOperation.SetColumnNullable, DesignOperation.SetColumnType, DesignOperation.SetColumnReference };
+
         /// <summary>
         /// Keeps log that allows to record migrations and undo/redo
         /// </summary>
@@ -150,6 +153,19 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             {
                 var last = SchemaMigrations.Migrations.Last();
                 last.Migration.Status = MigrationStatus.Editing;
+            }
+
+            if (table?.IsNew == false && _changeOperations.Contains(op))
+            {
+                _designRecords.Add(
+                    new DesignLogRecord
+                    {
+                        Operation = DesignOperation.ExistingTableChanged,
+                        TableName = table?.Name,
+                        TableId = table?.Id,
+                        ColumnName = column?.Name,
+                        ColumnId = column?.Id,
+                    });
             }
 
             var operation = op;

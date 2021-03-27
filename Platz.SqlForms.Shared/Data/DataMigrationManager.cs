@@ -58,6 +58,9 @@ namespace Platz.SqlForms
                         _storeDatabaseDriver.CreateSchema(command.SchemaName);
                         _storeDatabaseDriver.CreateTable<MigrationVersionEntity>(schema, VERSION_TABLE);
                         break;
+                    case MigrationOperation.AlterSchemaName:
+                        // https://www.sqlservercentral.com/articles/renaming-a-schema-in-sql-server
+                        throw new NotImplementedException("SQL Server doesn't support simple schema rename. ");
                     case MigrationOperation.CreateTable:
                         _storeDatabaseDriver.CreateTable(command.SchemaName, command.Table);
                         break;
