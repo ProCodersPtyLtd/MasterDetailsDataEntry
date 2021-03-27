@@ -100,6 +100,7 @@ namespace Platz.ObjectBuilder.Blazor
         public string TableName { get; set; }
         public Guid? ColumnId { get; set; }
         public string ColumnName { get; set; }
+        public DesignColumn OldColumn { get; set; }
     }
 
     public enum DesignOperation

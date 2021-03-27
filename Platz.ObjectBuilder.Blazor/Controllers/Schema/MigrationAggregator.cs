@@ -122,7 +122,8 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Schema
                 Operation = MigrationOperation.DeleteColumn,
                 SchemaName = schema.Name,
                 TableName = record.TableName,
-                ColumnName = record.ColumnName
+                ColumnName = record.ColumnName,
+                Column = DesignSchemaConvert.ToStorePropertyMin(record.OldColumn),
             };
 
             tm.OperationCode = Enum.GetName(tm.Operation);

@@ -139,7 +139,9 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         }
 
         private DesignOperation[] _changeOperations = new DesignOperation[] { DesignOperation.SetTableName, DesignOperation.SetColumnName, 
-            DesignOperation.SetColumnNullable, DesignOperation.SetColumnType, DesignOperation.SetColumnReference };
+            DesignOperation.SetColumnNullable, DesignOperation.SetColumnType, DesignOperation.SetColumnReference, DesignOperation.DeleteColumn,
+            DesignOperation.DeleteTable, DesignOperation.SetSchemaName, DesignOperation.AddColumn
+        };
 
         /// <summary>
         /// Keeps log that allows to record migrations and undo/redo
@@ -226,7 +228,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
                 new DesignLogRecord 
                 { 
                     Operation = operation, TableName = table?.Name, TableId = table?.Id, ColumnName = column?.Name, ColumnId = column?.Id, 
-                    OldValue = old, NewValue = newValue 
+                    OldValue = old, NewValue = newValue, OldColumn = column?.GetCopy() as DesignColumn
                 });
 
             // save clones

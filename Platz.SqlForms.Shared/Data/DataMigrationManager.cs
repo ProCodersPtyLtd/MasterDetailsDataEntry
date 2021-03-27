@@ -9,6 +9,7 @@ namespace Platz.SqlForms
     {
         private const string VERSION_TABLE = "_version";
         private const string VERSION_ID = "Version";
+        private const string INITIAL_VERSION = "1.0";
         private readonly IStoreDatabaseDriver _storeDatabaseDriver;
 
         public DataMigrationManager(IStoreDatabaseDriver storeDatabaseDriver)
@@ -77,13 +78,13 @@ namespace Platz.SqlForms
                         _storeDatabaseDriver.AddColumn(command.SchemaName, command.TableName, command.Column);
                         break;
                     case MigrationOperation.DeleteColumn:
-                        _storeDatabaseDriver.DeleteColumn(command.SchemaName, command.TableName, command.ColumnName);
+                        _storeDatabaseDriver.DeleteColumn(command.SchemaName, command.TableName, command.ColumnName, command.Column);
                         break;
                     case MigrationOperation.AlterColumnName:
                         _storeDatabaseDriver.RenameColumn(command.SchemaName, command.TableName, command.ColumnName, command.NewValue);
                         break;
                     case MigrationOperation.AlterColumn:
-                        _storeDatabaseDriver.AlterColumn(command.SchemaName, command.TableName, command.ColumnName, command.Column);
+                        _storeDatabaseDriver.AlterColumn(command.SchemaName, command.TableName, command.Column);
                         break;
                     default:
                         throw new NotImplementedException();
@@ -94,7 +95,16 @@ namespace Platz.SqlForms
             var vesionRecord = new MigrationVersionEntity { 
                 Applied = DateTime.UtcNow, Version = migration.Version, VersionKey = migration.VersionKey, NextIndex = nextIndex };
 
-            _storeDatabaseDriver.Insert(schema, vesionRecord, migration.Version, VERSION_TABLE);
+            var existingRecord = _storeDatabaseDriver.Find<MigrationVersionEntity>(schema, VERSION_TABLE, VERSION_ID, migration.Version);
+
+            if (existingRecord.Any())
+            {
+                _storeDatabaseDriver.Update(schema, vesionRecord, VERSION_TABLE);
+            }
+            else
+            {
+                _storeDatabaseDriver.Insert(schema, vesionRecord, migration.Version, VERSION_TABLE);
+            }
         }
 
         public bool MigrationApplied(string schema, StoreMigration migration)
@@ -109,14 +119,14 @@ namespace Platz.SqlForms
 
             if (versionRecord.Any())
             {
-                if (migration.Version == "1.0" && versionRecord.First().VersionKey != migration.VersionKey)
+                if (migration.Version == INITIAL_VERSION && versionRecord.First().VersionKey != migration.VersionKey)
                 {
                     throw new DataMigrationException(
                         $"Incompatible initial migration already applied, expected key is {migration.VersionKey} but key in the database is {versionRecord.First().VersionKey}. Clear target database and try again.");
                 }
 
                 // edititng incrementatl migration can be partially applied
-                if (migration.Commands.Length != versionRecord.First().NextIndex) 
+                if (migration.Version != INITIAL_VERSION && migration.Commands.Length != versionRecord.First().NextIndex) 
                 {
                     return false;
                 }

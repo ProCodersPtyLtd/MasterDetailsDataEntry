@@ -17,9 +17,9 @@ namespace Platz.SqlForms
         void RenameTable(string schemaName, string tableName, string newValue);
         void DeleteTable(string schemaName, string tableName);
         void AddColumn(string schemaName, string tableName, StoreProperty column);
-        void DeleteColumn(string schemaName, string tableName, string columnName);
+        void DeleteColumn(string schemaName, string tableName, string columnName, StoreProperty column);
         void RenameColumn(string schemaName, string tableName, string columnName, string newValue);
-        void AlterColumn(string schemaName, string tableName, string columnName, StoreProperty column);
+        void AlterColumn(string schemaName, string tableName, StoreProperty column);
 
         // Queries
         List<object> ExecuteQueryParams(string sql, Type returnType, params object[] ps);
@@ -35,6 +35,7 @@ namespace Platz.SqlForms
         long Insert(string schema, object record, string tableName);
         long Insert(string schema, object record, string idValue, string tableName);
         void Update(string schema, object record);
+        void Update(string schema, object record, string tableName);
         void Delete(string schema, string tableName, object pkValue);
         void Delete(string schema, object record);
     }

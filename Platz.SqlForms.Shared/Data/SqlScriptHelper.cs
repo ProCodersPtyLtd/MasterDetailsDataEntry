@@ -123,6 +123,15 @@ WHERE {ID_COLUMN} = @p2;
             return sql;
         }
 
+        public static string UpdateJsonTableByIdWithParams(string name, string schema, string idColumn)
+        {
+            var sql = @$"
+UPDATE {schema}.{name} SET {DATA_COLUMN} = @p1
+WHERE {idColumn} = @p2;
+";
+            return sql;
+        }
+
         public static string DeleteJsonTableWithParams(string name, string schema)
         {
             var sql = @$"
