@@ -4,11 +4,11 @@
     {
       "FromVersion": null,
       "Version": "1.0",
-      "VersionKey": "f1b29172-7aca-4d60-8561-9ba6515e0064",
+      "VersionKey": "d83a77c5-01cd-402f-a9dd-166eb36821dd",
       "Commands": [
         {
           "Operation": 1,
-          "OperationCode": null,
+          "OperationCode": "CreateSchema",
           "SchemaName": "Crm2",
           "TableName": null,
           "ColumnName": null,
@@ -27,6 +27,7 @@
             "Name": "Address",
             "Type": null,
             "Comment": null,
+            "Order": 0,
             "Properties": {
               "Id": {
                 "Name": "Id",
@@ -141,6 +142,7 @@
             "Name": "Person",
             "Type": null,
             "Comment": null,
+            "Order": 1,
             "Properties": {
               "Id": {
                 "Name": "Id",
@@ -227,6 +229,7 @@
             "Name": "PersonAddress",
             "Type": null,
             "Comment": null,
+            "Order": 2,
             "Properties": {
               "Id": {
                 "Name": "Id",
@@ -303,7 +306,7 @@
           "Column": null
         }
       ],
-      "Created": "2021-03-20T05:52:21.5521564Z",
+      "Created": "2021-03-28T01:36:19.1657504Z",
       "Status": 1
     }
   ]

@@ -38,12 +38,18 @@ namespace Platz.SqlForms
         public void ApplyMigration(string schema, StoreMigration migration)
         {
             int nextIndex = 0;
-            var lastVersionRecord = _storeDatabaseDriver.Find<MigrationVersionEntity>(schema, VERSION_TABLE, VERSION_ID, migration.Version);
 
-            if (lastVersionRecord.Any())
+            try
             {
-                nextIndex = lastVersionRecord.First().NextIndex;
+                // try read version - table maybe doesn't exist
+                var lastVersionRecord = _storeDatabaseDriver.Find<MigrationVersionEntity>(schema, VERSION_TABLE, VERSION_ID, migration.Version);
+
+                if (lastVersionRecord.Any())
+                {
+                    nextIndex = lastVersionRecord.First().NextIndex;
+                }
             }
+            catch { }
 
             // skip migrations that already applied;
             var commands = migration.Commands.Skip(nextIndex);
@@ -58,6 +64,8 @@ namespace Platz.SqlForms
                     case MigrationOperation.CreateSchema:
                         _storeDatabaseDriver.CreateSchema(command.SchemaName);
                         _storeDatabaseDriver.CreateTable<MigrationVersionEntity>(schema, VERSION_TABLE);
+                        // this operation is not considered as object operation
+                        //nextIndex--;
                         break;
                     case MigrationOperation.AlterSchemaName:
                         // https://www.sqlservercentral.com/articles/renaming-a-schema-in-sql-server
@@ -126,7 +134,7 @@ namespace Platz.SqlForms
                 }
 
                 // edititng incrementatl migration can be partially applied
-                if (migration.Version != INITIAL_VERSION && migration.Commands.Length != versionRecord.First().NextIndex) 
+                if (/*migration.Version != INITIAL_VERSION &&*/ migration.Commands.Length != versionRecord.First().NextIndex) 
                 {
                     return false;
                 }
