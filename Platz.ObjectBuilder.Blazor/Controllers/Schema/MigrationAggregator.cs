@@ -21,7 +21,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Schema
         {
             if (schema.Version == INITIAL_VERSION)
             {
-                var package = new StoreSchemaMigrations { SchemaName = schema.Name, Migrations = new StoreMigration[] { GenerateInitialMigration(schema) } };
+                var package = new StoreSchemaMigrations { SchemaName = schema.Name, Migrations = new StoreMigration[] { GenerateInitialMigration(schema, log) } };
                 return package;
             }
             else
@@ -40,9 +40,10 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Schema
             }
         }
 
-        private static StoreMigration GenerateInitialMigration(DesignSchema schema)
+        private static StoreMigration GenerateInitialMigration(DesignSchema schema, List<DesignLogRecord> log)
         {
-            if (schema.Changed)
+            //if (schema.Changed)
+            if (log.Any(r => r.Operation == DesignOperation.ExistingTableChanged))
             {
                 schema.VersionKey = Guid.NewGuid();
             }
@@ -52,8 +53,9 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Schema
             var cmd = new List<MigrationCommand>();
 
             cmd.Add(new MigrationCommand { Operation = MigrationOperation.CreateSchema, SchemaName = schema.Name });
+            var tables = schema.Tables.OrderBy(t => t.Order);
 
-            foreach (var t in schema.Tables)
+            foreach (var t in tables)
             {
                 var tm = new MigrationCommand { Operation = MigrationOperation.CreateTable, SchemaName = schema.Name, Table = DesignSchemaConvert.ToStoreDefinition(schema, t) };
                 tm.OperationCode = Enum.GetName(tm.Operation);

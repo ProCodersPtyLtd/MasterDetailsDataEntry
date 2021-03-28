@@ -33,6 +33,7 @@ namespace Platz.SqlForms
 
         public string Type { get; set; }
         public string Comment { get; set; }
+        public int Order { get; set; }
 
         public Dictionary<string, StoreProperty> Properties { get; set; }
     }

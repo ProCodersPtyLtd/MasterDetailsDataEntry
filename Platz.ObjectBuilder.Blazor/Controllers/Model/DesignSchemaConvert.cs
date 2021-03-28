@@ -30,6 +30,7 @@ namespace Platz.ObjectBuilder.Blazor
                 var t = new DesignTable()
                 {
                     Name = d.Name,
+                    Order = d.Order,
                 };
 
                 ds.Tables.Add(t);
@@ -60,7 +61,7 @@ namespace Platz.ObjectBuilder.Blazor
 
         public static StoreDefinition ToStoreDefinition(DesignSchema schema, DesignTable t)
         {
-            var d = new StoreDefinition { Name = t.Name, Properties = new Dictionary<string, StoreProperty>() };
+            var d = new StoreDefinition { Name = t.Name, Order = t.Order, Properties = new Dictionary<string, StoreProperty>() };
             int i = 0;
 
             d.Properties = t.Columns.Where(c => !c.IsEmpty()).ToDictionary(c => c.Name, c => new StoreProperty
@@ -146,7 +147,7 @@ namespace Platz.ObjectBuilder.Blazor
             foreach (var t in s.Tables)
             {
                 int i = 0;
-                schema.Definitions[t.Name] = new StoreDefinition { Name = t.Name, Properties = new Dictionary<string, StoreProperty>() };
+                schema.Definitions[t.Name] = new StoreDefinition { Name = t.Name, Order = t.Order, Properties = new Dictionary<string, StoreProperty>() };
 
                 schema.Definitions[t.Name].Properties = t.Columns.Where(c => !c.IsEmpty()).ToDictionary(c => c.Name, c => new StoreProperty
                 {

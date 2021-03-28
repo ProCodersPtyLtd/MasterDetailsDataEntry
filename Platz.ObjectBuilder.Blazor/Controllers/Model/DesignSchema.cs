@@ -28,6 +28,7 @@ namespace Platz.ObjectBuilder.Blazor
         public List<DesignColumn> Columns { get; set; } = new List<DesignColumn>();
         public bool Changed { get; set; }
         public bool IsNew { get; set; }
+        public int Order { get; set; }
 
         public DesignTable()
         {
