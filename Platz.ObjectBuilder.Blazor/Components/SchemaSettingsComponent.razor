@@ -438,7 +438,37 @@
     }
 
     private async Task DeleteSchemaClick(MouseEventArgs args)
-    { }
+    {
+        var module = await Module;
+
+        if (SchemaController.Schema.Changed)
+        {
+            _toastErrorMessage = $"Schema must be saved first.";
+            await module.InvokeVoidAsync("ShowToast", new object[] { "#errorToast" });
+            return;
+        }
+
+        var canDrop = await JS.InvokeAsync<bool>("confirm", $"All schema tables and data will be lost. Are you sure you want to drop schema {SchemaController.Schema.Name}?");
+
+        if (!canDrop)
+        {
+            return;
+        }
+
+        try
+        {
+            SchemaController.DropSchemaWithObjects(SchemaController.Schema.Name);
+        }
+        catch (Exception exc)
+        {
+            _toastErrorMessage = exc.Message + " Cannot drop schema with objects, try to delete the database. All data will be lost!";
+            await module.InvokeVoidAsync("ShowToast", new object[] { "#errorToast" });
+            return;
+        }
+
+        _toastMessage = $"Schema {SchemaController.Schema.Name} dropped successfully.";
+        await module.InvokeVoidAsync("ShowToast", new object[] { "#successToast" });
+    }
 
     private async Task ApplySchemaChangesClick(MouseEventArgs args)
     {

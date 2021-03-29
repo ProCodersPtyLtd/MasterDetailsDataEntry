@@ -8,6 +8,7 @@ namespace Platz.SqlForms
     {
         void Configure(StoreDatabaseDriverSettings settings);
         void ApplyMigrations(StoreSchemaMigrations package);
+        void DropSchemaWithObjects(string schemaName);
         bool MigrationApplied(string schema, StoreMigration migration);
         string MigrationToString(StoreMigration migration);
     }

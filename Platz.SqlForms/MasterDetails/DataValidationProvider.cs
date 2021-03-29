@@ -21,7 +21,7 @@ namespace Platz.SqlForms
 
             foreach (var field in fields)
             {
-                CustomRule(form, item, rowIndex, field, result, trigger);
+                CustomRule(form, fields, item, rowIndex, field, result, trigger);
             }
 
             return result;
@@ -42,7 +42,7 @@ namespace Platz.SqlForms
                     UniqueRule(form, item, rowIndex, field, result);
                 }
                 
-                CustomRule(form, item, rowIndex, field, result, FormRuleTriggers.Submit);
+                CustomRule(form, fields, item, rowIndex, field, result, FormRuleTriggers.Submit);
             }
 
             return result;
@@ -56,12 +56,13 @@ namespace Platz.SqlForms
             PrimaryKeyRule(item, rowIndex, field, result);
             RequiredRule(item, rowIndex, field, result);
             UniqueRule(form, item, rowIndex, field, result);
-            CustomRule(form, item, rowIndex, field, result, FormRuleTriggers.Change);
+            CustomRule(form, fields, item, rowIndex, field, result, FormRuleTriggers.Change);
             
             return result;
         }
 
-        private void CustomRule(IDataForm form, object item, int rowIndex, DataField field, List<ValidationResult> result, FormRuleTriggers trigger)
+        private void CustomRule(IDataForm form, IEnumerable<DataField> fields, object item, int rowIndex, DataField field, List<ValidationResult> result, 
+            FormRuleTriggers trigger)
         {
             var rules = field.Rules.Where(r => r.Trigger == trigger 
                 || (trigger == FormRuleTriggers.ChangeSubmit && (r.Trigger == FormRuleTriggers.Change || r.Trigger == FormRuleTriggers.Submit))
@@ -71,7 +72,28 @@ namespace Platz.SqlForms
 
             foreach (var rule in rules)
             {
-                var vr = rule.Method(item);
+                FormRuleResult vr;
+
+                if (rule.Method != null)
+                {
+                    vr = rule.Method(item);
+                }
+                else
+                {
+                    rule.EntityBuilder = Activator.CreateInstance(rule.BuilderType) as FormEntityTypeBuilder;
+                    vr = rule.MethodB(item, rule.EntityBuilder);
+                    var ruleFields = rule.EntityBuilder.GetFieldDictionary();
+                    
+                    //ToDo: update fields appearance here
+                    foreach (var f in fields)
+                    {
+                        var rf = ruleFields[f.BindingProperty];
+                        f.Required = rf.Required;
+                        f.Hidden = rf.Hidden;
+                        f.ReadOnly = rf.ReadOnly;
+                        f.Label = rf.Label;
+                    }
+                }
 
                 if (vr != null && vr.IsFailed)
                 {

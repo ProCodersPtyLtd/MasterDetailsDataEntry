@@ -65,7 +65,13 @@ ADD [{column.Name}] AS CAST(JSON_VALUE({DATA_COLUMN},'$.{column.Name}') AS {colT
             ExecuteNonQuery(sql);
         }
 
-        public void CreateTable<T>(string schema, string tableName = null)
+        public void DropSchemaWithObjects(string schemaName)
+        {
+            var sql = SqlScriptHelper.DropSchemaWithObjects(schemaName);
+            ExecuteNonQuery(sql);
+    }
+
+    public void CreateTable<T>(string schema, string tableName = null)
         {
             var table = GetTableFromType(typeof(T));
             table.Name = tableName ?? table.Name;

@@ -19,6 +19,10 @@ namespace Platz.SqlForms
         public List<DialogButtonDetails> DialogButtons { get; private set; }  = new List<DialogButtonDetails>();
         public List<DialogButtonNavigationDetails> DialogButtonNavigations { get; private set; }  = new List<DialogButtonNavigationDetails>();
         public List<EntityDataOperationDetails> DataOperationActions { get; private set; } = new List<EntityDataOperationDetails>();
+        public Dictionary<string, DataField> GetFieldDictionary()
+        {
+            return _fields;
+        }
     }
 
     public class FormEntityTypeBuilder<TEntity> : FormEntityTypeBuilder where TEntity : class
@@ -94,4 +98,7 @@ namespace Platz.SqlForms
             _fields.Values.ToList().ForEach(f => f.Hidden = true);
         }
     }
+
+    //public class Entity<TEntity> : FormEntityTypeBuilder<TEntity> where TEntity : class
+    //{ }
 }
