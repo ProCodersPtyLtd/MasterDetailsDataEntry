@@ -18,7 +18,7 @@ namespace SqlForms.Demo.MyForms
 
                 e.Property(p => p.FirstName).IsRequired();
 
-                e.Property(p => p.LastName).IsRequired();
+                e.Property(p => p.LastName).IsRequired().Rule(CheckCompanyRequired);
 
                 e.Property(p => p.Phone);
 
@@ -49,6 +49,12 @@ namespace SqlForms.Demo.MyForms
             return null;
         }
 
+        public FormRuleResult CheckCompanyRequired(Customer model, FormEntityTypeBuilder<Customer> e)
+        {
+            var required = (model.LastName == "Ford");
+            e.Property(p => p.CompanyName).IsRequired(required).Label(required ? "Ford Division": "Company Name");
+            return null;
+        }
 
         public FormRuleResult CheckEmail(Customer model)
         {

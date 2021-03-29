@@ -13,7 +13,7 @@ namespace Platz.SqlForms
         public DataField Field { get { return _field; } }
     }
 
-    public class FieldBuilder<TProperty, TEntity> : FieldBuilder
+    public class FieldBuilder<TProperty, TEntity> : FieldBuilder where TEntity : class
     {
 
         public FieldBuilder(string bindingProperty)
@@ -31,6 +31,16 @@ namespace Platz.SqlForms
             // https://stackoverflow.com/questions/3444246/convert-actiont-to-actionobject
             Func<object, FormRuleResult> rule = new Func<object, FormRuleResult>(f => method((TEntity)f));
             _field.Rules.Add(new FieldRule { Method = rule, Trigger = trigger });
+            return this;
+        }
+
+        public virtual FieldBuilder<TProperty, TEntity> Rule([NotNullAttribute] Func<TEntity, FormEntityTypeBuilder<TEntity>, FormRuleResult> method, 
+            FormRuleTriggers trigger = FormRuleTriggers.ChangeSubmit)
+        {
+            // https://stackoverflow.com/questions/3444246/convert-actiont-to-actionobject
+            Func<object, object, FormRuleResult> rule = new Func<object, object, FormRuleResult>((f, b) => method((TEntity)f, (FormEntityTypeBuilder<TEntity>)b));
+            Type builderType = typeof(FormEntityTypeBuilder<>).MakeGenericType(typeof(TEntity));
+            _field.Rules.Add(new FieldRule { MethodB = rule, BuilderType = builderType, Trigger = trigger });
             return this;
         }
 

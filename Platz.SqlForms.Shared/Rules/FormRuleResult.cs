@@ -25,4 +25,11 @@ namespace Platz.SqlForms
         {
         }
     }
+
+    //public class FormRuleResult<TEntity> : FormRuleResult where TEntity : class
+    //{
+    //    public FormEntityTypeBuilder<TEntity> Entity { get; private set; } = new FormEntityTypeBuilder<TEntity>();
+    //    public FormRuleResult()
+    //    { }
+    //}
 }
