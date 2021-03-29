@@ -21,7 +21,13 @@ namespace Platz.SqlForms
         {
             _storeDatabaseDriver.Configure(settings);
         }
-       
+
+        public void DropSchemaWithObjects(string schemaName)
+        {
+            _storeDatabaseDriver.DropSchemaWithObjects(schemaName);
+        }
+
+
         public void ApplyMigrations(StoreSchemaMigrations package)
         {
             foreach (var migration in package.Migrations)

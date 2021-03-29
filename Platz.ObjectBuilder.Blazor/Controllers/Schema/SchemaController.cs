@@ -60,6 +60,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
 
         // work with DB
         void ApplyMigrations();
+        void DropSchemaWithObjects(string schemaName);
     }
 
     public class SchemaControllerParameters
@@ -512,6 +513,12 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             var package = _migrationAggregator.GenerateMigrations(Schema, SchemaMigrations, _designRecords);
             _migrationManager.Configure(new StoreDatabaseDriverSettings { ConnectionString = Parameters.ConnectionString });
             _migrationManager.ApplyMigrations(package);
+        }
+
+        public void DropSchemaWithObjects(string schemaName)
+        {
+            _migrationManager.Configure(new StoreDatabaseDriverSettings { ConnectionString = Parameters.ConnectionString });
+            _migrationManager.DropSchemaWithObjects(schemaName);
         }
 
         private List<DiagramTable> _diagramTables;

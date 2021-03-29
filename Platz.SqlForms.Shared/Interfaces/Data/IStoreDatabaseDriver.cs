@@ -14,6 +14,7 @@ namespace Platz.SqlForms
         void CreateTable<T>(string schema, string tableName = null);
         void CreateTable(string schema, StoreDefinition table);
         void CreateSchema(string schemaName);
+        void DropSchemaWithObjects(string schemaName);
         void RenameTable(string schemaName, string tableName, string newValue);
         void DeleteTable(string schemaName, string tableName);
         void AddColumn(string schemaName, string tableName, StoreProperty column);
