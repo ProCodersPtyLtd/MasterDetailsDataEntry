@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Platz.ObjectBuilder.Blazor.Controllers.Validation
 {
-    public interface IObjectBuilderRule
+    public interface IQueryBuilderRule
     {
         RuleValidationResult Validate(IQueryModel qm);
     }

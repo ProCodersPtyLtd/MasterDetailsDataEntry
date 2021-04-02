@@ -22,9 +22,9 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
     public class QueryBuilderEngine : IQueryBuilderEngine
     {
         private readonly ISqlExpressionEngine _expressions;
-        private readonly IObjectBuilderRuleFactory _ruleEngine;
+        private readonly IQueryBuilderRuleFactory _ruleEngine;
 
-        public QueryBuilderEngine(ISqlExpressionEngine expressions, IObjectBuilderRuleFactory ruleEngine)
+        public QueryBuilderEngine(ISqlExpressionEngine expressions, IQueryBuilderRuleFactory ruleEngine)
         {
             _expressions = expressions;
             _ruleEngine = ruleEngine;

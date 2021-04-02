@@ -4,6 +4,7 @@ using Platz.ObjectBuilder.Blazor.Controllers;
 using Platz.ObjectBuilder.Blazor.Controllers.Logic;
 using Platz.ObjectBuilder.Blazor.Controllers.Schema;
 using Platz.ObjectBuilder.Blazor.Controllers.Validation;
+using Platz.ObjectBuilder.Blazor.Validation;
 using Platz.ObjectBuilder.Engine;
 using Platz.ObjectBuilder.Expressions;
 using Platz.SqlForms;
@@ -21,7 +22,8 @@ namespace Platz.ObjectBuilder
         {
             services.AddScoped(typeof(DragDropService<>));
             services.AddTransient<IObjectResolver, SqlJsonObjectResolver>();
-            services.AddTransient<IObjectBuilderRuleFactory, ObjectBuilderRuleFactory>();
+            services.AddTransient<IQueryBuilderRuleFactory, QueryBuilderRuleFactory>();
+            services.AddTransient<IBuilderRuleFactory<ISchemaBuilderRule, DesignSchema>, BuilderRuleFactory<ISchemaBuilderRule, DesignSchema>>();
             services.AddTransient<ISqlExpressionEngine, SqlExpressionEngine>();
             services.AddTransient<IQueryBuilderEngine, QueryBuilderEngine>();
             services.AddTransient<IQueryController, QueryController>();

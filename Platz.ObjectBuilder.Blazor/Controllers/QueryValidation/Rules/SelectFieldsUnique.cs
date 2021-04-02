@@ -6,7 +6,7 @@ using Platz.ObjectBuilder.Schema;
 
 namespace Platz.ObjectBuilder.Blazor.Controllers.Validation.Rules
 {
-    public class SelectFieldsUnique : IObjectBuilderRule
+    public class SelectFieldsUnique : IQueryBuilderRule
     {
         public RuleValidationResult Validate(IQueryModel qm)
         {

@@ -5,30 +5,30 @@ using System.Text;
 
 namespace Platz.ObjectBuilder.Blazor.Controllers.Validation
 {
-    public interface IObjectBuilderRuleFactory
+    public interface IQueryBuilderRuleFactory
     {
-        List<IObjectBuilderRule> GetAllRules();
-        void RegisterRule(IObjectBuilderRule rule);
+        List<IQueryBuilderRule> GetAllRules();
+        void RegisterRule(IQueryBuilderRule rule);
         List<RuleValidationResult> ValidateAllRules(IQueryModel qm);
     }
 
-    public class ObjectBuilderRuleFactory : IObjectBuilderRuleFactory
+    public class QueryBuilderRuleFactory : IQueryBuilderRuleFactory
     {
-        private readonly List<IObjectBuilderRule> _rules;
+        private readonly List<IQueryBuilderRule> _rules;
 
-        public ObjectBuilderRuleFactory()
+        public QueryBuilderRuleFactory()
         {
-            _rules = new List<IObjectBuilderRule>();
+            _rules = new List<IQueryBuilderRule>();
             var localRules = GetLocalRules();
             _rules.AddRange(localRules);
         }
 
-        public List<IObjectBuilderRule> GetAllRules()
+        public List<IQueryBuilderRule> GetAllRules()
         {
             return _rules;
         }
 
-        public void RegisterRule(IObjectBuilderRule rule)
+        public void RegisterRule(IQueryBuilderRule rule)
         {
             if (!_rules.Any(r => r.GetType() == rule.GetType()))
             {
@@ -54,10 +54,10 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Validation
             return result;
         }
 
-        private List<IObjectBuilderRule> GetLocalRules()
+        private List<IQueryBuilderRule> GetLocalRules()
         {
-            var result = typeof(ObjectBuilderRuleFactory).Assembly.GetTypes().Where(t => !t.IsInterface && typeof(IObjectBuilderRule).IsAssignableFrom(t))
-                .Select(t => Activator.CreateInstance(t) as IObjectBuilderRule)
+            var result = typeof(QueryBuilderRuleFactory).Assembly.GetTypes().Where(t => !t.IsInterface && typeof(IQueryBuilderRule).IsAssignableFrom(t))
+                .Select(t => Activator.CreateInstance(t) as IQueryBuilderRule)
                 .ToList();
 
             return result;

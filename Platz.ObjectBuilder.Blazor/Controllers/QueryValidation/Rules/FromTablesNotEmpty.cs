@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Platz.ObjectBuilder.Blazor.Controllers.Validation.Rules
 {
-    public class FromTablesNotEmpty : IObjectBuilderRule
+    public class FromTablesNotEmpty : IQueryBuilderRule
     {
         public RuleValidationResult Validate(IQueryModel qm)
         {

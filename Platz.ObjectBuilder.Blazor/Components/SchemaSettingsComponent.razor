@@ -324,14 +324,17 @@
 
     private async Task SaveClick(MouseEventArgs args)
     {
+        var module = await Module;
+
         ValidateClick(null);
 
         if (SchemaController.ValidationResults.Any())
         {
+            _toastErrorMessage = SchemaController.Errors;
+            await module.InvokeVoidAsync("ShowToast", new object[] { "#errorToast" });
             return;
         }
 
-        var module = await Module;
         bool canSave = true;
         var fileName = SchemaController.GenerateFileName(FullStoreDataPath);
         fileName = Path.GetFileName(fileName);
@@ -367,12 +370,12 @@
         {
             foreach (var r in SchemaController.ValidationResults)
             {
-                SchemaController.Errors += "\r\n" + r.Message;
+                SchemaController.Errors += r.Message + "\r\n";
             }
         }
         else
         {
-            SchemaController.Errors += "\r\n" + "Validation result: pass";
+            SchemaController.Errors += "Validation result: pass" + "\r\n";
         }
     }
 

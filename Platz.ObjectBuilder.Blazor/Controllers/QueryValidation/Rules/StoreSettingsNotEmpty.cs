@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Platz.ObjectBuilder.Blazor.Controllers.Validation.Rules
 {
-    public class StoreSettingsNotEmpty : IObjectBuilderRule
+    public class StoreSettingsNotEmpty : IQueryBuilderRule
     {
         public RuleValidationResult Validate(IQueryModel qm)
         {
