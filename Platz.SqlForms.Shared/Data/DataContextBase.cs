@@ -12,19 +12,21 @@ namespace Platz.SqlForms
     {
         private List<Type> _tables;
         private string _schema;
-        protected string _connectionString;
-        protected string _connectionStringConfigKey;
+        protected readonly string _connectionString;
+        protected readonly string _connectionStringConfigKey;
         protected IStoreDatabaseDriver _db;
+        protected readonly DataContextParams _dataContextParams;
 
         public DataContextBase() 
-            : this (null, "DefaultConnection")
+            : this (new DataContextParams { ConnectionStringConfigKey = "DefaultConnection" })
         {
         }
 
-        public DataContextBase(string connectionString, string connectionStringConfigKey) 
+        public DataContextBase(DataContextParams contextParams) 
         {
-            _connectionString = connectionString;
-            _connectionStringConfigKey = connectionStringConfigKey;
+            _dataContextParams = contextParams;
+            _connectionString = contextParams.ConnectionString;
+            _connectionStringConfigKey = contextParams.ConnectionStringConfigKey;
 
             if (string.IsNullOrEmpty(_connectionString))
             {
@@ -41,6 +43,10 @@ namespace Platz.SqlForms
             _db = Activator.CreateInstance(settings.GetDriverType()) as IStoreDatabaseDriver;
             _db.Configure(new StoreDatabaseDriverSettings { ConnectionString = _connectionString });
 
+            if (_dataContextParams.ApplyMigrations)
+            {
+                // ToDo: trigger migrations here
+            }
         }
 
         public List<T> ExecuteQuery<T>(string sql, params object[] ps) 
@@ -133,6 +139,13 @@ namespace Platz.SqlForms
         public void Dispose()
         {
         }
+    }
+
+    public class DataContextParams
+    {
+        public string ConnectionString { get; set; }
+        public string ConnectionStringConfigKey { get; set; }
+        public bool ApplyMigrations { get; set; } = true;
     }
 
     public class DataContextSettings
