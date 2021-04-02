@@ -56,12 +56,11 @@ https://docs.microsoft.com/en-us/sql/samples/adventureworks-install-configure?vi
 - UI form to entry/edit EF entities
 - Platz.ObjectBuilder library to define data services using visual interface
 - ObjectBuilder T4 template to generate data services C# code
-### Release 0.3.0 - Mar'21 
+### Release 0.3.0 - Apr'21 
 - SqlForms custom rules to change field properties (hidden, required, read-only, etc.)
 - SchemaDesigner prototype, that allows to design database entities and save the schema to json
 - T4 template to geneate SchemaDesigner entities and data access layer
 - Upgrade ObjectBuilder to support SchemaDesigner entities
-- Seed projects for easy start
 ### Release 0.4.0 - May'21
 - UI SQL forms to entry/edit business objects
 - ObjectBuilder definition of business object - entity mappings and CRUD operations
@@ -71,6 +70,7 @@ https://docs.microsoft.com/en-us/sql/samples/adventureworks-install-configure?vi
 - ObjectBuilder Subqueries
 ### Release 0.5.0 - Jun'21
 - Usability and error data recovery for builders and designers
+- Seed projects for easy start
 - Support of Postgres
 - Bug fixes
 ### Release 1.0.0 - Aug'21
