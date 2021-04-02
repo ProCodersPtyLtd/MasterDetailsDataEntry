@@ -49,10 +49,10 @@ namespace SqlForms.Demo.MyForms
             return null;
         }
 
-        public FormRuleResult CheckCompanyRequired(Customer model, FormEntityTypeBuilder<Customer> e)
+        public FormRuleResult CheckCompanyRequired(RuleArgs<Customer> a)
         {
-            var required = (model.LastName == "Ford");
-            e.Property(p => p.CompanyName).IsRequired(required).Label(required ? "Ford Division": "Company Name");
+            var required = (a.Model.LastName == "Ford");
+            a.Entity.Property(p => p.CompanyName).IsRequired(required).Label(required ? "Ford Division": "Company Name");
             return null;
         }
 

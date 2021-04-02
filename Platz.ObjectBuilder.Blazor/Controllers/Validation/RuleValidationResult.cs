@@ -1,17 +1,12 @@
 ﻿using Platz.Shared;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace Platz.ObjectBuilder.Blazor.Controllers.Validation
+namespace Platz.ObjectBuilder.Blazor.Validation
 {
-    public interface IObjectBuilderRule
-    {
-        RuleValidationResult Validate(IQueryModel qm);
-    }
-
     public class RuleValidationResult
     {
         public string RuleName { get; set; }
@@ -28,10 +23,11 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Validation
             IsFailed = true;
         }
 
-        public RuleValidationResult(string message): this(StackTraceHelper.GetCallingClass().Name, message)
+        public RuleValidationResult(string message) : this(StackTraceHelper.GetCallingClass().Name, message)
         {
         }
 
-        
+
     }
+
 }

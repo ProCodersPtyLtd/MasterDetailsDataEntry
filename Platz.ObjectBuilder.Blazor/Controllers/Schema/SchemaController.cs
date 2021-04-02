@@ -1,5 +1,5 @@
 ﻿using Platz.ObjectBuilder.Blazor.Controllers.Schema;
-using Platz.ObjectBuilder.Blazor.Controllers.Validation;
+using Platz.ObjectBuilder.Blazor.Validation;
 using Platz.SqlForms;
 using Platz.SqlForms.Shared;
 using System;
@@ -82,6 +82,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         private readonly IStoreSchemaStorage _schemaStorage;
         private readonly IDataMigrationManager _migrationManager;
         private readonly IMigrationAggregator _migrationAggregator;
+        private readonly IBuilderRuleFactory<ISchemaBuilderRule, DesignSchema> _builderRuleFactory;
 
         private List<DesignLogRecord> _designRecords = new List<DesignLogRecord>();
 
@@ -97,12 +98,13 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         private Dictionary<Guid, object> _objectClones = new Dictionary<Guid, object>();
 
         public SchemaController(IStoreSchemaStorage schemaStorage, SchemaTableDesignController tableController, IDataMigrationManager migrationManager,
-            IMigrationAggregator migrationAggregator)
+            IMigrationAggregator migrationAggregator, IBuilderRuleFactory<ISchemaBuilderRule, DesignSchema> builderRuleFactory)
         {
             _schemaStorage = schemaStorage;
             _tableController = tableController;
             _migrationManager = migrationManager;
             _migrationAggregator = migrationAggregator;
+            _builderRuleFactory = builderRuleFactory;
         }
 
         private T FindClone<T>(Guid id) where T: class
@@ -275,6 +277,10 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
 
                 sb.AppendLine();
             }
+
+            sb.AppendLine();
+            sb.AppendLine("Validation:");
+            sb.AppendLine(Errors);
 
             return sb.ToString();
         }
@@ -481,8 +487,9 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
         
         public void Validate()
         {
-            ValidationResults.Clear();
-            // ToDo:
+            //ValidationResults.Clear();
+            Errors = "";
+            ValidationResults = _builderRuleFactory.ValidateAllRules(Schema);
         }
 
         public List<string> GetFileList(string path)

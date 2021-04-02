@@ -80,10 +80,11 @@ namespace Platz.SqlForms
                 }
                 else
                 {
-                    rule.EntityBuilder = Activator.CreateInstance(rule.BuilderType) as FormEntityTypeBuilder;
-                    vr = rule.MethodB(item, rule.EntityBuilder);
-                    var ruleFields = rule.EntityBuilder.GetFieldDictionary();
-                    
+                    Type argsType = typeof(RuleArgs<>).MakeGenericType(rule.EntityType);
+                    var args = Activator.CreateInstance(argsType, item) as RuleArgs;
+                    vr = rule.MethodArgs(args);
+                    var ruleFields = args.EntityBuilder.GetFieldDictionary();
+
                     //ToDo: update fields appearance here
                     foreach (var f in fields)
                     {

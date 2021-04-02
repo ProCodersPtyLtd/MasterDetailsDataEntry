@@ -3,7 +3,7 @@ using Platz.ObjectBuilder.Blazor;
 using Platz.ObjectBuilder.Blazor.Controllers;
 using Platz.ObjectBuilder.Blazor.Controllers.Logic;
 using Platz.ObjectBuilder.Blazor.Controllers.Schema;
-using Platz.ObjectBuilder.Blazor.Controllers.Validation;
+using Platz.ObjectBuilder.Blazor.Validation;
 using Platz.ObjectBuilder.Engine;
 using Platz.ObjectBuilder.Expressions;
 using Platz.SqlForms;
@@ -21,7 +21,7 @@ namespace Platz.ObjectBuilder
         {
             services.AddScoped(typeof(DragDropService<>));
             services.AddTransient<IObjectResolver, SqlJsonObjectResolver>();
-            services.AddTransient<IObjectBuilderRuleFactory, ObjectBuilderRuleFactory>();
+            //services.AddTransient<IQueryBuilderRuleFactory, QueryBuilderRuleFactory>();
             services.AddTransient<ISqlExpressionEngine, SqlExpressionEngine>();
             services.AddTransient<IQueryBuilderEngine, QueryBuilderEngine>();
             services.AddTransient<IQueryController, QueryController>();
@@ -31,6 +31,9 @@ namespace Platz.ObjectBuilder
             services.AddSingleton<IDataMigrationManager, DataMigrationManager>();
             services.AddSingleton<IStoreDatabaseDriver, SqlJsonStoreDatabaseDriver>();
             services.AddSingleton<IMigrationAggregator, MigrationAggregator>();
+
+            services.AddSingleton<IBuilderRuleFactory<IQueryBuilderRule, IQueryModel>, BuilderRuleFactory<IQueryBuilderRule, IQueryModel>>();
+            services.AddSingleton<IBuilderRuleFactory<ISchemaBuilderRule, DesignSchema>, BuilderRuleFactory<ISchemaBuilderRule, DesignSchema>>();
             return services;
         }
     }

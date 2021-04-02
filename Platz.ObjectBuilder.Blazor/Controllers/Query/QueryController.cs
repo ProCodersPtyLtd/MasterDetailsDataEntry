@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Platz.ObjectBuilder.Blazor.Controllers;
 using Platz.ObjectBuilder.Blazor.Controllers.Logic;
-using Platz.ObjectBuilder.Blazor.Controllers.Validation;
+using Platz.ObjectBuilder.Blazor.Validation;
 using Platz.ObjectBuilder.Engine;
 using Platz.ObjectBuilder.Expressions;
 using Platz.ObjectBuilder.Helpers;

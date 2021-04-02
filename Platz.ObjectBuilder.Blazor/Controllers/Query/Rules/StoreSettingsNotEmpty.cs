@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Platz.ObjectBuilder.Blazor.Controllers.Validation.Rules
+namespace Platz.ObjectBuilder.Blazor.Validation.Rules
 {
-    public class StoreSettingsNotEmpty : IObjectBuilderRule
+    public class StoreSettingsNotEmpty : IQueryBuilderRule
     {
         public RuleValidationResult Validate(IQueryModel qm)
         {
