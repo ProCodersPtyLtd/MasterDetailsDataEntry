@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 
 namespace Platz.SqlForms
 {
@@ -27,6 +29,13 @@ namespace Platz.SqlForms
             _storeDatabaseDriver.DropSchemaWithObjects(schemaName);
         }
 
+        public void ApplyMigrations(string fileName)
+        {
+            using var r = new StreamReader(fileName);
+            var json = r.ReadToEnd();
+            var package = JsonSerializer.Deserialize<StoreSchemaMigrations>(json);
+            ApplyMigrations(package);
+        }
 
         public void ApplyMigrations(StoreSchemaMigrations package)
         {

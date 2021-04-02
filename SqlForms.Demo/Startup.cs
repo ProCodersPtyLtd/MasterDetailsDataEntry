@@ -33,7 +33,7 @@ namespace SqlForms.Demo
             services.AddPlatzSqlForms();
             services.AddPlatzObjectBuilder();
 
-            var c = new Default.CrmDataContext();
+            //var c = new Default.CrmDataContext();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

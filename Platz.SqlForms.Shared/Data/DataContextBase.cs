@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -45,7 +46,11 @@ namespace Platz.SqlForms
 
             if (_dataContextParams.ApplyMigrations)
             {
-                // ToDo: trigger migrations here
+                var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                var path = dir + settings.MigrationsPath;
+                // ToDo: how to use DI here?
+                var mm = new DataMigrationManager(_db);
+                mm.ApplyMigrations(path);
             }
         }
 
@@ -153,6 +158,8 @@ namespace Platz.SqlForms
         private List<Type> _tables = new List<Type>();
         private string _schemaName;
         private Type _driver;
+
+        public string MigrationsPath { get; set; }
 
         public DataContextSettings AddTable<T>()
         {

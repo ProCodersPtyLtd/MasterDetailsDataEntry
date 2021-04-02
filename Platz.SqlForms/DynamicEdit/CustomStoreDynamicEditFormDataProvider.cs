@@ -62,11 +62,18 @@ namespace Platz.SqlForms
             return item;
         }
 
+        private DataContextBase _db;
+
         private DataContextBase GetDbContext(IDynamicEditForm form)
         {
+            if (_db != null)
+            {
+                return _db;
+            }
+
             var type = form.GetDbContextType();
-            var context = Activator.CreateInstance(type) as DataContextBase;
-            return context;
+            _db = Activator.CreateInstance(type) as DataContextBase;
+            return _db;
         }
     }
 }
