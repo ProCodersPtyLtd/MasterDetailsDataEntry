@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Platz.ObjectBuilder.Blazor.Validation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Platz.ObjectBuilder.Blazor.Controllers.Validation.Rules
+namespace Platz.ObjectBuilder.Blazor.Validation.Rules
 {
     public class FromTablesNotEmpty : IQueryBuilderRule
     {

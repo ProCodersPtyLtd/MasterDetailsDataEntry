@@ -5,7 +5,7 @@ using System.Text;
 using System.Linq;
 using Platz.ObjectBuilder.Helpers;
 using Platz.ObjectBuilder.Expressions;
-using Platz.ObjectBuilder.Blazor.Controllers.Validation;
+using Platz.ObjectBuilder.Blazor.Validation;
 using Platz.SqlForms;
 
 namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
@@ -22,9 +22,9 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
     public class QueryBuilderEngine : IQueryBuilderEngine
     {
         private readonly ISqlExpressionEngine _expressions;
-        private readonly IQueryBuilderRuleFactory _ruleEngine;
+        private readonly IBuilderRuleFactory<IQueryBuilderRule, IQueryModel> _ruleEngine;
 
-        public QueryBuilderEngine(ISqlExpressionEngine expressions, IQueryBuilderRuleFactory ruleEngine)
+        public QueryBuilderEngine(ISqlExpressionEngine expressions, IBuilderRuleFactory<IQueryBuilderRule, IQueryModel> ruleEngine)
         {
             _expressions = expressions;
             _ruleEngine = ruleEngine;

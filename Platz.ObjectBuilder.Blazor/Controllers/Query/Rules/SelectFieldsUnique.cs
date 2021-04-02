@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Platz.ObjectBuilder.Schema;
 
-namespace Platz.ObjectBuilder.Blazor.Controllers.Validation.Rules
+namespace Platz.ObjectBuilder.Blazor.Validation.Rules
 {
     public class SelectFieldsUnique : IQueryBuilderRule
     {

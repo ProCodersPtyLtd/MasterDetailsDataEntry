@@ -1,4 +1,4 @@
-﻿using Platz.ObjectBuilder.Blazor.Controllers.Validation;
+﻿using Platz.ObjectBuilder.Blazor.Validation;
 using Platz.ObjectBuilder.Schema;
 using Platz.SqlForms;
 using System;

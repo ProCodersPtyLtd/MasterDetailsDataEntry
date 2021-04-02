@@ -1,6 +1,6 @@
 ﻿using Platz.ObjectBuilder.Blazor.Controllers;
-using Platz.ObjectBuilder.Blazor.Controllers.Validation;
-using Platz.ObjectBuilder.Blazor.Controllers.Validation.Rules;
+using Platz.ObjectBuilder.Blazor.Validation;
+using Platz.ObjectBuilder.Blazor.Validation.Rules;
 using Platz.ObjectBuilder.Schema;
 using Platz.SqlForms;
 using System;

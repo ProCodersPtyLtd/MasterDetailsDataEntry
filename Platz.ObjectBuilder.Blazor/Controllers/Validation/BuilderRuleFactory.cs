@@ -1,4 +1,4 @@
-﻿using Platz.ObjectBuilder.Blazor.Controllers.Validation;
+﻿using Platz.ObjectBuilder.Blazor.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
