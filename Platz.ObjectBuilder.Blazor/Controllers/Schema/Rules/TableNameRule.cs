@@ -40,14 +40,14 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Schema.Rules
 
         public static RuleValidationResult CheckObjectName(string objectType, string name)
         {
-            if (!name.All(c => char.IsLetterOrDigit(c) || c == '_'))
-            {
-                return new RuleValidationResult($"{objectType} name '{name}' must contain only letters, digits, underscore.");
-            }
-
             if (string.IsNullOrWhiteSpace(name))
             {
                 return new RuleValidationResult($"{objectType} name '{name}' is empty.");
+            }
+
+            if (!name.All(c => char.IsLetterOrDigit(c) || c == '_'))
+            {
+                return new RuleValidationResult($"{objectType} name '{name}' must contain only letters, digits, underscore.");
             }
 
             if (!char.IsLetter(name[0]) && name[0] != '_')

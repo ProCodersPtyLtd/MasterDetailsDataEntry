@@ -15,6 +15,11 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Schema.Rules
             {
                 foreach (var c in t.Columns)
                 {
+                    if (c.IsEmpty())
+                    {
+                        continue;
+                    }
+
                     var result = TableNameRule.CheckObjectName($"Table '{t.Name}' column", c.Name);
 
                     if (result != null)
