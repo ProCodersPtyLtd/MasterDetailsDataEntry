@@ -8,7 +8,7 @@ namespace Default
 {
     public partial class CrmDataContext
     {
-        public CrmDataContext() : base(new DataContextParams { ConnectionStringConfigKey = "CrmConnection" })
+        public CrmDataContext() : base(new DataContextParams { ConnectionStringConfigKey = "CrmConnection", ApplyMigrations = false })
         {
         }
     }

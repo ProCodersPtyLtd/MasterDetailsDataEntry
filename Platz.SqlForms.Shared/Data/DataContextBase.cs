@@ -17,6 +17,7 @@ namespace Platz.SqlForms
         protected readonly string _connectionStringConfigKey;
         protected IStoreDatabaseDriver _db;
         protected readonly DataContextParams _dataContextParams;
+        protected readonly DataContextSettings _settings;
 
         public DataContextBase() 
             : this (new DataContextParams { ConnectionStringConfigKey = "DefaultConnection" })
@@ -36,22 +37,32 @@ namespace Platz.SqlForms
             }
 
             var t = this.GetType();
-            var settings = new DataContextSettings();
-            Configure(settings);
-            _tables = settings.GetTables().ToList();
-            _schema = settings.GetSchemaName();
+            _settings = new DataContextSettings();
+            Configure(_settings);
+            _tables = _settings.GetTables().ToList();
+            _schema = _settings.GetSchemaName();
 
-            _db = Activator.CreateInstance(settings.GetDriverType()) as IStoreDatabaseDriver;
+            _db = Activator.CreateInstance(_settings.GetDriverType()) as IStoreDatabaseDriver;
             _db.Configure(new StoreDatabaseDriverSettings { ConnectionString = _connectionString });
 
             if (_dataContextParams.ApplyMigrations)
             {
-                var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                var path = dir + settings.MigrationsPath;
-                // ToDo: how to use DI here?
-                var mm = new DataMigrationManager(_db);
-                mm.ApplyMigrations(path);
+                ApplyMigrations();
             }
+        }
+
+        public void ApplyMigrations()
+        {
+            var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var path = dir + _settings.MigrationsPath;
+            ApplyMigrations(path);
+        }
+
+        public void ApplyMigrations(string fileName)
+        {
+            // ToDo: how to use DI here?
+            var mm = new DataMigrationManager(_db);
+            mm.ApplyMigrations(fileName);
         }
 
         public List<T> ExecuteQuery<T>(string sql, params object[] ps) 
