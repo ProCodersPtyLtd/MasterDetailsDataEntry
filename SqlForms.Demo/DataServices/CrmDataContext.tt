@@ -33,6 +33,9 @@ using Platz.SqlForms;
     var contextName = Schema.DbContextName;
     var namespaceName = Schema.Namespace;
     var contextNamelist = contextName.Split('.').ToList();
+    var migrationsPath = Path.ChangeExtension(JsonStorePath, null);
+    migrationsPath += ".migrations.json";
+    migrationsPath = migrationsPath.Substring(migrationsPath.IndexOf(@"\"));
 #>
 using <#=namespaceName#>;
 
@@ -46,6 +49,7 @@ namespace <#=namespaceName#>
         {
             settings.SetSchema("<#=Schema.Name#>");
             settings.SetDriver<SqlJsonStoreDatabaseDriver>();
+            settings.MigrationsPath = @"<#=migrationsPath#>";
 
 <#
             foreach (var table in Schema.Definitions.Values)

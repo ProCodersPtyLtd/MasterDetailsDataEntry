@@ -19,6 +19,7 @@ namespace Default
         {
             settings.SetSchema("Crm2");
             settings.SetDriver<SqlJsonStoreDatabaseDriver>();
+            settings.MigrationsPath = @"\StoreNew\Crm2.schema.migrations.json";
 
             settings.AddTable<Address>();
             settings.AddTable<Person>();

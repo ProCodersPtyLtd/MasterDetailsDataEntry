@@ -532,17 +532,13 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
 
         public List<DiagramTable> GetDiagramTables()
         {
-            if (_diagramTables == null)
-            {
-                UpdateDiagramTables();
-            }
-
+            UpdateDiagramTables();
             return _diagramTables;
         }
 
         private void UpdateDiagramTables()
         {
-            var tables = Schema.Tables.Select(t => new DiagramTable 
+            var tables = Schema.Tables.Select(t => new DiagramTable(t.GetHashCode()) 
             { 
                 Name = t.Name,
                 Columns = t.Columns.Where(c => c.Name != null).Select(c => new Column 
@@ -562,7 +558,8 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
             var order = 1;
 
             var links = tables.SelectMany(t => t.Columns, (t, c) => new { Table = t, Column = c })
-                .Where(d => d.Column.IsFk).Select(d => new { d.Table.Name, d.Column.FkTable, d.Column.FkColumn });
+                .Where(d => d.Column.IsFk).Select(d => new { d.Table.Name, d.Column.FkTable, d.Column.FkColumn })
+                .Where(l => tables.Any(t => t.Name == l.Name) && tables.Any(t => t.Name == l.FkTable));
 
             foreach (var link in links)
             {

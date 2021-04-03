@@ -20,6 +20,11 @@ namespace Platz.ObjectBuilder
             Id = _counter;
             _counter++;
         }
+
+        public DiagramTable(int id)
+        {
+            Id = id;
+        }
     }
 
     public class Column

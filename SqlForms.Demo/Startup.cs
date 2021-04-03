@@ -33,7 +33,8 @@ namespace SqlForms.Demo
             services.AddPlatzSqlForms();
             services.AddPlatzObjectBuilder();
 
-            var c = new Default.CrmDataContext();
+            // Apply migrations only once at startup
+            new Default.CrmDataContext().ApplyMigrations();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

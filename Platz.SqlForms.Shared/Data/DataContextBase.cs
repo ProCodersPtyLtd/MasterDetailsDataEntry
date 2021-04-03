@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -12,19 +13,22 @@ namespace Platz.SqlForms
     {
         private List<Type> _tables;
         private string _schema;
-        protected string _connectionString;
-        protected string _connectionStringConfigKey;
+        protected readonly string _connectionString;
+        protected readonly string _connectionStringConfigKey;
         protected IStoreDatabaseDriver _db;
+        protected readonly DataContextParams _dataContextParams;
+        protected readonly DataContextSettings _settings;
 
         public DataContextBase() 
-            : this (null, "DefaultConnection")
+            : this (new DataContextParams { ConnectionStringConfigKey = "DefaultConnection" })
         {
         }
 
-        public DataContextBase(string connectionString, string connectionStringConfigKey) 
+        public DataContextBase(DataContextParams contextParams) 
         {
-            _connectionString = connectionString;
-            _connectionStringConfigKey = connectionStringConfigKey;
+            _dataContextParams = contextParams;
+            _connectionString = contextParams.ConnectionString;
+            _connectionStringConfigKey = contextParams.ConnectionStringConfigKey;
 
             if (string.IsNullOrEmpty(_connectionString))
             {
@@ -33,14 +37,32 @@ namespace Platz.SqlForms
             }
 
             var t = this.GetType();
-            var settings = new DataContextSettings();
-            Configure(settings);
-            _tables = settings.GetTables().ToList();
-            _schema = settings.GetSchemaName();
+            _settings = new DataContextSettings();
+            Configure(_settings);
+            _tables = _settings.GetTables().ToList();
+            _schema = _settings.GetSchemaName();
 
-            _db = Activator.CreateInstance(settings.GetDriverType()) as IStoreDatabaseDriver;
+            _db = Activator.CreateInstance(_settings.GetDriverType()) as IStoreDatabaseDriver;
             _db.Configure(new StoreDatabaseDriverSettings { ConnectionString = _connectionString });
 
+            if (_dataContextParams.ApplyMigrations)
+            {
+                ApplyMigrations();
+            }
+        }
+
+        public void ApplyMigrations()
+        {
+            var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var path = dir + _settings.MigrationsPath;
+            ApplyMigrations(path);
+        }
+
+        public void ApplyMigrations(string fileName)
+        {
+            // ToDo: how to use DI here?
+            var mm = new DataMigrationManager(_db);
+            mm.ApplyMigrations(fileName);
         }
 
         public List<T> ExecuteQuery<T>(string sql, params object[] ps) 
@@ -135,11 +157,20 @@ namespace Platz.SqlForms
         }
     }
 
+    public class DataContextParams
+    {
+        public string ConnectionString { get; set; }
+        public string ConnectionStringConfigKey { get; set; }
+        public bool ApplyMigrations { get; set; } = true;
+    }
+
     public class DataContextSettings
     {
         private List<Type> _tables = new List<Type>();
         private string _schemaName;
         private Type _driver;
+
+        public string MigrationsPath { get; set; }
 
         public DataContextSettings AddTable<T>()
         {
