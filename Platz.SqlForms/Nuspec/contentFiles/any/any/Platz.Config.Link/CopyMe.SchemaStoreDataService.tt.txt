@@ -1,4 +1,4 @@
-﻿<#@ assembly name="$(SolutionDir)Platz.ObjectBuilder.Templates\bin\Debug\Platz.ObjectBuilder.Templates.dll" #>
+﻿<#@ include file="$(PlatzObjectBuilderTemplateDirectory)PlatzDataService.Tools.ttinclude" #>
 <#@ template language="C#" hostspecific="True" #>
 <#@ assembly name="System.Core" #>
 <#@ assembly name="EnvDTE" #>
@@ -10,7 +10,7 @@
 <#@ import namespace="Platz.ObjectBuilder" #>
 <#@ import namespace="Platz.SqlForms" #>
 <# // ================================================================ Set JsonStorePath here, relative to solution folder ================================== #>
-<#      var JsonStorePath = @"SqlForms.Demo\StoreNew"; #>
+<#      var JsonStorePath = @"<YOUR_PROJECT>\SchemaStore"; #>
 <# // ======================================================================================================================================================= #>
 <# 
         StoreSchema Schema = null;

@@ -9,7 +9,7 @@
 <#@ output extension=".cs" #>
 <#@ import namespace="Platz.ObjectBuilder" #>
 <# // ================================================================ Set JsonStorePath here, relative to solution folder ================================== #>
-<#      var JsonStorePath = @"<YOUR_PROJECT>\StoreData"; #>
+<#      var JsonStorePath = @"<YOUR_PROJECT>\SchemaQuery"; #>
 <# // ======================================================================================================================================================= #>
 <# 
         StoreSchema Schema = null;
