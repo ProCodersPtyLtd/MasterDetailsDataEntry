@@ -14,12 +14,12 @@
     <dependencies>
 		<group targetFramework="net5.0">
       <dependency id="Platz.SqlForms" version="0.3.0" />
-			<dependency id="Microsoft.AspNetCore.Components" version="5.0.1" />
-			<dependency id="Microsoft.AspNetCore.Components.Web" version="5.0.1" />
-      <dependency id="Microsoft.EntityFrameworkCore" version="3.1.9" />
-			<dependency id="Microsoft.EntityFrameworkCore.Relational" version="3.1.9" />
+			<dependency id="Microsoft.AspNetCore.Components" version="5.0.3" />
+			<dependency id="Microsoft.AspNetCore.Components.Web" version="5.0.3" />
+      <dependency id="Microsoft.EntityFrameworkCore" version="5.0.3" />
+			<dependency id="Microsoft.EntityFrameworkCore.Relational" version="5.0.3" />
 			<dependency id="System.ComponentModel.Annotations" version="5.0.0" />
-			<dependency id="System.Text.Json" version="5.0.0" />
+			<dependency id="System.Text.Json" version="5.0.1" />
 		</group>
     </dependencies>
     <contentFiles>

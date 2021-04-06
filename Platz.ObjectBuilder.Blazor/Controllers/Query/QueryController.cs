@@ -138,7 +138,7 @@ namespace Platz.ObjectBuilder
         public List<string> GetFileList(string path)
         {
             var result = _storage.GetFileNames(new StorageParameters { Path = path });
-            result = result.Where(f => f != "Schema.json").ToList();
+            result = result.Where(f => !f.ToLower().Contains("schema.json") && !f.ToLower().Contains("schema.migrations.json")).ToList();
             return result;
         }
 
