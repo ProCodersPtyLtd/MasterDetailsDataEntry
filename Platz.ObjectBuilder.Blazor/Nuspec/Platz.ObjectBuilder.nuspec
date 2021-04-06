@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>Platz.ObjectBuilder</id>
-    <version>0.2.1</version>
+    <version>0.3.0</version>
     <authors>Pro Coders Australia</authors>
     <owners>Pro Coders Australia</owners>
     <projectUrl>https://github.com/ProCodersPtyLtd/MasterDetailsDataEntry</projectUrl>
@@ -14,12 +14,12 @@
     <dependencies>
 		<group targetFramework="net5.0">
       <dependency id="Platz.SqlForms" version="0.3.0" />
-			<dependency id="Microsoft.AspNetCore.Components" version="5.0.1" />
-			<dependency id="Microsoft.AspNetCore.Components.Web" version="5.0.1" />
-      <dependency id="Microsoft.EntityFrameworkCore" version="3.1.9" />
-			<dependency id="Microsoft.EntityFrameworkCore.Relational" version="3.1.9" />
+			<dependency id="Microsoft.AspNetCore.Components" version="5.0.3" />
+			<dependency id="Microsoft.AspNetCore.Components.Web" version="5.0.3" />
+      <dependency id="Microsoft.EntityFrameworkCore" version="5.0.3" />
+			<dependency id="Microsoft.EntityFrameworkCore.Relational" version="5.0.3" />
 			<dependency id="System.ComponentModel.Annotations" version="5.0.0" />
-			<dependency id="System.Text.Json" version="5.0.0" />
+			<dependency id="System.Text.Json" version="5.0.1" />
 		</group>
     </dependencies>
     <contentFiles>
