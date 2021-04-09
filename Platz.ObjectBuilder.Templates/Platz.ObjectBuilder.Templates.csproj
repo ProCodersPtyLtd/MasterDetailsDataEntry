@@ -92,4 +92,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy Platz.ObjectBuilder.Templates.dll C:\Repos\MasterDetailsDataEntry\Platz.SqlForms\Nuspec\tools\Platz.ObjectBuilder.Templates.dll</PostBuildEvent>
+  </PropertyGroup>
 </Project>

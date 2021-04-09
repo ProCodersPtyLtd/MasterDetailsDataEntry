@@ -1,0 +1,24 @@
+{
+  "SchemaName": "s2",
+  "Migrations": [
+    {
+      "FromVersion": null,
+      "Version": "1.0",
+      "VersionKey": "00000000-0000-0000-0000-000000000000",
+      "Commands": [
+        {
+          "Operation": 1,
+          "OperationCode": "CreateSchema",
+          "SchemaName": "s2",
+          "TableName": null,
+          "ColumnName": null,
+          "NewValue": null,
+          "Table": null,
+          "Column": null
+        }
+      ],
+      "Created": "2021-04-08T09:38:26.0300198Z",
+      "Status": 0
+    }
+  ]
+}

@@ -353,7 +353,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers
 
         public void NewSchema()
         {
-            Schema = new DesignSchema { Name = "New Schema", Version = "1.0", DataContextName = Parameters.DataService, Changed = true, IsNew = true };
+            Schema = new DesignSchema { Name = "New Schema", Version = "1.0", DataContextName = Parameters.DataService, Namespace = Parameters.Namespace, Changed = true, IsNew = true };
             SchemaMigrations = new DesignSchemaMigrations();
             var nm = new StoreMigration { Version = DesignSchemaMigrations.InitialVersion, Created = DateTime.UtcNow, VersionKey = Guid.NewGuid() };
             //SchemaMigrations.Migrations.Add(new DesignMigration { StatusText = "Empty", VersionText = "Initial 1.0" });
