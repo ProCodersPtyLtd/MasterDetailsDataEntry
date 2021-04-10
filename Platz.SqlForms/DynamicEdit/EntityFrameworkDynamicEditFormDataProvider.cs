@@ -3,6 +3,7 @@ using Platz.SqlForms.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Text;
 
 namespace Platz.SqlForms
@@ -83,6 +84,13 @@ namespace Platz.SqlForms
             var type = form.GetDbContextType();
             var context = Activator.CreateInstance(type) as DbContext;
             return context;
+        }
+
+        public System.Collections.IList GetEntityData(IDynamicEditForm form, Type entity)
+        {
+            using var db = GetDbContext(form);
+            var data = db.FindSet(entity).ToDynamicList<object>();
+            return data;
         }
     }
 }

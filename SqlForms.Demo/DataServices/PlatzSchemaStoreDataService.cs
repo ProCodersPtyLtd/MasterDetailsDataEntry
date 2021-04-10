@@ -15,6 +15,7 @@ namespace Default.StoreNew
 
     public partial interface ICrm2DataService
     {
+        List<JoinAll> GetJoinAllList(params object[] parameters);
         List<PersonAddress> GetPersonAddressList(params object[] parameters);
     }
 
@@ -24,6 +25,32 @@ namespace Default.StoreNew
 
     public partial class Crm2DataService : StoreDataServiceBase<CrmDataContext>, ICrm2DataService
     {
+        public List<JoinAll> GetJoinAllList(params object[] parameters)
+        {
+            var sql = @$"
+SELECT
+      a.Id AS Id
+    , JSON_VALUE(a.data, '$.Line1') AS Line1
+    , JSON_VALUE(a.data, '$.Suburb') AS Suburb
+    , JSON_VALUE(a.data, '$.State') AS State
+    , JSON_VALUE(a.data, '$.PostCode') AS PostCode
+    , TRY_CAST(JSON_VALUE(a.data, '$.Deleted') AS BIT) AS Deleted
+    , JSON_VALUE(a.data, '$.Country') AS Country
+    , JSON_VALUE(p.data, '$.Name') AS Name
+    , JSON_VALUE(p.data, '$.Surname') AS Surname
+    , JSON_VALUE(p.data, '$.Phone') AS Phone
+    , TRY_CAST(JSON_VALUE(p.data, '$.Dob') AS DATETIME) AS Dob
+    , pe.PersonId AS PersonId
+    , pe.AddressId AS AddressId
+FROM [Crm2].[Person] p
+INNER JOIN [Crm2].[PersonAddress] pe ON p.Id = pe.PersonId
+INNER JOIN [Crm2].[Address] a ON pe.AddressId = a.Id
+";
+            using var db = GetDbContext();
+            var result = db.ExecuteQuery<JoinAll>(sql, parameters);
+            return result;
+        }
+
         public List<PersonAddress> GetPersonAddressList(params object[] parameters)
         {
             var sql = @$"
@@ -41,9 +68,11 @@ SELECT
     , JSON_VALUE(pe.data, '$.Phone') AS Phone
     , TRY_CAST(JSON_VALUE(pe.data, '$.Dob') AS DATETIME) AS Dob
     , pe.Id AS Id
-FROM Address a
-INNER JOIN PersonAddress p ON a.Id = p.AddressId
-INNER JOIN Person pe ON p.PersonId = pe.Id
+    , pe.PrimaryAddressId AS PrimaryAddressId
+FROM [Crm2].[Person] pe
+INNER JOIN [Crm2].[PersonAddress] p ON pe.Id = p.PersonId
+INNER JOIN [Crm2].[Address] a ON p.AddressId = a.Id
+INNER JOIN [Crm2].[Person] pe ON a.Id = pe.PrimaryAddressId
 WHERE ((a.Deleted = 0) AND (p.Deleted = 0)) AND (pe.Id = @p1)
 ";
             using var db = GetDbContext();
@@ -56,6 +85,23 @@ WHERE ((a.Deleted = 0) AND (p.Deleted = 0)) AND (pe.Id = @p1)
     #endregion
 
     #region Entities
+
+    public partial class JoinAll
+    {
+        public int Id { get; set; }
+        public string Line1 { get; set; }
+        public string Suburb { get; set; }
+        public string State { get; set; }
+        public string PostCode { get; set; }
+        public bool Deleted { get; set; }
+        public string Country { get; set; }
+        public string Name { get; set; }
+        public string Surname { get; set; }
+        public string Phone { get; set; }
+        public DateTime? Dob { get; set; }
+        public int? PersonId { get; set; }
+        public int? AddressId { get; set; }
+    }
 
     public partial class PersonAddress
     {
@@ -72,6 +118,7 @@ WHERE ((a.Deleted = 0) AND (p.Deleted = 0)) AND (pe.Id = @p1)
         public string Phone { get; set; }
         public DateTime? Dob { get; set; }
         public int Id { get; set; }
+        public int PrimaryAddressId { get; set; }
     }
 
     #endregion

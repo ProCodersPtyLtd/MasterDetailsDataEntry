@@ -7,12 +7,13 @@
   "Comment": null,
   "Tags": [],
   "Version": "1.0",
-  "VersionKey": "f1b29172-7aca-4d60-8561-9ba6515e0064",
+  "VersionKey": "ca248b3a-8b13-4a6f-a5c8-2e6dcae16059",
   "Definitions": {
     "Address": {
       "Name": "Address",
       "Type": null,
       "Comment": null,
+      "Order": 0,
       "Properties": {
         "Id": {
           "Name": "Id",
@@ -118,6 +119,7 @@
       "Name": "Person",
       "Type": null,
       "Comment": null,
+      "Order": 1,
       "Properties": {
         "Id": {
           "Name": "Id",
@@ -188,6 +190,27 @@
           "ExternalId": false,
           "Order": 4,
           "ForeignKeys": []
+        },
+        "PrimaryAddressId": {
+          "Name": "PrimaryAddressId",
+          "Type": "reference",
+          "Nullable": false,
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": true,
+          "ExternalId": false,
+          "Order": 5,
+          "ForeignKeys": [
+            {
+              "DefinitionName": "Address",
+              "PropertyName": "Id",
+              "Type": "int",
+              "CompositePropertyNames": null
+            }
+          ]
         }
       }
     },
@@ -195,6 +218,7 @@
       "Name": "PersonAddress",
       "Type": null,
       "Comment": null,
+      "Order": 2,
       "Properties": {
         "Id": {
           "Name": "Id",

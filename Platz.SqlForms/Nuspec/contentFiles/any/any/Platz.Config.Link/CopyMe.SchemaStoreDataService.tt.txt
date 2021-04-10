@@ -47,18 +47,9 @@ namespace <#=Queries.First().Namespace#>
 <#
         foreach (var query in Queries)
         {
-            if (query.Query.Parameters != null && query.Query.Parameters.Any())
-            {
 #>
         List<<#=query.ReturnTypeName#>> <#=query.Name#>(params object[] parameters);
 <#
-            }
-            else
-            {
-#>
-        List<<#=query.ReturnTypeName#>> <#=query.Name#>();
-<#
-            }
         }
 #>
     }
@@ -112,11 +103,11 @@ SELECT
                 comma = ", ";
             }
 #>
-FROM <#=from.LeftObject#> <#=from.LeftObjectAlias#>
+FROM [<#=Schema.Name#>].[<#=from.LeftObject#>] <#=from.LeftObjectAlias#>
 <#          foreach (var j in joins) 
             {
 #>
-INNER JOIN <#=j.RightObject#> <#=j.RightObjectAlias#> ON <#=j.LeftObjectAlias#>.<#=j.LeftField#> = <#=j.RightObjectAlias#>.<#=j.RightField#>
+INNER JOIN [<#=Schema.Name#>].[<#=j.RightObject#>] <#=j.RightObjectAlias#> ON <#=j.LeftObjectAlias#>.<#=j.LeftField#> = <#=j.RightObjectAlias#>.<#=j.RightField#>
 <#          } 
             
             if (!string.IsNullOrWhiteSpace(where))

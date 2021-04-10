@@ -23,6 +23,7 @@ namespace Platz.SqlForms
         void AlterColumn(string schemaName, string tableName, StoreProperty column);
 
         // Queries
+        List<object> ExecuteQueryFieldsParams(string sql, Type returnType, params object[] ps);
         List<object> ExecuteQueryParams(string sql, Type returnType, params object[] ps);
 
         // CRUD

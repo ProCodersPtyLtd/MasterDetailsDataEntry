@@ -1,6 +1,7 @@
 ﻿@namespace Platz.SqlForms.Blazor
 
-@inject IDataEntryProvider _dataEntryProvider
+@inject IDynamicEditFormDataProvider _dataEntryProvider
+@*@inject IDataEntryProvider _dataEntryProvider*@
 
 <div class="TextControl">
     <select class="form-control selectpicker" value="@State.Value" @onchange="@(a => ValueChanged(a))">
@@ -34,7 +35,7 @@
     {
         base.OnParametersSet();
 
-        _items = _dataEntryProvider.GetEntityData(Form, Field.SelectEntityType);
+        _items = _dataEntryProvider.GetEntityData(Form as IDynamicEditForm, Field.SelectEntityType);
     }
 
     private string GetId(object item)

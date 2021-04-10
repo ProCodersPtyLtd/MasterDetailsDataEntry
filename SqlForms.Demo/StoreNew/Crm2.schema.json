@@ -7,7 +7,7 @@
   "Comment": null,
   "Tags": [],
   "Version": "1.0",
-  "VersionKey": "d83a77c5-01cd-402f-a9dd-166eb36821dd",
+  "VersionKey": "ca248b3a-8b13-4a6f-a5c8-2e6dcae16059",
   "Definitions": {
     "Address": {
       "Name": "Address",
@@ -190,6 +190,27 @@
           "ExternalId": false,
           "Order": 4,
           "ForeignKeys": []
+        },
+        "PrimaryAddressId": {
+          "Name": "PrimaryAddressId",
+          "Type": "reference",
+          "Nullable": false,
+          "Comment": null,
+          "MinLength": 0,
+          "MaxLength": null,
+          "Pk": false,
+          "AutoIncrement": false,
+          "Fk": true,
+          "ExternalId": false,
+          "Order": 5,
+          "ForeignKeys": [
+            {
+              "DefinitionName": "Address",
+              "PropertyName": "Id",
+              "Type": "int",
+              "CompositePropertyNames": null
+            }
+          ]
         }
       }
     },

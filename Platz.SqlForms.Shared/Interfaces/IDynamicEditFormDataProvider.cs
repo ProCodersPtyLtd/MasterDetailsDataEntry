@@ -15,5 +15,7 @@ namespace Platz.SqlForms
         void DeleteItem(IDynamicEditForm form, object item);
         object InsertItem(IDynamicEditForm form, object item);
         object UpdateItem(IDynamicEditForm form, object item);
+
+        System.Collections.IList GetEntityData(IDynamicEditForm form, Type entity);
     }
 }

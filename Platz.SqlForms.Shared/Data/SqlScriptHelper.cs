@@ -53,7 +53,7 @@ END
         public static string SelectByIdJsonTable(string name, string schema, long id)
         {
             var sql = @$"
-SELECT * FROM {schema}.{name}
+SELECT * FROM [{schema}].[{name}]
 WHERE {ID_COLUMN} = {id};
 ";
             return sql;
@@ -81,7 +81,7 @@ WHERE {ID_COLUMN} = {id};
 DECLARE @id VARCHAR(32) = {id};
 DECLARE @json_data nvarchar(max) = @{jsonParamName};
 
-INSERT INTO {schema}.{name}
+INSERT INTO [{schema}].[{name}]
 SELECT @id,  @json_data;
 
 SELECT @id as id;
@@ -92,12 +92,12 @@ SELECT @id as id;
         public static string InsertJsonTableAutoIncrement(string name, string schema, string sequenceName, string idColumn, string jsonParamName)
         {
             var sql = @$"
-DECLARE @id bigint = NEXT VALUE FOR {schema}.{sequenceName};
+DECLARE @id bigint = NEXT VALUE FOR [{schema}].{sequenceName};
 DECLARE @json_data nvarchar(max) = @{jsonParamName};
 
 SET @json_data = JSON_MODIFY(@json_data, '$.{idColumn}', @id);
 
-INSERT INTO {schema}.{name}
+INSERT INTO [{schema}].[{name}]
 SELECT @id,  @json_data;
 
 SELECT @id as id;
@@ -108,7 +108,7 @@ SELECT @id as id;
         public static string UpdateJsonTable(string name, string schema, long id, string jsonParamName)
         {
             var sql = @$"
-UPDATE {schema}.{name} SET {DATA_COLUMN} = @{jsonParamName}
+UPDATE [{schema}].[{name}] SET {DATA_COLUMN} = @{jsonParamName}
 WHERE {ID_COLUMN} = {id};
 ";
             return sql;
@@ -117,7 +117,7 @@ WHERE {ID_COLUMN} = {id};
         public static string UpdateJsonTableWithParams(string name, string schema)
         {
             var sql = @$"
-UPDATE {schema}.{name} SET {DATA_COLUMN} = @p1
+UPDATE [{schema}].[{name}] SET {DATA_COLUMN} = @p1
 WHERE {ID_COLUMN} = @p2;
 ";
             return sql;
@@ -126,7 +126,7 @@ WHERE {ID_COLUMN} = @p2;
         public static string UpdateJsonTableByIdWithParams(string name, string schema, string idColumn)
         {
             var sql = @$"
-UPDATE {schema}.{name} SET {DATA_COLUMN} = @p1
+UPDATE [{schema}].[{name}] SET {DATA_COLUMN} = @p1
 WHERE {idColumn} = @p2;
 ";
             return sql;
@@ -153,12 +153,12 @@ BEGIN
 
     SET @json_data = JSON_MODIFY(@json_data, '$.{idColumn}', CAST(@id AS NVARCHAR(20)));
 
-    INSERT INTO {schema}.{name}
+    INSERT INTO [{schema}].[{name}]
     SELECT @id,  @json_data;
 END
 ELSE
 BEGIN
-    UPDATE {schema}.{name} SET {DATA_COLUMN} = @{jsonParamName}
+    UPDATE [{schema}].[{name}] SET {DATA_COLUMN} = @{jsonParamName}
     WHERE {ID_COLUMN} = @id;
 END
 
