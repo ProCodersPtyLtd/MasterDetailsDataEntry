@@ -67,7 +67,7 @@ namespace Platz.SqlForms
 
         public List<T> ExecuteQuery<T>(string sql, params object[] ps) 
         {
-            var list = _db.ExecuteQueryParams(sql, typeof(T), ps);
+            var list = _db.ExecuteQueryFieldsParams(sql, typeof(T), ps);
             var result = list.Cast<T>().ToList();
             return result;
         }

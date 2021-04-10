@@ -1,15 +1,15 @@
 {
-  "SchemaName": "Crm2",
+  "SchemaName": "PlatzDemo",
   "Migrations": [
     {
       "FromVersion": null,
       "Version": "1.0",
-      "VersionKey": "ca248b3a-8b13-4a6f-a5c8-2e6dcae16059",
+      "VersionKey": "00000000-0000-0000-0000-000000000000",
       "Commands": [
         {
           "Operation": 1,
           "OperationCode": "CreateSchema",
-          "SchemaName": "Crm2",
+          "SchemaName": "PlatzDemo",
           "TableName": null,
           "ColumnName": null,
           "NewValue": null,
@@ -19,130 +19,15 @@
         {
           "Operation": 10,
           "OperationCode": "CreateTable",
-          "SchemaName": "Crm2",
+          "SchemaName": "PlatzDemo",
           "TableName": null,
           "ColumnName": null,
           "NewValue": null,
           "Table": {
-            "Name": "Address",
+            "Name": "Product",
             "Type": null,
             "Comment": null,
             "Order": 0,
-            "Properties": {
-              "Id": {
-                "Name": "Id",
-                "Type": "int",
-                "Nullable": false,
-                "Comment": null,
-                "MinLength": 0,
-                "MaxLength": null,
-                "Pk": true,
-                "AutoIncrement": true,
-                "Fk": false,
-                "ExternalId": false,
-                "Order": 0,
-                "ForeignKeys": []
-              },
-              "Line1": {
-                "Name": "Line1",
-                "Type": "string",
-                "Nullable": false,
-                "Comment": null,
-                "MinLength": 0,
-                "MaxLength": null,
-                "Pk": false,
-                "AutoIncrement": false,
-                "Fk": false,
-                "ExternalId": false,
-                "Order": 1,
-                "ForeignKeys": []
-              },
-              "Suburb": {
-                "Name": "Suburb",
-                "Type": "string",
-                "Nullable": false,
-                "Comment": null,
-                "MinLength": 0,
-                "MaxLength": null,
-                "Pk": false,
-                "AutoIncrement": false,
-                "Fk": false,
-                "ExternalId": false,
-                "Order": 2,
-                "ForeignKeys": []
-              },
-              "State": {
-                "Name": "State",
-                "Type": "string",
-                "Nullable": false,
-                "Comment": null,
-                "MinLength": 0,
-                "MaxLength": null,
-                "Pk": false,
-                "AutoIncrement": false,
-                "Fk": false,
-                "ExternalId": false,
-                "Order": 3,
-                "ForeignKeys": []
-              },
-              "PostCode": {
-                "Name": "PostCode",
-                "Type": "string",
-                "Nullable": false,
-                "Comment": null,
-                "MinLength": 0,
-                "MaxLength": null,
-                "Pk": false,
-                "AutoIncrement": false,
-                "Fk": false,
-                "ExternalId": false,
-                "Order": 4,
-                "ForeignKeys": []
-              },
-              "Deleted": {
-                "Name": "Deleted",
-                "Type": "bool",
-                "Nullable": false,
-                "Comment": null,
-                "MinLength": 0,
-                "MaxLength": null,
-                "Pk": false,
-                "AutoIncrement": false,
-                "Fk": false,
-                "ExternalId": false,
-                "Order": 5,
-                "ForeignKeys": []
-              },
-              "Country": {
-                "Name": "Country",
-                "Type": "string",
-                "Nullable": false,
-                "Comment": null,
-                "MinLength": 0,
-                "MaxLength": null,
-                "Pk": false,
-                "AutoIncrement": false,
-                "Fk": false,
-                "ExternalId": false,
-                "Order": 6,
-                "ForeignKeys": []
-              }
-            }
-          },
-          "Column": null
-        },
-        {
-          "Operation": 10,
-          "OperationCode": "CreateTable",
-          "SchemaName": "Crm2",
-          "TableName": null,
-          "ColumnName": null,
-          "NewValue": null,
-          "Table": {
-            "Name": "Person",
-            "Type": null,
-            "Comment": null,
-            "Order": 1,
             "Properties": {
               "Id": {
                 "Name": "Id",
@@ -172,9 +57,9 @@
                 "Order": 1,
                 "ForeignKeys": []
               },
-              "Surname": {
-                "Name": "Surname",
-                "Type": "string",
+              "Price": {
+                "Name": "Price",
+                "Type": "decimal",
                 "Nullable": false,
                 "Comment": null,
                 "MinLength": 0,
@@ -185,9 +70,40 @@
                 "ExternalId": false,
                 "Order": 2,
                 "ForeignKeys": []
+              }
+            }
+          },
+          "Column": null
+        },
+        {
+          "Operation": 10,
+          "OperationCode": "CreateTable",
+          "SchemaName": "PlatzDemo",
+          "TableName": null,
+          "ColumnName": null,
+          "NewValue": null,
+          "Table": {
+            "Name": "Order",
+            "Type": null,
+            "Comment": null,
+            "Order": 1,
+            "Properties": {
+              "Id": {
+                "Name": "Id",
+                "Type": "int",
+                "Nullable": false,
+                "Comment": null,
+                "MinLength": 0,
+                "MaxLength": null,
+                "Pk": true,
+                "AutoIncrement": true,
+                "Fk": false,
+                "ExternalId": false,
+                "Order": 0,
+                "ForeignKeys": []
               },
-              "Phone": {
-                "Name": "Phone",
+              "ClientName": {
+                "Name": "ClientName",
                 "Type": "string",
                 "Nullable": false,
                 "Comment": null,
@@ -197,13 +113,13 @@
                 "AutoIncrement": false,
                 "Fk": false,
                 "ExternalId": false,
-                "Order": 3,
+                "Order": 1,
                 "ForeignKeys": []
               },
-              "Dob": {
-                "Name": "Dob",
+              "Created": {
+                "Name": "Created",
                 "Type": "date",
-                "Nullable": true,
+                "Nullable": false,
                 "Comment": null,
                 "MinLength": 0,
                 "MaxLength": null,
@@ -211,29 +127,8 @@
                 "AutoIncrement": false,
                 "Fk": false,
                 "ExternalId": false,
-                "Order": 4,
+                "Order": 2,
                 "ForeignKeys": []
-              },
-              "PrimaryAddressId": {
-                "Name": "PrimaryAddressId",
-                "Type": "reference",
-                "Nullable": false,
-                "Comment": null,
-                "MinLength": 0,
-                "MaxLength": null,
-                "Pk": false,
-                "AutoIncrement": false,
-                "Fk": true,
-                "ExternalId": false,
-                "Order": 5,
-                "ForeignKeys": [
-                  {
-                    "DefinitionName": "Address",
-                    "PropertyName": "Id",
-                    "Type": "int",
-                    "CompositePropertyNames": null
-                  }
-                ]
               }
             }
           },
@@ -242,12 +137,12 @@
         {
           "Operation": 10,
           "OperationCode": "CreateTable",
-          "SchemaName": "Crm2",
+          "SchemaName": "PlatzDemo",
           "TableName": null,
           "ColumnName": null,
           "NewValue": null,
           "Table": {
-            "Name": "PersonAddress",
+            "Name": "OrderItem",
             "Type": null,
             "Comment": null,
             "Order": 2,
@@ -266,10 +161,10 @@
                 "Order": 0,
                 "ForeignKeys": []
               },
-              "PersonId": {
-                "Name": "PersonId",
+              "OrderId": {
+                "Name": "OrderId",
                 "Type": "reference",
-                "Nullable": true,
+                "Nullable": false,
                 "Comment": null,
                 "MinLength": 0,
                 "MaxLength": null,
@@ -280,17 +175,17 @@
                 "Order": 1,
                 "ForeignKeys": [
                   {
-                    "DefinitionName": "Person",
+                    "DefinitionName": "Order",
                     "PropertyName": "Id",
                     "Type": "int",
                     "CompositePropertyNames": null
                   }
                 ]
               },
-              "AddressId": {
-                "Name": "AddressId",
+              "ProductId": {
+                "Name": "ProductId",
                 "Type": "reference",
-                "Nullable": true,
+                "Nullable": false,
                 "Comment": null,
                 "MinLength": 0,
                 "MaxLength": null,
@@ -301,16 +196,16 @@
                 "Order": 2,
                 "ForeignKeys": [
                   {
-                    "DefinitionName": "Address",
+                    "DefinitionName": "Product",
                     "PropertyName": "Id",
                     "Type": "int",
                     "CompositePropertyNames": null
                   }
                 ]
               },
-              "Deleted": {
-                "Name": "Deleted",
-                "Type": "bool",
+              "Qty": {
+                "Name": "Qty",
+                "Type": "int",
                 "Nullable": false,
                 "Comment": null,
                 "MinLength": 0,
@@ -327,7 +222,7 @@
           "Column": null
         }
       ],
-      "Created": "2021-04-10T05:07:23.5300738Z",
+      "Created": "2021-04-08T09:04:42.8795921Z",
       "Status": 1
     }
   ]

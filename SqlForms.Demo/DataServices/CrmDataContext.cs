@@ -49,6 +49,7 @@ namespace Default
         public virtual string Surname { get; set; }
         public virtual string Phone { get; set; }
         public virtual DateTime? Dob { get; set; }
+        public virtual int PrimaryAddressId { get; set; }
     }
 
     public partial class PersonAddress

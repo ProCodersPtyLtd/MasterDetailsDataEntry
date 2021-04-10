@@ -23,6 +23,8 @@ namespace SqlForms.Demo.MyForms
 
                 e.Property(p => p.Phone).IsRequired();
 
+                e.Property(p => p.PrimaryAddressId).Dropdown<Address>().Set(c => c.Id, c => c.Line1).IsRequired();
+
                 e.DialogButton(ButtonActionTypes.Cancel).DialogButton(ButtonActionTypes.Validate).DialogButton(ButtonActionTypes.Submit);
 
                 e.DialogButtonNavigation("PersonStoreList/{0}", ButtonActionTypes.Delete, ButtonActionTypes.Cancel, ButtonActionTypes.Submit);
@@ -42,7 +44,9 @@ namespace SqlForms.Demo.MyForms
                 e.Property(p => p.Name);
                 e.Property(p => p.Surname);
                 e.Property(p => p.Dob);
-                e.Property(p => p.Phone);                // Parameter {0} is always PrimaryKey, parameters {1} and above - Filter Keys
+                e.Property(p => p.Phone);
+                
+                // Parameter {0} is always PrimaryKey, parameters {1} and above - Filter Keys
                 // {0} = AddressId {1} = CustomerId
                 e.ContextButton("Edit", "PersonStoreEdit/{0}").ContextButton("Delete", "PersonStoreDelete/{0}");
 

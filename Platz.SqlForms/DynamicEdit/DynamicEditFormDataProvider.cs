@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Platz.SqlForms.Shared;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -86,6 +87,24 @@ namespace Platz.SqlForms
             }
 
             return _storeProvider.UpdateItem(form, item);
+        }
+
+        public IList GetEntityData(IDynamicEditForm form, Type entity)
+        {
+            if (entity.IsEnum)
+            {
+                var result = Enum.GetValues(entity);
+                return result;
+            }
+
+            var type = form.GetDbContextType();
+
+            if (type.IsSubclassOf(typeof(DbContext)))
+            {
+                return _entityProvider.GetEntityData(form, entity);
+            }
+
+            return _storeProvider.GetEntityData(form, entity);
         }
     }
 }

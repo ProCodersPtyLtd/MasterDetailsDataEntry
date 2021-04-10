@@ -108,7 +108,8 @@
     private string GetLinkRoute(ActionRouteLink link, int row)
     {
         // var id = _modelItems[row].GetPrimaryKeyValue(_fields);
-        var keys = _modelItems[row].GetPrimaryAndFilterKeyValues(_fields);
+        var allFields = _form.GetDetailsFields();
+        var keys = _modelItems[row].GetPrimaryAndFilterKeyValues(allFields);
         var result = string.Format(link.LinkText, keys);
         return result;
     }

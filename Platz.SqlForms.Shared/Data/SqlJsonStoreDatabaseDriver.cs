@@ -158,6 +158,43 @@ ADD [{col.Name}] AS CAST(JSON_VALUE({DATA_COLUMN},'$.{col.Name}') AS {colType});
 
         #endregion
 
+        public List<object> ExecuteQueryFieldsParams(string sql, Type returnType, params object[] ps)
+        {
+            var result = new List<object>();
+
+            using (var conn = new SqlConnection(_settings.ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    conn.Open();
+
+                    for (int i = 0; i < ps.Length; i++)
+                    {
+                        cmd.Parameters.AddWithValue($"p{i + 1}", ps[i]);
+                    }
+
+                    var dr = cmd.ExecuteReader();
+
+                    while (dr.Read())
+                    {
+                        var item = Activator.CreateInstance(returnType);
+
+                        for (int i = 0; i < dr.FieldCount; i++)
+                        {
+                            var fieldName = dr.GetName(i);
+                            var value = dr.GetValue(i);
+                            var prop = returnType.GetProperty(fieldName);
+                            prop.SetValue(item, value);
+                        }
+                            
+                        result.Add(item);
+                    }
+                }
+            }
+
+            return result;
+        }
+
         public List<object> ExecuteQueryParams(string sql, Type returnType, params object[] ps)
         {
             var result = new List<object>();
@@ -198,7 +235,7 @@ ADD [{col.Name}] AS CAST(JSON_VALUE({DATA_COLUMN},'$.{col.Name}') AS {colType});
         public IList Get(string schema, Type entityType)
         {
             var table = GetTableFromType(entityType);
-            var sql = $"SELECT * FROM {schema}.{table.Name}";
+            var sql = $"SELECT * FROM [{schema}].[{table.Name}]";
             var objects = ExecuteQueryP1(sql, entityType, null);
             return objects;
         }
@@ -214,7 +251,7 @@ ADD [{col.Name}] AS CAST(JSON_VALUE({DATA_COLUMN},'$.{col.Name}') AS {colType});
         {
             var table = GetTableFromType(entityType);
             var columns = table.Properties.Values.OrderBy(p => p.Order).ToList();
-            var sql = $"SELECT * FROM {schema}.{table.Name} WHERE {columns[0].Name}=@p1";
+            var sql = $"SELECT * FROM [{schema}].[{table.Name}] WHERE {columns[0].Name}=@p1";
             var objects = ExecuteQueryP1(sql, entityType, pkValue);
             return objects.FirstOrDefault();
         }
@@ -230,7 +267,7 @@ ADD [{col.Name}] AS CAST(JSON_VALUE({DATA_COLUMN},'$.{col.Name}') AS {colType});
         public IList Find(string schema, Type entityType, string filterColumn, object filterValue)
         {
             var table = GetTableFromType(entityType);
-            var sql = $"SELECT * FROM {schema}.{table.Name} WHERE {filterColumn}=@p1";
+            var sql = $"SELECT * FROM [{schema}].[{table.Name}] WHERE {filterColumn}=@p1";
             var objects = ExecuteQueryP1(sql, entityType, filterValue);
             return objects;
         }
@@ -241,7 +278,7 @@ ADD [{col.Name}] AS CAST(JSON_VALUE({DATA_COLUMN},'$.{col.Name}') AS {colType});
             //var columns = table.Properties.Values.OrderBy(p => p.Order).ToList();
 
             // ToDo: assumption that filter columns always implemented as columns or virtual columns
-            var sql = $"SELECT * FROM {schema}.{tableName} WHERE {filterColumn}=@p1";
+            var sql = $"SELECT * FROM [{schema}].[{tableName}] WHERE {filterColumn}=@p1";
             var objects = ExecuteQueryP1(sql, typeof(T), filterValue);
             var typedObjects = objects.OfType<T>();
             return typedObjects;

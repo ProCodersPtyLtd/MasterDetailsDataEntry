@@ -4,7 +4,7 @@
   "Namespace": "Default.StoreNew",
   "ReturnTypeName": "PersonAddress",
   "SchemaName": "Crm2",
-  "SchemaFile": "C:\\Repos\\MasterDetailsDataEntry\\SqlForms.Demo\\StoreNew\\Crm2.schema.json",
+  "SchemaFile": "C:\\Repos\\MasterDetailsDataEntry\\SqlForms.Demo\\StoreNew\\Schema.json",
   "SchemaVersion": "1.0",
   "Tags": null,
   "Query": {
@@ -159,6 +159,17 @@
         },
         "Operation": null,
         "RawExpression": null
+      },
+      "PrimaryAddressId": {
+        "FieldAlias": "PrimaryAddressId",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "Field": {
+          "ObjectAlias": "pe",
+          "FieldName": "PrimaryAddressId"
+        },
+        "Operation": null,
+        "RawExpression": null
       }
     },
     "Tables": {
@@ -178,6 +189,13 @@
     "SubQueries": null,
     "Joins": [
       {
+        "LeftObjectAlias": "pe",
+        "LeftField": "Id",
+        "RightObjectAlias": "p",
+        "RightField": "PersonId",
+        "JoinType": "Inner"
+      },
+      {
         "LeftObjectAlias": "a",
         "LeftField": "Id",
         "RightObjectAlias": "p",
@@ -185,10 +203,10 @@
         "JoinType": "Inner"
       },
       {
-        "LeftObjectAlias": "pe",
+        "LeftObjectAlias": "a",
         "LeftField": "Id",
-        "RightObjectAlias": "p",
-        "RightField": "PersonId",
+        "RightObjectAlias": "pe",
+        "RightField": "PrimaryAddressId",
         "JoinType": "Inner"
       }
     ],
