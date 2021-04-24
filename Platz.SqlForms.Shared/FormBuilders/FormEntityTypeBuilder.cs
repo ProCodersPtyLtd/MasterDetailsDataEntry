@@ -11,6 +11,7 @@ namespace Platz.SqlForms
     public class FormEntityTypeBuilder
     {
         protected FieldBuilder _fieldBuilder;
+        protected PropertyContextBuilder _contextBuilder;
         protected Dictionary<string, DataField> _fields;
         protected readonly List<ActionRouteLink> _contextLinks = new List<ActionRouteLink>();
         public FieldBuilder FieldBuilder { get { return _fieldBuilder; } }
@@ -43,12 +44,59 @@ namespace Platz.SqlForms
         {
             _propertyOrder++;
             var bindingProperty = propertyExpression.Body.ToString().ReplaceLambdaVar();
+            CheckFieldExists(typeof(TProperty), bindingProperty);
             _fields[bindingProperty].Order = _propertyOrder;
 
             // explicitly mentioned property is not hidden anymore
             _fields[bindingProperty].Hidden = false;
             var result = new FieldBuilder<TProperty, TEntity>(_fields[bindingProperty]);
             _fieldBuilder = result;
+            return result;
+        }
+
+        private void CheckFieldExists(Type propertyType, string bindingProperty)
+        {
+            if (!_fields.ContainsKey(bindingProperty))
+            {
+                _fields[bindingProperty] = new DataField { BindingProperty = bindingProperty, DataType = propertyType };
+            }
+        }
+
+        //private void CheckFieldExists(string bindingProperty)
+        //{
+        //    if (!_fields.ContainsKey(bindingProperty))
+        //    {
+        //        _fields[bindingProperty] = new DataField { BindingProperty = bindingProperty };
+        //    }
+        //}
+
+        public virtual PropertyContextBuilder<TProperty, TEntity> Context<TProperty>([NotNullAttribute] Expression<Func<TEntity, TProperty>> propertyExpression)
+        {
+            // ToDo: test that
+            _propertyOrder++;
+            var bindingProperty = propertyExpression.Body.ToString().ReplaceLambdaVar();
+            CheckFieldExists(typeof(TProperty), bindingProperty);
+            _fields[bindingProperty].Order = _propertyOrder;
+
+            // explicitly mentioned property is not hidden anymore
+            _fields[bindingProperty].Hidden = false;
+            var result = new PropertyContextBuilder<TProperty, TEntity>(_fields[bindingProperty]);
+            _contextBuilder = result;
+            return result;
+        }
+
+        public virtual PropertyContextBuilder<TProperty, TEntity> ContextPropertyList<TProperty>([NotNullAttribute] Expression<Func<TEntity, IEnumerable<TProperty>>> propertyExpression)
+        {
+            // ToDo: test that
+            _propertyOrder++;
+            var bindingProperty = propertyExpression.Body.ToString().ReplaceLambdaVar();
+            CheckFieldExists(typeof(TProperty), bindingProperty);
+            _fields[bindingProperty].Order = _propertyOrder;
+
+            // explicitly mentioned property is not hidden anymore
+            _fields[bindingProperty].Hidden = false;
+            var result = new PropertyContextBuilder<TProperty, TEntity>(_fields[bindingProperty]);
+            _contextBuilder = result;
             return result;
         }
 

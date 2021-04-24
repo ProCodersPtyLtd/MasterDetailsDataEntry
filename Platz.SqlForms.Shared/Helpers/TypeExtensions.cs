@@ -24,5 +24,22 @@ namespace Platz.SqlForms
             var result = t.GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(p => p.PropertyType.IsSimple());
             return result;
         }
+
+        public static PropertyInfo GetPropertyByJsonPath(this Type t, string jsonPath)
+        {
+            var types = jsonPath.Split('.').ToList();
+            var currentType = t;
+
+            while (types.Count() > 1)
+            {
+                var propName = types[0];
+                types.RemoveAt(0);
+                var currentProperty = currentType.GetProperty(propName);
+                currentType = currentProperty.PropertyType;
+            }
+
+            var resultProperty = currentType.GetProperty(types[0]);
+            return resultProperty;
+        }
     }
 }

@@ -31,7 +31,7 @@ namespace Platz.SqlForms.Demo.SchemaForms
                 e.Property(p => p.Id).IsPrimaryKey();
                 e.Property(p => p.Name);
                 e.Property(p => p.Price);
-                e.ContextButton("Edit", "ProductEdit/{0}").ContextButton("Delete", "ProductDelete/{0}");
+                e.ContextButton("Edit", "ProductEdit/{0}/{1}").ContextButton("Delete", "ProductDelete/{0}");
                 e.DialogButton("ProductEdit/0", ButtonActionTypes.Add);
             });
 

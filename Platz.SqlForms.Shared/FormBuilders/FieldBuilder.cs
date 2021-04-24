@@ -26,6 +26,41 @@ namespace Platz.SqlForms
             _field = field;
         }
 
+        #region DB Context for Business Objects
+
+        //public virtual FieldBuilder<TProperty, TEntity> Load()
+        //{
+        //    return this;
+        //}
+
+        //public virtual FieldBuilder<TProperty, TEntity> Load(Func<TEntity, TProperty> method)
+        //{
+        //    return this;
+        //}
+
+        //public virtual FieldBuilder<TProperty, TEntity> Load(Func<TEntity, IEnumerable<TProperty>> method)
+        //{
+        //    return this;
+        //}
+
+        //public virtual FieldBuilder<TProperty, TEntity> Save()
+        //{
+        //    return this;
+        //}
+
+        //public virtual FieldBuilder<TProperty, TEntity> Save(Action<TEntity> method)
+        //{
+        //    return this;
+        //}
+        //public virtual FieldBuilder<TProperty, TEntity> SaveMapping([NotNullAttribute] Expression<Func<TEntity, object>> modelExpression,
+        //    [NotNullAttribute] Expression<Func<TProperty, object>> propertyExpression)
+        //{
+        //    return this;
+        //}
+
+        #endregion
+
+
         public virtual FieldBuilder<TProperty, TEntity> Rule([NotNullAttribute] Func<TEntity, FormRuleResult> method, FormRuleTriggers trigger = FormRuleTriggers.ChangeSubmit)
         {
             // https://stackoverflow.com/questions/3444246/convert-actiont-to-actionobject
