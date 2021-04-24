@@ -32,7 +32,7 @@ namespace Platz.SqlForms.Shared
                 return;
             }
 
-            var property = type.GetProperty(field.BindingProperty);
+            var property = type.GetPropertyByJsonPath(field.BindingProperty);
             field.DataType = property.PropertyType;
             var dataTypeName = field.DataType.Name;
 

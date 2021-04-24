@@ -1,5 +1,5 @@
-﻿<#@ template language="C#" hostspecific="True" #>
-<#@ include file="$(PlatzObjectBuilderTemplateDirectory)PlatzDataService.Tools.ttinclude" #>
+﻿<#@ include file="$(PlatzObjectBuilderTemplateDirectory)PlatzDataService.Tools.ttinclude" #>
+<#@ template language="C#" hostspecific="True" #>
 <#@ assembly name="System.Core" #>
 <#@ assembly name="EnvDTE" #>
 <#@ import namespace="System.Linq" #>

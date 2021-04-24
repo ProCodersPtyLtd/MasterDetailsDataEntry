@@ -110,7 +110,8 @@
         // var id = _modelItems[row].GetPrimaryKeyValue(_fields);
         var allFields = _form.GetDetailsFields();
         var keys = _modelItems[row].GetPrimaryAndFilterKeyValues(allFields);
-        var result = string.Format(link.LinkText, keys);
+        //var result = string.Format(link.LinkText, keys);
+        var result = NaviLinkHelper.GetLink(link.LinkText, keys);
         return result;
     }
 

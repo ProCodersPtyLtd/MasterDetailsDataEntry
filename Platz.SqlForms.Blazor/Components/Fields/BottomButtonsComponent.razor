@@ -113,7 +113,8 @@
             // 1st priority - button link
             if (btn.LinkText != null)
             {
-                var route = string.Format(btn.LinkText, NavigateFormatParameters);
+                //var route = string.Format(btn.LinkText, NavigateFormatParameters);
+                var route = NaviLinkHelper.GetLink(btn.LinkText, NavigateFormatParameters);
                 _navi.NavigateTo(route);
                 return;
             }
@@ -124,7 +125,8 @@
                 // 2nd priority - button navigation
                 if (buttonNavigation != null)
                 {
-                    var route = string.Format(buttonNavigation, NavigateFormatParameters);
+                    //var route = string.Format(buttonNavigation, NavigateFormatParameters);
+                    var route = NaviLinkHelper.GetLink(buttonNavigation, NavigateFormatParameters);
                     _navi.NavigateTo(route);
                     return;
                 }

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -14,8 +14,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="DataServices\CrmBoContext.tt">
+      <LastGenOutput>CrmBoContext.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="DataServices\CrmDataContext.tt">
-      <LastGenOutput>CrmDataContext.cs</LastGenOutput>
+      <LastGenOutput>CrmBoDataContext.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="DataServices\PlatzSchemaStoreDataService.tt">
@@ -55,10 +59,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="DataServices\CrmDataContext.cs">
+    <Compile Update="DataServices\CrmDataContext - Copy.cs">
+      <DependentUpon>CrmDataContext.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>CrmDataContext.tt</DependentUpon>
+    </Compile>
+    <Compile Update="DataServices\CrmBoContext.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CrmBoContext.tt</DependentUpon>
     </Compile>
     <Compile Update="DataServices\PlatzDataService.cs">
       <DesignTime>True</DesignTime>

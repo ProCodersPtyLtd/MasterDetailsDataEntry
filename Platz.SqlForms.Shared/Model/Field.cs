@@ -15,5 +15,6 @@ namespace Platz.SqlForms
         public bool? ReadOnly { get; set; }
         public string Format { get; set; }
         public List<FieldRule> Rules { get; set; } = new List<FieldRule>();
+        public FieldBuisnessObjectMapping BuisnessObjectMapping { get; set; } = new FieldBuisnessObjectMapping();
     }
 }
