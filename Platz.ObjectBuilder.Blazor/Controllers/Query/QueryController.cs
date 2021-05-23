@@ -15,21 +15,27 @@ using System.Text;
 
 namespace Platz.ObjectBuilder
 {
-    public interface IQueryModel
+    
+
+    public interface IQueryController //: IQueryModel
     {
-        StoreSchema Schema { get; }
-        List<QueryFromTable> FromTables { get; }
-        List<QuerySelectProperty> SelectionProperties { get; }
-        string WhereClause { get; }
-        string Errors { get; set; }
         StoreQueryParameters StoreParameters { get; }
+        StoreSchema Schema { get; }
+        string Errors { get; set; }
+        List<IQueryModel> SubQueryList { get; }
+        int SelectedQueryIndex { get; set; }
+        // used for UI
+        IQueryModel SelectedQuery { get; }
+        // used only for load/save/validate
+        IQueryModel MainQuery { get; }
+
         List<TableLink> FromTableLinks { get; }
         List<TableJoinModel> FromTableJoins { get; }
         List<RuleValidationResult> ValidationResults { get; }
-    }
+        List<QueryFromTable> FromTables { get; }
+        List<QuerySelectProperty> SelectionProperties { get; }
+        string WhereClause { get; }
 
-    public interface IQueryController : IQueryModel
-    {
         void Configure(IQueryControllerConfiguration config);
         void LoadSchema();
         void AddFromTable(StoreDefinition table);
@@ -61,13 +67,23 @@ namespace Platz.ObjectBuilder
     {
         public StoreQueryParameters StoreParameters { get; set; } = new StoreQueryParameters();
         public StoreSchema Schema { get; private set; }
-        public List<QueryFromTable> FromTables { get; private set; } = new List<QueryFromTable>();
-        public List<QuerySelectProperty> SelectionProperties { get; private set; } = new List<QuerySelectProperty>();
-        public List<TableLink> FromTableLinks { get; private set; } = new List<TableLink>();
-        public List<TableJoinModel> FromTableJoins { get; private set; } = new List<TableJoinModel>();
+        public List<QueryFromTable> FromTables { get { return SelectedQuery.FromTables; } }
+        public List<QuerySelectProperty> SelectionProperties { get { return SelectedQuery.SelectionProperties; } }
+        public List<TableLink> FromTableLinks { get { return SelectedQuery.FromTableLinks; } }
+        public List<TableJoinModel> FromTableJoins { get { return SelectedQuery.FromTableJoins; } }
+        public string WhereClause { get { return SelectedQuery.WhereClause; } }
+
         public List<RuleValidationResult> ValidationResults { get; private set; } = new List<RuleValidationResult>();
-        public string WhereClause { get; private set; } = "";
         public string Errors { get; set; } = "";
+
+
+        public List<IQueryModel> SubQueryList { get; private set; }
+        public int SelectedQueryIndex { get; set; } = 0;
+        public IQueryModel SelectedQuery { get { return SubQueryList[SelectedQueryIndex]; } }
+        public IQueryModel MainQuery { get; private set; }
+
+
+
 
         private IStoreSchemaReader _reader;
         private IStoreSchemaStorage _storage;
@@ -79,6 +95,7 @@ namespace Platz.ObjectBuilder
         public QueryController(IQueryBuilderEngine engine)
         {
             _engine = engine;
+            SetNewQuery();
         }
 
         public void Configure(IQueryControllerConfiguration config)
@@ -90,6 +107,14 @@ namespace Platz.ObjectBuilder
             _expressions = config.ExpressionEngine;
         }
 
+        private void SetNewQuery()
+        {
+            SelectedQueryIndex = 0;
+            SubQueryList = new List<IQueryModel>();
+            MainQuery = new QueryModel();
+            SubQueryList.Add(MainQuery);
+        }
+
         public void Clear()
         {
             // clear all values in controller
@@ -98,11 +123,13 @@ namespace Platz.ObjectBuilder
             StoreParameters.Namespace = "Default";
             StoreParameters.QueryReturnType = "";
 
-            FromTables.Clear();
-            SelectionProperties.Clear();
-            FromTableLinks.Clear();
-            FromTableJoins.Clear();
-            WhereClause = "";
+            //FromTables.Clear();
+            //SelectionProperties.Clear();
+            //FromTableLinks.Clear();
+            //FromTableJoins.Clear();
+            //WhereClause = "";
+
+            SetNewQuery();
         }
 
         public void LoadFromFile(string path, string fileName)
@@ -110,13 +137,13 @@ namespace Platz.ObjectBuilder
             var parameters = new StorageParameters { FileName = fileName, Path = path };
             var q = _storage.LoadQuery(parameters);
             Clear();
-            var queryModel = _engine.LoadFromStoreQuery(this, q);
+            var queryModel = _engine.LoadFromStoreQuery(MainQuery, q);
             StoreParameters = queryModel.StoreParameters;
-            FromTables = queryModel.FromTables;
+            MainQuery.FromTables = queryModel.FromTables;
             RegenerateTableLinks();
-            SelectionProperties = queryModel.SelectionProperties;
+            MainQuery.SelectionProperties = queryModel.SelectionProperties;
 
-            foreach (var sp in SelectionProperties)
+            foreach (var sp in MainQuery.SelectionProperties)
             {
                 // var t = FindFromTable(sp.);
                 var prop = sp.FromTable.Properties.SingleOrDefault(p => p.StoreProperty.Name == sp.StoreProperty.Name);
@@ -127,7 +154,7 @@ namespace Platz.ObjectBuilder
                 }
             }
 
-            WhereClause = queryModel.WhereClause;
+            MainQuery.WhereClause = queryModel.WhereClause;
         }
 
         public bool FileExists(string path)
@@ -144,10 +171,10 @@ namespace Platz.ObjectBuilder
 
         public void AliasChanged(string oldAlias, string newAlias)
         {
-            var table = FromTables.Single(t => t.Alias == oldAlias);
+            var table = SelectedQuery.FromTables.Single(t => t.Alias == oldAlias);
             table.Alias = newAlias;
 
-            foreach (var j in FromTableJoins)
+            foreach (var j in SelectedQuery.FromTableJoins)
             {
                 if (j.Source.LeftObjectAlias == oldAlias)
                 {
@@ -202,18 +229,18 @@ namespace Platz.ObjectBuilder
                 return null;
             }
 
-            return _engine.GenerateQuery(this);
+            return _engine.GenerateQuery(MainQuery);
         }
 
         public void Validate()
         {
-            ValidationResults = _engine.Validate(this);
+            ValidationResults = _engine.Validate(MainQuery);
         }
 
         private List<StoreObjectJoin> GenerateJoins()
         {
             var joins = new List<StoreObjectJoin>();
-            var tables = FromTables.ToList();
+            var tables = MainQuery.FromTables.ToList();
 
             var foreignKeys = tables.SelectMany(t => t.Properties, (t, p) => new { Tbl = t, Prop = p }).Where(p =>
                 p.Prop.StoreProperty.Fk && tables.Any(d => d.StoreDefinition.Name == p.Prop.StoreProperty.ForeignKeys.First().DefinitionName)).ToList();
@@ -242,42 +269,42 @@ namespace Platz.ObjectBuilder
         {
             var ft = new QueryFromTable(table);
             ft.Alias = GetDefaultAlias(ft);
-            FromTables.Add(ft);
+            SelectedQuery.FromTables.Add(ft);
             RegenerateTableLinks();
             _engine.SelectPropertiesFromNewTable(this, ft);
         }
 
         public void RemoveFromTable(string tableName, string alias)
         {
-            var table = FromTables.Single(t => t.Alias == alias && t.StoreDefinition.Name == tableName);
-            FromTables.Remove(table);
+            var table = SelectedQuery.FromTables.Single(t => t.Alias == alias && t.StoreDefinition.Name == tableName);
+            SelectedQuery.FromTables.Remove(table);
             RegenerateTableLinks();
         }
 
         public QueryFromTable FindFromTable(string tableName, string alias)
         {
-            var table = FromTables.SingleOrDefault(t => t.Alias == alias && t.StoreDefinition.Name == tableName);
+            var table = SelectedQuery.FromTables.SingleOrDefault(t => t.Alias == alias && t.StoreDefinition.Name == tableName);
             return table;
         }
 
         public void RegenerateTableLinks()
         {
-            FromTableLinks = new List<TableLink>();
+            SelectedQuery.FromTableLinks = new List<TableLink>();
             var joins = GenerateJoins();
 
-            var newJoins = joins.Where(j => !FromTableJoins.Any(f => f.Source.GetJoinString() == j.GetJoinString()));
-            FromTableJoins.AddRange(newJoins.Select(j => new TableJoinModel { Source = j, JoinType = "Inner" }));
-            var lostJoins = FromTableJoins.Where(j => !FromTables.Any(t => t.Alias == j.Source.LeftObjectAlias) || !FromTables.Any(t => t.Alias == j.Source.RightObjectAlias));
-            FromTableJoins = FromTableJoins.Except(lostJoins).ToList();
+            var newJoins = joins.Where(j => !SelectedQuery.FromTableJoins.Any(f => f.Source.GetJoinString() == j.GetJoinString()));
+            SelectedQuery.FromTableJoins.AddRange(newJoins.Select(j => new TableJoinModel { Source = j, JoinType = "Inner" }));
+            var lostJoins = SelectedQuery.FromTableJoins.Where(j => !SelectedQuery.FromTables.Any(t => t.Alias == j.Source.LeftObjectAlias) || !SelectedQuery.FromTables.Any(t => t.Alias == j.Source.RightObjectAlias));
+            SelectedQuery.FromTableJoins = SelectedQuery.FromTableJoins.Except(lostJoins).ToList();
 
-            foreach (var fj in FromTableJoins.Where(f => !f.IsDeleted))
+            foreach (var fj in SelectedQuery.FromTableJoins.Where(f => !f.IsDeleted))
             {
                 var join = fj.Source;
-                var pt = FromTables.First(t => t.Alias == join.LeftObjectAlias);
+                var pt = SelectedQuery.FromTables.First(t => t.Alias == join.LeftObjectAlias);
                 var pk = pt.Properties.First(p => p.StoreProperty.Name == join.LeftField);
                 var pkIndex = pt.Properties.IndexOf(pk);
 
-                var ft = FromTables.First(t => t.Alias == join.RightObjectAlias);
+                var ft = SelectedQuery.FromTables.First(t => t.Alias == join.RightObjectAlias);
                 var fk = ft.Properties.First(p => p.StoreProperty.Name == join.RightField);
                 var fkIndex = ft.Properties.IndexOf(fk);
 
@@ -288,15 +315,15 @@ namespace Platz.ObjectBuilder
                     Source = join
                 };
 
-                FromTableLinks.Add(link);
+                SelectedQuery.FromTableLinks.Add(link);
             }
         }
 
         private string GetDefaultAlias(QueryFromTable ft)
         {
-            var count = FromTables.Where(t => t.StoreDefinition.Name == ft.StoreDefinition.Name).Count();
+            var count = SelectedQuery.FromTables.Where(t => t.StoreDefinition.Name == ft.StoreDefinition.Name).Count();
             var sfx = count > 0 ? (count + 1).ToString() : "";
-            var used = FromTables.Select(t => t.Alias).ToList();
+            var used = SelectedQuery.FromTables.Select(t => t.Alias).ToList();
 
             for (int i = 1; i <= 5; i++)
             {
@@ -314,20 +341,20 @@ namespace Platz.ObjectBuilder
 
         public void AddSelectionProperty(QueryFromTable table, QueryFromProperty property)
         {
-            if (!SelectionProperties.Any(s => s.FromTable.Alias == table.Alias && s.StoreProperty.Name == property.StoreProperty.Name))
+            if (!SelectedQuery.SelectionProperties.Any(s => s.FromTable.Alias == table.Alias && s.StoreProperty.Name == property.StoreProperty.Name))
             {
                 var newSelectProperty = new QuerySelectProperty(table, property.StoreProperty) { IsOutput = true, Alias = property.Alias };
-                SelectionProperties.Add(newSelectProperty);
+                SelectedQuery.SelectionProperties.Add(newSelectProperty);
             }
         }
 
         public void RemoveSelectionProperty(QueryFromTable table, QueryFromProperty property)
         {
-            var item = SelectionProperties.FirstOrDefault(s => s.StoreProperty.Name == property.StoreProperty.Name && s.FromTable.Alias == table.Alias);
+            var item = SelectedQuery.SelectionProperties.FirstOrDefault(s => s.StoreProperty.Name == property.StoreProperty.Name && s.FromTable.Alias == table.Alias);
 
             if (item != null)
             {
-                SelectionProperties.Remove(item);
+                SelectedQuery.SelectionProperties.Remove(item);
             }
         }
 
@@ -372,18 +399,18 @@ namespace Platz.ObjectBuilder
                     }
                 }
 
-                if ( !string.IsNullOrWhiteSpace(WhereClause))
+                if ( !string.IsNullOrWhiteSpace(SelectedQuery.WhereClause))
                 {
-                    WhereClause += " AND ";
+                    SelectedQuery.WhereClause += " AND ";
                 }
 
-                WhereClause += $"{property.FromTable.Alias}.{property.StoreProperty.Name} {filterOperator} {filterValue}";
+                SelectedQuery.WhereClause += $"{property.FromTable.Alias}.{property.StoreProperty.Name} {filterOperator} {filterValue}";
             }
         }
 
         public void SetWhereClause(string text)
         {
-            WhereClause = text;
+            SelectedQuery.WhereClause = text;
             CheckWhereClause();
         }
 
@@ -391,7 +418,7 @@ namespace Platz.ObjectBuilder
         {
             try
             {
-                var result = _expressions.BuildExpressionTree(WhereClause);
+                var result = _expressions.BuildExpressionTree(SelectedQuery.WhereClause);
             }
             catch(Exception exc)
             {
@@ -405,13 +432,13 @@ namespace Platz.ObjectBuilder
 
             if (func == "Group By All")
             {
-                SelectionProperties.Where(p => p.IsOutput).ToList().ForEach(p => p.GroupByFunction = "Group By");
-                SelectionProperties.Where(p => !String.IsNullOrWhiteSpace(p.Filter)).ToList().ForEach(p => p.GroupByFunction = "Where");
+                SelectedQuery.SelectionProperties.Where(p => p.IsOutput).ToList().ForEach(p => p.GroupByFunction = "Group By");
+                SelectedQuery.SelectionProperties.Where(p => !String.IsNullOrWhiteSpace(p.Filter)).ToList().ForEach(p => p.GroupByFunction = "Where");
             }
 
             if (func == "Group By None")
             {
-                SelectionProperties.ToList().ForEach(p => p.GroupByFunction = "");
+                SelectedQuery.SelectionProperties.ToList().ForEach(p => p.GroupByFunction = "");
             }
         }
     }

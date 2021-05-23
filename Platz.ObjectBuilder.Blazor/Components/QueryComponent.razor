@@ -5,7 +5,19 @@
 
 <CascadingValue Value="@_queryController">
 
-    <QuerySettingsComponent StoreDataPath="@_fullStoreDataPath" DataService="@DataService" Namespace="@Namespace" ModelChanged="ModelChanged" />
+    <div style="vertical-align: top">
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#m1">Main</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#q1">Query1</a>
+            </li>
+        </ul>
+    </div>
+    <div>
+        <QuerySettingsComponent StoreDataPath="@_fullStoreDataPath" DataService="@DataService" Namespace="@Namespace" ModelChanged="ModelChanged" />
+    </div>
 
     <table style="width: 100%">
         <tr>
