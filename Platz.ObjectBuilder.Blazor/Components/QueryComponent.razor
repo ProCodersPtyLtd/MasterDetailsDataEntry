@@ -7,12 +7,13 @@
 
     <div style="vertical-align: top">
         <ul class="nav nav-tabs" role="tablist">
+            @for (int i = 0; i < GetTabQueries().Count(); i++)
+            {
+                var index = i;
             <li class="nav-item">
-                <a class="nav-link active" data-toggle="tab" href="#m1">Main</a>
+                <a class="nav-link @GetQueryTabActive(index)" data-toggle="tab" href="#m1" @onclick="() => QueryTabClick(index)">@GetTabQueries()[index]</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#q1">Query1</a>
-            </li>
+            }
         </ul>
     </div>
     <div>
@@ -126,6 +127,29 @@
 
     private void Click()
     {
+        StateHasChanged();
+    }
+
+    private string[] GetTabQueries()
+    {
+        var list = _queryController.SubQueryList.Select(q => q.Name).ToList();
+        list.Add("+");
+        return list.ToArray();
+    }
+
+    private string GetQueryTabActive(int index)
+    {
+        return index == _queryController.SelectedQueryIndex ? "active" : "";
+    }
+
+    private void QueryTabClick(int index)
+    {
+        if (index == _queryController.SubQueryList.Count)
+        {
+            _queryController.CreateSubQuery(index);
+        }
+
+        _queryController.SelectedQueryIndex = index;
         StateHasChanged();
     }
 

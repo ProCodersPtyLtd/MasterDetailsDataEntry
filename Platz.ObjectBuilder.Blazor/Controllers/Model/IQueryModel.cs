@@ -11,7 +11,8 @@ namespace Platz.ObjectBuilder
 {
     public interface IQueryModel
     {
-        StoreSchema Schema { get; }
+        string Name { get; set; }
+        StoreSchema Schema { get; set; }
         List<QueryFromTable> FromTables { get; set; }
         List<QuerySelectProperty> SelectionProperties { get; set; }
         string WhereClause { get; set; }

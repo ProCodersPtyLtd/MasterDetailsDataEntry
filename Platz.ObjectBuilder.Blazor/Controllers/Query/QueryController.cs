@@ -36,6 +36,8 @@ namespace Platz.ObjectBuilder
         List<QuerySelectProperty> SelectionProperties { get; }
         string WhereClause { get; }
 
+        void CreateSubQuery(int index);
+
         void Configure(IQueryControllerConfiguration config);
         void LoadSchema();
         void AddFromTable(StoreDefinition table);
@@ -111,8 +113,15 @@ namespace Platz.ObjectBuilder
         {
             SelectedQueryIndex = 0;
             SubQueryList = new List<IQueryModel>();
-            MainQuery = new QueryModel();
+            MainQuery = new QueryModel { Name = "Main" };
+            MainQuery.Schema = Schema;
             SubQueryList.Add(MainQuery);
+        }
+
+        public void CreateSubQuery(int index)
+        {
+            var q = new QueryModel { Name = $"Query{index}" };
+            SubQueryList.Add(q);
         }
 
         public void Clear()
