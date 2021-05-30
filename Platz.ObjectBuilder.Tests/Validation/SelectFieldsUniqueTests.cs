@@ -26,7 +26,7 @@ namespace Platz.ObjectBuilder.Tests.Validation
             qc.AddSelectionProperty(t1, p2);
             qc.AddSelectionProperty(t1, p3);
             var rule = new SelectFieldsUnique();
-            var vr = rule.Validate(qc);
+            var vr = rule.Validate(qc.MainQuery);
 
             Assert.NotNull(vr);
             Assert.True(vr.IsFailed);
@@ -46,7 +46,7 @@ namespace Platz.ObjectBuilder.Tests.Validation
             qc.AddSelectionProperty(t1, p2);
             qc.AddSelectionProperty(t1, p3);
             var rule = new SelectFieldsUnique();
-            var vr = rule.Validate(qc);
+            var vr = rule.Validate(qc.MainQuery);
 
             Assert.Null(vr);
         }
