@@ -15,8 +15,6 @@ using System.Text;
 
 namespace Platz.ObjectBuilder
 {
-    
-
     public interface IQueryController //: IQueryModel
     {
         StoreQueryParameters StoreParameters { get; }
@@ -36,11 +34,11 @@ namespace Platz.ObjectBuilder
         List<QuerySelectProperty> SelectionProperties { get; }
         string WhereClause { get; }
 
+        List<DesignQueryObject> GetAvailableQueryObjects();
         void CreateSubQuery(int index);
-
         void Configure(IQueryControllerConfiguration config);
         void LoadSchema();
-        void AddFromTable(StoreDefinition table);
+        void AddFromTable(DesignQueryObject table);
         void RemoveFromTable(string tableName, string alias);
         QueryFromTable FindFromTable(string tableName, string alias);
         void AddSelectionProperty(QueryFromTable table, QueryFromProperty property);
@@ -107,6 +105,22 @@ namespace Platz.ObjectBuilder
             _readerParameters = config.ReaderParameters;
             _resolver = config.Resolver;
             _expressions = config.ExpressionEngine;
+        }
+
+        public List<DesignQueryObject> GetAvailableQueryObjects()
+        {
+            var list = Schema.Definitions.Values.Select(d => new DesignQueryObject(d)).ToList();
+
+            for (int i = 1; i < SubQueryList.Count; i++)
+            {
+                if (i != SelectedQueryIndex)
+                {
+                    var q = new DesignQueryObject(SubQueryList[i]);
+                    list.Add(q);
+                }
+            }
+
+            return list;
         }
 
         private void SetNewQuery()
@@ -274,13 +288,20 @@ namespace Platz.ObjectBuilder
             return joins;
         }
 
-        public void AddFromTable(StoreDefinition table)
+        public void AddFromTable(DesignQueryObject qo)
         {
-            var ft = new QueryFromTable(table);
-            ft.Alias = GetDefaultAlias(ft);
-            SelectedQuery.FromTables.Add(ft);
-            RegenerateTableLinks();
-            _engine.SelectPropertiesFromNewTable(this, ft);
+            if (qo.IsSubQuery)
+            {
+
+            }
+            else
+            {
+                var ft = new QueryFromTable(qo.Table);
+                ft.Alias = GetDefaultAlias(ft);
+                SelectedQuery.FromTables.Add(ft);
+                RegenerateTableLinks();
+                _engine.SelectPropertiesFromNewTable(this, ft);
+            }
         }
 
         public void RemoveFromTable(string tableName, string alias)

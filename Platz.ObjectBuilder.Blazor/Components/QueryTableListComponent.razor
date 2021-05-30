@@ -8,7 +8,7 @@
     @{
         var rowIndex = 0;
 
-        @foreach (var tbl in QueryController.Schema.Definitions.Values)
+        @foreach (var tbl in _tables)
         {
             var row = rowIndex;
 
@@ -57,17 +57,17 @@
     [Parameter]
     public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 
-    private List<StoreDefinition> _tables;
+    private List<DesignQueryObject> _tables;
     private List<bool> _buttonsVisible;
 
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        _tables = QueryController.Schema.Definitions.Values.ToList();
+        _tables = QueryController.GetAvailableQueryObjects();
         _buttonsVisible = _tables.Select(d => false).ToList();
     }
 
-    private string GetCollapseName(StoreDefinition tbl)
+    private string GetCollapseName(DesignQueryObject tbl)
     {
         var result = $"collapse{tbl.Name}";
         return result;

@@ -61,13 +61,13 @@
     [Parameter]
     public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 
-    private List<StoreDefinition> _tables;
+    private List<DesignQueryObject> _tables;
     private List<bool> _buttonsVisible;
 
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        _tables = QueryController.Schema.Definitions.Values.ToList();
+        _tables = QueryController.GetAvailableQueryObjects();
         _buttonsVisible = _tables.Select(d => false).ToList();
     }
 
