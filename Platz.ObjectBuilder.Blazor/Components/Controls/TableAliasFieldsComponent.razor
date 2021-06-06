@@ -20,7 +20,17 @@
     <table @onmouseover="@(e => { _shortTableView = false; })" @onmouseout="@(e => { _shortTableView = true; })">
         @*<tr hidden="@_shortTableView">*@
         <tr>
-            <th>pk</th>
+            <th>
+                @if (!@QueryTable.IsSubQuery)
+                {
+                    @:PK
+                }
+                else
+                {
+                    @:&nbsp;
+                    @:&nbsp;
+                }
+            </th>
             <th><input type="checkbox" checked="@GetSelectAllValue()" @onchange="@(async (args) => await SelectAllClick(args))" /></th>
             <th>select all</th>
             @*<th>FK</th>*@
