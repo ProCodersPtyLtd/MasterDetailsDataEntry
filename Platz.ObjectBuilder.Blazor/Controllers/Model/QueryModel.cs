@@ -23,44 +23,5 @@ namespace Platz.ObjectBuilder
         public string Errors { get; set; } = "";
     }
 
-    public class TableJoinModel
-    {
-        public string JoinType { get; set; }
-        public bool IsDeleted { get; set; }
-        public StoreObjectJoin Source { get; set; }
-    }
-
-    public class TableLink
-    {
-        public int Order { get; set; }
-        public string PrimaryRefId { get; set; }
-        public string ForeignRefId { get; set; }
-        public StoreObjectJoin Source { get; set; }
-    }
-
-    public class BoundingClientRect
-    {
-        public double X { get; set; }
-        public double Y { get; set; }
-        public double Width { get; set; }
-        public double Height { get; set; }
-        public double Top { get; set; }
-        public double Right { get; set; }
-        public double Bottom { get; set; }
-        public double Left { get; set; }
-    }
-
-    public class Point
-    {
-        public double X { get; set; }
-        public double Y { get; set; }
-    }
-
-    public class LinePoints
-    {
-        public double X1 { get; set; }
-        public double Y1 { get; set; }
-        public double X2 { get; set; }
-        public double Y2 { get; set; }
-    }
+    
 }

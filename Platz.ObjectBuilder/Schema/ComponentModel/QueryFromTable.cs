@@ -11,19 +11,15 @@ namespace Platz.ObjectBuilder.Schema
         private static int _counter;
 
         public int Id { get; private set; }
+        public bool IsSubQuery { get; private set; }
 
-        public StoreDefinition StoreDefinition { get; set; }
+        //public StoreDefinition StoreDefinitionOld { get; set; }
 
         public List<QueryFromProperty> Properties { get; set; }
 
         // component fields
         public string Alias { get; set; }
-
-        public void CopyFrom(StoreDefinition source)
-        {
-            StoreDefinition = source;
-            Properties = source.Properties.Values.Select(p => new QueryFromProperty(p)).ToList();
-        }
+        public string Name { get; private set; }
 
         public QueryFromTable()
         {
@@ -34,6 +30,26 @@ namespace Platz.ObjectBuilder.Schema
         public QueryFromTable(StoreDefinition source): this()
         {
             CopyFrom(source);
+        }
+
+        public QueryFromTable(IQueryModel source) : this()
+        {
+            CopyFrom(source);
+        }
+
+        public void CopyFrom(StoreDefinition source)
+        {
+            //StoreDefinitionOld = source;
+            Name = source.Name;
+            Properties = source.Properties.Values.Select(p => new QueryFromProperty(p)).ToList();
+        }
+
+        public void CopyFrom(IQueryModel source)
+        {
+            IsSubQuery = true;
+            Name = source.Name;
+            //StoreDefinition = source;
+            Properties = source.SelectionProperties.Select(p => new QueryFromProperty(p)).ToList();
         }
     }
 

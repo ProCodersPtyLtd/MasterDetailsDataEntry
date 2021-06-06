@@ -169,7 +169,7 @@ namespace Platz.ObjectBuilder
             foreach (var sp in MainQuery.SelectionProperties)
             {
                 // var t = FindFromTable(sp.);
-                var prop = sp.FromTable.Properties.SingleOrDefault(p => p.StoreProperty.Name == sp.StoreProperty.Name);
+                var prop = sp.FromTable.Properties.SingleOrDefault(p => p.Name == sp.StoreProperty.Name);
 
                 if (prop != null)
                 {
@@ -266,20 +266,20 @@ namespace Platz.ObjectBuilder
             var tables = MainQuery.FromTables.ToList();
 
             var foreignKeys = tables.SelectMany(t => t.Properties, (t, p) => new { Tbl = t, Prop = p }).Where(p =>
-                p.Prop.StoreProperty.Fk && tables.Any(d => d.StoreDefinition.Name == p.Prop.StoreProperty.ForeignKeys.First().DefinitionName)).ToList();
+                p.Prop.Fk && tables.Any(d => d.Name == p.Prop.OriginalStoreProperty.ForeignKeys.First().DefinitionName)).ToList();
 
             foreach (var reference in foreignKeys)
             {
-                var leftTable = tables.First(t => t.StoreDefinition.Name == reference.Prop.StoreProperty.ForeignKeys.First().DefinitionName);
-                var rightTable = tables.First(t => t.StoreDefinition.Name == reference.Tbl.StoreDefinition.Name);
+                var leftTable = tables.First(t => t.Name == reference.Prop.OriginalStoreProperty.ForeignKeys.First().DefinitionName);
+                var rightTable = tables.First(t => t.Name == reference.Tbl.Name);
 
                 var join = new StoreObjectJoin
                 {
                     JoinType = "inner",
                     LeftObjectAlias = leftTable.Alias,
-                    LeftField = reference.Prop.StoreProperty.ForeignKeys.First().PropertyName,
+                    LeftField = reference.Prop.OriginalStoreProperty.ForeignKeys.First().PropertyName,
                     RightObjectAlias = rightTable.Alias,
-                    RightField = reference.Prop.StoreProperty.Name
+                    RightField = reference.Prop.OriginalStoreProperty.Name
                 };
 
                 joins.Add(join);
@@ -292,7 +292,11 @@ namespace Platz.ObjectBuilder
         {
             if (qo.IsSubQuery)
             {
-
+                var ft = new QueryFromTable(qo.Query);
+                ft.Alias = GetDefaultAlias(ft);
+                SelectedQuery.FromTables.Add(ft);
+                RegenerateTableLinks();
+                _engine.SelectPropertiesFromNewTable(this, ft);
             }
             else
             {
@@ -306,14 +310,14 @@ namespace Platz.ObjectBuilder
 
         public void RemoveFromTable(string tableName, string alias)
         {
-            var table = SelectedQuery.FromTables.Single(t => t.Alias == alias && t.StoreDefinition.Name == tableName);
+            var table = SelectedQuery.FromTables.Single(t => t.Alias == alias && t.Name == tableName);
             SelectedQuery.FromTables.Remove(table);
             RegenerateTableLinks();
         }
 
         public QueryFromTable FindFromTable(string tableName, string alias)
         {
-            var table = SelectedQuery.FromTables.SingleOrDefault(t => t.Alias == alias && t.StoreDefinition.Name == tableName);
+            var table = SelectedQuery.FromTables.SingleOrDefault(t => t.Alias == alias && t.Name == tableName);
             return table;
         }
 
@@ -331,11 +335,11 @@ namespace Platz.ObjectBuilder
             {
                 var join = fj.Source;
                 var pt = SelectedQuery.FromTables.First(t => t.Alias == join.LeftObjectAlias);
-                var pk = pt.Properties.First(p => p.StoreProperty.Name == join.LeftField);
+                var pk = pt.Properties.First(p => p.Name == join.LeftField);
                 var pkIndex = pt.Properties.IndexOf(pk);
 
                 var ft = SelectedQuery.FromTables.First(t => t.Alias == join.RightObjectAlias);
-                var fk = ft.Properties.First(p => p.StoreProperty.Name == join.RightField);
+                var fk = ft.Properties.First(p => p.Name == join.RightField);
                 var fkIndex = ft.Properties.IndexOf(fk);
 
                 var link = new TableLink 
@@ -351,13 +355,13 @@ namespace Platz.ObjectBuilder
 
         private string GetDefaultAlias(QueryFromTable ft)
         {
-            var count = SelectedQuery.FromTables.Where(t => t.StoreDefinition.Name == ft.StoreDefinition.Name).Count();
+            var count = SelectedQuery.FromTables.Where(t => t.Name == ft.Name).Count();
             var sfx = count > 0 ? (count + 1).ToString() : "";
             var used = SelectedQuery.FromTables.Select(t => t.Alias).ToList();
 
             for (int i = 1; i <= 5; i++)
             {
-                var alias = ft.StoreDefinition.Name.Substring(0, i).ToLower() + sfx;
+                var alias = ft.Name.Substring(0, i).ToLower() + sfx;
 
                 if (!used.Contains(alias))
                 {
@@ -371,16 +375,16 @@ namespace Platz.ObjectBuilder
 
         public void AddSelectionProperty(QueryFromTable table, QueryFromProperty property)
         {
-            if (!SelectedQuery.SelectionProperties.Any(s => s.FromTable.Alias == table.Alias && s.StoreProperty.Name == property.StoreProperty.Name))
+            if (!SelectedQuery.SelectionProperties.Any(s => s.FromTable.Alias == table.Alias && s.StoreProperty.Name == property.Name))
             {
-                var newSelectProperty = new QuerySelectProperty(table, property.StoreProperty) { IsOutput = true, Alias = property.Alias };
+                var newSelectProperty = new QuerySelectProperty(table, property.OriginalStoreProperty) { IsOutput = true, Alias = property.Alias };
                 SelectedQuery.SelectionProperties.Add(newSelectProperty);
             }
         }
 
         public void RemoveSelectionProperty(QueryFromTable table, QueryFromProperty property)
         {
-            var item = SelectedQuery.SelectionProperties.FirstOrDefault(s => s.StoreProperty.Name == property.StoreProperty.Name && s.FromTable.Alias == table.Alias);
+            var item = SelectedQuery.SelectionProperties.FirstOrDefault(s => s.StoreProperty.Name == property.Name && s.FromTable.Alias == table.Alias);
 
             if (item != null)
             {

@@ -39,9 +39,56 @@
         </div>
 
         <div id="@GetCollapseName(tbl)" class="collapse" aria-labelledby="headingOne" data-parent="#accordionTableList">
-            <div class="card-body">
-                Table columns here
-            </div>
+            @if (tbl.IsSubQuery)
+            {
+                <label>Subquery</label>
+                <input value="@tbl.Name" @onchange="async(a) => await QueryNameChanged(a, row)" class="form-control"  />
+
+                <label>Columns</label>
+                <table class="table-cols" style="width: 100%">
+                    <tr>
+                        <th style="width: 28px"></th>
+                        <th style="width: auto"></th>
+                        <th style="width: 70px"></th>
+                        <th style="width: 28px"></th>
+                    </tr>
+                    @for (int ind = 0; ind < tbl.Query.SelectionProperties.Count; ind++)
+                    {
+                        var item = tbl.Query.SelectionProperties[ind];
+
+                        <tr>
+                            <td>
+                                @if (item.StoreProperty.Pk)
+                                {
+                                    <b>PK</b>
+                                }
+                                @if (item.StoreProperty.Fk)
+                                {
+                                    @:FK
+                                }
+                            </td>
+                            <td>
+                                @item.OutputName
+                            </td>
+                            <td>
+                                @item.ResolvedType
+                            </td>
+                            <td>
+                                @if (item.StoreProperty.Nullable)
+                                {
+                                    @:Null
+                                }
+                            </td>
+                        </tr>
+                    }
+                </table>
+            }
+            else
+            {
+                <div class="card-body">
+                    Table columns here
+                </div>
+            }
         </div>
 
             rowIndex++;
@@ -87,5 +134,11 @@
     private void RowMouseOut(MouseEventArgs args, int rowIndex)
     {
         _buttonsVisible[rowIndex] = false;
+    }
+
+    private async Task QueryNameChanged(ChangeEventArgs args, int index)
+    {
+        _tables[index].Name = args.Value as string;
+        await ModelChanged.InvokeAsync(null);
     }
 }

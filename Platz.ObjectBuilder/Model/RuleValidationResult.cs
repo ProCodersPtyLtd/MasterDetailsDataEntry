@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Platz.ObjectBuilder.Blazor.Validation
+namespace Platz.ObjectBuilder
 {
     public class RuleValidationResult
     {

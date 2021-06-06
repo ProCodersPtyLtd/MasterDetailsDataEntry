@@ -74,7 +74,7 @@
     private string GetTableName(string alias)
     {
         var pt = QueryController.FromTables.First(t => t.Alias == alias);
-        return pt.StoreDefinition.Name;
+        return pt.Name;
     }
 
     private async Task SetDeletedValue(ChangeEventArgs args, TableJoinModel j)
