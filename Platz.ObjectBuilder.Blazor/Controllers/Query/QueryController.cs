@@ -34,6 +34,8 @@ namespace Platz.ObjectBuilder
         List<QuerySelectProperty> SelectionProperties { get; }
         string WhereClause { get; }
 
+        bool NeedRedrawLinks { get; set; }
+
         List<DesignQueryObject> GetAvailableQueryObjects();
         void CreateSubQuery(int index);
         void Configure(IQueryControllerConfiguration config);
@@ -55,6 +57,7 @@ namespace Platz.ObjectBuilder
 
         void AliasChanged(string oldAlias, string newAlias);
         void RegenerateTableLinks();
+        void UpdateLinksFromTableJoins();
         void Validate();
         List<string> GetFileList(string path);
         void LoadFromFile(string path, string fileName);
@@ -65,6 +68,7 @@ namespace Platz.ObjectBuilder
  
     public class QueryController : IQueryController
     {
+        public bool NeedRedrawLinks { get; set; }
         public StoreQueryParameters StoreParameters { get; set; } = new StoreQueryParameters();
         public StoreSchema Schema { get; private set; }
         public List<QueryFromTable> FromTables { get { return SelectedQuery.FromTables; } }
@@ -321,15 +325,11 @@ namespace Platz.ObjectBuilder
             return table;
         }
 
-        public void RegenerateTableLinks()
+        public void UpdateLinksFromTableJoins()
         {
+            // direct populate FromTableLinks
+            NeedRedrawLinks = true;
             SelectedQuery.FromTableLinks = new List<TableLink>();
-            var joins = GenerateJoins();
-
-            var newJoins = joins.Where(j => !SelectedQuery.FromTableJoins.Any(f => f.Source.GetJoinString() == j.GetJoinString()));
-            SelectedQuery.FromTableJoins.AddRange(newJoins.Select(j => new TableJoinModel { Source = j, JoinType = "Inner" }));
-            var lostJoins = SelectedQuery.FromTableJoins.Where(j => !SelectedQuery.FromTables.Any(t => t.Alias == j.Source.LeftObjectAlias) || !SelectedQuery.FromTables.Any(t => t.Alias == j.Source.RightObjectAlias));
-            SelectedQuery.FromTableJoins = SelectedQuery.FromTableJoins.Except(lostJoins).ToList();
 
             foreach (var fj in SelectedQuery.FromTableJoins.Where(f => !f.IsDeleted))
             {
@@ -342,8 +342,8 @@ namespace Platz.ObjectBuilder
                 var fk = ft.Properties.First(p => p.Name == join.RightField);
                 var fkIndex = ft.Properties.IndexOf(fk);
 
-                var link = new TableLink 
-                { 
+                var link = new TableLink
+                {
                     PrimaryRefId = GenerateObjectId("table_primary", pt.Id, pkIndex),
                     ForeignRefId = GenerateObjectId("table_foreign", ft.Id, fkIndex),
                     Source = join
@@ -351,6 +351,18 @@ namespace Platz.ObjectBuilder
 
                 SelectedQuery.FromTableLinks.Add(link);
             }
+        }
+
+        public void RegenerateTableLinks()
+        {
+            var joins = GenerateJoins();
+
+            var newJoins = joins.Where(j => !SelectedQuery.FromTableJoins.Any(f => f.Source.GetJoinString() == j.GetJoinString()));
+            SelectedQuery.FromTableJoins.AddRange(newJoins.Select(j => new TableJoinModel { Source = j, JoinType = "Inner" }));
+            var lostJoins = SelectedQuery.FromTableJoins.Where(j => !SelectedQuery.FromTables.Any(t => t.Alias == j.Source.LeftObjectAlias) || !SelectedQuery.FromTables.Any(t => t.Alias == j.Source.RightObjectAlias));
+            SelectedQuery.FromTableJoins = SelectedQuery.FromTableJoins.Except(lostJoins).ToList();
+
+            UpdateLinksFromTableJoins();
         }
 
         private string GetDefaultAlias(QueryFromTable ft)

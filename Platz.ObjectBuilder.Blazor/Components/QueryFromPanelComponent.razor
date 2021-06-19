@@ -63,9 +63,10 @@
     {
         _fromTables = QueryController.FromTables.ToList();
 
-        if (_lines == null || (_lines.Count != QueryController.FromTableLinks.Count))
+        if (_lines == null || (_lines.Count != QueryController.FromTableLinks.Count) || QueryController.NeedRedrawLinks)
         {
             _needRefreshLinks = true;
+            QueryController.NeedRedrawLinks = true;
         }
     }
 
