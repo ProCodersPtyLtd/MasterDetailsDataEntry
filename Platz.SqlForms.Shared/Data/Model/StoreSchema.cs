@@ -35,35 +35,35 @@ namespace Platz.SqlForms
         public string Comment { get; set; }
         public int Order { get; set; }
 
-        public Dictionary<string, StoreProperty> Properties { get; set; }
+        public Dictionary<string, StoreProperty> Properties { get; set; } = new Dictionary<string, StoreProperty>();
     }
 
     // Sql Field
     public class StoreProperty
     {
         [Key]
-        public string Name { get; set; }
+        public virtual string Name { get; set; }
 
         // types: string, number
-        public string Type { get; set; }
+        public virtual string Type { get; set; }
 
-        public bool Nullable { get; set; }
+        public virtual bool Nullable { get; set; }
 
-        public string Comment { get; set; }
+        public virtual string Comment { get; set; }
 
-        public int MinLength { get; set; }
-        public int? MaxLength { get; set; }
-        public bool Pk { get; set; }
-        public bool AutoIncrement { get; set;  }
+        public virtual int MinLength { get; set; }
+        public virtual int? MaxLength { get; set; }
+        public virtual bool Pk { get; set; }
+        public virtual bool AutoIncrement { get; set;  }
 
         // FK
-        public bool Fk { get; set; }
+        public virtual bool Fk { get; set; }
         
 
-        public bool ExternalId { get; set; }
-        public int Order { get; set; }
+        public virtual bool ExternalId { get; set; }
+        public virtual int Order { get; set; }
 
-        public List<StoreForeignKey> ForeignKeys { get; set; }
+        public virtual List<StoreForeignKey> ForeignKeys { get; set; }
     }
 
     public class StoreForeignKey

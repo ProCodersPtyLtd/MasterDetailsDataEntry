@@ -1,0 +1,9 @@
+﻿.table-cols {
+    border-collapse: collapse;
+}
+
+.table-cols td, .table-cols th {
+    padding: 1px;
+    border-bottom: 1px solid #000000;
+    text-align: left;
+}

@@ -3,7 +3,7 @@
 @if (@QueryTable != null)
 {
     <div class="float-right">
-            <button class="btn btn-danger btn-sm" title="Cancel" @onclick="@(async (args) => await DeleteClick(args, @QueryTable.StoreDefinition.Name, @QueryTable.Alias))"
+            <button class="btn btn-danger btn-sm" title="Cancel" @onclick="@(async (args) => await DeleteClick(args, @QueryTable.Name, @QueryTable.Alias))"
                 style="display: block; margin-left: auto; margin-right: 0;">
             <span class="oi oi-x"></span>
         </button>
@@ -12,7 +12,7 @@
     <table>
         <tr>
             <th></th>
-            <th>@QueryTable.StoreDefinition.Name</th>
+            <th>@QueryTable.Name</th>
             <th><input value="@QueryTable.Alias" style="width: 48px;" @onchange="@(async (args) => await TableAliasChanged(args))" /></th>
         </tr>
     </table>
@@ -20,7 +20,17 @@
     <table @onmouseover="@(e => { _shortTableView = false; })" @onmouseout="@(e => { _shortTableView = true; })">
         @*<tr hidden="@_shortTableView">*@
         <tr>
-            <th>pk</th>
+            <th>
+                @if (!@QueryTable.IsSubQuery)
+                {
+                    @:PK
+                }
+                else
+                {
+                    @:&nbsp;
+                    @:&nbsp;
+                }
+            </th>
             <th><input type="checkbox" checked="@GetSelectAllValue()" @onchange="@(async (args) => await SelectAllClick(args))" /></th>
             <th>select all</th>
             @*<th>FK</th>*@
@@ -33,15 +43,15 @@
 
             <tr>
                 <td>
-                    @if (item.StoreProperty.Pk)
+                    @if (item.Pk)
                     {
                         <span id="@GetPkId(row)" class="oi oi-key"></span>
                     }
                 </td>
                 <td><input type="checkbox" checked="@GetSelectedValue(row)" @onchange="@(async (args) => await SelectClick(args, row))" /></td>
-                <td>@item.StoreProperty.Name</td>
+                <td>@item.Name</td>
                 <td>
-                    @if (item.StoreProperty.Fk)
+                    @if (item.Fk)
                     {
                         <span id="@GetFkId(row)" class="oi oi-infinity"></span>
                     }
@@ -65,7 +75,7 @@
     { 
         get 
         {
-            var table = QueryController.FindFromTable(Table.StoreDefinition.Name, Table.Alias);
+            var table = QueryController.FindFromTable(Table.Name, Table.Alias);
             return table;
         } 
     }

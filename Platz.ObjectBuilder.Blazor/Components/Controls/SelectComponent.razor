@@ -1,0 +1,37 @@
+﻿@using Platz.ObjectBuilder.Blazor.Controllers
+
+@namespace Platz.ObjectBuilder
+
+<select style="width: 120px; height: 31px;" value="@SelectedItem" @onchange="@(async (args) => await Changed(args, RowIndex))"
+        class="form-control selectpicker">
+    <option value=""></option>
+
+    @foreach (var f in Items)
+    {
+        <option value="@f">@f</option>
+    }
+</select>
+
+@code {
+    [Parameter]
+    public int RowIndex { get; set; }
+
+    [Parameter]
+    public string SelectedItem { get; set; }
+
+    [Parameter]
+    public IEnumerable<string> Items { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+    private async Task Changed(ChangeEventArgs e, int rowIndex)
+    {
+        await ModelChanged.InvokeAsync(null);
+        // StateHasChanged();
+    }
+}

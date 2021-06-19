@@ -7,19 +7,24 @@ namespace Platz.ObjectBuilder.Schema
 {
     public class QueryFromProperty
     {
-        public StoreProperty StoreProperty { get; set; }
-
         // component fields
-        // ToDo: Alias should be removed as it is not used, only in tests
         public string Alias { get; set; }
         public bool Selected { get; set; }
+        public string Name { get { return OriginalStoreProperty.Name; } }
+        public bool Pk { get { return OriginalStoreProperty.Pk; } }
+        public bool Fk { get { return OriginalStoreProperty.Fk; } }
+        public StoreProperty OriginalStoreProperty { get; set; }
 
         public QueryFromProperty() { }
 
         public QueryFromProperty(StoreProperty source)
         {
-            StoreProperty = source;
+            OriginalStoreProperty = source;
         }
 
+        public QueryFromProperty(QuerySelectProperty source)
+        {
+            OriginalStoreProperty = new SubQueryStoreProperty(source);
+        }
     }
 }

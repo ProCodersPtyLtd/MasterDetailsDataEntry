@@ -99,7 +99,7 @@ namespace Platz.SqlForms
 
         public string GetJoinString()
         {
-            var result = $"{LeftObjectAlias}.{LeftField}={RightObjectAlias}.{RightField}";
+            var result = $"{LeftObjectAlias}.{LeftField} = {RightObjectAlias}.{RightField}";
             return result;
         }
     }

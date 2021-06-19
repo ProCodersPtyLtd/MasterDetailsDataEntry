@@ -14,13 +14,30 @@
 
             <div class="card" @onmouseover="@(e => RowMouseOver(e, row))" @onmouseout="@(e => RowMouseOut(e, row))">
                 <div class="card-header" id="headingOne">
+                    <table style="width: 100%">
+                        <tr>
+                            <td>
+                                <h2 class="mb-0">
+                                    <button class="btn btn-block text-left" type="button" data-toggle="collapse"
+                                            data-target="#@(GetCollapseName(join))" aria-expanded="false" aria-controls="@GetCollapseName(join)">
+                                        @join.Source.GetJoinString()
+                                    </button>
+                                </h2>
 
-                    <h2 class="mb-0">
-                        <button class="btn btn-block text-left" type="button" data-toggle="collapse"
-                                data-target="#@(GetCollapseName(join))" aria-expanded="false" aria-controls="@GetCollapseName(join)">
-                            @join.Source.GetJoinString()
-                        </button>
-                    </h2>
+                            </td>
+
+                            <td style="width: 40px">
+                                <div style="text-align: right;">
+                                    <button class="btn btn-light btn-sm" title="Properties" data-toggle="modal" data-target="#joinProperties" 
+                                            @onclick="@(async () => await RowPropertiesClick(row))">
+                                        <span class="oi oi-menu"></span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+
 
                 </div>
             </div>
@@ -51,7 +68,116 @@
             rowIndex++;
         }
     }
+
+    <br />
+
+    <div style="text-align: right;">
+        <button class="btn btn-light btn-sm" title="Properties" data-toggle="modal" data-target="#joinProperties" @onclick="@(async () => await AddJoinClick())">
+            Add Join
+        </button>
+    </div>
 </div>
+
+
+
+
+
+<div class="modal fade" id="joinProperties" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Relationship (Join)</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        
+                        <table style="width: 100%;">
+                            <tr>
+                                <th>Left</th>
+                                <th></th>
+                                <th>Right</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <select style="width: 220px; height: 31px;" value="@LeftTableItem" @onchange="@(async (args) => await LeftTableSelected(args))"
+                                            class="form-control selectpicker">
+                                        <option value=""></option>
+
+                                        @for (int i = 0; i < QueryController.FromTables.Count; i++)
+                                        {
+                                            var t = QueryController.FromTables[i];
+                                            <option value="@i">@($"{t.Name} {t.Alias}")</option>
+                                        }
+                                    </select>
+                                </td>
+                                <td>Equals</td>
+                                <td>
+                                    <select style="width: 220px; height: 31px;" value="@RightTableItem" @onchange="@(async (args) => await RightTableSelected(args))"
+                                            class="form-control selectpicker">
+                                        <option value=""></option>
+
+                                        @for (int i = 0; i < QueryController.FromTables.Count; i++)
+                                        {
+                                            var t = QueryController.FromTables[i];
+                                            <option value="@i">@($"{t.Name} {t.Alias}")</option>
+                                        }
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @{ var items = GetLeftColumnItems(LeftTableItem); }
+
+                                    @if (items != null)
+                                    {
+                                    <select style="width: 220px; height: 31px;" value="@LeftColumnItem" @onchange="@(async (args) => await LeftColumnSelected(args))"
+                                            class="form-control selectpicker">
+                                        <option value=""></option>
+
+                                        @for (int i = 0; i < items.Count(); i++)
+                                        {
+                                            <option value="@i">@($"{items[i].Name}")</option>
+                                        }
+                                    </select>
+                                    }
+                                </td>
+                                <td></td>
+                                <td>
+                                    @{ var items2 = GetLeftColumnItems(RightTableItem); }
+
+                                    @if (items2 != null)
+                                    {
+                                        <select style="width: 220px; height: 31px;" value="@RightColumnItem" @onchange="@(async (args) => await RightColumnSelected(args))"
+                                                class="form-control selectpicker">
+                                            <option value=""></option>
+
+                                            @for (int i = 0; i < items2.Count(); i++)
+                                            {
+                                                <option value="@i">@($"{items2[i].Name}")</option>
+                                            }
+                                        </select>
+                                    }
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" @onclick="SaveJoinClick">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
 
 @code {
@@ -64,23 +190,133 @@
     private List<DesignQueryObject> _tables;
     private List<bool> _buttonsVisible;
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        //LeftTableItem = null;
+        //RightTableItem = null;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+        }
+    }
+
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
         _tables = QueryController.GetAvailableQueryObjects();
         _buttonsVisible = _tables.Select(d => false).ToList();
+
+        ClearComponentProperties();
     }
+
+    private void ClearComponentProperties()
+    {
+        if (SelectedQueryIndex != QueryController.SelectedQueryIndex)
+        {
+            SelectedQueryIndex = QueryController.SelectedQueryIndex;
+            LeftTableItem = null;
+            RightTableItem = null;
+            return;
+        }
+
+        int i;
+
+        if ((int.TryParse(LeftTableItem, out i) && i >= QueryController.FromTables.Count)
+            || (int.TryParse(RightTableItem, out i) && i >= QueryController.FromTables.Count))
+        {
+            LeftTableItem = null;
+            RightTableItem = null;
+            return;
+        }
+    }
+
+    #region Join Modal
+
+    private int CurrentJoinIndex { get; set; }
+
+    private string LeftTableItem { get; set; }
+    private string LeftColumnItem { get; set; }
+    private string RightTableItem { get; set; }
+    private string RightColumnItem { get; set; }
+    private int SelectedQueryIndex { get; set; } = -1;
+
+    private IEnumerable<QueryFromTable> GetLeftTableItems()
+    {
+        return QueryController.FromTables; //.Select(t => $"{t.Name} {t.Alias}" );
+    }
+
+    private List<QueryFromProperty> GetLeftColumnItems(string item)
+    {
+        if (!string.IsNullOrWhiteSpace(item))
+        {
+            var t = QueryController.FromTables[int.Parse(item)];
+            return t.Properties;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    private async Task LeftTableSelected(ChangeEventArgs e)
+    {
+        LeftTableItem = e.Value.ToString();
+
+        if (!string.IsNullOrWhiteSpace(LeftTableItem))
+        {
+            var t = QueryController.FromTables[int.Parse(LeftTableItem)];
+            var tp = t.Properties.FirstOrDefault(p => p.Pk || p.Name.ToLower() == "id" || p.Name.ToLower().Contains("id"));
+
+            if (tp != null)
+            {
+                LeftColumnItem = t.Properties.IndexOf(tp).ToString();
+            }
+        }
+    }
+
+    private async Task RightTableSelected(ChangeEventArgs e)
+    {
+        RightTableItem = e.Value.ToString();
+
+        if (!string.IsNullOrWhiteSpace(RightTableItem))
+        {
+            var t = QueryController.FromTables[int.Parse(RightTableItem)];
+            var tp = t.Properties.FirstOrDefault(p => p.Pk || p.Name.ToLower() == "id" || p.Name.ToLower().Contains("id"));
+
+            if (tp != null)
+            {
+                RightColumnItem = t.Properties.IndexOf(tp).ToString();
+            }
+        }
+    }
+
+    private async Task LeftColumnSelected(ChangeEventArgs e)
+    {
+        LeftColumnItem = e.Value.ToString();
+    }
+
+    private async Task RightColumnSelected(ChangeEventArgs e)
+    {
+        RightColumnItem = e.Value.ToString();
+    }
+
+    #endregion
 
     private string GetTableName(string alias)
     {
         var pt = QueryController.FromTables.First(t => t.Alias == alias);
-        return pt.StoreDefinition.Name;
+        return pt.Name;
     }
 
     private async Task SetDeletedValue(ChangeEventArgs args, TableJoinModel j)
     {
         j.IsDeleted = (bool)args.Value;
-        QueryController.RegenerateTableLinks();
+        QueryController.UpdateLinksFromTableJoins();
         await ModelChanged.InvokeAsync(null);
     }
 
@@ -103,14 +339,14 @@
     private string GetCheckboxName(TableJoinModel tbl)
     {
         var result = $"chk{tbl.Source.GetJoinString()}";
-        result = result.Replace(".", "").Replace("=", "");
+        result = result.Replace(".", "").Replace("=", "").Replace(" ", "");
         return result;
     }
 
     private string GetCollapseName(TableJoinModel tbl)
     {
         var result = $"collapse{tbl.Source.GetJoinString()}";
-        result = result.Replace(".", "").Replace("=", "");
+        result = result.Replace(".", "").Replace("=", "").Replace(" ", "");
         return result;
     }
 
@@ -129,6 +365,73 @@
     private async Task RowClick(int rowIndex)
     {
         QueryController.AddFromTable(_tables[rowIndex]);
+        await ModelChanged.InvokeAsync(null);
+    }
+
+    private int _selectedJoinIndex;
+
+    private async Task RowPropertiesClick(int rowIndex)
+    {
+        _selectedJoinIndex = rowIndex;
+        var join = QueryController.FromTableJoins[rowIndex];
+
+        var leftIndex = QueryController.FromTables.FindIndex(t => t.Alias == join.Source.LeftObjectAlias);
+        LeftTableItem = leftIndex.ToString();
+        LeftColumnItem = QueryController.FromTables[leftIndex].Properties.FindIndex(t => t.Name == join.Source.LeftField).ToString();
+
+        var rightIndex = QueryController.FromTables.FindIndex(t => t.Alias == join.Source.RightObjectAlias);
+        RightTableItem = rightIndex.ToString();
+        RightColumnItem = QueryController.FromTables[rightIndex].Properties.FindIndex(t => t.Name == join.Source.RightField).ToString();
+
+        StateHasChanged();
+        await ModelChanged.InvokeAsync(null);
+    }
+
+    private async Task SaveJoinClick(MouseEventArgs args)
+    {
+        if (!ChangingJoinValid())
+        {
+            return;
+        }
+
+        var leftIndex = Convert.ToInt32(LeftTableItem);
+        var leftColIndex = Convert.ToInt32(LeftColumnItem);
+        var rightIndex = Convert.ToInt32(RightTableItem);
+        var rightColIndex = Convert.ToInt32(RightColumnItem);
+        TableJoinModel join;
+
+        if (_selectedJoinIndex == -1)
+        {
+            join = new TableJoinModel() { JoinType = "Inner", Source = new StoreObjectJoin() { JoinType = "Inner" } };
+            QueryController.FromTableJoins.Add(join);
+        }
+        else
+        {
+            join = QueryController.FromTableJoins[_selectedJoinIndex];
+        }
+
+        join.Source.LeftObjectAlias = QueryController.FromTables[leftIndex].Alias;
+        join.Source.LeftField = QueryController.FromTables[leftIndex].Properties[leftColIndex].Name;
+        join.Source.RightObjectAlias = QueryController.FromTables[rightIndex].Alias;
+        join.Source.RightField = QueryController.FromTables[rightIndex].Properties[rightColIndex].Name;
+
+        QueryController.UpdateLinksFromTableJoins();
+        StateHasChanged();
+        await ModelChanged.InvokeAsync(null);
+    }
+
+    private bool ChangingJoinValid()
+    {
+        return true;
+    }
+
+    private async Task AddJoinClick()
+    {
+        _selectedJoinIndex = -1;
+        LeftTableItem = null;
+        RightTableItem = null;
+
+        StateHasChanged();
         await ModelChanged.InvokeAsync(null);
     }
 

@@ -19,6 +19,19 @@ namespace Platz.ObjectBuilder.Schema
 
         public string OutputName {  get { return string.IsNullOrWhiteSpace(Alias) ? StoreProperty.Name : Alias; } }
 
+        public string ResolvedType
+        {
+            get
+            {
+                if (StoreProperty.Fk)
+                {
+                    return StoreProperty.ForeignKeys[0].Type;
+                }
+
+                return StoreProperty.Type;
+            }
+        }
+
         public QuerySelectProperty() { }
 
         public QuerySelectProperty(QueryFromTable fromTable, StoreProperty source)

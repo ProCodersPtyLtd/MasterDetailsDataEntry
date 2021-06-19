@@ -18,10 +18,10 @@ namespace Platz.ObjectBuilder.Tests.Validation
         public void SelectFieldsUniqueFailTest()
         {
             var qc = new QueryController(null);
-            var t1 = new QueryFromTable { Alias = "t", StoreDefinition = new StoreDefinition { Name = "table1" } };
-            var p1 = new QueryFromProperty { Alias = "id", StoreProperty = new StoreProperty { Name = "x1" } };
-            var p2 = new QueryFromProperty { StoreProperty = new StoreProperty { Name = "id" } };
-            var p3 = new QueryFromProperty { Alias = "myid", StoreProperty = new StoreProperty { Name = "x2" } };
+            var t1 = new QueryFromTable(new StoreDefinition { Name = "table1" }) { Alias = "t" };
+            var p1 = new QueryFromProperty { Alias = "id", OriginalStoreProperty = new StoreProperty { Name = "x1" } };
+            var p2 = new QueryFromProperty { OriginalStoreProperty = new StoreProperty { Name = "id" } };
+            var p3 = new QueryFromProperty { Alias = "myid", OriginalStoreProperty = new StoreProperty { Name = "x2" } };
             qc.AddSelectionProperty(t1, p1);
             qc.AddSelectionProperty(t1, p2);
             qc.AddSelectionProperty(t1, p3);
@@ -38,10 +38,10 @@ namespace Platz.ObjectBuilder.Tests.Validation
         public void SelectFieldsUniquePassTest()
         {
             var qc = new QueryController(null);
-            var t1 = new QueryFromTable { Alias = "t", StoreDefinition = new StoreDefinition { Name = "table1" } };
-            var p1 = new QueryFromProperty { Alias = "id2", StoreProperty = new StoreProperty { Name = "id" } };
-            var p2 = new QueryFromProperty { StoreProperty = new StoreProperty { Name = "id" } };
-            var p3 = new QueryFromProperty { Alias = "myid", StoreProperty = new StoreProperty { Name = "id" } };
+            var t1 = new QueryFromTable(new StoreDefinition { Name = "table1" }) { Alias = "t" };
+            var p1 = new QueryFromProperty { Alias = "id2", OriginalStoreProperty = new StoreProperty { Name = "id" } };
+            var p2 = new QueryFromProperty { OriginalStoreProperty = new StoreProperty { Name = "id" } };
+            var p3 = new QueryFromProperty { Alias = "myid", OriginalStoreProperty = new StoreProperty { Name = "id" } };
             qc.AddSelectionProperty(t1, p1);
             qc.AddSelectionProperty(t1, p2);
             qc.AddSelectionProperty(t1, p3);

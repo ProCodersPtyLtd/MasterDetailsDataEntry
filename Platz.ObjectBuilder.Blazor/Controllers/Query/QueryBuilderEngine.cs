@@ -68,14 +68,14 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
                     throw new Exception($"Table with alias '{f.Field.ObjectAlias}' not found");
                 }
 
-                var storeProperty = table.Properties.FirstOrDefault(p => p.StoreProperty.Name == f.Field.FieldName);
+                var storeProperty = table.Properties.FirstOrDefault(p => p.Name == f.Field.FieldName);
 
                 if (storeProperty == null)
                 {
                     throw new Exception($"Field '{f.Field.FieldName}' not found in table with alias '{f.Field.ObjectAlias}'");
                 }
 
-                var newSelectionProperty = new QuerySelectProperty(table, storeProperty.StoreProperty)
+                var newSelectionProperty = new QuerySelectProperty(table, storeProperty.OriginalStoreProperty)
                 {
                     IsOutput = f.IsOutput,
                     GroupByFunction = f.GroupByFunction,
@@ -98,7 +98,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
 
             foreach (var p in newTable.Properties)
             {
-                if (!selectedProps.ContainsKey(p.StoreProperty.Name))
+                if (!selectedProps.ContainsKey(p.Name))
                 {
                     p.Selected = true;
                     qc.AddSelectionProperty(newTable, p);
@@ -135,7 +135,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
 
                 result.Query.Tables = qc.FromTables.ToDictionary(
                     t => t.Alias,
-                    t => new StoreTableReference { ObjectAlias = t.Alias, TableName = t.StoreDefinition.Name }
+                    t => new StoreTableReference { ObjectAlias = t.Alias, TableName = t.Name }
                     );
 
                 // ToDo: composite foreign keys not supported currently
@@ -181,7 +181,8 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
             var alias = split[0];
             var name = split[1];
             var def = qc.FromTables.First(t => t.Alias == alias);
-            var result = def.StoreDefinition.Properties[name];
+            //var result = def.StoreDefinition.Properties[name];
+            var result = def.Properties.First(p => p.Name == name)?.OriginalStoreProperty;
             return result;
         }
     }
