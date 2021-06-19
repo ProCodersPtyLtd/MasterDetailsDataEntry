@@ -15,22 +15,22 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
         void SelectPropertiesFromNewTable(IQueryController qc, QueryFromTable newTable);
         StoreQuery GenerateQuery(IQueryModel qm);
         QueryModel LoadFromStoreQuery(IQueryModel qm, StoreQuery q);
-        List<RuleValidationResult> Validate(IQueryModel qm);
+        List<RuleValidationResult> Validate(IQueryControllerModel qm);
         string QueryExprToString(QueryExpression expr, Dictionary<string, string> operatorsMap = null);
     }
 
     public class QueryBuilderEngine : IQueryBuilderEngine
     {
         private readonly ISqlExpressionEngine _expressions;
-        private readonly IBuilderRuleFactory<IQueryBuilderRule, IQueryModel> _ruleEngine;
+        private readonly IBuilderRuleFactory<IQueryBuilderRule, IQueryControllerModel> _ruleEngine;
 
-        public QueryBuilderEngine(ISqlExpressionEngine expressions, IBuilderRuleFactory<IQueryBuilderRule, IQueryModel> ruleEngine)
+        public QueryBuilderEngine(ISqlExpressionEngine expressions, IBuilderRuleFactory<IQueryBuilderRule, IQueryControllerModel> ruleEngine)
         {
             _expressions = expressions;
             _ruleEngine = ruleEngine;
         }
 
-        public List<RuleValidationResult> Validate(IQueryModel qm)
+        public List<RuleValidationResult> Validate(IQueryControllerModel qm)
         {
             var result = _ruleEngine.ValidateAllRules(qm);
             return result;

@@ -12,6 +12,7 @@ namespace Platz.ObjectBuilder
         public string RuleName { get; set; }
         public string Message { get; set; }
         public bool IsFailed { get; set; }
+        public List<RuleValidationResult> Results { get; set; }
 
         public RuleValidationResult()
         { }

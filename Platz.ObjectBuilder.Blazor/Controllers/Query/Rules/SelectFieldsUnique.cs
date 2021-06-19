@@ -22,11 +22,36 @@ namespace Platz.ObjectBuilder.Blazor.Validation.Rules
 
             if (notUnique.Any())
             {
-                var result = new RuleValidationResult(GetType().Name, $"Query output fields must have unique names, these fields are not unique: {string.Join(", ", notUnique)}");
+                var result = new RuleValidationResult(GetType().Name, $"Query '{qm.Name}' output fields must have unique names, these fields are not unique: {string.Join(", ", notUnique)}");
                 return result;
             }
 
             return null;
+        }
+
+        public RuleValidationResult Validate(IQueryControllerModel model)
+        {
+            var list = new List<RuleValidationResult>();
+
+            foreach (var q in model.SubQueryList)
+            {
+                var r = Validate(q);
+
+                if (r != null)
+                {
+                    list.Add(r);
+                }
+            }
+
+            if (list.Any())
+            {
+                var result = new RuleValidationResult($"SelectFieldsUnique failed") { Results = list };
+                return result;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

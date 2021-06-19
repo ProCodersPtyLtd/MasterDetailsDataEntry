@@ -55,6 +55,11 @@ namespace Platz.ObjectBuilder.Blazor.Validation
                 if (vr != null && vr.IsFailed)
                 {
                     result.Add(vr);
+
+                    if (vr.Results.Any())
+                    {
+                        result.AddRange(vr.Results);
+                    }
                 }
             }
 

@@ -15,12 +15,20 @@ using System.Text;
 
 namespace Platz.ObjectBuilder
 {
-    public interface IQueryController //: IQueryModel
+    public interface IQueryControllerModel
     {
         StoreQueryParameters StoreParameters { get; }
+        //string Name { get; set; }
         StoreSchema Schema { get; }
-        string Errors { get; set; }
         List<IQueryModel> SubQueryList { get; }
+    }
+
+    public interface IQueryController : IQueryControllerModel
+    {
+        //StoreQueryParameters StoreParameters { get; }
+        //StoreSchema Schema { get; }
+        string Errors { get; set; }
+        //List<IQueryModel> SubQueryList { get; }
         int SelectedQueryIndex { get; set; }
         // used for UI
         IQueryModel SelectedQuery { get; }
@@ -36,6 +44,7 @@ namespace Platz.ObjectBuilder
 
         bool NeedRedrawLinks { get; set; }
 
+        void RemoveSubQuery(int index);
         List<DesignQueryObject> GetAvailableQueryObjects();
         void CreateSubQuery(int index);
         void Configure(IQueryControllerConfiguration config);
@@ -109,6 +118,16 @@ namespace Platz.ObjectBuilder
             _readerParameters = config.ReaderParameters;
             _resolver = config.Resolver;
             _expressions = config.ExpressionEngine;
+        }
+
+        public void RemoveSubQuery(int index)
+        {
+            SubQueryList.RemoveAt(index);
+
+            if (SelectedQueryIndex >= SubQueryList.Count)
+            {
+                SelectedQueryIndex = SubQueryList.Count - 1;
+            }
         }
 
         public List<DesignQueryObject> GetAvailableQueryObjects()
@@ -259,12 +278,33 @@ namespace Platz.ObjectBuilder
                 return null;
             }
 
-            return _engine.GenerateQuery(MainQuery);
+            var subQueries = new List<StoreQuery>();
+
+            for (int i = 1; i < SubQueryList.Count; i++)
+            {
+                var q = SubQueryList[i];
+                var gen = _engine.GenerateQuery(q);
+                subQueries.Add(gen);
+            }
+
+            var result = _engine.GenerateQuery(MainQuery);
+            result.Query.SubQueries = subQueries.ToDictionary(s => s.Name, s => s.Query);
+            return result;
         }
 
         public void Validate()
         {
-            ValidationResults = _engine.Validate(MainQuery);
+            ValidationResults = new List<RuleValidationResult>();
+
+            //for (int i = 1; i < SubQueryList.Count; i++)
+            //{
+            //    var q = SubQueryList[i];
+            //    var qr = _engine.Validate(q);
+            //    ValidationResults.AddRange(qr);
+            //}
+
+            var mainValRes = _engine.Validate(this);
+            ValidationResults.AddRange(mainValRes);
         }
 
         private List<StoreObjectJoin> GenerateJoins()
