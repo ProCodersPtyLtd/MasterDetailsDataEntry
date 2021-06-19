@@ -221,6 +221,17 @@
             SelectedQueryIndex = QueryController.SelectedQueryIndex;
             LeftTableItem = null;
             RightTableItem = null;
+            return;
+        }
+
+        int i;
+
+        if ((int.TryParse(LeftTableItem, out i) && i >= QueryController.FromTables.Count)
+            || (int.TryParse(RightTableItem, out i) && i >= QueryController.FromTables.Count))
+        {
+            LeftTableItem = null;
+            RightTableItem = null;
+            return;
         }
     }
 

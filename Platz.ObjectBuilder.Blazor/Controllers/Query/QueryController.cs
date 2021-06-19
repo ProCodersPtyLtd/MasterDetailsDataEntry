@@ -56,7 +56,7 @@ namespace Platz.ObjectBuilder
         string GenerateObjectId(string sfx, int objId, int propId = 0);
 
         void AliasChanged(string oldAlias, string newAlias);
-        void RegenerateTableLinks();
+        //void RegenerateTableLinks();
         void UpdateLinksFromTableJoins();
         void Validate();
         List<string> GetFileList(string path);
@@ -167,7 +167,10 @@ namespace Platz.ObjectBuilder
             var queryModel = _engine.LoadFromStoreQuery(MainQuery, q);
             StoreParameters = queryModel.StoreParameters;
             MainQuery.FromTables = queryModel.FromTables;
-            RegenerateTableLinks();
+            
+            //RegenerateTableLinks();
+            UpdateLinksFromTableJoins();
+            
             MainQuery.SelectionProperties = queryModel.SelectionProperties;
 
             foreach (var sp in MainQuery.SelectionProperties)
@@ -299,7 +302,8 @@ namespace Platz.ObjectBuilder
                 var ft = new QueryFromTable(qo.Query);
                 ft.Alias = GetDefaultAlias(ft);
                 SelectedQuery.FromTables.Add(ft);
-                RegenerateTableLinks();
+                //RegenerateTableLinks();
+                GenerateJoinsForNewTable(ft);
                 _engine.SelectPropertiesFromNewTable(this, ft);
             }
             else
@@ -307,7 +311,8 @@ namespace Platz.ObjectBuilder
                 var ft = new QueryFromTable(qo.Table);
                 ft.Alias = GetDefaultAlias(ft);
                 SelectedQuery.FromTables.Add(ft);
-                RegenerateTableLinks();
+                //RegenerateTableLinks();
+                GenerateJoinsForNewTable(ft);
                 _engine.SelectPropertiesFromNewTable(this, ft);
             }
         }
@@ -316,13 +321,30 @@ namespace Platz.ObjectBuilder
         {
             var table = SelectedQuery.FromTables.Single(t => t.Alias == alias && t.Name == tableName);
             SelectedQuery.FromTables.Remove(table);
-            RegenerateTableLinks();
+            //RegenerateTableLinks();
+            RemoveJoinsForTable(table);
         }
 
         public QueryFromTable FindFromTable(string tableName, string alias)
         {
             var table = SelectedQuery.FromTables.SingleOrDefault(t => t.Alias == alias && t.Name == tableName);
             return table;
+        }
+
+        public void GenerateJoinsForNewTable(QueryFromTable t)
+        {
+            var joins = GenerateJoins();
+            joins = joins.Where(j => j.LeftObjectAlias == t.Alias || j.RightObjectAlias == t.Alias).ToList();
+            var addJoins = joins.Select(j => new TableJoinModel { Source = j, JoinType = "Inner" });
+            SelectedQuery.FromTableJoins.AddRange(addJoins);
+            UpdateLinksFromTableJoins();
+        }
+
+        public void RemoveJoinsForTable(QueryFromTable t)
+        {
+            var lostJoins = SelectedQuery.FromTableJoins.Where(j => j.Source.LeftObjectAlias == t.Alias || j.Source.RightObjectAlias == t.Alias);
+            SelectedQuery.FromTableJoins = SelectedQuery.FromTableJoins.Except(lostJoins).ToList();
+            UpdateLinksFromTableJoins();
         }
 
         public void UpdateLinksFromTableJoins()
@@ -353,17 +375,17 @@ namespace Platz.ObjectBuilder
             }
         }
 
-        public void RegenerateTableLinks()
-        {
-            var joins = GenerateJoins();
+        //public void RegenerateTableLinks()
+        //{
+        //    var joins = GenerateJoins();
 
-            var newJoins = joins.Where(j => !SelectedQuery.FromTableJoins.Any(f => f.Source.GetJoinString() == j.GetJoinString()));
-            SelectedQuery.FromTableJoins.AddRange(newJoins.Select(j => new TableJoinModel { Source = j, JoinType = "Inner" }));
-            var lostJoins = SelectedQuery.FromTableJoins.Where(j => !SelectedQuery.FromTables.Any(t => t.Alias == j.Source.LeftObjectAlias) || !SelectedQuery.FromTables.Any(t => t.Alias == j.Source.RightObjectAlias));
-            SelectedQuery.FromTableJoins = SelectedQuery.FromTableJoins.Except(lostJoins).ToList();
+        //    var newJoins = joins.Where(j => !SelectedQuery.FromTableJoins.Any(f => f.Source.GetJoinString() == j.GetJoinString()));
+        //    SelectedQuery.FromTableJoins.AddRange(newJoins.Select(j => new TableJoinModel { Source = j, JoinType = "Inner" }));
+        //    var lostJoins = SelectedQuery.FromTableJoins.Where(j => !SelectedQuery.FromTables.Any(t => t.Alias == j.Source.LeftObjectAlias) || !SelectedQuery.FromTables.Any(t => t.Alias == j.Source.RightObjectAlias));
+        //    SelectedQuery.FromTableJoins = SelectedQuery.FromTableJoins.Except(lostJoins).ToList();
 
-            UpdateLinksFromTableJoins();
-        }
+        //    UpdateLinksFromTableJoins();
+        //}
 
         private string GetDefaultAlias(QueryFromTable ft)
         {
