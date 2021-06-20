@@ -20,7 +20,17 @@ namespace Platz.ObjectBuilder
         StoreQueryParameters StoreParameters { get; }
         //string Name { get; set; }
         StoreSchema Schema { get; }
+        IQueryModel MainQuery { get; }
         List<IQueryModel> SubQueryList { get; }
+    }
+
+    public class QueryControllerModel : IQueryControllerModel
+    {
+        public StoreQueryParameters StoreParameters { get; set; }
+        //string Name { get; set; }
+        public StoreSchema Schema { get; set; }
+        public IQueryModel MainQuery { get; set; }
+        public List<IQueryModel> SubQueryList { get; set; }
     }
 
     public interface IQueryController : IQueryControllerModel
@@ -33,7 +43,7 @@ namespace Platz.ObjectBuilder
         // used for UI
         IQueryModel SelectedQuery { get; }
         // used only for load/save/validate
-        IQueryModel MainQuery { get; }
+        //IQueryModel MainQuery { get; }
 
         List<TableLink> FromTableLinks { get; }
         List<TableJoinModel> FromTableJoins { get; }
@@ -61,6 +71,7 @@ namespace Platz.ObjectBuilder
         StoreQuery GenerateQuery();
         void SaveQuery(string path);
         void SaveSchema(string path);
+        void LoadFromFile(string path, string fileName);
 
         string GenerateObjectId(string sfx, int objId, int propId = 0);
 
@@ -69,7 +80,6 @@ namespace Platz.ObjectBuilder
         void UpdateLinksFromTableJoins();
         void Validate();
         List<string> GetFileList(string path);
-        void LoadFromFile(string path, string fileName);
         bool FileExists(string path);
         string GenerateFileName(string path);
         void Clear();
@@ -183,14 +193,16 @@ namespace Platz.ObjectBuilder
             var parameters = new StorageParameters { FileName = fileName, Path = path };
             var q = _storage.LoadQuery(parameters);
             Clear();
-            var queryModel = _engine.LoadFromStoreQuery(MainQuery, q);
-            StoreParameters = queryModel.StoreParameters;
-            MainQuery.FromTables = queryModel.FromTables;
-            
+            var fullQuery = _engine.LoadQueryFromStoreQuery(Schema, q);
+            StoreParameters = fullQuery.StoreParameters;
+            //MainQuery.FromTables = fullQuery.MainQuery.FromTables;
+            SubQueryList = fullQuery.SubQueryList;
+            SubQueryList.Insert(0, fullQuery.MainQuery);
+
             //RegenerateTableLinks();
             UpdateLinksFromTableJoins();
             
-            MainQuery.SelectionProperties = queryModel.SelectionProperties;
+            //MainQuery.SelectionProperties = fullQuery.MainQuery.SelectionProperties;
 
             foreach (var sp in MainQuery.SelectionProperties)
             {
@@ -203,7 +215,7 @@ namespace Platz.ObjectBuilder
                 }
             }
 
-            MainQuery.WhereClause = queryModel.WhereClause;
+            //MainQuery.WhereClause = fullQuery.MainQuery.WhereClause;
         }
 
         public bool FileExists(string path)
@@ -287,7 +299,7 @@ namespace Platz.ObjectBuilder
                 subQueries.Add(gen);
             }
 
-            var result = _engine.GenerateQuery(MainQuery);
+            var result = _engine.GenerateQuery(MainQuery, StoreParameters);
             result.Query.SubQueries = subQueries.ToDictionary(s => s.Name, s => s.Query);
             return result;
         }

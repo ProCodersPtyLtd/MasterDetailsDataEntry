@@ -13,8 +13,9 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
     public interface IQueryBuilderEngine
     {
         void SelectPropertiesFromNewTable(IQueryController qc, QueryFromTable newTable);
-        StoreQuery GenerateQuery(IQueryModel qm);
-        QueryModel LoadFromStoreQuery(IQueryModel qm, StoreQuery q);
+        StoreQuery GenerateQuery(IQueryModel qm, StoreQueryParameters StoreParameters = null);
+        //QueryModel LoadSingleQueryFromStoreQuery(StoreSchema schema, StoreQuery q);
+        QueryControllerModel LoadQueryFromStoreQuery(StoreSchema schema, StoreQuery q);
         List<RuleValidationResult> Validate(IQueryControllerModel qm);
         string QueryExprToString(QueryExpression expr, Dictionary<string, string> operatorsMap = null);
     }
@@ -36,10 +37,25 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
             return result;
         }
 
-        public QueryModel LoadFromStoreQuery(IQueryModel qm, StoreQuery q)
+        public QueryControllerModel LoadQueryFromStoreQuery(StoreSchema schema, StoreQuery q)
         {
-            var result = new QueryModel();
-            // read parameters
+            var result = new QueryControllerModel() { SubQueryList = new List<IQueryModel>(), Schema = schema };
+
+            var loadedSubQueryList = new List<IQueryModel>();
+
+            foreach (var qName in q.Query.SubQueries.Keys)
+            {
+                //var storeQuery = q.Query.SubQueries[qName];
+                //var subQuery = new QueryModel() { Name = qName };
+                var subQuery = ReadQueryTables(loadedSubQueryList, qName, schema, null, q.Query.SubQueries);
+                //subQuery.Name = qName;
+                result.SubQueryList.Add(subQuery);
+            }
+
+            //result.MainQuery = new QueryModel();
+            result.MainQuery = ReadQueryTables(loadedSubQueryList, "Main", schema, q.Query, q.Query.SubQueries);
+
+            result.StoreParameters = new StoreQueryParameters();
             result.StoreParameters.DataService = q.DataService;
             result.StoreParameters.QueryName = q.Name;
             result.StoreParameters.Namespace = q.Namespace;
@@ -47,19 +63,79 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
             result.Schema.Name = q.SchemaName;
             result.Schema.Version = q.SchemaVersion;
 
-            // from
-            foreach (var t in q.Query.Tables)
+            return result;
+        }
+
+        //private static void ReadFields(IQueryModel result, StoreQueryDefinition storeQuery)
+        //{
+        //    foreach (var f in storeQuery.Fields.Values)
+        //    {
+        //        var table = result.FromTables.FirstOrDefault(t => t.Alias == f.Field.ObjectAlias);
+
+        //        if (table == null)
+        //        {
+        //            throw new Exception($"Table with alias '{f.Field.ObjectAlias}' not found");
+        //        }
+
+        //        var storeProperty = table.Properties.FirstOrDefault(p => p.Name == f.Field.FieldName);
+
+        //        if (storeProperty == null)
+        //        {
+        //            throw new Exception($"Field '{f.Field.FieldName}' not found in table with alias '{f.Field.ObjectAlias}'");
+        //        }
+
+        //        var newSelectionProperty = new QuerySelectProperty(table, storeProperty.OriginalStoreProperty)
+        //        {
+        //            IsOutput = f.IsOutput,
+        //            GroupByFunction = f.GroupByFunction,
+        //            Alias = f.FieldAlias != f.Field.FieldName ? f.FieldAlias : ""
+        //            // ToDo: Filter is not stored and cannot be loaded
+        //        };
+
+        //        result.SelectionProperties.Add(newSelectionProperty);
+        //    }
+        //}
+
+        private static IQueryModel ReadQueryTables(List<IQueryModel> loadedSubQueryList, string name,  StoreSchema schema, StoreQueryDefinition queryDef, Dictionary<string, StoreQueryDefinition> subQueries)
+        {
+            var result = loadedSubQueryList.FirstOrDefault(l => l.Name == name);
+
+            if (result != null)
             {
-                var schemaTable = qm.Schema.Definitions[t.Value.TableName];
-                var ft = new QueryFromTable(schemaTable);
-                ft.Alias = t.Value.ObjectAlias;
-                result.FromTables.Add(ft);
+                return result;
             }
 
-            // qc.RegenerateTableLinks();
+            queryDef = queryDef ?? subQueries[name];
+            result = new QueryModel() { Name = name };
+
+            foreach (var t in queryDef.Tables)
+            {
+                if (schema.Definitions.ContainsKey(t.Value.TableName))
+                {
+                    // not subquery table 
+                    var schemaTable = schema.Definitions[t.Value.TableName];
+                    var ft = new QueryFromTable(schemaTable);
+                    ft.Alias = t.Value.ObjectAlias;
+                    result.FromTables.Add(ft);
+                }
+                else
+                {
+                    if (!subQueries.ContainsKey(t.Value.TableName))
+                    {
+                        throw new Exception($"Table or SubQuery with name '{t.Value.TableName}' not found");
+                    }
+
+                    var subQuery = ReadQueryTables(loadedSubQueryList, t.Value.TableName, schema, null, subQueries);
+                    var ft = new QueryFromTable(subQuery);
+                    ft.Alias = t.Value.ObjectAlias;
+                    result.FromTables.Add(ft);
+                }
+            }
+
+            loadedSubQueryList.Add(result);
 
             // fields
-            foreach (var f in q.Query.Fields.Values)
+            foreach (var f in queryDef.Fields.Values)
             {
                 var table = result.FromTables.FirstOrDefault(t => t.Alias == f.Field.ObjectAlias);
 
@@ -87,10 +163,118 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
             }
 
             // Where
-            result.WhereClause = QueryExpressionHelper.QueryExprToString(q.Query.Where.Expression);
+            result.WhereClause = QueryExpressionHelper.QueryExprToString(queryDef.Where.Expression);
 
             return result;
         }
+
+        //private static void ReadQueryTables(IQueryModel result, StoreSchema schema, StoreQueryDefinition queryDef, Dictionary<string, StoreQueryDefinition> subQueries)
+        //{
+        //    foreach (var t in queryDef.Tables)
+        //    {
+        //        if (schema.Definitions.ContainsKey(t.Value.TableName))
+        //        {
+        //            // not subquery table 
+        //            var schemaTable = schema.Definitions[t.Value.TableName];
+        //            var ft = new QueryFromTable(schemaTable);
+        //            ft.Alias = t.Value.ObjectAlias;
+        //            result.FromTables.Add(ft);
+        //        }
+        //        else
+        //        {
+        //            if (!subQueries.ContainsKey(t.Value.TableName))
+        //            {
+        //                throw new Exception($"Table or SubQuery with name '{t.Value.TableName}' not found");
+        //            }
+
+        //            //var subQuery = new QueryModel
+        //            //var ft = new QueryFromTable(qo.Query);
+        //        }
+        //    }
+        //}
+
+        //public QueryControllerModel LoadQueryFromStoreQuery(StoreSchema schema, StoreQuery q)
+        //{
+        //    var result = new QueryControllerModel() { SubQueryList = new List<IQueryModel>(), Schema = schema };
+        //    var main = LoadSingleQueryFromStoreQuery(schema, q);
+        //    result.SubQueryList.Add(main);
+
+        //    foreach (var s in q.Query.SubQueries.Values)
+        //    {
+        //        var subQuery = LoadSingleQueryFromStoreQueryDefinition(schema, s);
+        //    }
+
+        //    return result;
+        //}
+
+        //public QueryModel LoadSingleQueryFromStoreQuery(StoreSchema schema, StoreQuery q)
+        //{
+        //    var result = new QueryModel();
+        //    // read parameters
+        //    result.StoreParameters.DataService = q.DataService;
+        //    result.StoreParameters.QueryName = q.Name;
+        //    result.StoreParameters.Namespace = q.Namespace;
+        //    result.StoreParameters.QueryReturnType = q.ReturnTypeName;
+        //    result.Schema.Name = q.SchemaName;
+        //    result.Schema.Version = q.SchemaVersion;
+
+        //    // from
+        //    foreach (var t in q.Query.Tables)
+        //    {
+        //        if (schema.Definitions.ContainsKey(t.Value.TableName))
+        //        {
+        //            // not subquery table 
+        //            var schemaTable = schema.Definitions[t.Value.TableName];
+        //            var ft = new QueryFromTable(schemaTable);
+        //            ft.Alias = t.Value.ObjectAlias;
+        //            result.FromTables.Add(ft);
+        //        }
+        //        else
+        //        {
+        //            if (!q.Query.SubQueries.ContainsKey(t.Value.TableName))
+        //            {
+        //                throw new Exception($"Table or SubQuery with name '{t.Value.TableName}' not found");
+        //            }
+        //            //var subQuery = q.Query.SubQueries[t.Value.TableName];
+        //            //var ft = new QueryFromTable(subQuery);
+        //        }
+        //    }
+
+        //    // qc.RegenerateTableLinks();
+
+        //    // fields
+        //    foreach (var f in q.Query.Fields.Values)
+        //    {
+        //        var table = result.FromTables.FirstOrDefault(t => t.Alias == f.Field.ObjectAlias);
+
+        //        if (table == null)
+        //        {
+        //            throw new Exception($"Table with alias '{f.Field.ObjectAlias}' not found");
+        //        }
+
+        //        var storeProperty = table.Properties.FirstOrDefault(p => p.Name == f.Field.FieldName);
+
+        //        if (storeProperty == null)
+        //        {
+        //            throw new Exception($"Field '{f.Field.FieldName}' not found in table with alias '{f.Field.ObjectAlias}'");
+        //        }
+
+        //        var newSelectionProperty = new QuerySelectProperty(table, storeProperty.OriginalStoreProperty)
+        //        {
+        //            IsOutput = f.IsOutput,
+        //            GroupByFunction = f.GroupByFunction,
+        //            Alias = f.FieldAlias != f.Field.FieldName ? f.FieldAlias : ""
+        //            // ToDo: Filter is not stored and cannot be loaded
+        //        };
+
+        //        result.SelectionProperties.Add(newSelectionProperty);
+        //    }
+
+        //    // Where
+        //    result.WhereClause = QueryExpressionHelper.QueryExprToString(q.Query.Where.Expression);
+
+        //    return result;
+        //}
 
         public void SelectPropertiesFromNewTable(IQueryController qc, QueryFromTable newTable)
         {
@@ -106,20 +290,27 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
             }
         }
 
-        public StoreQuery GenerateQuery(IQueryModel qc)
+        public StoreQuery GenerateQuery(IQueryModel qc, StoreQueryParameters storeParameters = null)
         {
             try
             {
-                var result = new StoreQuery()
+                var result = new StoreQuery();
+
+                if (storeParameters != null)
                 {
-                    DataService = qc.StoreParameters.DataService,
-                    Name = qc.StoreParameters.QueryName,
-                    Namespace = qc.StoreParameters.Namespace,
-                    ReturnTypeName = qc.StoreParameters.QueryReturnType,
-                    SchemaName = qc.Schema.Name,
-                    SchemaFile = qc.StoreParameters.SchemaFileName,
-                    SchemaVersion = qc.Schema.Version
-                };
+                    result.DataService = storeParameters.DataService;
+                    result.Name = storeParameters.QueryName;
+                    result.Namespace = storeParameters.Namespace;
+                    result.ReturnTypeName = storeParameters.QueryReturnType;
+                    result.SchemaFile = storeParameters.SchemaFileName;
+                }
+                else
+                {
+                    result.Name = qc.Name;
+                }
+
+                result.SchemaName = qc.Schema?.Name;
+                result.SchemaVersion = qc.Schema?.Version;
 
                 result.Query = new StoreQueryDefinition();
 

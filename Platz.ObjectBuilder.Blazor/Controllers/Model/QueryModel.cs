@@ -12,7 +12,7 @@ namespace Platz.ObjectBuilder
     public class QueryModel : IQueryModel
     {
         public string Name { get; set; }
-        public StoreQueryParameters StoreParameters { get; set; } = new StoreQueryParameters();
+        //public StoreQueryParameters StoreParameters { get; set; } = new StoreQueryParameters();
         public StoreSchema Schema { get; set; } = new StoreSchema();
         public List<QueryFromTable> FromTables { get; set; } = new List<QueryFromTable>();
         public List<QuerySelectProperty> SelectionProperties { get; set; } = new List<QuerySelectProperty>();
