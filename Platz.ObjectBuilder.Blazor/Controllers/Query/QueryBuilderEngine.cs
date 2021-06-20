@@ -40,19 +40,14 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
         public QueryControllerModel LoadQueryFromStoreQuery(StoreSchema schema, StoreQuery q)
         {
             var result = new QueryControllerModel() { SubQueryList = new List<IQueryModel>(), Schema = schema };
-
             var loadedSubQueryList = new List<IQueryModel>();
 
             foreach (var qName in q.Query.SubQueries.Keys)
             {
-                //var storeQuery = q.Query.SubQueries[qName];
-                //var subQuery = new QueryModel() { Name = qName };
                 var subQuery = ReadQueryTables(loadedSubQueryList, qName, schema, null, q.Query.SubQueries);
-                //subQuery.Name = qName;
                 result.SubQueryList.Add(subQuery);
             }
 
-            //result.MainQuery = new QueryModel();
             result.MainQuery = ReadQueryTables(loadedSubQueryList, "Main", schema, q.Query, q.Query.SubQueries);
 
             result.StoreParameters = new StoreQueryParameters();
@@ -65,36 +60,6 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
 
             return result;
         }
-
-        //private static void ReadFields(IQueryModel result, StoreQueryDefinition storeQuery)
-        //{
-        //    foreach (var f in storeQuery.Fields.Values)
-        //    {
-        //        var table = result.FromTables.FirstOrDefault(t => t.Alias == f.Field.ObjectAlias);
-
-        //        if (table == null)
-        //        {
-        //            throw new Exception($"Table with alias '{f.Field.ObjectAlias}' not found");
-        //        }
-
-        //        var storeProperty = table.Properties.FirstOrDefault(p => p.Name == f.Field.FieldName);
-
-        //        if (storeProperty == null)
-        //        {
-        //            throw new Exception($"Field '{f.Field.FieldName}' not found in table with alias '{f.Field.ObjectAlias}'");
-        //        }
-
-        //        var newSelectionProperty = new QuerySelectProperty(table, storeProperty.OriginalStoreProperty)
-        //        {
-        //            IsOutput = f.IsOutput,
-        //            GroupByFunction = f.GroupByFunction,
-        //            Alias = f.FieldAlias != f.Field.FieldName ? f.FieldAlias : ""
-        //            // ToDo: Filter is not stored and cannot be loaded
-        //        };
-
-        //        result.SelectionProperties.Add(newSelectionProperty);
-        //    }
-        //}
 
         private static IQueryModel ReadQueryTables(List<IQueryModel> loadedSubQueryList, string name,  StoreSchema schema, StoreQueryDefinition queryDef, Dictionary<string, StoreQueryDefinition> subQueries)
         {
@@ -162,50 +127,22 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
                 result.SelectionProperties.Add(newSelectionProperty);
             }
 
+            // Joins
+            foreach (var j in queryDef.Joins)
+            { }
+
+            result.FromTableJoins = queryDef.Joins.Select(j => new TableJoinModel() 
+            { 
+                IsDeleted = false,
+                JoinType = j.JoinType,
+                Source = j
+            }).ToList();
+
             // Where
             result.WhereClause = QueryExpressionHelper.QueryExprToString(queryDef.Where.Expression);
 
             return result;
         }
-
-        //private static void ReadQueryTables(IQueryModel result, StoreSchema schema, StoreQueryDefinition queryDef, Dictionary<string, StoreQueryDefinition> subQueries)
-        //{
-        //    foreach (var t in queryDef.Tables)
-        //    {
-        //        if (schema.Definitions.ContainsKey(t.Value.TableName))
-        //        {
-        //            // not subquery table 
-        //            var schemaTable = schema.Definitions[t.Value.TableName];
-        //            var ft = new QueryFromTable(schemaTable);
-        //            ft.Alias = t.Value.ObjectAlias;
-        //            result.FromTables.Add(ft);
-        //        }
-        //        else
-        //        {
-        //            if (!subQueries.ContainsKey(t.Value.TableName))
-        //            {
-        //                throw new Exception($"Table or SubQuery with name '{t.Value.TableName}' not found");
-        //            }
-
-        //            //var subQuery = new QueryModel
-        //            //var ft = new QueryFromTable(qo.Query);
-        //        }
-        //    }
-        //}
-
-        //public QueryControllerModel LoadQueryFromStoreQuery(StoreSchema schema, StoreQuery q)
-        //{
-        //    var result = new QueryControllerModel() { SubQueryList = new List<IQueryModel>(), Schema = schema };
-        //    var main = LoadSingleQueryFromStoreQuery(schema, q);
-        //    result.SubQueryList.Add(main);
-
-        //    foreach (var s in q.Query.SubQueries.Values)
-        //    {
-        //        var subQuery = LoadSingleQueryFromStoreQueryDefinition(schema, s);
-        //    }
-
-        //    return result;
-        //}
 
         //public QueryModel LoadSingleQueryFromStoreQuery(StoreSchema schema, StoreQuery q)
         //{

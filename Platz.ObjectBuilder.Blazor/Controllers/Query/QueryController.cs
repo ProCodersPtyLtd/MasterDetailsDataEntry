@@ -195,6 +195,7 @@ namespace Platz.ObjectBuilder
             Clear();
             var fullQuery = _engine.LoadQueryFromStoreQuery(Schema, q);
             StoreParameters = fullQuery.StoreParameters;
+            MainQuery = fullQuery.MainQuery;
             //MainQuery.FromTables = fullQuery.MainQuery.FromTables;
             SubQueryList = fullQuery.SubQueryList;
             SubQueryList.Insert(0, fullQuery.MainQuery);
