@@ -15,17 +15,35 @@ using System.Text;
 
 namespace Platz.ObjectBuilder
 {
-    public interface IQueryController //: IQueryModel
+    public interface IQueryControllerModel
     {
         StoreQueryParameters StoreParameters { get; }
+        //string Name { get; set; }
         StoreSchema Schema { get; }
-        string Errors { get; set; }
+        IQueryModel MainQuery { get; }
         List<IQueryModel> SubQueryList { get; }
+    }
+
+    public class QueryControllerModel : IQueryControllerModel
+    {
+        public StoreQueryParameters StoreParameters { get; set; }
+        //string Name { get; set; }
+        public StoreSchema Schema { get; set; }
+        public IQueryModel MainQuery { get; set; }
+        public List<IQueryModel> SubQueryList { get; set; }
+    }
+
+    public interface IQueryController : IQueryControllerModel
+    {
+        //StoreQueryParameters StoreParameters { get; }
+        //StoreSchema Schema { get; }
+        string Errors { get; set; }
+        //List<IQueryModel> SubQueryList { get; }
         int SelectedQueryIndex { get; set; }
         // used for UI
         IQueryModel SelectedQuery { get; }
         // used only for load/save/validate
-        IQueryModel MainQuery { get; }
+        //IQueryModel MainQuery { get; }
 
         List<TableLink> FromTableLinks { get; }
         List<TableJoinModel> FromTableJoins { get; }
@@ -36,6 +54,7 @@ namespace Platz.ObjectBuilder
 
         bool NeedRedrawLinks { get; set; }
 
+        void RemoveSubQuery(int index);
         List<DesignQueryObject> GetAvailableQueryObjects();
         void CreateSubQuery(int index);
         void Configure(IQueryControllerConfiguration config);
@@ -52,6 +71,7 @@ namespace Platz.ObjectBuilder
         StoreQuery GenerateQuery();
         void SaveQuery(string path);
         void SaveSchema(string path);
+        void LoadFromFile(string path, string fileName);
 
         string GenerateObjectId(string sfx, int objId, int propId = 0);
 
@@ -60,7 +80,6 @@ namespace Platz.ObjectBuilder
         void UpdateLinksFromTableJoins();
         void Validate();
         List<string> GetFileList(string path);
-        void LoadFromFile(string path, string fileName);
         bool FileExists(string path);
         string GenerateFileName(string path);
         void Clear();
@@ -109,6 +128,16 @@ namespace Platz.ObjectBuilder
             _readerParameters = config.ReaderParameters;
             _resolver = config.Resolver;
             _expressions = config.ExpressionEngine;
+        }
+
+        public void RemoveSubQuery(int index)
+        {
+            SubQueryList.RemoveAt(index);
+
+            if (SelectedQueryIndex >= SubQueryList.Count)
+            {
+                SelectedQueryIndex = SubQueryList.Count - 1;
+            }
         }
 
         public List<DesignQueryObject> GetAvailableQueryObjects()
@@ -164,14 +193,17 @@ namespace Platz.ObjectBuilder
             var parameters = new StorageParameters { FileName = fileName, Path = path };
             var q = _storage.LoadQuery(parameters);
             Clear();
-            var queryModel = _engine.LoadFromStoreQuery(MainQuery, q);
-            StoreParameters = queryModel.StoreParameters;
-            MainQuery.FromTables = queryModel.FromTables;
-            
+            var fullQuery = _engine.LoadQueryFromStoreQuery(Schema, q);
+            StoreParameters = fullQuery.StoreParameters;
+            MainQuery = fullQuery.MainQuery;
+            //MainQuery.FromTables = fullQuery.MainQuery.FromTables;
+            SubQueryList = fullQuery.SubQueryList;
+            SubQueryList.Insert(0, fullQuery.MainQuery);
+
             //RegenerateTableLinks();
             UpdateLinksFromTableJoins();
             
-            MainQuery.SelectionProperties = queryModel.SelectionProperties;
+            //MainQuery.SelectionProperties = fullQuery.MainQuery.SelectionProperties;
 
             foreach (var sp in MainQuery.SelectionProperties)
             {
@@ -184,7 +216,7 @@ namespace Platz.ObjectBuilder
                 }
             }
 
-            MainQuery.WhereClause = queryModel.WhereClause;
+            //MainQuery.WhereClause = fullQuery.MainQuery.WhereClause;
         }
 
         public bool FileExists(string path)
@@ -259,12 +291,33 @@ namespace Platz.ObjectBuilder
                 return null;
             }
 
-            return _engine.GenerateQuery(MainQuery);
+            var subQueries = new List<StoreQuery>();
+
+            for (int i = 1; i < SubQueryList.Count; i++)
+            {
+                var q = SubQueryList[i];
+                var gen = _engine.GenerateQuery(q);
+                subQueries.Add(gen);
+            }
+
+            var result = _engine.GenerateQuery(MainQuery, StoreParameters);
+            result.Query.SubQueries = subQueries.ToDictionary(s => s.Name, s => s.Query);
+            return result;
         }
 
         public void Validate()
         {
-            ValidationResults = _engine.Validate(MainQuery);
+            ValidationResults = new List<RuleValidationResult>();
+
+            //for (int i = 1; i < SubQueryList.Count; i++)
+            //{
+            //    var q = SubQueryList[i];
+            //    var qr = _engine.Validate(q);
+            //    ValidationResults.AddRange(qr);
+            //}
+
+            var mainValRes = _engine.Validate(this);
+            ValidationResults.AddRange(mainValRes);
         }
 
         private List<StoreObjectJoin> GenerateJoins()

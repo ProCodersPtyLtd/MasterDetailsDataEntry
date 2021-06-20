@@ -32,7 +32,7 @@ namespace Platz.ObjectBuilder
             services.AddSingleton<IStoreDatabaseDriver, SqlJsonStoreDatabaseDriver>();
             services.AddSingleton<IMigrationAggregator, MigrationAggregator>();
 
-            services.AddSingleton<IBuilderRuleFactory<IQueryBuilderRule, IQueryModel>, BuilderRuleFactory<IQueryBuilderRule, IQueryModel>>();
+            services.AddSingleton<IBuilderRuleFactory<IQueryBuilderRule, IQueryControllerModel>, BuilderRuleFactory<IQueryBuilderRule, IQueryControllerModel>>();
             services.AddSingleton<IBuilderRuleFactory<ISchemaBuilderRule, DesignSchema>, BuilderRuleFactory<ISchemaBuilderRule, DesignSchema>>();
             return services;
         }

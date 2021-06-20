@@ -1,39 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Platz.ObjectBuilder.Blazor.Validation.Rules
 {
     public class StoreSettingsNotEmpty : IQueryBuilderRule
     {
-        public RuleValidationResult Validate(IQueryModel qm)
+        public RuleValidationResult Validate(IQueryControllerModel qm)
         {
+            var list = new List<RuleValidationResult>();
+
             if (string.IsNullOrWhiteSpace(qm.StoreParameters.DataService))
             {
-                return new RuleValidationResult($"Settings Parameter 'DataService' cannot be empty");
+                list.Add(new RuleValidationResult($"Settings Parameter 'DataService' cannot be empty"));
             }
 
             if (string.IsNullOrWhiteSpace(qm.StoreParameters.Namespace))
             {
-                return new RuleValidationResult($"Settings Parameter 'Namespace' cannot be empty");
+                list.Add(new RuleValidationResult($"Settings Parameter 'Namespace' cannot be empty"));
             }
 
             if (string.IsNullOrWhiteSpace(qm.StoreParameters.QueryName))
             {
-                return new RuleValidationResult($"Settings Parameter 'QueryName' cannot be empty");
+                list.Add(new RuleValidationResult($"Settings Parameter 'QueryName' cannot be empty"));
             }
 
             if (string.IsNullOrWhiteSpace(qm.StoreParameters.QueryReturnType))
             {
-                return new RuleValidationResult($"Settings Parameter 'QueryReturnType' cannot be empty");
+                list.Add(new RuleValidationResult($"Settings Parameter 'QueryReturnType' cannot be empty"));
             }
 
             if (string.IsNullOrWhiteSpace(qm.StoreParameters.StoreDataPath))
             {
-                return new RuleValidationResult($"Settings Parameter 'StoreDataPath' cannot be empty");
+                list.Add(new RuleValidationResult($"Settings Parameter 'StoreDataPath' cannot be empty"));
             }
 
-            return null;
+            if (list.Any())
+            {
+                var result = new RuleValidationResult($"StoreSettingsNotEmpty failed") { Results = list };
+                return result;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

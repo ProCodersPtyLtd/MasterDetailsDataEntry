@@ -12,10 +12,35 @@ namespace Platz.ObjectBuilder.Blazor.Validation.Rules
         {
             if (!qm.FromTables.Any())
             {
-                return new RuleValidationResult("From clause should contain at list one table");
+                return new RuleValidationResult($"Query '{qm.Name}' From clause should contain at least one table");
             }
 
             return null;
+        }
+
+        public RuleValidationResult Validate(IQueryControllerModel model)
+        {
+            var list = new List<RuleValidationResult>();
+
+            foreach (var q in model.SubQueryList)
+            {
+                var r = Validate(q);
+
+                if (r != null)
+                {
+                    list.Add(r);
+                }
+            }
+
+            if (list.Any())
+            {
+                var result = new RuleValidationResult($"FromTablesNotEmpty failed") { Results = list };
+                return result;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

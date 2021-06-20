@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Platz.ObjectBuilder.Blazor.Validation
 {
-    public interface IQueryBuilderRule : IBuilderRule<IQueryModel>
+    public interface IQueryBuilderRule : IBuilderRule<IQueryControllerModel>
     {
     }
 }
