@@ -223,7 +223,6 @@ namespace <#=Queries.First().Namespace#>
 
             string dbPrefix;
             dbPrefix = query.Tables[from.LeftObjectAlias].IsSubQuery ? "" : "db.";
-
 #>            
                 var <#=queryName#> =
                     from <#=from.LeftObjectAlias#> in <#=dbPrefix#><#=from.LeftObject#>
@@ -244,8 +243,8 @@ namespace <#=Queries.First().Namespace#>
             }
 #>
                     select new <#=returnTypeName#>
-                    {
-<#
+                    { 
+<#          
             foreach (var field in query.Fields.Values.Where(f => f.IsOutput))
             {
                 var table = query.Tables[field.Field.ObjectAlias];
@@ -254,16 +253,16 @@ namespace <#=Queries.First().Namespace#>
                 {
                     var definition = subQueries[table.TableName];
                     var property = definition.Fields[field.Field.FieldName];
-#>                    
-                        <#=field.FieldAlias#> = <#=field.Field.ObjectAlias#>.<#=field.Field.FieldName#>,
+
+#>                        <#=field.FieldAlias#> = <#=field.Field.ObjectAlias#>.<#=field.Field.FieldName#>, 
 <#
                 }
                 else
                 {
                     var definition = schema.Definitions[table.TableName];
                     var property = definition.Properties[field.Field.FieldName];
-#>                    
-                        <#=field.FieldAlias#> = <#=field.Field.ObjectAlias#>.<#=field.Field.FieldName#>,
+
+#>                        <#=field.FieldAlias#> = <#=field.Field.ObjectAlias#>.<#=field.Field.FieldName#>, 
 <#
                 }
             }

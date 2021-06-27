@@ -35,70 +35,45 @@ namespace Default
                 var Query2 =
                     from c in db.CustomerAddress
                     select new 
-                    {
-                    
-                        CustomerId = c.CustomerId,
-                    
-                        AddressId = c.AddressId,
-                    
-                        type = c.AddressType,
-                    
-                        ModifiedDate = c.ModifiedDate,
+                    { 
+                        CustomerId = c.CustomerId, 
+                        AddressId = c.AddressId, 
+                        type = c.AddressType, 
+                        ModifiedDate = c.ModifiedDate, 
                     };
             
                 var Query1 =
                     from q in Query2
                     select new 
-                    {
-                    
-                        CustomerId = q.CustomerId,
-                    
-                        AddressId = q.AddressId,
-                    
-                        type2 = q.type,
-                    
-                        ModifiedDate = q.ModifiedDate,
+                    { 
+                        CustomerId = q.CustomerId, 
+                        AddressId = q.AddressId, 
+                        type2 = q.type, 
+                        ModifiedDate = q.ModifiedDate, 
                     };
             
                 var query =
                     from c in db.Customer
                     join q in Query1 on c.CustomerId equals q.CustomerId
                     select new CustAddrSubQuery
-                    {
-                    
-                        CustomerId = q.CustomerId,
-                    
-                        AddressId = q.AddressId,
-                    
-                        type2 = q.type2,
-                    
-                        ModifiedDate = q.ModifiedDate,
-                    
-                        CompanyName = c.CompanyName,
-                    
-                        EmailAddress = c.EmailAddress,
-                    
-                        FirstName = c.FirstName,
-                    
-                        LastName = c.LastName,
-                    
-                        MiddleName = c.MiddleName,
-                    
-                        NameStyle = c.NameStyle,
-                    
-                        PasswordHash = c.PasswordHash,
-                    
-                        PasswordSalt = c.PasswordSalt,
-                    
-                        Phone = c.Phone,
-                    
-                        Rowguid = c.Rowguid,
-                    
-                        SalesPerson = c.SalesPerson,
-                    
-                        Suffix = c.Suffix,
-                    
-                        Title = c.Title,
+                    { 
+                        CustomerId = q.CustomerId, 
+                        AddressId = q.AddressId, 
+                        type2 = q.type2, 
+                        ModifiedDate = q.ModifiedDate, 
+                        CompanyName = c.CompanyName, 
+                        EmailAddress = c.EmailAddress, 
+                        FirstName = c.FirstName, 
+                        LastName = c.LastName, 
+                        MiddleName = c.MiddleName, 
+                        NameStyle = c.NameStyle, 
+                        PasswordHash = c.PasswordHash, 
+                        PasswordSalt = c.PasswordSalt, 
+                        Phone = c.Phone, 
+                        Rowguid = c.Rowguid, 
+                        SalesPerson = c.SalesPerson, 
+                        Suffix = c.Suffix, 
+                        Title = c.Title, 
                     };
 
                 var result = query.ToList();
@@ -117,37 +92,22 @@ namespace Default
                     from c in db.Customer
                     where c.FirstName == name
                     select new Cust
-                    {
-                    
-                        CustomerId = c.CustomerId,
-                    
-                        CompanyName = c.CompanyName,
-                    
-                        EmailAddress = c.EmailAddress,
-                    
-                        FirstName = c.FirstName,
-                    
-                        LastName = c.LastName,
-                    
-                        MiddleName = c.MiddleName,
-                    
-                        ModifiedDate = c.ModifiedDate,
-                    
-                        NameStyle = c.NameStyle,
-                    
-                        PasswordHash = c.PasswordHash,
-                    
-                        PasswordSalt = c.PasswordSalt,
-                    
-                        Phone = c.Phone,
-                    
-                        Rowguid = c.Rowguid,
-                    
-                        SalesPerson = c.SalesPerson,
-                    
-                        Suffix = c.Suffix,
-                    
-                        Title = c.Title,
+                    { 
+                        CustomerId = c.CustomerId, 
+                        CompanyName = c.CompanyName, 
+                        EmailAddress = c.EmailAddress, 
+                        FirstName = c.FirstName, 
+                        LastName = c.LastName, 
+                        MiddleName = c.MiddleName, 
+                        ModifiedDate = c.ModifiedDate, 
+                        NameStyle = c.NameStyle, 
+                        PasswordHash = c.PasswordHash, 
+                        PasswordSalt = c.PasswordSalt, 
+                        Phone = c.Phone, 
+                        Rowguid = c.Rowguid, 
+                        SalesPerson = c.SalesPerson, 
+                        Suffix = c.Suffix, 
+                        Title = c.Title, 
                     };
 
                 var result = query.ToList();
@@ -168,35 +128,21 @@ namespace Default
                     join a in db.Address on c.AddressId equals a.AddressId
                     where c.CustomerId == p1
                     select new CustomerAddress
-                    {
-                    
-                        AddressId = a.AddressId,
-                    
-                        AddressLine1 = a.AddressLine1,
-                    
-                        AddressLine2 = a.AddressLine2,
-                    
-                        City = a.City,
-                    
-                        CountryRegion = a.CountryRegion,
-                    
-                        ModifiedDate = a.ModifiedDate,
-                    
-                        PostalCode = a.PostalCode,
-                    
-                        Rowguid = a.Rowguid,
-                    
-                        StateProvince = a.StateProvince,
-                    
-                        CustomerId = c.CustomerId,
-                    
-                        AddressType = c.AddressType,
-                    
-                        Title = cu.Title,
-                    
-                        FirstName = cu.FirstName,
-                    
-                        LastName = cu.LastName,
+                    { 
+                        AddressId = a.AddressId, 
+                        AddressLine1 = a.AddressLine1, 
+                        AddressLine2 = a.AddressLine2, 
+                        City = a.City, 
+                        CountryRegion = a.CountryRegion, 
+                        ModifiedDate = a.ModifiedDate, 
+                        PostalCode = a.PostalCode, 
+                        Rowguid = a.Rowguid, 
+                        StateProvince = a.StateProvince, 
+                        CustomerId = c.CustomerId, 
+                        AddressType = c.AddressType, 
+                        Title = cu.Title, 
+                        FirstName = cu.FirstName, 
+                        LastName = cu.LastName, 
                     };
 
                 var result = query.ToList();
@@ -212,13 +158,10 @@ namespace Default
                 var query =
                     from p in db.ProductModel
                     select new ProdModel
-                    {
-                    
-                        ProductModelId = p.ProductModelId,
-                    
-                        CatalogDescription = p.CatalogDescription,
-                    
-                        Name = p.Name,
+                    { 
+                        ProductModelId = p.ProductModelId, 
+                        CatalogDescription = p.CatalogDescription, 
+                        Name = p.Name, 
                     };
 
                 var result = query.ToList();
