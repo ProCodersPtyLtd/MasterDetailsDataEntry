@@ -66,13 +66,13 @@ namespace Default
                     select new CustAddrSubQuery
                     {
                     
-                        //CustomerId = q.CustomerId,
+                        CustomerId = q.CustomerId,
                     
-                        //AddressId = q.AddressId,
+                        AddressId = q.AddressId,
                     
-                        //type2 = q.type2,
+                        type2 = q.type2,
                     
-                        //ModifiedDate = q.ModifiedDate,
+                        ModifiedDate = q.ModifiedDate,
                     
                         CompanyName = c.CompanyName,
                     
@@ -234,6 +234,10 @@ namespace Default
 
     public partial class CustAddrSubQuery
     {
+        public Int32 CustomerId { get; set; }
+        public Int32 AddressId { get; set; }
+        public String type2 { get; set; }
+        public DateTime ModifiedDate { get; set; }
         public String CompanyName { get; set; }
         public String EmailAddress { get; set; }
         public String FirstName { get; set; }

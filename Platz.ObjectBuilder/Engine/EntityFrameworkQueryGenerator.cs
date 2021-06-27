@@ -64,18 +64,15 @@ namespace Platz.ObjectBuilder.Engine
 
                 if (table.IsSubQuery)
                 {
-                    //StoreProperty property = null;
-                    string originalPropertyName = "";
-                    string fieldAlias = field.FieldAlias;
+                    string originalPropertyName = field.FieldAlias;
 
                     while (table.IsSubQuery)
                     {
                         var sq = subQueries[table.TableName];
-                        var sqf = sq.Fields[fieldAlias];
-                        fieldAlias = sqf.Field.FieldName;
+                        var sqf = sq.Fields[originalPropertyName];
+                        originalPropertyName = sqf.Field.FieldName;
                         var sqt = sq.Tables[sqf.Field.ObjectAlias];
                         table = sqt;
-                        originalPropertyName = fieldAlias;
                     }
 
                     var definition = schema.Definitions[table.TableName];

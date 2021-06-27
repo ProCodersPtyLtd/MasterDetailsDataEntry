@@ -119,6 +119,7 @@ namespace <#=Queries.First().Namespace#>
 <#
         foreach (var query in Queries)
         {
+            var subQueries = query.Query.SubQueries;
 #>
     public partial class <#=query.ReturnTypeName#>
     {
@@ -127,10 +128,29 @@ namespace <#=Queries.First().Namespace#>
             {
                 var table = query.Query.Tables[field.Field.ObjectAlias];
 
-                if (!table.IsSubQuery)
+                if (table.IsSubQuery)
                 {
-                var definition = Schema.Definitions[table.TableName];
-                var property = definition.Properties[field.Field.FieldName];
+                    string originalPropertyName = field.FieldAlias;
+
+                    while (table.IsSubQuery)
+                    {
+                        var sq = subQueries[table.TableName];
+                        var sqf = sq.Fields[originalPropertyName];
+                        originalPropertyName = sqf.Field.FieldName;
+                        var sqt = sq.Tables[sqf.Field.ObjectAlias];
+                        table = sqt;
+                    }
+
+                    var definition = Schema.Definitions[table.TableName];
+                    var property = definition.Properties[originalPropertyName];
+#>
+        public <#=property.Type#> <#=field.FieldAlias#> { get; set; }
+<#
+                }
+                else
+                {
+                    var definition = Schema.Definitions[table.TableName];
+                    var property = definition.Properties[field.Field.FieldName];
 #>
         public <#=property.Type#> <#=property.Name#> { get; set; }
 <#
