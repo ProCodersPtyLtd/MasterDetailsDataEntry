@@ -80,6 +80,8 @@ namespace Platz.SqlForms
 
         // Name of Table - Definition in Schema (StoreDefinition::Name)
         public string TableName { get; set; }
+
+        public bool IsSubQuery { get; set; }
     }
 
     // No Key field in these classes

@@ -1,8 +1,8 @@
 {
-  "Name": "Getq2List",
+  "Name": "Getq0List",
   "DataService": "Crm2DataService",
   "Namespace": "Default.StoreNew",
-  "ReturnTypeName": "q2",
+  "ReturnTypeName": "q0",
   "SchemaName": null,
   "SchemaFile": "C:\\Repos\\MasterDetailsDataEntry\\SqlForms.Demo\\StoreNew\\Schema.json",
   "SchemaVersion": null,
@@ -17,8 +17,41 @@
         "IsOutput": true,
         "GroupByFunction": null,
         "Field": {
-          "ObjectAlias": "a",
+          "ObjectAlias": "q",
           "FieldName": "Id"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "pid": {
+        "FieldAlias": "pid",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "Field": {
+          "ObjectAlias": "q",
+          "FieldName": "pid"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "aid2": {
+        "FieldAlias": "aid2",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "Field": {
+          "ObjectAlias": "q",
+          "FieldName": "aid2"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "del2": {
+        "FieldAlias": "del2",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "Field": {
+          "ObjectAlias": "q",
+          "FieldName": "del2"
         },
         "Operation": null,
         "RawExpression": null
@@ -88,38 +121,17 @@
         },
         "Operation": null,
         "RawExpression": null
-      },
-      "PersonId": {
-        "FieldAlias": "PersonId",
-        "IsOutput": true,
-        "GroupByFunction": null,
-        "Field": {
-          "ObjectAlias": "q",
-          "FieldName": "PersonId"
-        },
-        "Operation": null,
-        "RawExpression": null
-      },
-      "AddressId": {
-        "FieldAlias": "AddressId",
-        "IsOutput": true,
-        "GroupByFunction": null,
-        "Field": {
-          "ObjectAlias": "q",
-          "FieldName": "AddressId"
-        },
-        "Operation": null,
-        "RawExpression": null
       }
     },
     "Tables": {
+      "q": {
+        "ObjectAlias": "q",
+        "TableName": "Query2",
+        "IsSubQuery": true
+      },
       "a": {
         "ObjectAlias": "a",
         "TableName": "Address"
-      },
-      "q": {
-        "ObjectAlias": "q",
-        "TableName": "Query1"
       }
     },
     "SubQueries": {
@@ -139,8 +151,8 @@
             "Operation": null,
             "RawExpression": null
           },
-          "PersonId": {
-            "FieldAlias": "PersonId",
+          "pid": {
+            "FieldAlias": "pid",
             "IsOutput": true,
             "GroupByFunction": null,
             "Field": {
@@ -150,8 +162,8 @@
             "Operation": null,
             "RawExpression": null
           },
-          "AddressId": {
-            "FieldAlias": "AddressId",
+          "aid": {
+            "FieldAlias": "aid",
             "IsOutput": true,
             "GroupByFunction": null,
             "Field": {
@@ -161,8 +173,8 @@
             "Operation": null,
             "RawExpression": null
           },
-          "Deleted": {
-            "FieldAlias": "Deleted",
+          "del": {
+            "FieldAlias": "del",
             "IsOutput": true,
             "GroupByFunction": null,
             "Field": {
@@ -186,6 +198,71 @@
         "Where": {
           "Expression": null
         }
+      },
+      "Query2": {
+        "QueryAlias": null,
+        "Comment": null,
+        "Parameters": {},
+        "Fields": {
+          "Id": {
+            "FieldAlias": "Id",
+            "IsOutput": true,
+            "GroupByFunction": null,
+            "Field": {
+              "ObjectAlias": "q",
+              "FieldName": "Id"
+            },
+            "Operation": null,
+            "RawExpression": null
+          },
+          "pid": {
+            "FieldAlias": "pid",
+            "IsOutput": true,
+            "GroupByFunction": null,
+            "Field": {
+              "ObjectAlias": "q",
+              "FieldName": "pid"
+            },
+            "Operation": null,
+            "RawExpression": null
+          },
+          "aid2": {
+            "FieldAlias": "aid2",
+            "IsOutput": true,
+            "GroupByFunction": null,
+            "Field": {
+              "ObjectAlias": "q",
+              "FieldName": "aid"
+            },
+            "Operation": null,
+            "RawExpression": null
+          },
+          "del2": {
+            "FieldAlias": "del2",
+            "IsOutput": true,
+            "GroupByFunction": null,
+            "Field": {
+              "ObjectAlias": "q",
+              "FieldName": "del"
+            },
+            "Operation": null,
+            "RawExpression": null
+          }
+        },
+        "Tables": {
+          "q": {
+            "ObjectAlias": "q",
+            "TableName": "Query1",
+            "IsSubQuery":  true
+          }
+        },
+        "SubQueries": null,
+        "Joins": [],
+        "GroupByFields": null,
+        "Having": null,
+        "Where": {
+          "Expression": null
+        }
       }
     },
     "Joins": [
@@ -193,14 +270,7 @@
         "LeftObjectAlias": "a",
         "LeftField": "Id",
         "RightObjectAlias": "q",
-        "RightField": "AddressId",
-        "JoinType": "Inner"
-      },
-      {
-        "LeftObjectAlias": "a",
-        "LeftField": "Id",
-        "RightObjectAlias": "q",
-        "RightField": "PersonId",
+        "RightField": "aid",
         "JoinType": "Inner"
       }
     ],

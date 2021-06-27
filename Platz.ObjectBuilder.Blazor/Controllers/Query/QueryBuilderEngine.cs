@@ -42,10 +42,13 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
             var result = new QueryControllerModel() { SubQueryList = new List<IQueryModel>(), Schema = schema };
             var loadedSubQueryList = new List<IQueryModel>();
 
-            foreach (var qName in q.Query.SubQueries.Keys)
+            if (q.Query.SubQueries != null)
             {
-                var subQuery = ReadQueryTables(loadedSubQueryList, qName, schema, null, q.Query.SubQueries);
-                result.SubQueryList.Add(subQuery);
+                foreach (var qName in q.Query.SubQueries.Keys)
+                {
+                    var subQuery = ReadQueryTables(loadedSubQueryList, qName, schema, null, q.Query.SubQueries);
+                    result.SubQueryList.Add(subQuery);
+                }
             }
 
             result.MainQuery = ReadQueryTables(loadedSubQueryList, "Main", schema, q.Query, q.Query.SubQueries);
@@ -263,7 +266,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
 
                 result.Query.Tables = qc.FromTables.ToDictionary(
                     t => t.Alias,
-                    t => new StoreTableReference { ObjectAlias = t.Alias, TableName = t.Name }
+                    t => new StoreTableReference { ObjectAlias = t.Alias, TableName = t.Name, IsSubQuery = t.IsSubQuery }
                     );
 
                 // ToDo: composite foreign keys not supported currently

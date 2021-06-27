@@ -24,8 +24,58 @@ namespace Default
 
     #region Data Service 
 
+
+
     public partial class MyDataService : DataServiceBase<AdventureWorksContext>, IMyDataService
     {
+        public void M1()
+        {
+            var db = GetDbContext();
+
+            var Query2 =
+                from c in db.CustomerAddress
+                select new
+                {
+                    CustomerId = c.CustomerId,
+                    AddressId = c.AddressId,
+                    type = c.AddressType,
+                    ModifiedDate = c.ModifiedDate,
+                };
+
+            var Query1 =
+                from q in Query2
+                select new
+                {
+                    CustomerId = q.CustomerId,
+                    AddressId = q.AddressId,
+                    type2 = q.type,
+                    ModifiedDate = q.ModifiedDate,
+                };
+
+            var query =
+                from c in db.Customer
+                join q in Query1 on c.CustomerId equals q.CustomerId
+                select new 
+                {
+                    CustomerId = q.CustomerId,
+                    AddressId = q.AddressId,
+                    type2 = q.type2,
+                    ModifiedDate = q.ModifiedDate,
+                    CompanyName = c.CompanyName,
+                    EmailAddress = c.EmailAddress,
+                    FirstName = c.FirstName,
+                    LastName = c.LastName,
+                    MiddleName = c.MiddleName,
+                    NameStyle = c.NameStyle,
+                    PasswordHash = c.PasswordHash,
+                    PasswordSalt = c.PasswordSalt,
+                    Phone = c.Phone,
+                    Rowguid = c.Rowguid,
+                    SalesPerson = c.SalesPerson,
+                    Suffix = c.Suffix,
+                    Title = c.Title,
+                };
+        }
         public List<Cust> GetCustList(params object[] parameters)
         {
             var name = (String)parameters[0];
@@ -58,6 +108,8 @@ namespace Default
                 return result;
             }
         }
+
+        
 
         public List<CustomerAddress> GetCustomerAddressList(params object[] parameters)
         {

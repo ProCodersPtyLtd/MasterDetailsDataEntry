@@ -5,6 +5,7 @@ using Platz.ObjectBuilder.Blazor.Validation;
 using Platz.ObjectBuilder.Engine;
 using Platz.ObjectBuilder.Expressions;
 using Platz.ObjectBuilder.Helpers;
+using Platz.ObjectBuilder.Interfaces;
 using Platz.ObjectBuilder.Schema;
 using Platz.SqlForms;
 using System;
@@ -38,6 +39,8 @@ namespace Platz.ObjectBuilder
         //StoreQueryParameters StoreParameters { get; }
         //StoreSchema Schema { get; }
         string Errors { get; set; }
+        string LinqQuery { get; set; }
+        string SqlQuery { get; set; }
         //List<IQueryModel> SubQueryList { get; }
         int SelectedQueryIndex { get; set; }
         // used for UI
@@ -98,6 +101,8 @@ namespace Platz.ObjectBuilder
 
         public List<RuleValidationResult> ValidationResults { get; private set; } = new List<RuleValidationResult>();
         public string Errors { get; set; } = "";
+        public string LinqQuery { get; set; }
+        public string SqlQuery { get; set; }
 
 
         public List<IQueryModel> SubQueryList { get; private set; }
@@ -115,10 +120,14 @@ namespace Platz.ObjectBuilder
         private SqlExpressionEngine _expressions;
         private readonly IQueryBuilderEngine _engine;
 
+        private readonly IQueryGenerator _linqGenerator;
+
         public QueryController(IQueryBuilderEngine engine)
         {
             _engine = engine;
             SetNewQuery();
+
+            _linqGenerator = new EntityFrameworkQueryGenerator();
         }
 
         public void Configure(IQueryControllerConfiguration config)
@@ -263,6 +272,15 @@ namespace Platz.ObjectBuilder
             var parameters = new StorageParameters { FileName = fileName };
             var query = GenerateQuery();
             _storage.SaveQuery(query, parameters);
+
+            LinqQuery = "";
+            SqlQuery = "";
+
+            if (!ValidationResults.Any())
+            {
+                var schemaFileName = Path.Combine(path, $"Schema.json");
+                LinqQuery = _linqGenerator.GenerateQuery(schemaFileName, fileName);
+            }
         }
 
         public string GenerateFileName(string path)

@@ -4,7 +4,7 @@
   "Namespace": "Default.StoreNew",
   "ReturnTypeName": "q1",
   "SchemaName": null,
-  "SchemaFile": "C:\\Repos\\MasterDetailsDataEntry\\SqlForms.Demo\\StoreNew\\Crm2.schema.json",
+  "SchemaFile": "C:\\Repos\\MasterDetailsDataEntry\\SqlForms.Demo\\StoreNew\\Schema.json",
   "SchemaVersion": null,
   "Tags": null,
   "Query": {
@@ -115,11 +115,13 @@
     "Tables": {
       "a": {
         "ObjectAlias": "a",
-        "TableName": "Address"
+        "TableName": "Address",
+        "IsSubQuery": false
       },
       "q": {
         "ObjectAlias": "q",
-        "TableName": "Query1"
+        "TableName": "Query1",
+        "IsSubQuery": true
       }
     },
     "SubQueries": {
@@ -176,7 +178,8 @@
         "Tables": {
           "p": {
             "ObjectAlias": "p",
-            "TableName": "PersonAddress"
+            "TableName": "PersonAddress",
+            "IsSubQuery": false
           }
         },
         "SubQueries": null,
