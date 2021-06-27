@@ -66,28 +66,40 @@ namespace Platz.ObjectBuilder
 
         public List<StoreQueryParameter> ReadParameters(StoreQuery query)
         {
-            if (query.Query.Parameters == null)
+
+            return ReadParameters(query.Query);
+        }
+
+        public List<StoreQueryParameter> ReadParameters(StoreQueryDefinition query)
+        {
+            if (query.Parameters == null)
             {
                 return new List<StoreQueryParameter>();
             }
 
-            var result = query.Query.Parameters.Values.Select(p => new StoreQueryParameter { Name = p.Name.Replace("@", ""), Type = p.Type }).ToList();
+            var result = query.Parameters.Values.Select(p => new StoreQueryParameter { Name = p.Name.Replace("@", ""), Type = p.Type }).ToList();
             return result;
         }
 
+        //public List<StoreQuery> ReadSubQueries(StoreQuery query, StoreSchema schema) { }
+
         public TemplateJoin ReadFrom(StoreQuery query, StoreSchema schema)
         {
+            return ReadFrom(query.Query, schema);
+        }
+        public TemplateJoin ReadFrom(StoreQueryDefinition query, StoreSchema schema)
+        {
             TemplateJoin result;
-            var join = query.Query.Joins.FirstOrDefault();
+            var join = query.Joins.FirstOrDefault();
 
             if (join != null)
             {
-                var table = query.Query.Tables[join.LeftObjectAlias].TableName;
+                var table = query.Tables[join.LeftObjectAlias].TableName;
                 result = new TemplateJoin { LeftField = join.LeftField, LeftObjectAlias = join.LeftObjectAlias, LeftObject = table };
             }
             else
             {
-                var table = query.Query.Tables.Values.First();
+                var table = query.Tables.Values.First();
                 result = new TemplateJoin { LeftObjectAlias = table.ObjectAlias, LeftObject = table.TableName };
             }
 
@@ -96,13 +108,17 @@ namespace Platz.ObjectBuilder
 
         public List<TemplateJoin> ReadJoins(StoreQuery query, StoreSchema schema)
         {
+            return ReadJoins(query.Query, schema);
+        }
+        public List<TemplateJoin> ReadJoins(StoreQueryDefinition query, StoreSchema schema)
+        {
             var result = new List<TemplateJoin>();
             var rightTables = new HashSet<string>();
 
-            foreach (var join in query.Query.Joins)
+            foreach (var join in query.Joins)
             {
-                var leftTable = query.Query.Tables[join.LeftObjectAlias].TableName;
-                var rightTable = query.Query.Tables[join.RightObjectAlias].TableName;
+                var leftTable = query.Tables[join.LeftObjectAlias].TableName;
+                var rightTable = query.Tables[join.RightObjectAlias].TableName;
                 TemplateJoin tj;
 
                 if (rightTables.Contains(join.RightObjectAlias))

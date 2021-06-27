@@ -60,8 +60,54 @@
                     </td>
                     <td style="width: 100%; vertical-align: top;">
                         <div class="plk-flex">
-                            <label>Log</label>
-                            <textarea id="exampleFormControlTextarea1" rows="8" style="width: 100%" @bind="@QueryController.Errors" />
+                            @*<label>Log</label>
+                            <textarea id="exampleFormControlTextarea1" rows="8" style="width: 100%" @bind="@QueryController.Errors" />*@
+
+                            <div style="vertical-align: top">
+
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="tab" href="#Log">Log</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#Linq">Linq</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#Sql">Sql</a>
+                                    </li>
+                                </ul>
+
+
+                                @*<ul class="nav nav-tabs">
+                                        <li class="active"><a data-toggle="tab" href="#tables">Entities</a></li>
+                                        <li><a data-toggle="tab" href="#joins">Relationships</a></li>
+                                    </ul>*@
+
+                            <div class="tab-content">
+                                <div id="Log" class="tab-pane active">
+                                    <textarea id="exampleFormControlTextarea1" rows="8" style="width: 100%" @bind="@QueryController.Errors" />
+                                </div>
+                                <div id="Linq" class="tab-pane fade">
+                                    <textarea id="exampleFormControlTextarea2" readonly rows="8" style="width: 100%" @bind="@QueryController.LinqQuery" />
+                                </div>
+                                <div id="Sql" class="tab-pane fade">
+                                    <textarea id="exampleFormControlTextarea3" readonly rows="8" style="width: 100%" @bind="@QueryController.SqlQuery" />
+                                </div>
+                            </div>
+
+
+                            </div>
+
+
+
+
+
+
+
+
+
+
+
                         </div>
 
                     </td>

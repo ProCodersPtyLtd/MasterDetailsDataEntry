@@ -1,20 +1,24 @@
 {
   "Name": null,
   "DbContextName": "MasterDetailsDataEntry.Demo.Database.AdventureWorksContext",
+  "Namespace": null,
   "Title": null,
   "Type": null,
   "Comment": null,
   "Tags": null,
   "Version": null,
+  "VersionKey": "00000000-0000-0000-0000-000000000000",
   "Definitions": {
     "Address": {
       "Name": "Address",
       "Type": null,
       "Comment": null,
+      "Order": 0,
       "Properties": {
         "AddressId": {
           "Name": "AddressId",
           "Type": "Int32",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -28,6 +32,7 @@
         "AddressLine1": {
           "Name": "AddressLine1",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 60,
@@ -41,6 +46,7 @@
         "AddressLine2": {
           "Name": "AddressLine2",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 60,
@@ -54,6 +60,7 @@
         "City": {
           "Name": "City",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 30,
@@ -67,6 +74,7 @@
         "CountryRegion": {
           "Name": "CountryRegion",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 50,
@@ -80,6 +88,7 @@
         "ModifiedDate": {
           "Name": "ModifiedDate",
           "Type": "DateTime",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -93,6 +102,7 @@
         "PostalCode": {
           "Name": "PostalCode",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 15,
@@ -106,6 +116,7 @@
         "Rowguid": {
           "Name": "Rowguid",
           "Type": "Guid",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -119,6 +130,7 @@
         "StateProvince": {
           "Name": "StateProvince",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 50,
@@ -135,10 +147,12 @@
       "Name": "BuildVersion",
       "Type": null,
       "Comment": null,
+      "Order": 0,
       "Properties": {
         "DatabaseVersion": {
           "Name": "DatabaseVersion",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 25,
@@ -152,6 +166,7 @@
         "ModifiedDate": {
           "Name": "ModifiedDate",
           "Type": "DateTime",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -165,6 +180,7 @@
         "SystemInformationId": {
           "Name": "SystemInformationId",
           "Type": "Byte",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -178,6 +194,7 @@
         "VersionDate": {
           "Name": "VersionDate",
           "Type": "DateTime",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -194,10 +211,12 @@
       "Name": "Customer",
       "Type": null,
       "Comment": null,
+      "Order": 0,
       "Properties": {
         "CustomerId": {
           "Name": "CustomerId",
           "Type": "Int32",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -211,6 +230,7 @@
         "CompanyName": {
           "Name": "CompanyName",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 128,
@@ -224,6 +244,7 @@
         "EmailAddress": {
           "Name": "EmailAddress",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 50,
@@ -237,6 +258,7 @@
         "FirstName": {
           "Name": "FirstName",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 50,
@@ -250,6 +272,7 @@
         "LastName": {
           "Name": "LastName",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 50,
@@ -263,6 +286,7 @@
         "MiddleName": {
           "Name": "MiddleName",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 50,
@@ -276,6 +300,7 @@
         "ModifiedDate": {
           "Name": "ModifiedDate",
           "Type": "DateTime",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -289,6 +314,7 @@
         "NameStyle": {
           "Name": "NameStyle",
           "Type": "Boolean",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -302,6 +328,7 @@
         "PasswordHash": {
           "Name": "PasswordHash",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 128,
@@ -315,6 +342,7 @@
         "PasswordSalt": {
           "Name": "PasswordSalt",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 10,
@@ -328,6 +356,7 @@
         "Phone": {
           "Name": "Phone",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 25,
@@ -341,6 +370,7 @@
         "Rowguid": {
           "Name": "Rowguid",
           "Type": "Guid",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -354,6 +384,7 @@
         "SalesPerson": {
           "Name": "SalesPerson",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 256,
@@ -367,6 +398,7 @@
         "Suffix": {
           "Name": "Suffix",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 10,
@@ -380,6 +412,7 @@
         "Title": {
           "Name": "Title",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 8,
@@ -396,10 +429,12 @@
       "Name": "CustomerAddress",
       "Type": null,
       "Comment": null,
+      "Order": 0,
       "Properties": {
         "CustomerId": {
           "Name": "CustomerId",
           "Type": "Int32",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -412,6 +447,7 @@
             {
               "DefinitionName": "Customer",
               "PropertyName": "CustomerId",
+              "Type": null,
               "CompositePropertyNames": [
                 "CustomerId"
               ]
@@ -421,6 +457,7 @@
         "AddressId": {
           "Name": "AddressId",
           "Type": "Int32",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -433,6 +470,7 @@
             {
               "DefinitionName": "Address",
               "PropertyName": "AddressId",
+              "Type": null,
               "CompositePropertyNames": [
                 "AddressId"
               ]
@@ -442,6 +480,7 @@
         "AddressType": {
           "Name": "AddressType",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 50,
@@ -455,6 +494,7 @@
         "ModifiedDate": {
           "Name": "ModifiedDate",
           "Type": "DateTime",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -468,6 +508,7 @@
         "Rowguid": {
           "Name": "Rowguid",
           "Type": "Guid",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -484,10 +525,12 @@
       "Name": "ErrorLog",
       "Type": null,
       "Comment": null,
+      "Order": 0,
       "Properties": {
         "ErrorLogId": {
           "Name": "ErrorLogId",
           "Type": "Int32",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -501,6 +544,7 @@
         "ErrorLine": {
           "Name": "ErrorLine",
           "Type": "Int32?",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -514,6 +558,7 @@
         "ErrorMessage": {
           "Name": "ErrorMessage",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 4000,
@@ -527,6 +572,7 @@
         "ErrorNumber": {
           "Name": "ErrorNumber",
           "Type": "Int32",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -540,6 +586,7 @@
         "ErrorProcedure": {
           "Name": "ErrorProcedure",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 126,
@@ -553,6 +600,7 @@
         "ErrorSeverity": {
           "Name": "ErrorSeverity",
           "Type": "Int32?",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -566,6 +614,7 @@
         "ErrorState": {
           "Name": "ErrorState",
           "Type": "Int32?",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -579,6 +628,7 @@
         "ErrorTime": {
           "Name": "ErrorTime",
           "Type": "DateTime",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -592,6 +642,7 @@
         "UserName": {
           "Name": "UserName",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 128,
@@ -608,10 +659,12 @@
       "Name": "Product",
       "Type": null,
       "Comment": null,
+      "Order": 0,
       "Properties": {
         "ProductId": {
           "Name": "ProductId",
           "Type": "Int32",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -625,6 +678,7 @@
         "Color": {
           "Name": "Color",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 15,
@@ -638,6 +692,7 @@
         "DiscontinuedDate": {
           "Name": "DiscontinuedDate",
           "Type": "DateTime?",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -651,6 +706,7 @@
         "ListPrice": {
           "Name": "ListPrice",
           "Type": "Decimal",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -664,6 +720,7 @@
         "ModifiedDate": {
           "Name": "ModifiedDate",
           "Type": "DateTime",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -677,6 +734,7 @@
         "Name": {
           "Name": "Name",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 50,
@@ -690,6 +748,7 @@
         "ProductCategoryId": {
           "Name": "ProductCategoryId",
           "Type": "Int32?",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -702,6 +761,7 @@
             {
               "DefinitionName": "ProductCategory",
               "PropertyName": "ProductCategoryId",
+              "Type": null,
               "CompositePropertyNames": [
                 "ProductCategoryId"
               ]
@@ -711,6 +771,7 @@
         "ProductModelId": {
           "Name": "ProductModelId",
           "Type": "Int32?",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -723,6 +784,7 @@
             {
               "DefinitionName": "ProductModel",
               "PropertyName": "ProductModelId",
+              "Type": null,
               "CompositePropertyNames": [
                 "ProductModelId"
               ]
@@ -732,6 +794,7 @@
         "ProductNumber": {
           "Name": "ProductNumber",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 25,
@@ -745,6 +808,7 @@
         "Rowguid": {
           "Name": "Rowguid",
           "Type": "Guid",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -758,6 +822,7 @@
         "SellEndDate": {
           "Name": "SellEndDate",
           "Type": "DateTime?",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -771,6 +836,7 @@
         "SellStartDate": {
           "Name": "SellStartDate",
           "Type": "DateTime",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -784,6 +850,7 @@
         "Size": {
           "Name": "Size",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 5,
@@ -797,6 +864,7 @@
         "StandardCost": {
           "Name": "StandardCost",
           "Type": "Decimal",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -810,6 +878,7 @@
         "ThumbNailPhoto": {
           "Name": "ThumbNailPhoto",
           "Type": "Byte[]",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -823,6 +892,7 @@
         "ThumbnailPhotoFileName": {
           "Name": "ThumbnailPhotoFileName",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 50,
@@ -836,6 +906,7 @@
         "Weight": {
           "Name": "Weight",
           "Type": "Decimal?",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -852,10 +923,12 @@
       "Name": "ProductCategory",
       "Type": null,
       "Comment": null,
+      "Order": 0,
       "Properties": {
         "ProductCategoryId": {
           "Name": "ProductCategoryId",
           "Type": "Int32",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -869,6 +942,7 @@
         "ModifiedDate": {
           "Name": "ModifiedDate",
           "Type": "DateTime",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -882,6 +956,7 @@
         "Name": {
           "Name": "Name",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 50,
@@ -895,6 +970,7 @@
         "ParentProductCategoryId": {
           "Name": "ParentProductCategoryId",
           "Type": "Int32?",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -907,6 +983,7 @@
             {
               "DefinitionName": "ProductCategory",
               "PropertyName": "ProductCategoryId",
+              "Type": null,
               "CompositePropertyNames": [
                 "ProductCategoryId"
               ]
@@ -916,6 +993,7 @@
         "Rowguid": {
           "Name": "Rowguid",
           "Type": "Guid",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -932,10 +1010,12 @@
       "Name": "ProductDescription",
       "Type": null,
       "Comment": null,
+      "Order": 0,
       "Properties": {
         "ProductDescriptionId": {
           "Name": "ProductDescriptionId",
           "Type": "Int32",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -949,6 +1029,7 @@
         "Description": {
           "Name": "Description",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 400,
@@ -962,6 +1043,7 @@
         "ModifiedDate": {
           "Name": "ModifiedDate",
           "Type": "DateTime",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -975,6 +1057,7 @@
         "Rowguid": {
           "Name": "Rowguid",
           "Type": "Guid",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -991,10 +1074,12 @@
       "Name": "ProductModel",
       "Type": null,
       "Comment": null,
+      "Order": 0,
       "Properties": {
         "ProductModelId": {
           "Name": "ProductModelId",
           "Type": "Int32",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1008,6 +1093,7 @@
         "CatalogDescription": {
           "Name": "CatalogDescription",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1021,6 +1107,7 @@
         "ModifiedDate": {
           "Name": "ModifiedDate",
           "Type": "DateTime",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1034,6 +1121,7 @@
         "Name": {
           "Name": "Name",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 50,
@@ -1047,6 +1135,7 @@
         "Rowguid": {
           "Name": "Rowguid",
           "Type": "Guid",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1063,10 +1152,12 @@
       "Name": "ProductModelProductDescription",
       "Type": null,
       "Comment": null,
+      "Order": 0,
       "Properties": {
         "ProductModelId": {
           "Name": "ProductModelId",
           "Type": "Int32",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1079,6 +1170,7 @@
             {
               "DefinitionName": "ProductModel",
               "PropertyName": "ProductModelId",
+              "Type": null,
               "CompositePropertyNames": [
                 "ProductModelId"
               ]
@@ -1088,6 +1180,7 @@
         "ProductDescriptionId": {
           "Name": "ProductDescriptionId",
           "Type": "Int32",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1100,6 +1193,7 @@
             {
               "DefinitionName": "ProductDescription",
               "PropertyName": "ProductDescriptionId",
+              "Type": null,
               "CompositePropertyNames": [
                 "ProductDescriptionId"
               ]
@@ -1109,6 +1203,7 @@
         "Culture": {
           "Name": "Culture",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 6,
@@ -1122,6 +1217,7 @@
         "ModifiedDate": {
           "Name": "ModifiedDate",
           "Type": "DateTime",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1135,6 +1231,7 @@
         "Rowguid": {
           "Name": "Rowguid",
           "Type": "Guid",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1151,10 +1248,12 @@
       "Name": "SalesOrderDetail",
       "Type": null,
       "Comment": null,
+      "Order": 0,
       "Properties": {
         "SalesOrderId": {
           "Name": "SalesOrderId",
           "Type": "Int32",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1167,6 +1266,7 @@
             {
               "DefinitionName": "SalesOrderHeader",
               "PropertyName": "SalesOrderId",
+              "Type": null,
               "CompositePropertyNames": [
                 "SalesOrderId"
               ]
@@ -1176,6 +1276,7 @@
         "SalesOrderDetailId": {
           "Name": "SalesOrderDetailId",
           "Type": "Int32",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1189,6 +1290,7 @@
         "LineTotal": {
           "Name": "LineTotal",
           "Type": "Decimal",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1202,6 +1304,7 @@
         "ModifiedDate": {
           "Name": "ModifiedDate",
           "Type": "DateTime",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1215,6 +1318,7 @@
         "OrderQty": {
           "Name": "OrderQty",
           "Type": "Int16",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1228,6 +1332,7 @@
         "ProductId": {
           "Name": "ProductId",
           "Type": "Int32",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1240,6 +1345,7 @@
             {
               "DefinitionName": "Product",
               "PropertyName": "ProductId",
+              "Type": null,
               "CompositePropertyNames": [
                 "ProductId"
               ]
@@ -1249,6 +1355,7 @@
         "Rowguid": {
           "Name": "Rowguid",
           "Type": "Guid",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1262,6 +1369,7 @@
         "UnitPrice": {
           "Name": "UnitPrice",
           "Type": "Decimal",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1275,6 +1383,7 @@
         "UnitPriceDiscount": {
           "Name": "UnitPriceDiscount",
           "Type": "Decimal",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1291,10 +1400,12 @@
       "Name": "SalesOrderHeader",
       "Type": null,
       "Comment": null,
+      "Order": 0,
       "Properties": {
         "SalesOrderId": {
           "Name": "SalesOrderId",
           "Type": "Int32",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1308,6 +1419,7 @@
         "AccountNumber": {
           "Name": "AccountNumber",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 15,
@@ -1321,6 +1433,7 @@
         "BillToAddressId": {
           "Name": "BillToAddressId",
           "Type": "Int32?",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1333,6 +1446,7 @@
             {
               "DefinitionName": "Address",
               "PropertyName": "AddressId",
+              "Type": null,
               "CompositePropertyNames": [
                 "AddressId"
               ]
@@ -1342,6 +1456,7 @@
         "Comment": {
           "Name": "Comment",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1355,6 +1470,7 @@
         "CreditCardApprovalCode": {
           "Name": "CreditCardApprovalCode",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 15,
@@ -1368,6 +1484,7 @@
         "CustomerId": {
           "Name": "CustomerId",
           "Type": "Int32",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1380,6 +1497,7 @@
             {
               "DefinitionName": "Customer",
               "PropertyName": "CustomerId",
+              "Type": null,
               "CompositePropertyNames": [
                 "CustomerId"
               ]
@@ -1389,6 +1507,7 @@
         "DueDate": {
           "Name": "DueDate",
           "Type": "DateTime",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1402,6 +1521,7 @@
         "Freight": {
           "Name": "Freight",
           "Type": "Decimal",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1415,6 +1535,7 @@
         "ModifiedDate": {
           "Name": "ModifiedDate",
           "Type": "DateTime",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1428,6 +1549,7 @@
         "OnlineOrderFlag": {
           "Name": "OnlineOrderFlag",
           "Type": "Boolean?",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1441,6 +1563,7 @@
         "OrderDate": {
           "Name": "OrderDate",
           "Type": "DateTime",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1454,6 +1577,7 @@
         "PurchaseOrderNumber": {
           "Name": "PurchaseOrderNumber",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 25,
@@ -1467,6 +1591,7 @@
         "RevisionNumber": {
           "Name": "RevisionNumber",
           "Type": "Byte",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1480,6 +1605,7 @@
         "Rowguid": {
           "Name": "Rowguid",
           "Type": "Guid",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1493,6 +1619,7 @@
         "SalesOrderNumber": {
           "Name": "SalesOrderNumber",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 25,
@@ -1506,6 +1633,7 @@
         "ShipDate": {
           "Name": "ShipDate",
           "Type": "DateTime?",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1519,6 +1647,7 @@
         "ShipMethod": {
           "Name": "ShipMethod",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 50,
@@ -1532,6 +1661,7 @@
         "ShipToAddressId": {
           "Name": "ShipToAddressId",
           "Type": "Int32?",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1544,6 +1674,7 @@
             {
               "DefinitionName": "Address",
               "PropertyName": "AddressId",
+              "Type": null,
               "CompositePropertyNames": [
                 "AddressId"
               ]
@@ -1553,6 +1684,7 @@
         "Status": {
           "Name": "Status",
           "Type": "Byte",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1566,6 +1698,7 @@
         "SubTotal": {
           "Name": "SubTotal",
           "Type": "Decimal",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1579,6 +1712,7 @@
         "TaxAmt": {
           "Name": "TaxAmt",
           "Type": "Decimal",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1592,6 +1726,7 @@
         "TotalDue": {
           "Name": "TotalDue",
           "Type": "Decimal",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1608,10 +1743,12 @@
       "Name": "VGetAllCategories",
       "Type": null,
       "Comment": null,
+      "Order": 0,
       "Properties": {
         "ParentProductCategoryName": {
           "Name": "ParentProductCategoryName",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 50,
@@ -1625,6 +1762,7 @@
         "ProductCategoryId": {
           "Name": "ProductCategoryId",
           "Type": "Int32?",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1638,6 +1776,7 @@
         "ProductCategoryName": {
           "Name": "ProductCategoryName",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 50,
@@ -1654,10 +1793,12 @@
       "Name": "VProductAndDescription",
       "Type": null,
       "Comment": null,
+      "Order": 0,
       "Properties": {
         "Culture": {
           "Name": "Culture",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 6,
@@ -1671,6 +1812,7 @@
         "Description": {
           "Name": "Description",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 400,
@@ -1684,6 +1826,7 @@
         "Name": {
           "Name": "Name",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 50,
@@ -1697,6 +1840,7 @@
         "ProductId": {
           "Name": "ProductId",
           "Type": "Int32",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1710,6 +1854,7 @@
         "ProductModel": {
           "Name": "ProductModel",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 50,
@@ -1726,10 +1871,12 @@
       "Name": "VProductModelCatalogDescription",
       "Type": null,
       "Comment": null,
+      "Order": 0,
       "Properties": {
         "BikeFrame": {
           "Name": "BikeFrame",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1743,6 +1890,7 @@
         "Color": {
           "Name": "Color",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 256,
@@ -1756,6 +1904,7 @@
         "Copyright": {
           "Name": "Copyright",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 30,
@@ -1769,6 +1918,7 @@
         "Crankset": {
           "Name": "Crankset",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 256,
@@ -1782,6 +1932,7 @@
         "MaintenanceDescription": {
           "Name": "MaintenanceDescription",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 256,
@@ -1795,6 +1946,7 @@
         "Manufacturer": {
           "Name": "Manufacturer",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1808,6 +1960,7 @@
         "Material": {
           "Name": "Material",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 256,
@@ -1821,6 +1974,7 @@
         "ModifiedDate": {
           "Name": "ModifiedDate",
           "Type": "DateTime",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1834,6 +1988,7 @@
         "Name": {
           "Name": "Name",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 50,
@@ -1847,6 +2002,7 @@
         "NoOfYears": {
           "Name": "NoOfYears",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 256,
@@ -1860,6 +2016,7 @@
         "Pedal": {
           "Name": "Pedal",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 256,
@@ -1873,6 +2030,7 @@
         "PictureAngle": {
           "Name": "PictureAngle",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 256,
@@ -1886,6 +2044,7 @@
         "PictureSize": {
           "Name": "PictureSize",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 256,
@@ -1899,6 +2058,7 @@
         "ProductLine": {
           "Name": "ProductLine",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 256,
@@ -1912,6 +2072,7 @@
         "ProductModelId": {
           "Name": "ProductModelId",
           "Type": "Int32",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1925,6 +2086,7 @@
         "ProductPhotoId": {
           "Name": "ProductPhotoId",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 256,
@@ -1938,6 +2100,7 @@
         "ProductUrl": {
           "Name": "ProductUrl",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 256,
@@ -1951,6 +2114,7 @@
         "RiderExperience": {
           "Name": "RiderExperience",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 1024,
@@ -1964,6 +2128,7 @@
         "Rowguid": {
           "Name": "Rowguid",
           "Type": "Guid",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -1977,6 +2142,7 @@
         "Saddle": {
           "Name": "Saddle",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 256,
@@ -1990,6 +2156,7 @@
         "Style": {
           "Name": "Style",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 256,
@@ -2003,6 +2170,7 @@
         "Summary": {
           "Name": "Summary",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": null,
@@ -2016,6 +2184,7 @@
         "WarrantyDescription": {
           "Name": "WarrantyDescription",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 256,
@@ -2029,6 +2198,7 @@
         "WarrantyPeriod": {
           "Name": "WarrantyPeriod",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 256,
@@ -2042,6 +2212,7 @@
         "Wheel": {
           "Name": "Wheel",
           "Type": "String",
+          "Nullable": false,
           "Comment": null,
           "MinLength": 0,
           "MaxLength": 256,
@@ -2054,5 +2225,6 @@
         }
       }
     }
-  }
+  },
+  "Settings": null
 }
