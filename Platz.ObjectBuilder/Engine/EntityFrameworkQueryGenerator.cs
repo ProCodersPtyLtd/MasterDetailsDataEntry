@@ -45,7 +45,59 @@ namespace Platz.ObjectBuilder.Engine
 
             AppendSingleQuery(sb, parser, schema, query.Query, "query", query.ReturnTypeName, query.Query.SubQueries);
 
+            AppendQueryReturnType(sb, parser, schema, query);
+
             return sb.ToString();
+        }
+
+        private void AppendQueryReturnType(StringBuilder sb, JsonStoreSchemaParser parser, StoreSchema schema, StoreQuery query)
+        {
+            var subQueries = query.Query.SubQueries;
+
+            sb.Append(@$"
+    public  class {query.ReturnTypeName}
+    {{");
+
+            foreach (var field in query.Query.Fields.Values)
+            {
+                var table = query.Query.Tables[field.Field.ObjectAlias];
+
+                if (table.IsSubQuery)
+                {
+                    //StoreProperty property = null;
+                    string originalPropertyName = "";
+                    string fieldAlias = field.FieldAlias;
+
+                    while (table.IsSubQuery)
+                    {
+                        var sq = subQueries[table.TableName];
+                        var sqf = sq.Fields[fieldAlias];
+                        fieldAlias = sqf.Field.FieldName;
+                        var sqt = sq.Tables[sqf.Field.ObjectAlias];
+                        table = sqt;
+                        originalPropertyName = fieldAlias;
+                    }
+
+                    var definition = schema.Definitions[table.TableName];
+                    var property = definition.Properties[originalPropertyName];
+
+                    sb.Append(@$"
+        public {property.Type} {field.FieldAlias} {{ get; set; }}");
+                }
+                else
+                {
+                    var definition = schema.Definitions[table.TableName];
+                    var property = definition.Properties[field.Field.FieldName];
+
+                    sb.Append(@$"
+        public {property.Type} {property.Name} {{ get; set; }}");
+
+                }
+            }
+
+            sb.Append(@$"
+    }}");
+
         }
 
         private List<KeyValuePair<string, StoreQueryDefinition>> SortSubQueries(StoreQuery query)
