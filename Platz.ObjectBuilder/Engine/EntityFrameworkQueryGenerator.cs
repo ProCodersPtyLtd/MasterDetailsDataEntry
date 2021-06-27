@@ -25,12 +25,6 @@ namespace Platz.ObjectBuilder.Engine
 
             var sq = SortSubQueries(query);
 
-            foreach (var subQuery in sq)
-            {
-                AppendSingleQuery(sb, parser, schema, subQuery.Value, subQuery.Key, "", query.Query.SubQueries);
-                sb.AppendLine();
-            }
-
 
             if (query.Query.Parameters != null && query.Query.Parameters.Any())
             {
@@ -43,6 +37,12 @@ namespace Platz.ObjectBuilder.Engine
                 }
             }
 
+            foreach (var subQuery in sq)
+            {
+                AppendSingleQuery(sb, parser, schema, subQuery.Value, subQuery.Key, "", query.Query.SubQueries);
+                sb.AppendLine();
+            }
+
             AppendSingleQuery(sb, parser, schema, query.Query, "query", query.ReturnTypeName, query.Query.SubQueries);
 
             return sb.ToString();
@@ -50,6 +50,11 @@ namespace Platz.ObjectBuilder.Engine
 
         private List<KeyValuePair<string, StoreQueryDefinition>> SortSubQueries(StoreQuery query)
         {
+            if (query.Query.SubQueries == null)
+            {
+                return new List<KeyValuePair<string, StoreQueryDefinition>>();
+            }
+
             var result = query.Query.SubQueries.ToList();
             result.Sort(delegate (KeyValuePair<string, StoreQueryDefinition> a, KeyValuePair<string, StoreQueryDefinition> b)
             {
@@ -67,7 +72,6 @@ namespace Platz.ObjectBuilder.Engine
             });
 
             return result;
-            //return result.Select(r => r.Value).ToList();
         }
 
         private static void AppendSingleQuery(StringBuilder sb, JsonStoreSchemaParser parser, StoreSchema schema, StoreQueryDefinition query, string queryName,

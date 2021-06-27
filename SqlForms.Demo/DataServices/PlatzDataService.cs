@@ -15,92 +15,89 @@ namespace Default
 
     public partial interface IMyDataService
     {
+        List<CustAddrSubQuery> GetCustAddrSubQueryList(params object[] parameters);
         List<Cust> GetCustList(params object[] parameters);
         List<CustomerAddress> GetCustomerAddressList(params object[] parameters);
-        List<ProdModel> GetProdModelList();
+        List<ProdModel> GetProdModelList(params object[] parameters);
     }
 
     #endregion
 
     #region Data Service 
 
-
-
     public partial class MyDataService : DataServiceBase<AdventureWorksContext>, IMyDataService
     {
-        public void M1()
+        public List<CustAddrSubQuery> GetCustAddrSubQueryList(params object[] parameters)
         {
-            var db = GetDbContext();
-
-            var Query2 =
-                from c in db.CustomerAddress
-                select new
-                {
-                    CustomerId = c.CustomerId,
-                    AddressId = c.AddressId,
-                    type = c.AddressType,
-                    ModifiedDate = c.ModifiedDate,
-                };
-
-            var Query1 =
-                from q in Query2
-                select new
-                {
-                    CustomerId = q.CustomerId,
-                    AddressId = q.AddressId,
-                    type2 = q.type,
-                    ModifiedDate = q.ModifiedDate,
-                };
-
-            var query =
-                from c in db.Customer
-                join q in Query1 on c.CustomerId equals q.CustomerId
-                select new 
-                {
-                    CustomerId = q.CustomerId,
-                    AddressId = q.AddressId,
-                    type2 = q.type2,
-                    ModifiedDate = q.ModifiedDate,
-                    CompanyName = c.CompanyName,
-                    EmailAddress = c.EmailAddress,
-                    FirstName = c.FirstName,
-                    LastName = c.LastName,
-                    MiddleName = c.MiddleName,
-                    NameStyle = c.NameStyle,
-                    PasswordHash = c.PasswordHash,
-                    PasswordSalt = c.PasswordSalt,
-                    Phone = c.Phone,
-                    Rowguid = c.Rowguid,
-                    SalesPerson = c.SalesPerson,
-                    Suffix = c.Suffix,
-                    Title = c.Title,
-                };
-        }
-        public List<Cust> GetCustList(params object[] parameters)
-        {
-            var name = (String)parameters[0];
-
             using (var db = GetDbContext())
             {
-                var query =
-                    from c in db.Customer 
-                    where c.FirstName == name
-                    select new Cust
+            
+                var Query2 =
+                    from c in db.CustomerAddress
+                    select new 
                     {
+                    
                         CustomerId = c.CustomerId,
-                        CompanyName = c.CompanyName,
-                        EmailAddress = c.EmailAddress,
-                        FirstName = c.FirstName,
-                        LastName = c.LastName,
-                        MiddleName = c.MiddleName,
+                    
+                        AddressId = c.AddressId,
+                    
+                        type = c.AddressType,
+                    
                         ModifiedDate = c.ModifiedDate,
+                    };
+            
+                var Query1 =
+                    from q in Query2
+                    select new 
+                    {
+                    
+                        CustomerId = q.CustomerId,
+                    
+                        AddressId = q.AddressId,
+                    
+                        type2 = q.type,
+                    
+                        ModifiedDate = q.ModifiedDate,
+                    };
+            
+                var query =
+                    from c in db.Customer
+                    join q in Query1 on c.CustomerId equals q.CustomerId
+                    select new CustAddrSubQuery
+                    {
+                    
+                        //CustomerId = q.CustomerId,
+                    
+                        //AddressId = q.AddressId,
+                    
+                        //type2 = q.type2,
+                    
+                        //ModifiedDate = q.ModifiedDate,
+                    
+                        CompanyName = c.CompanyName,
+                    
+                        EmailAddress = c.EmailAddress,
+                    
+                        FirstName = c.FirstName,
+                    
+                        LastName = c.LastName,
+                    
+                        MiddleName = c.MiddleName,
+                    
                         NameStyle = c.NameStyle,
+                    
                         PasswordHash = c.PasswordHash,
+                    
                         PasswordSalt = c.PasswordSalt,
+                    
                         Phone = c.Phone,
+                    
                         Rowguid = c.Rowguid,
+                    
                         SalesPerson = c.SalesPerson,
+                    
                         Suffix = c.Suffix,
+                    
                         Title = c.Title,
                     };
 
@@ -109,7 +106,54 @@ namespace Default
             }
         }
 
-        
+        public List<Cust> GetCustList(params object[] parameters)
+        {
+            var name = (String)parameters[0];
+
+            using (var db = GetDbContext())
+            {
+            
+                var query =
+                    from c in db.Customer
+                    where c.FirstName == name
+                    select new Cust
+                    {
+                    
+                        CustomerId = c.CustomerId,
+                    
+                        CompanyName = c.CompanyName,
+                    
+                        EmailAddress = c.EmailAddress,
+                    
+                        FirstName = c.FirstName,
+                    
+                        LastName = c.LastName,
+                    
+                        MiddleName = c.MiddleName,
+                    
+                        ModifiedDate = c.ModifiedDate,
+                    
+                        NameStyle = c.NameStyle,
+                    
+                        PasswordHash = c.PasswordHash,
+                    
+                        PasswordSalt = c.PasswordSalt,
+                    
+                        Phone = c.Phone,
+                    
+                        Rowguid = c.Rowguid,
+                    
+                        SalesPerson = c.SalesPerson,
+                    
+                        Suffix = c.Suffix,
+                    
+                        Title = c.Title,
+                    };
+
+                var result = query.ToList();
+                return result;
+            }
+        }
 
         public List<CustomerAddress> GetCustomerAddressList(params object[] parameters)
         {
@@ -117,26 +161,41 @@ namespace Default
 
             using (var db = GetDbContext())
             {
+            
                 var query =
-                    from cu in db.Customer 
+                    from cu in db.Customer
                     join c in db.CustomerAddress on cu.CustomerId equals c.CustomerId
                     join a in db.Address on c.AddressId equals a.AddressId
                     where c.CustomerId == p1
                     select new CustomerAddress
                     {
+                    
                         AddressId = a.AddressId,
+                    
                         AddressLine1 = a.AddressLine1,
+                    
                         AddressLine2 = a.AddressLine2,
+                    
                         City = a.City,
+                    
                         CountryRegion = a.CountryRegion,
+                    
                         ModifiedDate = a.ModifiedDate,
+                    
                         PostalCode = a.PostalCode,
+                    
                         Rowguid = a.Rowguid,
+                    
                         StateProvince = a.StateProvince,
+                    
                         CustomerId = c.CustomerId,
+                    
                         AddressType = c.AddressType,
+                    
                         Title = cu.Title,
+                    
                         FirstName = cu.FirstName,
+                    
                         LastName = cu.LastName,
                     };
 
@@ -145,16 +204,20 @@ namespace Default
             }
         }
 
-        public List<ProdModel> GetProdModelList()
+        public List<ProdModel> GetProdModelList(params object[] parameters)
         {
             using (var db = GetDbContext())
             {
+            
                 var query =
-                    from p in db.ProductModel 
+                    from p in db.ProductModel
                     select new ProdModel
                     {
+                    
                         ProductModelId = p.ProductModelId,
+                    
                         CatalogDescription = p.CatalogDescription,
+                    
                         Name = p.Name,
                     };
 
@@ -168,6 +231,23 @@ namespace Default
     #endregion
 
     #region Entities
+
+    public partial class CustAddrSubQuery
+    {
+        public String CompanyName { get; set; }
+        public String EmailAddress { get; set; }
+        public String FirstName { get; set; }
+        public String LastName { get; set; }
+        public String MiddleName { get; set; }
+        public Boolean NameStyle { get; set; }
+        public String PasswordHash { get; set; }
+        public String PasswordSalt { get; set; }
+        public String Phone { get; set; }
+        public Guid Rowguid { get; set; }
+        public String SalesPerson { get; set; }
+        public String Suffix { get; set; }
+        public String Title { get; set; }
+    }
 
     public partial class Cust
     {

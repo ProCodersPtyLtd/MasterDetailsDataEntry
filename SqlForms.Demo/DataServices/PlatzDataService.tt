@@ -50,18 +50,9 @@ namespace <#=Queries.First().Namespace#>
 <#
         foreach (var query in Queries)
         {
-            if (query.Query.Parameters != null && query.Query.Parameters.Any())
-            {
 #>
         List<<#=query.ReturnTypeName#>> <#=query.Name#>(params object[] parameters);
 <#
-            }
-            else
-            {
-#>
-        List<<#=query.ReturnTypeName#>> <#=query.Name#>();
-<#
-            }
         }
 #>
     }
@@ -80,12 +71,14 @@ namespace <#=Queries.First().Namespace#>
             var where = Parser.QueryExprToString(query.Query.Where.Expression, JsonStoreSchemaParser.CSharpOperatorsMap);
             var parameters = Parser.ReadParameters(query);
 
-            if (query.Query.Parameters != null && query.Query.Parameters.Any())
-            {
+            var sq = SortSubQueries(query);
+
 #>
         public List<<#=query.ReturnTypeName#>> <#=query.Name#>(params object[] parameters)
         {
 <#
+            if (query.Query.Parameters != null && query.Query.Parameters.Any())
+            {
                 for (int i = 0; i < parameters.Count; i++)
                 {
                     var p = parameters[i];
@@ -97,45 +90,17 @@ namespace <#=Queries.First().Namespace#>
 
 <#
             }
-            else
-            {
-#>
-        public List<<#=query.ReturnTypeName#>> <#=query.Name#>()
-        {
-<#
-            }
 #>
             using (var db = GetDbContext())
             {
-                var query =
-                    from <#=from.LeftObjectAlias#> in db.<#=from.LeftObject#> 
-<#          foreach (var j in joins) 
-            {
-#>
-                    join <#=j.RightObjectAlias#> in db.<#=j.RightObject#> on <#=j.LeftObjectAlias#>.<#=j.LeftField#> equals <#=j.RightObjectAlias#>.<#=j.RightField#>
-<#          } 
-            
-            if (!string.IsNullOrWhiteSpace(where))
-            {
-#>
-                    where <#=where#>
 <#
+            foreach (var subQuery in sq)
+            {
+                AppendSingleQuery(Parser, Schema, subQuery.Value, subQuery.Key, "", query.Query.SubQueries);
             }
+
+            AppendSingleQuery(Parser, Schema, query.Query, "query", query.ReturnTypeName, query.Query.SubQueries);
 #>
-                    select new <#=query.ReturnTypeName#>
-                    {
-<#
-            foreach (var field in query.Query.Fields.Values.Where(f => f.IsOutput))
-            {
-                var table = query.Query.Tables[field.Field.ObjectAlias];
-                var definition = Schema.Definitions[table.TableName];
-                var property = definition.Properties[field.Field.FieldName];
-#>
-                        <#=property.Name#> = <#=field.Field.ObjectAlias#>.<#=field.Field.FieldName#>,
-<#
-            }
-#>
-                    };
 
                 var result = query.ToList();
                 return result;
@@ -161,11 +126,15 @@ namespace <#=Queries.First().Namespace#>
             foreach (var field in query.Query.Fields.Values)
             {
                 var table = query.Query.Tables[field.Field.ObjectAlias];
+
+                if (!table.IsSubQuery)
+                {
                 var definition = Schema.Definitions[table.TableName];
                 var property = definition.Properties[field.Field.FieldName];
 #>
         public <#=property.Type#> <#=property.Name#> { get; set; }
 <#
+                }
             }
 #>
     }
@@ -197,6 +166,90 @@ namespace <#=Queries.First().Namespace#>
                     Queries.Add(q);
                 }
             }
+        }
+
+        List<KeyValuePair<string, StoreQueryDefinition>> SortSubQueries(StoreQuery query)
+        {
+            if (query.Query.SubQueries == null)
+            {
+                return new List<KeyValuePair<string, StoreQueryDefinition>>();
+            }
+
+            var result = query.Query.SubQueries.ToList();
+            result.Sort(delegate (KeyValuePair<string, StoreQueryDefinition> a, KeyValuePair<string, StoreQueryDefinition> b)
+            {
+                if (a.Value.Tables.Any(t => t.Value.TableName == b.Key))
+                {
+                    return 1;
+                }
+
+                if (b.Value.Tables.Any(t => t.Value.TableName == a.Key))
+                {
+                    return -1;
+                }
+
+                return 0;
+            });
+
+            return result;
+        }
+
+        void AppendSingleQuery(JsonStoreSchemaParser parser, StoreSchema schema, StoreQueryDefinition query, string queryName,
+            string returnTypeName, Dictionary<string, StoreQueryDefinition> subQueries)
+        {
+            var from = parser.ReadFrom(query, schema);
+            var joins = parser.ReadJoins(query, schema);
+            var where = parser.QueryExprToString(query.Where.Expression, JsonStoreSchemaParser.CSharpOperatorsMap);
+
+            string dbPrefix;
+            dbPrefix = query.Tables[from.LeftObjectAlias].IsSubQuery ? "" : "db.";
+
+#>            
+                var <#=queryName#> =
+                    from <#=from.LeftObjectAlias#> in <#=dbPrefix#><#=from.LeftObject#>
+<#
+            foreach (var j in joins)
+            {
+                dbPrefix = query.Tables[j.RightObjectAlias].IsSubQuery ? "" : "db.";
+#>
+                    join <#=j.RightObjectAlias#> in <#=dbPrefix#><#=j.RightObject#> on <#=j.LeftObjectAlias#>.<#=j.LeftField#> equals <#=j.RightObjectAlias#>.<#=j.RightField#>
+<#
+            }
+
+            if (!string.IsNullOrWhiteSpace(where))
+            {
+#>
+                    where <#=where#>
+<#
+            }
+#>
+                    select new <#=returnTypeName#>
+                    {
+<#
+            foreach (var field in query.Fields.Values.Where(f => f.IsOutput))
+            {
+                var table = query.Tables[field.Field.ObjectAlias];
+
+                if (table.IsSubQuery)
+                {
+                    var definition = subQueries[table.TableName];
+                    var property = definition.Fields[field.Field.FieldName];
+#>                    
+                        <#=field.FieldAlias#> = <#=field.Field.ObjectAlias#>.<#=field.Field.FieldName#>,
+<#
+                }
+                else
+                {
+                    var definition = schema.Definitions[table.TableName];
+                    var property = definition.Properties[field.Field.FieldName];
+#>                    
+                        <#=field.FieldAlias#> = <#=field.Field.ObjectAlias#>.<#=field.Field.FieldName#>,
+<#
+                }
+            }
+#>
+                    };
+<#
         }
 
         // t4 specific methods
