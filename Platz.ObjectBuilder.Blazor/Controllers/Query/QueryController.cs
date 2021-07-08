@@ -572,7 +572,12 @@ namespace Platz.ObjectBuilder
             if (func == "Group By All")
             {
                 SelectedQuery.SelectionProperties.Where(p => p.IsOutput).ToList().ForEach(p => p.GroupByFunction = "Group By");
-                SelectedQuery.SelectionProperties.Where(p => !String.IsNullOrWhiteSpace(p.Filter)).ToList().ForEach(p => p.GroupByFunction = "Where");
+                
+                SelectedQuery.SelectionProperties.Where(p => !String.IsNullOrWhiteSpace(p.Filter)).ToList().ForEach(p => 
+                { 
+                    p.GroupByFunction = "Where";
+                    p.IsOutput = false;
+                });
             }
 
             if (func == "Group By None")

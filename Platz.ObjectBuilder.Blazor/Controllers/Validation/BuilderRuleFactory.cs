@@ -68,7 +68,7 @@ namespace Platz.ObjectBuilder.Blazor.Validation
 
         private List<T> GetLocalRules()
         {
-            var result = typeof(BuilderRuleFactory<,>).Assembly.GetTypes().Where(t => !t.IsInterface && typeof(T).IsAssignableFrom(t))
+            var result = typeof(BuilderRuleFactory<,>).Assembly.GetTypes().Where(t => !t.IsInterface && !t.IsAbstract && typeof(T).IsAssignableFrom(t))
                 .Select(t => (T)Activator.CreateInstance(t))
                 .ToList();
 
