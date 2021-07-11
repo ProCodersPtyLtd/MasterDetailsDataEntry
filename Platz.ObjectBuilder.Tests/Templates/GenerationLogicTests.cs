@@ -11,7 +11,7 @@ namespace Platz.ObjectBuilder.Tests
 {
     public class GenerationLogicTests
     {
-        [Fact]
+        [Fact(Skip = "not used anymore, as template is more complex now")]
         public void RunGenerationLogicTest()
         {
             var logic = new GenerationLogic();

@@ -12,8 +12,8 @@
     "Comment": null,
     "Parameters": {},
     "Fields": {
-      "ProductId": {
-        "FieldAlias": "ProductId",
+      "Count": {
+        "FieldAlias": "Count",
         "IsOutput": true,
         "GroupByFunction": "Count",
         "GroupByFilter": "\u003E 1",

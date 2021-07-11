@@ -173,7 +173,21 @@ namespace Platz.ObjectBuilder
             }
             else if (expr.Value != null)
             {
-                return expr.Value.ToString();
+                var val = expr.Value.ToString();
+
+                if (val.Length > 0)
+                {
+                    var quote = val[0].ToString();
+                    
+                    if (quote == val[val.Length-1].ToString() && operatorsMap.ContainsKey(quote))
+                    {
+                        val = val.Remove(0, 1);
+                        val = val.Remove(val.Length - 1, 1);
+                        val = $"{operatorsMap[quote]}{val}{operatorsMap[quote]}";
+                    }
+                }
+
+                return val;
             }
 
             var left = expr.Left.Operator == null ? $"{QueryExprToString(expr.Left, operatorsMap)}" : $"({QueryExprToString(expr.Left, operatorsMap)})";
@@ -196,6 +210,7 @@ namespace Platz.ObjectBuilder
             { "and", "&&" },
             { "=", "==" },
             { "<>", "!=" },
+            { "'", "\"" },
         };
 
         public static Dictionary<string, string> SqlOperatorsMap = new Dictionary<string, string>()

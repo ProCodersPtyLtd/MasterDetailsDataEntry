@@ -1,4 +1,6 @@
-﻿using Platz.ObjectBuilder.Interfaces;
+﻿using Platz.ObjectBuilder.Expressions;
+using Platz.ObjectBuilder.Helpers;
+using Platz.ObjectBuilder.Interfaces;
 using Platz.SqlForms;
 using System;
 using System.Collections.Generic;
@@ -44,7 +46,7 @@ namespace Platz.ObjectBuilder.Engine
             }
 
             AppendSingleQuery(sb, parser, schema, query.Query, "query", query.ReturnTypeName, query.Query.SubQueries);
-
+            sb.AppendLine();
             AppendQueryReturnType(sb, parser, schema, query);
 
             return sb.ToString();
@@ -58,7 +60,7 @@ namespace Platz.ObjectBuilder.Engine
     public  class {query.ReturnTypeName}
     {{");
 
-            foreach (var field in query.Query.Fields.Values)
+            foreach (var field in query.Query.Fields.Values.Where(f => f.IsOutput))
             {
                 var table = query.Query.Tables[field.Field.ObjectAlias];
 
@@ -87,7 +89,7 @@ namespace Platz.ObjectBuilder.Engine
                     var property = definition.Properties[field.Field.FieldName];
 
                     sb.Append(@$"
-        public {property.Type} {property.Name} {{ get; set; }}");
+        public {property.Type} {field.FieldAlias} {{ get; set; }}");
 
                 }
             }
@@ -126,7 +128,10 @@ namespace Platz.ObjectBuilder.Engine
         private static void AppendSingleGroupByQuery(StringBuilder sb, JsonStoreSchemaParser parser, StoreSchema schema, StoreQueryDefinition query, string queryName,
             string returnTypeName, Dictionary<string, StoreQueryDefinition> subQueries)
         {
-            var cfg = new EntityFrameworkQueryControllerConfiguration(p);
+            var cfgParams = new QueryControllerParameters();
+            var cfg = new EntityFrameworkQueryControllerConfiguration(cfgParams);
+            ISqlExpressionEngine expressionEngine = new SqlExpressionEngine(cfg.Resolver);
+
             var from = parser.ReadFrom(query, schema);
             var joins = parser.ReadJoins(query, schema);
             var where = parser.QueryExprToString(query.Where.Expression, JsonStoreSchemaParser.CSharpOperatorsMap);
@@ -180,8 +185,11 @@ namespace Platz.ObjectBuilder.Engine
                     }
 
                     var grpbExpr = GetGroupBySelectField(sb, field, groupVar, gbAliases);
-                    var filterExpr = GetFilterQueryExpression(field, field.GroupByFilter);
+                    
+                    // convert filter fo EF LINQ expression
+                    var filterExpr = GetFilterQueryExpression(expressionEngine, field, field.GroupByFilter);
                     var cond = parser.QueryExprToString(filterExpr, JsonStoreSchemaParser.CSharpOperatorsMap);
+                    cond = cond.Replace($"{field.Field.ObjectAlias}.{field.FieldAlias} ", "");
                     having += $"{grpbExpr} {cond}";
                 }
 
@@ -200,20 +208,18 @@ namespace Platz.ObjectBuilder.Engine
                 
                 sb.Append(@$"
             {field.FieldAlias} = {exprField},");
-                //    sb.Append(@$"
-                //{field.FieldAlias} = {field.Field.ObjectAlias}.{field.Field.FieldName},");
+
             }
 
             sb.Append(@$"
         }};");
         }
 
-        private static QueryExpression GetFilterQueryExpression(StoreQueryField field, string filter)
+        private static QueryExpression GetFilterQueryExpression(ISqlExpressionEngine expressions, StoreQueryField field, string filter)
         {
-            var result = new QueryExpression() 
-            { 
-            };
-
+            var filterClause = $"{field.Field.ObjectAlias}.{field.FieldAlias} {filter}";
+            var expr = expressions.BuildExpressionTree(filterClause);
+            var result = QueryExpressionHelper.ReadFromSqlExpr(expr);
             return result;
         }
 
@@ -239,9 +245,6 @@ namespace Platz.ObjectBuilder.Engine
             }
 
             return function;
-
-            //sb.Append(@$"
-            //{field.FieldAlias} = {function},");
         }
 
         private static void AppendSingleQuery(StringBuilder sb, JsonStoreSchemaParser parser, StoreSchema schema, StoreQueryDefinition query, string queryName,
