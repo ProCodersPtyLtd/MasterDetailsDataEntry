@@ -10,22 +10,21 @@ namespace Platz.ObjectBuilder.Blazor.Validation.Rules
     {
         public override RuleValidationResult Validate(IQueryModel qm)
         {
-            //if (qm.SelectionProperties.Any(s => !string.IsNullOrWhiteSpace(s.GroupByFunction)))
-            //if (qm.SelectionProperties.Any(s => s.GroupByFunction == "Group By"))
-            //{
-            //    var emptyOutputs = qm.SelectionProperties.Where(s => s.IsOutput && string.IsNullOrWhiteSpace(s.GroupByFunction)).ToList();
+            var emptyOutputs = qm.SelectionProperties.Where(s => 
+                    !string.IsNullOrWhiteSpace(s.Having) &&
+                    (string.IsNullOrWhiteSpace(s.GroupByFunction) || s.GroupByFunction == "Where")
+                ).ToList();
 
-            //    if (emptyOutputs.Any())
-            //    {
-            //        var emptyFields = emptyOutputs.Select(f => f.OutputName);
+            if (emptyOutputs.Any())
+            {
+                var badFields = emptyOutputs.Select(f => f.OutputName);
 
-            //        var result = new RuleValidationResult(
-            //            GetType().Name, 
-            //            $"Query '{qm.Name}' is a Group By query but it has some output fields not included in Group By clause and without aggregate functions: {string.Join(", ", emptyFields)}");
+                var result = new RuleValidationResult(
+                    GetType().Name, 
+                    $"Query '{qm.Name}' cannot have Group By Having not included in Group By clause or aggregate functions: {string.Join(", ", badFields)}");
                     
-            //        return result;
-            //    }
-            //}
+                return result;
+            }
 
             return null;
         }
