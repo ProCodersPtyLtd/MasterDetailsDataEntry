@@ -126,6 +126,7 @@ namespace Platz.ObjectBuilder.Engine
         private static void AppendSingleGroupByQuery(StringBuilder sb, JsonStoreSchemaParser parser, StoreSchema schema, StoreQueryDefinition query, string queryName,
             string returnTypeName, Dictionary<string, StoreQueryDefinition> subQueries)
         {
+            var cfg = new EntityFrameworkQueryControllerConfiguration(p);
             var from = parser.ReadFrom(query, schema);
             var joins = parser.ReadJoins(query, schema);
             var where = parser.QueryExprToString(query.Where.Expression, JsonStoreSchemaParser.CSharpOperatorsMap);
@@ -178,9 +179,10 @@ namespace Platz.ObjectBuilder.Engine
                         having += " && ";
                     }
 
-                    var expr = GetGroupBySelectField(sb, field, groupVar, gbAliases);
-                    var cond = field.GroupByFilter;
-                    having += $"{expr} {cond}";
+                    var grpbExpr = GetGroupBySelectField(sb, field, groupVar, gbAliases);
+                    var filterExpr = GetFilterQueryExpression(field, field.GroupByFilter);
+                    var cond = parser.QueryExprToString(filterExpr, JsonStoreSchemaParser.CSharpOperatorsMap);
+                    having += $"{grpbExpr} {cond}";
                 }
 
                 sb.Append(@$"
@@ -204,6 +206,15 @@ namespace Platz.ObjectBuilder.Engine
 
             sb.Append(@$"
         }};");
+        }
+
+        private static QueryExpression GetFilterQueryExpression(StoreQueryField field, string filter)
+        {
+            var result = new QueryExpression() 
+            { 
+            };
+
+            return result;
         }
 
         private static string GetGroupBySelectField(StringBuilder sb, StoreQueryField field, string groupVar, IEnumerable<string> gbAliases)

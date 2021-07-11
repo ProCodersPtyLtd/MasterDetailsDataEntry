@@ -47,6 +47,18 @@
         },
         "Operation": null,
         "RawExpression": null
+      },
+      "Name": {
+        "FieldAlias": "Name",
+        "IsOutput": true,
+        "GroupByFunction": "Min",
+        "GroupByFilter": "= \u0027Agata\u0027",
+        "Field": {
+          "ObjectAlias": "p",
+          "FieldName": "Name"
+        },
+        "Operation": null,
+        "RawExpression": null
       }
     },
     "Tables": {

@@ -27,6 +27,34 @@ namespace Default
 
     public partial class MyDataService : DataServiceBase<AdventureWorksContext>, IMyDataService
     {
+        public void Bla(params object[] parameters)
+        {
+            using (var db = GetDbContext())
+            {
+
+                var query =
+                    from p in db.Product
+                    where p.Weight > 100
+                    group new { p } by new { p.StandardCost } into group1
+                    where group1.Count() > 1 && group1.Min(x => x.p.Name) == "Agata"
+                    select new WeightByCost
+                    {
+                        ProductId = group1.Count(),
+                        StandardCost = group1.Key.StandardCost,
+                        Name = group1.Min(x => x.p.Name),
+                    };
+
+            }
+        }
+
+        public class WeightByCost
+        {
+            public Int32 ProductId { get; set; }
+            public Decimal StandardCost { get; set; }
+            public Decimal? Weight { get; set; }
+            public String Name { get; set; }
+        }
+
         public List<CustAddrSubQuery> GetCustAddrSubQueryList(params object[] parameters)
         {
             using (var db = GetDbContext())
