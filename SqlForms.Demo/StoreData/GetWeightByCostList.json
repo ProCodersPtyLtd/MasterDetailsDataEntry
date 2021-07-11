@@ -16,6 +16,7 @@
         "FieldAlias": "ProductId",
         "IsOutput": true,
         "GroupByFunction": "Count",
+        "GroupByFilter": "\u003E 1",
         "Field": {
           "ObjectAlias": "p",
           "FieldName": "ProductId"
@@ -27,6 +28,7 @@
         "FieldAlias": "StandardCost",
         "IsOutput": true,
         "GroupByFunction": "Group By",
+        "GroupByFilter": null,
         "Field": {
           "ObjectAlias": "p",
           "FieldName": "StandardCost"
@@ -38,6 +40,7 @@
         "FieldAlias": "Weight",
         "IsOutput": false,
         "GroupByFunction": "Where",
+        "GroupByFilter": null,
         "Field": {
           "ObjectAlias": "p",
           "FieldName": "Weight"
@@ -68,6 +71,7 @@
             "FieldAlias": null,
             "IsOutput": false,
             "GroupByFunction": null,
+            "GroupByFilter": null,
             "Field": {
               "ObjectAlias": "p",
               "FieldName": "Weight"
