@@ -1,0 +1,111 @@
+{
+  "Name": "GetWeightByCostList",
+  "DataService": "MyDataService",
+  "Namespace": "Default",
+  "ReturnTypeName": "WeightByCost",
+  "SchemaName": null,
+  "SchemaFile": "C:\\Repos\\MasterDetailsDataEntry\\SqlForms.Demo\\StoreData\\Schema.json",
+  "SchemaVersion": null,
+  "Tags": null,
+  "Query": {
+    "QueryAlias": null,
+    "Comment": null,
+    "Parameters": {},
+    "Fields": {
+      "Count": {
+        "FieldAlias": "Count",
+        "IsOutput": true,
+        "GroupByFunction": "Count",
+        "GroupByFilter": "\u003E 1",
+        "Field": {
+          "ObjectAlias": "p",
+          "FieldName": "ProductId"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "StandardCost": {
+        "FieldAlias": "StandardCost",
+        "IsOutput": true,
+        "GroupByFunction": "Group By",
+        "GroupByFilter": null,
+        "Field": {
+          "ObjectAlias": "p",
+          "FieldName": "StandardCost"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "Weight": {
+        "FieldAlias": "Weight",
+        "IsOutput": false,
+        "GroupByFunction": "Where",
+        "GroupByFilter": null,
+        "Field": {
+          "ObjectAlias": "p",
+          "FieldName": "Weight"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "Name": {
+        "FieldAlias": "Name",
+        "IsOutput": true,
+        "GroupByFunction": "Min",
+        "GroupByFilter": "= \u0027Agata\u0027",
+        "Field": {
+          "ObjectAlias": "p",
+          "FieldName": "Name"
+        },
+        "Operation": null,
+        "RawExpression": null
+      }
+    },
+    "Tables": {
+      "p": {
+        "ObjectAlias": "p",
+        "TableName": "Product",
+        "IsSubQuery": false
+      }
+    },
+    "SubQueries": {},
+    "Joins": [],
+    "GroupByFields": null,
+    "Having": null,
+    "Where": {
+      "Expression": {
+        "Value": null,
+        "QueryField": null,
+        "Param": null,
+        "Left": {
+          "Value": null,
+          "QueryField": {
+            "FieldAlias": null,
+            "IsOutput": false,
+            "GroupByFunction": null,
+            "GroupByFilter": null,
+            "Field": {
+              "ObjectAlias": "p",
+              "FieldName": "Weight"
+            },
+            "Operation": null,
+            "RawExpression": null
+          },
+          "Param": null,
+          "Left": null,
+          "Operator": null,
+          "Right": null
+        },
+        "Operator": "\u003E",
+        "Right": {
+          "Value": "100",
+          "QueryField": null,
+          "Param": null,
+          "Left": null,
+          "Operator": null,
+          "Right": null
+        }
+      }
+    }
+  }
+}

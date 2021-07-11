@@ -123,6 +123,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
                 {
                     IsOutput = f.IsOutput,
                     GroupByFunction = f.GroupByFunction,
+                    Having = f.GroupByFilter,
                     Alias = f.FieldAlias != f.Field.FieldName ? f.FieldAlias : ""
                     // ToDo: Filter is not stored and cannot be loaded
                 };
@@ -261,6 +262,7 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
                         FieldAlias = p.OutputName,
                         IsOutput = p.IsOutput,
                         GroupByFunction = p.GroupByFunction,
+                        GroupByFilter = p.Having,
                         Field = new StoreFieldReference { FieldName = p.StoreProperty.Name, ObjectAlias = p.FromTable.Alias }
                     });
 

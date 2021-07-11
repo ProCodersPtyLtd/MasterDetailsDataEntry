@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Platz.ObjectBuilder.Blazor.Controllers.Logic;
+//using Platz.ObjectBuilder.Blazor.Controllers.Logic;
 using Platz.ObjectBuilder.Engine;
 using Platz.ObjectBuilder.Expressions;
 using System;
@@ -30,32 +30,4 @@ namespace Platz.ObjectBuilder
             ReaderParameters = new EntityFrameworkStoreSchemaReaderParameters { DbContextType = parameters.DbContextType };
         }
     }
-
-    //public class EntityFrameworkQueryController : QueryControllerBase
-    //{
-    //    private QueryControllerParameters _parameters;
-
-    //    public EntityFrameworkQueryController(IQueryBuilderEngine engine): base(engine)
-    //    {
-    //        _storage = new FileStoreSchemaStorage();
-    //    }
-
-    //    public override void SetParameters(QueryControllerParameters parameters)
-    //    {
-    //        _resolver = new SqlJsonObjectResolver();
-    //        _expressions = new SqlExpressionEngine(_resolver);
-
-    //        _parameters = parameters;
-
-    //        if (_parameters == null)
-    //        {
-    //            throw new Exception($"EntityFrameworkQueryController expects EntityFrameworkQueryControllerParameters.");
-    //        }
-
-    //        _reader = new EntityFrameworkStoreSchemaReader();
-    //        var readerParameters = new EntityFrameworkStoreSchemaReaderParameters();
-    //        readerParameters.DbContextType = _parameters.DbContextType;
-    //        _readerParameters = readerParameters;
-    //    }
-    //}
 }

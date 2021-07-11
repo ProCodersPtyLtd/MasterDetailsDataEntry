@@ -1,4 +1,6 @@
-﻿using Platz.ObjectBuilder.Interfaces;
+﻿using Platz.ObjectBuilder.Expressions;
+using Platz.ObjectBuilder.Helpers;
+using Platz.ObjectBuilder.Interfaces;
 using Platz.SqlForms;
 using System;
 using System.Collections.Generic;
@@ -44,7 +46,7 @@ namespace Platz.ObjectBuilder.Engine
             }
 
             AppendSingleQuery(sb, parser, schema, query.Query, "query", query.ReturnTypeName, query.Query.SubQueries);
-
+            sb.AppendLine();
             AppendQueryReturnType(sb, parser, schema, query);
 
             return sb.ToString();
@@ -58,7 +60,7 @@ namespace Platz.ObjectBuilder.Engine
     public  class {query.ReturnTypeName}
     {{");
 
-            foreach (var field in query.Query.Fields.Values)
+            foreach (var field in query.Query.Fields.Values.Where(f => f.IsOutput))
             {
                 var table = query.Query.Tables[field.Field.ObjectAlias];
 
@@ -87,7 +89,7 @@ namespace Platz.ObjectBuilder.Engine
                     var property = definition.Properties[field.Field.FieldName];
 
                     sb.Append(@$"
-        public {property.Type} {property.Name} {{ get; set; }}");
+        public {property.Type} {field.FieldAlias} {{ get; set; }}");
 
                 }
             }
@@ -123,9 +125,137 @@ namespace Platz.ObjectBuilder.Engine
             return result;
         }
 
+        private static void AppendSingleGroupByQuery(StringBuilder sb, JsonStoreSchemaParser parser, StoreSchema schema, StoreQueryDefinition query, string queryName,
+            string returnTypeName, Dictionary<string, StoreQueryDefinition> subQueries)
+        {
+            var cfgParams = new QueryControllerParameters();
+            var cfg = new EntityFrameworkQueryControllerConfiguration(cfgParams);
+            ISqlExpressionEngine expressionEngine = new SqlExpressionEngine(cfg.Resolver);
+
+            var from = parser.ReadFrom(query, schema);
+            var joins = parser.ReadJoins(query, schema);
+            var where = parser.QueryExprToString(query.Where.Expression, JsonStoreSchemaParser.CSharpOperatorsMap);
+
+            string dbPrefix;
+            dbPrefix = query.Tables[from.LeftObjectAlias].IsSubQuery ? "" : "db.";
+
+            sb.Append(@$"
+    var {queryName} =
+        from {from.LeftObjectAlias} in {dbPrefix}{from.LeftObject}");
+
+            foreach (var j in joins)
+            {
+                dbPrefix = query.Tables[j.RightObjectAlias].IsSubQuery ? "" : "db.";
+
+                sb.Append(@$"
+        join {j.RightObjectAlias} in {dbPrefix}{j.RightObject} on {j.LeftObjectAlias}.{j.LeftField} equals {j.RightObjectAlias}.{j.RightField}");
+
+            }
+
+            // where
+            if (!string.IsNullOrWhiteSpace(where))
+            {
+                sb.Append(@$"
+        where {where}");
+
+            }
+
+            // group by
+            //var gbAliases = joins.Select(j => j.RightObjectAlias)
+            var gbAliases = query.Fields.Values.Where(f => f.GroupByFunction == "Group By").Select(f => f.Field.ObjectAlias).Distinct();
+            var gbFields = query.Fields.Values.Where(f => f.GroupByFunction == "Group By").Select(f => $"{f.Field.ObjectAlias}.{f.FieldAlias}").Distinct();
+
+            string groupVar = "group1";
+
+            sb.Append(@$"
+        group new {{ {string.Join(',', gbAliases)} }} by new {{ {string.Join(',', gbFields)} }} into {groupVar}");
+
+            // having
+            var havingFields = query.Fields.Values.Where(f => !string.IsNullOrWhiteSpace(f.GroupByFilter));
+
+            if (havingFields.Any())
+            {
+                var having = "";
+
+                foreach (var field in havingFields)
+                {
+                    if (!string.IsNullOrWhiteSpace(having))
+                    {
+                        having += " && ";
+                    }
+
+                    var grpbExpr = GetGroupBySelectField(sb, field, groupVar, gbAliases);
+                    
+                    // convert filter fo EF LINQ expression
+                    var filterExpr = GetFilterQueryExpression(expressionEngine, field, field.GroupByFilter);
+                    var cond = parser.QueryExprToString(filterExpr, JsonStoreSchemaParser.CSharpOperatorsMap);
+                    cond = cond.Replace($"{field.Field.ObjectAlias}.{field.FieldAlias} ", "");
+                    having += $"{grpbExpr} {cond}";
+                }
+
+                sb.Append(@$"
+        where {having}");
+
+            }
+
+            sb.Append(@$"
+        select new {returnTypeName}
+        {{");
+
+            foreach (var field in query.Fields.Values.Where(f => f.IsOutput))
+            {
+                var exprField = GetGroupBySelectField(sb, field, groupVar, gbAliases);
+                
+                sb.Append(@$"
+            {field.FieldAlias} = {exprField},");
+
+            }
+
+            sb.Append(@$"
+        }};");
+        }
+
+        private static QueryExpression GetFilterQueryExpression(ISqlExpressionEngine expressions, StoreQueryField field, string filter)
+        {
+            var filterClause = $"{field.Field.ObjectAlias}.{field.FieldAlias} {filter}";
+            var expr = expressions.BuildExpressionTree(filterClause);
+            var result = QueryExpressionHelper.ReadFromSqlExpr(expr);
+            return result;
+        }
+
+        private static string GetGroupBySelectField(StringBuilder sb, StoreQueryField field, string groupVar, IEnumerable<string> gbAliases)
+        {
+            string function;
+
+            if (string.IsNullOrWhiteSpace(field.GroupByFunction))
+            {
+                function = $"{field.Field.ObjectAlias}.{field.Field.FieldName}";
+            }
+            else if (field.GroupByFunction == "Group By")
+            {
+                function = $"{groupVar}.Key.{field.Field.FieldName}";
+            }
+            else if (field.GroupByFunction == "Count")
+            {
+                function = $"{groupVar}.Count()";
+            }
+            else
+            {
+                function = $"{groupVar}.{field.GroupByFunction}(x => x.{field.Field.ObjectAlias}.{field.Field.FieldName})";
+            }
+
+            return function;
+        }
+
         private static void AppendSingleQuery(StringBuilder sb, JsonStoreSchemaParser parser, StoreSchema schema, StoreQueryDefinition query, string queryName,
             string returnTypeName, Dictionary<string, StoreQueryDefinition> subQueries)
         {
+            if (query.Fields.Values.Any(f => f.GroupByFunction == "Group By"))
+            {
+                AppendSingleGroupByQuery(sb, parser, schema, query, queryName,returnTypeName, subQueries);
+                return;
+            }
+
             var from = parser.ReadFrom(query, schema);
             var joins = parser.ReadJoins(query, schema);
             var where = parser.QueryExprToString(query.Where.Expression, JsonStoreSchemaParser.CSharpOperatorsMap);

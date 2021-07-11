@@ -14,6 +14,7 @@ namespace Platz.ObjectBuilder.Schema
         public bool IsOutput { get; set; }
         public string Filter { get; set; }
         public string GroupByFunction { get; set; }
+        public string Having { get; set; }
         public bool IsGroup { get; set; }
         public string Alias { get; set; }
 

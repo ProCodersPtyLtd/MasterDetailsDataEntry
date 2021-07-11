@@ -64,6 +64,7 @@ namespace Platz.SqlForms
         public string FieldAlias { get; set; }
         public bool IsOutput { get; set; }
         public string GroupByFunction { get; set; }
+        public string GroupByFilter { get; set; }
         public StoreFieldReference Field { get; set; }
 
         // <empty>, min, max, count, concat(f1, f2, ...) etc.

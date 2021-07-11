@@ -68,6 +68,7 @@ namespace Platz.ObjectBuilder
         void AddSelectionProperty(QueryFromTable table, QueryFromProperty property);
         void RemoveSelectionProperty(QueryFromTable table, QueryFromProperty property);
         void ApplySelectPropertyFilter(QuerySelectProperty property, string filter);
+        string ReviewSelectPropertyFilter(QuerySelectProperty property, string filterText);
         void SetGroupByFunction(QuerySelectProperty property, string filter);
         void SetWhereClause(string text);
 
@@ -547,6 +548,58 @@ namespace Platz.ObjectBuilder
             }
         }
 
+        public string ReviewSelectPropertyFilter(QuerySelectProperty property, string filterText)
+        {
+            var filter = filterText?.Trim();
+
+            if (string.IsNullOrWhiteSpace(filter))
+            {
+                return "";
+            }
+            else
+            {
+                // generate new condition
+                var filterOperator = "=";
+
+                var operators = _resolver.GetCompareOperators();
+
+                foreach (var o in operators)
+                {
+                    if (filter.StartsWith(o))
+                    {
+                        filterOperator = o;
+                        filter = filter.Substring(o.Count()).Trim();
+                        break;
+                    }
+                };
+
+                var filterValue = filter;
+                char quote = _resolver.GetStringLiteralSymbol();
+
+                if (filterValue.First() != '@' && (property.StoreProperty.Type == "String" || property.StoreProperty.Type == "DateTime"))
+                {
+                    if (filterValue.First() != quote)
+                    {
+                        filterValue = quote + filterValue;
+                    }
+
+                    if (filterValue.Last() != quote)
+                    {
+                        filterValue = filterValue + quote;
+                    }
+                }
+
+                //if (!string.IsNullOrWhiteSpace(SelectedQuery.WhereClause))
+                //{
+                //    SelectedQuery.WhereClause += " AND ";
+                //}
+
+                //SelectedQuery.WhereClause += $"{property.FromTable.Alias}.{property.StoreProperty.Name} {filterOperator} {filterValue}";
+                var result = $"{filterOperator} {filterValue}";
+                return result;
+            }
+        }
+
         public void SetWhereClause(string text)
         {
             SelectedQuery.WhereClause = text;
@@ -572,7 +625,12 @@ namespace Platz.ObjectBuilder
             if (func == "Group By All")
             {
                 SelectedQuery.SelectionProperties.Where(p => p.IsOutput).ToList().ForEach(p => p.GroupByFunction = "Group By");
-                SelectedQuery.SelectionProperties.Where(p => !String.IsNullOrWhiteSpace(p.Filter)).ToList().ForEach(p => p.GroupByFunction = "Where");
+                
+                SelectedQuery.SelectionProperties.Where(p => !String.IsNullOrWhiteSpace(p.Filter)).ToList().ForEach(p => 
+                { 
+                    p.GroupByFunction = "Where";
+                    p.IsOutput = false;
+                });
             }
 
             if (func == "Group By None")

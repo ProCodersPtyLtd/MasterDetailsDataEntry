@@ -25,7 +25,7 @@ namespace Platz.ObjectBuilder.Tests.Engines
             q = Path.Combine(path, q);
             var query = gen.GenerateQuery(s, q);
         }
-
+ 
         [Fact]
         public void GenerateSubQueryJoinQueryTest()
         {
@@ -46,6 +46,20 @@ namespace Platz.ObjectBuilder.Tests.Engines
             var gen = new EntityFrameworkQueryGenerator();
             var s = "Schema.json";
             var q = "GetCustAddrSubQueryList.json";
+            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            path = Path.GetFullPath(Path.Combine(path, @"..\..\..\.."));
+            path = Path.Combine(path, @"SqlForms.Demo\StoreData\");
+            s = Path.Combine(path, s);
+            q = Path.Combine(path, q);
+            var query = gen.GenerateQuery(s, q);
+        }
+
+        [Fact]
+        public void GenerateSimpleJoinGroupByQueryTest()
+        {
+            var gen = new EntityFrameworkQueryGenerator();
+            var s = "Schema.json";
+            var q = "GetWeightByCostList.json";
             var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             path = Path.GetFullPath(Path.Combine(path, @"..\..\..\.."));
             path = Path.Combine(path, @"SqlForms.Demo\StoreData\");

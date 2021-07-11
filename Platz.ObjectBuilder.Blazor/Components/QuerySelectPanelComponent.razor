@@ -11,6 +11,7 @@
                 <th>Alias</th>
                 <th>Filter</th>
                 <th>Group By</th>
+                <th>Having</th>
             </tr>
 
             @for (int rowIndex = 0; rowIndex < _properties.Count; rowIndex++)
@@ -51,6 +52,9 @@
                                 <option value="@f"></option>
                             }
                         </datalist>*@
+                    </td>
+                    <td>
+                        <input style="width: 120px; height: 31px;" class="form-control" value="@_properties[row].Having" @onchange="@(async (args) => await HavingChanged(args, row))" />
                     </td>
                 </tr>
             }
@@ -107,6 +111,13 @@
         await ModelChanged.InvokeAsync(null);
     }
 
+    private async Task HavingChanged(ChangeEventArgs e, int rowIndex)
+    {
+        _properties[rowIndex].Having = QueryController.ReviewSelectPropertyFilter(_properties[rowIndex], (string)e.Value);
+        //_properties[rowIndex].Having = (string)e.Value;
+        await ModelChanged.InvokeAsync(null);
+    }
+
     private async Task GroupByChanged(ChangeEventArgs e, int rowIndex)
     {
         QueryController.SetGroupByFunction(_properties[rowIndex], (string)e.Value);
@@ -116,6 +127,6 @@
 
     private IEnumerable<string> GetGroupByFunctions()
     {
-        return new string[] { "Group By", "Group By All", "Group By None", "Sum", "Avg", "Min", "Max", "Count", "Where", "Having" };
+        return new string[] { "Group By", "Group By All", "Group By None", "Sum", "Avg", "Min", "Max", "Count", "Where" }; //, "Having" };
     }
 }
