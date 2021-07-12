@@ -1,4 +1,5 @@
 ﻿@using Microsoft.JSInterop
+@using Platz.SqlForms.Blazor
 
 @inject IJSRuntime JsRuntime
 @inject IDataEntryProvider _dataEntryProvider
@@ -7,8 +8,8 @@
 
 <div class="DetailsFormControl">
     @*DetailsControl*@
-    <RepeaterDataComponent Form="@_form" ModelType="@ModelType" ModelItems="@ModelItems" Fields="@Fields" ModelValueChanged="@ModelChanged" 
-                         ItemsChanged="@ItemsChanged" ButtonClicked="@ButtonClicked" />
+    <RepeaterDataComponent Form="@_form" ModelType="@ModelType" ModelItems="@ModelItems" Fields="@Fields" ModelValueChanged="@ModelChanged"
+                           ItemsChanged="@ItemsChanged" ButtonClicked="@ButtonClicked" />
 </div>
 
 @code
@@ -52,12 +53,12 @@
 
     private async Task ButtonClicked(ButtonClickedArgs args)
     {
-        var returnArgs = new ItemButtonClickedArgs 
-        { 
-            Item = ModelItems[args.RowIndex], 
+        var returnArgs = new ItemButtonClickedArgs
+        {
+            Item = ModelItems[args.RowIndex],
             Pk = ModelItems[args.RowIndex].GetPrimaryKeyValue(Fields),
-            Button = args.Button, 
-            RowIndex = args.RowIndex 
+            Button = args.Button,
+            RowIndex = args.RowIndex
         };
 
         await ItemButtonClicked.InvokeAsync(returnArgs);
