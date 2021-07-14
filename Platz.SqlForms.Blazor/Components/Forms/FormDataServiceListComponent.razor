@@ -96,8 +96,16 @@
     {
         _form = Activator.CreateInstance<TForm>() as DataServiceBase;
         _fields = _form.GetDetailsFields().Where(f => f.Hidden == false);
-        _modelItems = _form.ExecuteListQuery(ServiceParameters);
+
+        var options = GetQueryOptions();
+        _modelItems = _form.ExecuteListQuery(options, ServiceParameters);
         _contextMenu = _form.GetContextLinks();
+    }
+
+    private QueryOptions GetQueryOptions()
+    {
+        var result = new QueryOptions();
+        return result;
     }
 
     private object[] GetNavigateFormatParameters()

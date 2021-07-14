@@ -36,6 +36,22 @@ namespace Platz.SqlForms
             return result;
         }
 
+        public IList ExecuteListQuery(QueryOptions options, object[] parameters)
+        {
+            IList result;
+
+            if (_builder.ListQueryOptions != null)
+            {
+                result = _builder.ListQueryOptions(options, parameters) as IList;
+            }
+            else
+            {
+                result = _builder.ListQuery(parameters) as IList;
+            }
+
+            return result;
+        }
+
         public IEnumerable<ActionRouteLink> GetContextLinks()
         {
             var result = _builder.Builders.SelectMany(b => b.ContextLinks);
