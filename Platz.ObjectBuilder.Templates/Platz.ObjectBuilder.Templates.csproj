@@ -73,6 +73,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Platz.ObjectBuilder\Expressions\IObjectResolver.cs">
+      <Link>IObjectResolver.cs</Link>
+    </Compile>
+    <Compile Include="..\Platz.ObjectBuilder\Expressions\SqlExpressionEngine.cs">
+      <Link>SqlExpressionEngine.cs</Link>
+    </Compile>
+    <Compile Include="..\Platz.ObjectBuilder\Expressions\SqlJsonObjectResolver.cs">
+      <Link>SqlJsonObjectResolver.cs</Link>
+    </Compile>
+    <Compile Include="..\Platz.ObjectBuilder\Expressions\SqlTokenizer.cs">
+      <Link>SqlTokenizer.cs</Link>
+    </Compile>
+    <Compile Include="..\Platz.ObjectBuilder\Helpers\QueryExpressionHelper.cs">
+      <Link>QueryExpressionHelper.cs</Link>
+    </Compile>
     <Compile Include="..\Platz.ObjectBuilder\Schema\IStoreSchemaSerializer.cs">
       <Link>IStoreSchemaSerializer.cs</Link>
     </Compile>

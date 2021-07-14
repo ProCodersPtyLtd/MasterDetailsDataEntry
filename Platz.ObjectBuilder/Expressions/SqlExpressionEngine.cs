@@ -79,7 +79,7 @@ namespace Platz.ObjectBuilder.Expressions
                     tokenListNumber++;
                 }
 
-                tokenList = tokenList.Where(t => t != null && t.Token != Token.CloseParens).ToList();
+                tokenList = tokenList.Where(x => x != null && x.Token != Token.CloseParens).ToList();
             }
 
             if (!tokenList.Any())

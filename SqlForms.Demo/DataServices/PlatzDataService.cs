@@ -15,10 +15,11 @@ namespace Default
 
     public partial interface IMyDataService
     {
-        List<CustAddrSubQuery> GetCustAddrSubQueryList(params object[] parameters);
-        List<Cust> GetCustList(params object[] parameters);
-        List<CustomerAddress> GetCustomerAddressList(params object[] parameters);
-        List<ProdModel> GetProdModelList(params object[] parameters);
+        List<CustAddrSubQuery> GetCustAddrSubQueryList(QueryOptions options, params object[] parameters);
+        List<Cust> GetCustList(QueryOptions options, params object[] parameters);
+        List<CustomerAddress> GetCustomerAddressList(QueryOptions options, params object[] parameters);
+        List<ProdModel> GetProdModelList(QueryOptions options, params object[] parameters);
+        List<WeightByCost> GetWeightByCostList(QueryOptions options, params object[] parameters);
     }
 
     #endregion
@@ -27,38 +28,18 @@ namespace Default
 
     public partial class MyDataService : DataServiceBase<AdventureWorksContext>, IMyDataService
     {
-        public void Bla(params object[] parameters)
+        public List<CustAddrSubQuery> GetCustAddrSubQueryList(QueryOptions options, params object[] parameters)
         {
             using (var db = GetDbContext())
             {
-
-                var query =
-                    from p in db.Product
-                    where p.Weight > 100
-                    group new { p } by new { p.StandardCost } into group1
-                    where group1.Count() > 1 && group1.Min(x => x.p.Name) == "Agata"
-                    select new WeightByCost
-                    {
-                        ProductId = group1.Count(),
-                        StandardCost = group1.Key.StandardCost,
-                        Name = group1.Min(x => x.p.Name),
-                    };
-
+                var query = GetCustAddrSubQueryListQuery(db, options, parameters);
+                var result = query.ToList();
+                return result;
             }
         }
 
-        public class WeightByCost
+        public IQueryable<CustAddrSubQuery> GetCustAddrSubQueryListQuery(AdventureWorksContext db, QueryOptions options, params object[] parameters)
         {
-            public Int32 ProductId { get; set; }
-            public Decimal StandardCost { get; set; }
-            public Decimal? Weight { get; set; }
-            public String Name { get; set; }
-        }
-
-        public List<CustAddrSubQuery> GetCustAddrSubQueryList(params object[] parameters)
-        {
-            using (var db = GetDbContext())
-            {
             
                 var Query2 =
                     from c in db.CustomerAddress
@@ -104,17 +85,23 @@ namespace Default
                         Title = c.Title, 
                     };
 
+            return query;
+        }
+
+        public List<Cust> GetCustList(QueryOptions options, params object[] parameters)
+        {
+            using (var db = GetDbContext())
+            {
+                var query = GetCustListQuery(db, options, parameters);
                 var result = query.ToList();
                 return result;
             }
         }
 
-        public List<Cust> GetCustList(params object[] parameters)
+        public IQueryable<Cust> GetCustListQuery(AdventureWorksContext db, QueryOptions options, params object[] parameters)
         {
             var name = (String)parameters[0];
 
-            using (var db = GetDbContext())
-            {
             
                 var query =
                     from c in db.Customer
@@ -138,17 +125,23 @@ namespace Default
                         Title = c.Title, 
                     };
 
+            return query;
+        }
+
+        public List<CustomerAddress> GetCustomerAddressList(QueryOptions options, params object[] parameters)
+        {
+            using (var db = GetDbContext())
+            {
+                var query = GetCustomerAddressListQuery(db, options, parameters);
                 var result = query.ToList();
                 return result;
             }
         }
 
-        public List<CustomerAddress> GetCustomerAddressList(params object[] parameters)
+        public IQueryable<CustomerAddress> GetCustomerAddressListQuery(AdventureWorksContext db, QueryOptions options, params object[] parameters)
         {
             var p1 = (Int32)parameters[0];
 
-            using (var db = GetDbContext())
-            {
             
                 var query =
                     from cu in db.Customer
@@ -173,28 +166,61 @@ namespace Default
                         LastName = cu.LastName, 
                     };
 
+            return query;
+        }
+
+        public List<ProdModel> GetProdModelList(QueryOptions options, params object[] parameters)
+        {
+            using (var db = GetDbContext())
+            {
+                var query = GetProdModelListQuery(db, options, parameters);
                 var result = query.ToList();
                 return result;
             }
         }
 
-        public List<ProdModel> GetProdModelList(params object[] parameters)
+        public IQueryable<ProdModel> GetProdModelListQuery(AdventureWorksContext db, QueryOptions options, params object[] parameters)
+        {
+            
+            var query =
+                from p in db.ProductModel
+                group new { p } by new { p.ProductModelId, p.CatalogDescription, p.Name } into group1
+                select new ProdModel
+                { 
+                    ProductModelId = group1.Key.ProductModelId, 
+                    CatalogDescription = group1.Key.CatalogDescription, 
+                    Name = group1.Key.Name, 
+                };
+
+            return query;
+        }
+
+        public List<WeightByCost> GetWeightByCostList(QueryOptions options, params object[] parameters)
         {
             using (var db = GetDbContext())
             {
-            
-                var query =
-                    from p in db.ProductModel
-                    select new ProdModel
-                    { 
-                        ProductModelId = p.ProductModelId, 
-                        CatalogDescription = p.CatalogDescription, 
-                        Name = p.Name, 
-                    };
-
+                var query = GetWeightByCostListQuery(db, options, parameters);
                 var result = query.ToList();
                 return result;
             }
+        }
+
+        public IQueryable<WeightByCost> GetWeightByCostListQuery(AdventureWorksContext db, QueryOptions options, params object[] parameters)
+        {
+            
+            var query =
+                from p in db.Product
+                where p.Weight > 100
+                group new { p } by new { p.StandardCost } into group1
+                where group1.Count() > 1 && group1.Min(x => x.p.Name) == "Agata"
+                select new WeightByCost
+                { 
+                    Count = group1.Count(), 
+                    StandardCost = group1.Key.StandardCost, 
+                    Name = group1.Min(x => x.p.Name), 
+                };
+
+            return query;
         }
 
     }
@@ -265,9 +291,14 @@ namespace Default
     {
         public Int32 ProductModelId { get; set; }
         public String CatalogDescription { get; set; }
-        public DateTime ModifiedDate { get; set; }
         public String Name { get; set; }
-        public Guid Rowguid { get; set; }
+    }
+
+    public partial class WeightByCost
+    {
+        public Int32 Count { get; set; }
+        public Decimal StandardCost { get; set; }
+        public String Name { get; set; }
     }
 
     #endregion
