@@ -44,12 +44,12 @@ namespace SqlForms.Demo.MyForms
                 // Buttons
                 e
                 //.DialogButton("QueryResult", ButtonActionTypes.Custom, "Back")
-                .DialogButton("QueryResult", ButtonActionTypes.Cancel)
+                .DialogButton("CustAddrCountList", ButtonActionTypes.Cancel)
                 //.DialogButton(ButtonActionTypes.Close)
                 .DialogButton(ButtonActionTypes.Validate)
                 .DialogButton(ButtonActionTypes.Submit, "Update", "Save to database");
 
-                e.DialogButtonNavigation("QueryResult", ButtonActionTypes.Delete, ButtonActionTypes.Submit);
+                e.DialogButtonNavigation("CustAddrCountList", ButtonActionTypes.Delete, ButtonActionTypes.Submit);
 
                 e.DialogButtonNavigation("/", ButtonActionTypes.Close);
             });

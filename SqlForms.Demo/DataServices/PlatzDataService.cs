@@ -15,6 +15,7 @@ namespace Default
 
     public partial interface IMyDataService
     {
+        List<CustAddrCount> GetCustAddrCountList(QueryOptions options, params object[] parameters);
         List<CustAddrSubQuery> GetCustAddrSubQueryList(QueryOptions options, params object[] parameters);
         List<Cust> GetCustList(QueryOptions options, params object[] parameters);
         List<CustomerAddress> GetCustomerAddressList(QueryOptions options, params object[] parameters);
@@ -28,6 +29,55 @@ namespace Default
 
     public partial class MyDataService : DataServiceBase<AdventureWorksContext>, IMyDataService
     {
+        public List<CustAddrCount> GetCustAddrCountList(QueryOptions options, params object[] parameters)
+        {
+            using (var db = GetDbContext())
+            {
+                var query = GetCustAddrCountListQuery(db, options, parameters);
+                var result = query.ToList();
+                return result;
+            }
+        }
+
+        public IQueryable<CustAddrCount> GetCustAddrCountListQuery(AdventureWorksContext db, QueryOptions options, params object[] parameters)
+        {
+            
+            var Query1 =
+                from c in db.CustomerAddress
+                group new { c } by new { c.CustomerId } into group1
+                where group1.Count() > 1
+                select new 
+                { 
+                    CustomerId = group1.Key.CustomerId, 
+                    AddrCount = group1.Count(), 
+                };
+            
+                var query =
+                    from c in db.Customer
+                    join q in Query1 on c.CustomerId equals q.CustomerId
+                    select new CustAddrCount
+                    { 
+                        CustomerId = c.CustomerId, 
+                        CompanyName = c.CompanyName, 
+                        EmailAddress = c.EmailAddress, 
+                        FirstName = c.FirstName, 
+                        LastName = c.LastName, 
+                        MiddleName = c.MiddleName, 
+                        ModifiedDate = c.ModifiedDate, 
+                        NameStyle = c.NameStyle, 
+                        PasswordHash = c.PasswordHash, 
+                        PasswordSalt = c.PasswordSalt, 
+                        Phone = c.Phone, 
+                        Rowguid = c.Rowguid, 
+                        SalesPerson = c.SalesPerson, 
+                        Suffix = c.Suffix, 
+                        Title = c.Title, 
+                        AddrCount = q.AddrCount, 
+                    };
+
+            return query;
+        }
+
         public List<CustAddrSubQuery> GetCustAddrSubQueryList(QueryOptions options, params object[] parameters)
         {
             using (var db = GetDbContext())
@@ -228,6 +278,26 @@ namespace Default
     #endregion
 
     #region Entities
+
+    public partial class CustAddrCount
+    {
+        public Int32 CustomerId { get; set; }
+        public String CompanyName { get; set; }
+        public String EmailAddress { get; set; }
+        public String FirstName { get; set; }
+        public String LastName { get; set; }
+        public String MiddleName { get; set; }
+        public DateTime ModifiedDate { get; set; }
+        public Boolean NameStyle { get; set; }
+        public String PasswordHash { get; set; }
+        public String PasswordSalt { get; set; }
+        public String Phone { get; set; }
+        public Guid Rowguid { get; set; }
+        public String SalesPerson { get; set; }
+        public String Suffix { get; set; }
+        public String Title { get; set; }
+        public Int32 AddrCount { get; set; }
+    }
 
     public partial class CustAddrSubQuery
     {

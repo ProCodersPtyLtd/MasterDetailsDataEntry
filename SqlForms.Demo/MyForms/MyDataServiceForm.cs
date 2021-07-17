@@ -12,7 +12,7 @@ namespace SqlForms.Demo.MyForms
     {
         protected override void Define(DataServiceFormBuilder builder)
         {
-            builder.Entity<Cust>(e =>
+            builder.Entity<CustAddrCount>(e =>
             {
                 e.ExcludeAll();
 
@@ -21,6 +21,8 @@ namespace SqlForms.Demo.MyForms
                 e.Property(p => p.FirstName);
 
                 e.Property(p => p.LastName);
+
+                e.Property(p => p.AddrCount);
 
                 e.Property(p => p.Phone);
 
@@ -32,7 +34,7 @@ namespace SqlForms.Demo.MyForms
                     .ContextButton("Delete", "CustomerDelete/{0}");
             });
 
-            builder.SetListMethod(GetCustList);
+            builder.SetListMethod(GetCustAddrCountList);
         }
 
         //public void 
