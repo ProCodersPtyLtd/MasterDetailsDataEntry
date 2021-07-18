@@ -147,21 +147,46 @@ namespace Platz.SqlForms
         }
 
         // query = OrderBy(query, options.SortColumn, options.SortDirection);
-        protected IQueryable<T> OrderBy<T>(IQueryable<T> query, string colName, SortDirection direction)
+        public static IQueryable<Q> OrderBy<Q>(IQueryable<Q> query, string colName, SortDirection direction)
         {
             if (!string.IsNullOrWhiteSpace(colName) && direction != SortDirection.None)
             {
                 string directionMethod = direction == SortDirection.Asc ? "OrderBy" : "OrderByDescending";
-                var parameter = Expression.Parameter(typeof(T), "x");
+                var parameter = Expression.Parameter(typeof(Q), "x");
                 Expression property = Expression.Property(parameter, colName);
                 var lambda = Expression.Lambda(property, parameter);
 
                 // REFLECTION: source.OrderBy(x => x.Property)
                 var orderByMethod = typeof(Queryable).GetMethods().First(x => x.Name == directionMethod && x.GetParameters().Length == 2);
-                var orderByGeneric = orderByMethod.MakeGenericMethod(typeof(T), property.Type);
+                var orderByGeneric = orderByMethod.MakeGenericMethod(typeof(Q), property.Type);
                 var result = orderByGeneric.Invoke(null, new object[] { query, lambda });
-                return (IQueryable<T>)result;
+                return (IQueryable<Q>)result;
             }
+
+            return query;
+        }
+
+        public static IQueryable<Q> WhereLike<Q>(IQueryable<Q> query, string colName, string searchPattern)
+        {
+            var parameter = Expression.Parameter(typeof(Q), "x");
+            Expression property = Expression.Property(parameter, colName);
+            var lambda = Expression.Lambda(property, parameter);
+
+            //query = query.Where(x => EF.Functions.Like())
+
+            // REFLECTION: source.OrderBy(x => x.Property)
+            var functions = Expression.Property(null, typeof(EF).GetProperty(nameof(EF.Functions)));
+            var likeFunction = typeof(DbFunctionsExtensions).GetMethod(nameof(DbFunctionsExtensions.Like), new Type[] { functions.Type, typeof(string), typeof(string) });
+
+            Expression selectorExpression = Expression.Property(parameter, colName);
+            selectorExpression = Expression.Call(null, likeFunction, functions, selectorExpression, Expression.Constant(searchPattern));
+            query = query.Where(Expression.Lambda<Func<Q, bool>>(selectorExpression, parameter));
+
+
+            //var orderByMethod = typeof(Queryable).GetMethods().First(x => x.Name == directionMethod && x.GetParameters().Length == 2);
+            //var orderByGeneric = orderByMethod.MakeGenericMethod(typeof(Q), property.Type);
+            //var result = orderByGeneric.Invoke(null, new object[] { query, lambda });
+            //return (IQueryable<Q>)result;
 
             return query;
         }
