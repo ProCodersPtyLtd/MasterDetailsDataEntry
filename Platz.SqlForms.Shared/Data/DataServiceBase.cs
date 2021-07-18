@@ -155,6 +155,25 @@ namespace Platz.SqlForms
 
         public static IQueryable<Q> ApplyFilters<Q>(IQueryable<Q> query, List<FieldFilter> filters)
         {
+            foreach (var filter in filters)
+            {
+                switch (filter.FilterType)
+                {
+                    case FieldFilterType.Text:
+                        query = WhereLike(query, filter.BindingProperty, filter.Filter);
+                        break;
+                    case FieldFilterType.TextStarts:
+                        query = WhereLike(query, filter.BindingProperty, $"{filter.Filter}%");
+                        break;
+                    case FieldFilterType.TextEnds:
+                        query = WhereLike(query, filter.BindingProperty, $"%{filter.Filter}");
+                        break;
+                    case FieldFilterType.TextContains:
+                        query = WhereLike(query, filter.BindingProperty, $"%{filter.Filter}%");
+                        break;
+                }
+            }
+
             return query;
         }
 

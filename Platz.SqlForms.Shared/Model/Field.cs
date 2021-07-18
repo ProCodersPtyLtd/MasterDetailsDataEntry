@@ -22,6 +22,7 @@ namespace Platz.SqlForms
     public enum FieldFilterType
     {
         None,
+        Text,
         TextStarts,
         TextContains,
         TextEnds,

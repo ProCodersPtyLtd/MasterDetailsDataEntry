@@ -239,7 +239,9 @@
     private bool IsTextFilter(Field col)
     {
         var field = col as DataField;
-        return field.FilterType == FieldFilterType.TextContains || field.FilterType == FieldFilterType.TextStarts || field.FilterType == FieldFilterType.TextEnds;
+
+        return field.FilterType == FieldFilterType.TextContains || field.FilterType == FieldFilterType.TextStarts || 
+            field.FilterType == FieldFilterType.TextEnds || field.FilterType == FieldFilterType.Text;
     }
 
     private string GetFilterValue(Field col)
