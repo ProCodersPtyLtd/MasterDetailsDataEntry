@@ -68,7 +68,6 @@ https://docs.microsoft.com/en-us/sql/samples/adventureworks-install-configure?vi
 ### Release 0.5.0 - Sep'21
 - Usability and error data recovery for builders and designers
 - Seed projects for easy start
-- Support of Postgres
 - Bug fixes
 ### Release 1.0.0 - Oct'21
 - Support documentation
@@ -81,3 +80,4 @@ https://docs.microsoft.com/en-us/sql/samples/adventureworks-install-configure?vi
 - ObjectBuilder T4 template to generate business object CRUD operations' C# code
 - ObjectBuilder definition of business object - entity mappings and CRUD operations
 - UI SQL forms to entry/edit business objects
+- Support of Postgres
