@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace Platz.SqlForms
@@ -143,6 +144,26 @@ namespace Platz.SqlForms
         {
             var context = Activator.CreateInstance<T>();
             return context;
+        }
+
+        // query = OrderBy(query, options.SortColumn, options.SortDirection);
+        protected IQueryable<T> OrderBy<T>(IQueryable<T> query, string colName, SortDirection direction)
+        {
+            if (!string.IsNullOrWhiteSpace(colName) && direction != SortDirection.None)
+            {
+                string directionMethod = direction == SortDirection.Asc ? "OrderBy" : "OrderByDescending";
+                var parameter = Expression.Parameter(typeof(T), "x");
+                Expression property = Expression.Property(parameter, colName);
+                var lambda = Expression.Lambda(property, parameter);
+
+                // REFLECTION: source.OrderBy(x => x.Property)
+                var orderByMethod = typeof(Queryable).GetMethods().First(x => x.Name == directionMethod && x.GetParameters().Length == 2);
+                var orderByGeneric = orderByMethod.MakeGenericMethod(typeof(T), property.Type);
+                var result = orderByGeneric.Invoke(null, new object[] { query, lambda });
+                return (IQueryable<T>)result;
+            }
+
+            return query;
         }
     }
 

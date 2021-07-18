@@ -34,6 +34,7 @@ namespace Default
             using (var db = GetDbContext())
             {
                 var query = GetCustAddrCountListQuery(db, options, parameters);
+                query = OrderBy(query, options.SortColumn, options.SortDirection);
                 var result = query.ToList();
                 return result;
             }
@@ -83,6 +84,7 @@ namespace Default
             using (var db = GetDbContext())
             {
                 var query = GetCustAddrSubQueryListQuery(db, options, parameters);
+                query = OrderBy(query, options.SortColumn, options.SortDirection);
                 var result = query.ToList();
                 return result;
             }
@@ -143,6 +145,7 @@ namespace Default
             using (var db = GetDbContext())
             {
                 var query = GetCustListQuery(db, options, parameters);
+                query = OrderBy(query, options.SortColumn, options.SortDirection);
                 var result = query.ToList();
                 return result;
             }
@@ -183,6 +186,7 @@ namespace Default
             using (var db = GetDbContext())
             {
                 var query = GetCustomerAddressListQuery(db, options, parameters);
+                query = OrderBy(query, options.SortColumn, options.SortDirection);
                 var result = query.ToList();
                 return result;
             }
@@ -224,6 +228,7 @@ namespace Default
             using (var db = GetDbContext())
             {
                 var query = GetProdModelListQuery(db, options, parameters);
+                query = OrderBy(query, options.SortColumn, options.SortDirection);
                 var result = query.ToList();
                 return result;
             }
@@ -250,6 +255,7 @@ namespace Default
             using (var db = GetDbContext())
             {
                 var query = GetWeightByCostListQuery(db, options, parameters);
+                query = OrderBy(query, options.SortColumn, options.SortDirection);
                 var result = query.ToList();
                 return result;
             }

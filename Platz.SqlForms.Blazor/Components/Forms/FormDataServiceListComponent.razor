@@ -15,7 +15,10 @@
             <tr>
                 @foreach (var f in _fields)
                 {
-                    <th scope="col">@f.Label</th>
+                    <th scope="col" @onclick="@(async () => await ColClick(@f))">
+                        <span>@f.Label</span>
+                        <span class="@GetColSortIcon(@f)"></span>
+                    </th>
                 }
 
                 @if (_contextMenu.Any())
@@ -64,22 +67,28 @@
 
 @code
 {
-    //[Parameter]
-    //public Type FormType { get; set; }
+        //[Parameter]
+        //public Type FormType { get; set; }
 
-    [Parameter]
-    public object[] ServiceParameters { get; set; }
+        [Parameter]
+        public object[] ServiceParameters { get; set; }
 
-    [Parameter]
-    public EventCallback<ItemButtonClickedArgs> ItemButtonClicked { get; set; }
+        [Parameter]
+        public bool? AllowSort { get; set; }
 
-    [Parameter]
-    public EventCallback<ButtonClickedArgs> ButtonClicked { get; set; }
+        [Parameter]
+        public EventCallback<ItemButtonClickedArgs> ItemButtonClicked { get; set; }
+
+        [Parameter]
+        public EventCallback<ButtonClickedArgs> ButtonClicked { get; set; }
 
     private DataServiceBase _form;
     private IEnumerable<DataField> _fields;
     private IEnumerable<ActionRouteLink> _contextMenu;
     private System.Collections.IList _modelItems { get; set; }
+    private string _sortColumn;
+    private bool _isDescSort;
+
 
     protected override void OnInitialized()
     {
@@ -104,7 +113,12 @@
 
     private QueryOptions GetQueryOptions()
     {
-        var result = new QueryOptions();
+        var result = new QueryOptions()
+        {
+            SortColumn = _sortColumn,
+            SortDirection = _isDescSort ? SortDirection.Desc: SortDirection.Asc
+        };
+
         return result;
     }
 
@@ -142,5 +156,43 @@
     {
         StateHasChanged();
         return true;
+    }
+
+    private async Task ColClick(Field col)
+    {
+        if (AllowSort != false)
+        {
+            await Sort(col);
+        }
+    }
+
+    private async Task Sort(Field col)
+    {
+        if (_sortColumn == null)
+        {
+        }
+
+        if (col.Label == _sortColumn)
+        {
+            _isDescSort = !_isDescSort;
+        }
+        else
+        {
+            _isDescSort = false;
+        }
+
+        _sortColumn = col.Label;
+        //_form.Sort(col, _isDescSort);
+        LoadForm();
+    }
+
+    private string GetColSortIcon(Field col)
+    {
+        if (col.Label == _sortColumn)
+        {
+            return _isDescSort ? "oi oi-caret-top" : "oi oi-caret-bottom";
+        }
+
+        return "";
     }
 }

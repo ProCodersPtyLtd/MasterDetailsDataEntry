@@ -8,5 +8,14 @@ namespace Platz.SqlForms
 {
     public class QueryOptions
     {
+        public string SortColumn { get; set; }
+        public SortDirection SortDirection { get; set; }
+    }
+
+    public enum SortDirection
+    {
+        None,
+        Asc,
+        Desc
     }
 }
