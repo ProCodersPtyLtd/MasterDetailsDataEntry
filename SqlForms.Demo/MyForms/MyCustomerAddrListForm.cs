@@ -41,6 +41,8 @@ namespace SqlForms.Demo.MyForms
                 e.ContextButton("Edit", "CustomerAddrEdit/{0}/{1}").ContextButton("Delete", "CustomerAddrDelete/{0}/{1}");
 
                 e.DialogButton("CustomerAddrEdit/0/{1}", ButtonActionTypes.Add);
+
+                e.DialogButton("CustAddrCountList/", ButtonActionTypes.Custom, "Back");
             });
 
             builder.SetListMethod(GetCustomerAddressList);

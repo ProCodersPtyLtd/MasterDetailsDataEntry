@@ -14,7 +14,19 @@ namespace Platz.SqlForms
         public bool Hidden { get; set; }
         public bool? ReadOnly { get; set; }
         public string Format { get; set; }
+        public FieldFilterType FilterType { get; set; }
         public List<FieldRule> Rules { get; set; } = new List<FieldRule>();
         public FieldBuisnessObjectMapping BuisnessObjectMapping { get; set; } = new FieldBuisnessObjectMapping();
+    }
+
+    public enum FieldFilterType
+    {
+        None,
+        Text,
+        TextStarts,
+        TextContains,
+        TextEnds,
+        NumExpression,
+        Select
     }
 }

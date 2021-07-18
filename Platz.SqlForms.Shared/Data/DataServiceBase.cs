@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace Platz.SqlForms
@@ -143,6 +144,82 @@ namespace Platz.SqlForms
         {
             var context = Activator.CreateInstance<T>();
             return context;
+        }
+
+        public static IQueryable<Q> Prepare<Q>(IQueryable<Q> query, QueryOptions options, params object[] parameters)
+        {
+            query = OrderBy(query, options.SortColumn, options.SortDirection);
+            query = ApplyFilters(query, options.Filters);
+            return query;
+        }
+
+        public static IQueryable<Q> ApplyFilters<Q>(IQueryable<Q> query, List<FieldFilter> filters)
+        {
+            foreach (var filter in filters)
+            {
+                switch (filter.FilterType)
+                {
+                    case FieldFilterType.Text:
+                        query = WhereLike(query, filter.BindingProperty, filter.Filter);
+                        break;
+                    case FieldFilterType.TextStarts:
+                        query = WhereLike(query, filter.BindingProperty, $"{filter.Filter}%");
+                        break;
+                    case FieldFilterType.TextEnds:
+                        query = WhereLike(query, filter.BindingProperty, $"%{filter.Filter}");
+                        break;
+                    case FieldFilterType.TextContains:
+                        query = WhereLike(query, filter.BindingProperty, $"%{filter.Filter}%");
+                        break;
+                }
+            }
+
+            return query;
+        }
+
+        // query = OrderBy(query, options.SortColumn, options.SortDirection);
+        public static IQueryable<Q> OrderBy<Q>(IQueryable<Q> query, string colName, SortDirection direction)
+        {
+            if (!string.IsNullOrWhiteSpace(colName) && direction != SortDirection.None)
+            {
+                string directionMethod = direction == SortDirection.Asc ? "OrderBy" : "OrderByDescending";
+                var parameter = Expression.Parameter(typeof(Q), "x");
+                Expression property = Expression.Property(parameter, colName);
+                var lambda = Expression.Lambda(property, parameter);
+
+                // REFLECTION: source.OrderBy(x => x.Property)
+                var orderByMethod = typeof(Queryable).GetMethods().First(x => x.Name == directionMethod && x.GetParameters().Length == 2);
+                var orderByGeneric = orderByMethod.MakeGenericMethod(typeof(Q), property.Type);
+                var result = orderByGeneric.Invoke(null, new object[] { query, lambda });
+                return (IQueryable<Q>)result;
+            }
+
+            return query;
+        }
+
+        public static IQueryable<Q> WhereLike<Q>(IQueryable<Q> query, string colName, string searchPattern)
+        {
+            var parameter = Expression.Parameter(typeof(Q), "x");
+            Expression property = Expression.Property(parameter, colName);
+            var lambda = Expression.Lambda(property, parameter);
+
+            //query = query.Where(x => EF.Functions.Like())
+
+            // REFLECTION: source.OrderBy(x => x.Property)
+            var functions = Expression.Property(null, typeof(EF).GetProperty(nameof(EF.Functions)));
+            var likeFunction = typeof(DbFunctionsExtensions).GetMethod(nameof(DbFunctionsExtensions.Like), new Type[] { functions.Type, typeof(string), typeof(string) });
+
+            Expression selectorExpression = Expression.Property(parameter, colName);
+            selectorExpression = Expression.Call(null, likeFunction, functions, selectorExpression, Expression.Constant(searchPattern));
+            query = query.Where(Expression.Lambda<Func<Q, bool>>(selectorExpression, parameter));
+
+
+            //var orderByMethod = typeof(Queryable).GetMethods().First(x => x.Name == directionMethod && x.GetParameters().Length == 2);
+            //var orderByGeneric = orderByMethod.MakeGenericMethod(typeof(Q), property.Type);
+            //var result = orderByGeneric.Invoke(null, new object[] { query, lambda });
+            //return (IQueryable<Q>)result;
+
+            return query;
         }
     }
 

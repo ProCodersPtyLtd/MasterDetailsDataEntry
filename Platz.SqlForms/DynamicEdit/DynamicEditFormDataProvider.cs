@@ -24,6 +24,8 @@ namespace Platz.SqlForms
         public void SetParameters(object[] serviceParameters)
         {
             _serviceParameters = serviceParameters;
+            _storeProvider.SetParameters(_serviceParameters);
+            _entityProvider.SetParameters(_serviceParameters);
         }
 
         public IEnumerable<DataField> GetFormFields(IDynamicEditForm form)

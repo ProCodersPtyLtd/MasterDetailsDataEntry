@@ -15,7 +15,10 @@
             <tr>
                 @foreach (var f in _fields)
                 {
-                    <th scope="col">@f.Label</th>
+                    <th scope="col" @onclick="@(async () => await ColClick(@f))">
+                        <span>@f.Label</span>
+                        <span class="@GetColSortIcon(@f)"></span>
+                    </th>
                 }
 
                 @if (_contextMenu.Any())
@@ -25,6 +28,33 @@
             </tr>
         </thead>
         <tbody>
+
+            @if (ShowFilter)
+            {
+                <tr style="background-color: cadetblue">
+
+                @foreach (var f in _fields)
+                {
+                    @if (IsTextFilter(f))
+                    {
+                        <td>
+                            <input class="form-control" value="@GetFilterValue(@f)" @onchange="@(async (a) => await FilterValueChanged(@f, a))" />
+                        </td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                }
+
+                    <td>
+                        <button class="btn btn-light" type="button" aria-haspopup="true" aria-expanded="false" @onclick="@(async () => await ClearFilters())">
+                            <span class="oi oi-action-undo"></span>
+                        </button>
+                    </td>
+
+                </tr>
+            }
 
             @*@foreach (var item in _modelItems)*@
             @for (int rowIndex = 0; rowIndex < _modelItems.Count; rowIndex++)
@@ -71,6 +101,12 @@
     public object[] ServiceParameters { get; set; }
 
     [Parameter]
+    public bool? AllowSort { get; set; }
+
+    [Parameter]
+    public bool ShowFilter { get; set; }
+
+    [Parameter]
     public EventCallback<ItemButtonClickedArgs> ItemButtonClicked { get; set; }
 
     [Parameter]
@@ -80,6 +116,9 @@
     private IEnumerable<DataField> _fields;
     private IEnumerable<ActionRouteLink> _contextMenu;
     private System.Collections.IList _modelItems { get; set; }
+    private string _sortColumn;
+    private bool _isDescSort;
+    private Dictionary<string, string> _filters = new Dictionary<string, string>();
 
     protected override void OnInitialized()
     {
@@ -104,7 +143,19 @@
 
     private QueryOptions GetQueryOptions()
     {
-        var result = new QueryOptions();
+        var result = new QueryOptions()
+        {
+            SortColumn = _sortColumn,
+            SortDirection = _isDescSort ? SortDirection.Desc: SortDirection.Asc,
+
+            Filters = _filters.Select(f => new FieldFilter 
+            { 
+                BindingProperty = f.Key, 
+                FilterType = _fields.First(x => ((DataField)x).BindingProperty == f.Key).FilterType, 
+                Filter = f.Value  
+            }).ToList()
+        };
+
         return result;
     }
 
@@ -142,5 +193,80 @@
     {
         StateHasChanged();
         return true;
+    }
+
+    private async Task ColClick(Field col)
+    {
+        if (AllowSort != false)
+        {
+            await Sort(col);
+        }
+    }
+
+    private async Task Sort(Field col)
+    {
+        var field = col as DataField;
+
+        if (_sortColumn == null)
+        {
+        }
+
+        if (field.BindingProperty == _sortColumn)
+        {
+            _isDescSort = !_isDescSort;
+        }
+        else
+        {
+            _isDescSort = false;
+        }
+
+        _sortColumn = field.BindingProperty;
+        LoadForm();
+    }
+
+    private string GetColSortIcon(Field col)
+    {
+        var field = col as DataField;
+
+        if (field.BindingProperty == _sortColumn)
+        {
+            return _isDescSort ? "oi oi-sort-descending" : "oi oi-sort-ascending";
+        }
+
+        return "";
+    }
+
+    private bool IsTextFilter(Field col)
+    {
+        var field = col as DataField;
+
+        return field.FilterType == FieldFilterType.TextContains || field.FilterType == FieldFilterType.TextStarts || 
+            field.FilterType == FieldFilterType.TextEnds || field.FilterType == FieldFilterType.Text;
+    }
+
+    private string GetFilterValue(Field col)
+    {
+        var field = col as DataField;
+
+        if (_filters.ContainsKey(field.BindingProperty))
+        {
+            return _filters[field.BindingProperty];
+        }
+
+        return "";
+    }
+
+    private async Task FilterValueChanged(Field col, ChangeEventArgs a)
+    {
+        var field = col as DataField;
+        _filters[field.BindingProperty] = a.Value.ToString();
+        //StateHasChanged();
+        LoadForm();
+    }
+
+    private async Task ClearFilters()
+    {
+        _filters.Clear();
+        LoadForm();
     }
 }

@@ -119,6 +119,12 @@ namespace Platz.SqlForms
             return this;
         }
 
+        public virtual FieldBuilder<TProperty, TEntity> Filter(FieldFilterType type)
+        {
+            _field.FilterType = type;
+            return this;
+        }
+
         public virtual FieldBuilder<TProperty, TEntity> Format(string format)
         {
             _field.Format = format;
