@@ -18,9 +18,9 @@ namespace SqlForms.Demo.MyForms
 
                 e.Property(p => p.CustomerId).IsPrimaryKey();
 
-                e.Property(p => p.FirstName);
+                e.Property(p => p.FirstName).Label("Firts Name");
 
-                e.Property(p => p.LastName);
+                e.Property(p => p.LastName).Label("Last Name");
 
                 e.Property(p => p.AddrCount);
 

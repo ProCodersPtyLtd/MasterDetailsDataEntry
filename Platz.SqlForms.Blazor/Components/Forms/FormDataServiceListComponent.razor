@@ -67,20 +67,20 @@
 
 @code
 {
-        //[Parameter]
-        //public Type FormType { get; set; }
+    //[Parameter]
+    //public Type FormType { get; set; }
 
-        [Parameter]
-        public object[] ServiceParameters { get; set; }
+    [Parameter]
+    public object[] ServiceParameters { get; set; }
 
-        [Parameter]
-        public bool? AllowSort { get; set; }
+    [Parameter]
+    public bool? AllowSort { get; set; }
 
-        [Parameter]
-        public EventCallback<ItemButtonClickedArgs> ItemButtonClicked { get; set; }
+    [Parameter]
+    public EventCallback<ItemButtonClickedArgs> ItemButtonClicked { get; set; }
 
-        [Parameter]
-        public EventCallback<ButtonClickedArgs> ButtonClicked { get; set; }
+    [Parameter]
+    public EventCallback<ButtonClickedArgs> ButtonClicked { get; set; }
 
     private DataServiceBase _form;
     private IEnumerable<DataField> _fields;
@@ -168,11 +168,13 @@
 
     private async Task Sort(Field col)
     {
+        var field = col as DataField;
+
         if (_sortColumn == null)
         {
         }
 
-        if (col.Label == _sortColumn)
+        if (field.BindingProperty == _sortColumn)
         {
             _isDescSort = !_isDescSort;
         }
@@ -181,14 +183,16 @@
             _isDescSort = false;
         }
 
-        _sortColumn = col.Label;
+        _sortColumn = field.BindingProperty;
         //_form.Sort(col, _isDescSort);
         LoadForm();
     }
 
     private string GetColSortIcon(Field col)
     {
-        if (col.Label == _sortColumn)
+        var field = col as DataField;
+
+        if (field.BindingProperty == _sortColumn)
         {
             return _isDescSort ? "oi oi-caret-top" : "oi oi-caret-bottom";
         }
