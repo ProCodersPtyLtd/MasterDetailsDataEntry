@@ -29,6 +29,33 @@
         </thead>
         <tbody>
 
+            @if (ShowFilter)
+            {
+                <tr style="background-color: cadetblue">
+
+                @foreach (var f in _fields)
+                {
+                    @if (IsTextFilter(f))
+                    {
+                        <td>
+                            <input class="form-control" value="@GetFilterValue(@f)" @onchange="@(async (a) => await FilterValueChanged(@f, a))" />
+                        </td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                }
+
+                    <td>
+                        <button class="btn btn-light" type="button" aria-haspopup="true" aria-expanded="false" @onclick="@(async () => await ClearFilters())">
+                            <span class="oi oi-action-undo"></span>
+                        </button>
+                    </td>
+
+                </tr>
+            }
+
             @*@foreach (var item in _modelItems)*@
             @for (int rowIndex = 0; rowIndex < _modelItems.Count; rowIndex++)
             {
@@ -77,6 +104,9 @@
     public bool? AllowSort { get; set; }
 
     [Parameter]
+    public bool ShowFilter { get; set; }
+
+    [Parameter]
     public EventCallback<ItemButtonClickedArgs> ItemButtonClicked { get; set; }
 
     [Parameter]
@@ -88,7 +118,7 @@
     private System.Collections.IList _modelItems { get; set; }
     private string _sortColumn;
     private bool _isDescSort;
-
+    private Dictionary<string, string> _filters = new Dictionary<string, string>();
 
     protected override void OnInitialized()
     {
@@ -116,7 +146,14 @@
         var result = new QueryOptions()
         {
             SortColumn = _sortColumn,
-            SortDirection = _isDescSort ? SortDirection.Desc: SortDirection.Asc
+            SortDirection = _isDescSort ? SortDirection.Desc: SortDirection.Asc,
+
+            Filters = _filters.Select(f => new FieldFilter 
+            { 
+                BindingProperty = f.Key, 
+                FilterType = _fields.First(x => ((DataField)x).BindingProperty == f.Key).FilterType, 
+                Filter = f.Value  
+            }).ToList()
         };
 
         return result;
@@ -184,7 +221,6 @@
         }
 
         _sortColumn = field.BindingProperty;
-        //_form.Sort(col, _isDescSort);
         LoadForm();
     }
 
@@ -194,9 +230,41 @@
 
         if (field.BindingProperty == _sortColumn)
         {
-            return _isDescSort ? "oi oi-caret-top" : "oi oi-caret-bottom";
+            return _isDescSort ? "oi oi-sort-descending" : "oi oi-sort-ascending";
         }
 
         return "";
+    }
+
+    private bool IsTextFilter(Field col)
+    {
+        var field = col as DataField;
+        return field.FilterType == FieldFilterType.TextContains || field.FilterType == FieldFilterType.TextStarts || field.FilterType == FieldFilterType.TextEnds;
+    }
+
+    private string GetFilterValue(Field col)
+    {
+        var field = col as DataField;
+
+        if (_filters.ContainsKey(field.BindingProperty))
+        {
+            return _filters[field.BindingProperty];
+        }
+
+        return "";
+    }
+
+    private async Task FilterValueChanged(Field col, ChangeEventArgs a)
+    {
+        var field = col as DataField;
+        _filters[field.BindingProperty] = a.Value.ToString();
+        //StateHasChanged();
+        LoadForm();
+    }
+
+    private async Task ClearFilters()
+    {
+        _filters.Clear();
+        LoadForm();
     }
 }

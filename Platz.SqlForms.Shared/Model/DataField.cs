@@ -34,6 +34,7 @@ namespace Platz.SqlForms
             ControlType = source.ControlType;
             ViewModeControlType = source.ViewModeControlType;
             Label = source.Label;
+            FilterType = source.FilterType;
             Required = source.Required;
             Hidden = source.Hidden;
             ReadOnly = source.ReadOnly;

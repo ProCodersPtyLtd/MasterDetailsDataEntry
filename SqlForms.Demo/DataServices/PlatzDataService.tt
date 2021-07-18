@@ -83,7 +83,7 @@ namespace <#=Queries.First().Namespace#>
             using (var db = GetDbContext())
             {
                 var query = <#=query.Name#>Query(db, options, parameters);
-                query = OrderBy(query, options.SortColumn, options.SortDirection);
+                query = Prepare(query, options, parameters);
                 var result = query.ToList();
                 return result;
             }

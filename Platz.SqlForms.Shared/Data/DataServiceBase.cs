@@ -146,6 +146,18 @@ namespace Platz.SqlForms
             return context;
         }
 
+        public static IQueryable<Q> Prepare<Q>(IQueryable<Q> query, QueryOptions options, params object[] parameters)
+        {
+            query = OrderBy(query, options.SortColumn, options.SortDirection);
+            query = ApplyFilters(query, options.Filters);
+            return query;
+        }
+
+        public static IQueryable<Q> ApplyFilters<Q>(IQueryable<Q> query, List<FieldFilter> filters)
+        {
+            return query;
+        }
+
         // query = OrderBy(query, options.SortColumn, options.SortDirection);
         public static IQueryable<Q> OrderBy<Q>(IQueryable<Q> query, string colName, SortDirection direction)
         {
