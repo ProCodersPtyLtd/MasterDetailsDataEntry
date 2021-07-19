@@ -11,6 +11,11 @@ namespace Platz.SqlForms
         public string SortColumn { get; set; }
         public SortDirection SortDirection { get; set; }
         public List<FieldFilter> Filters { get; set; } = new List<FieldFilter>();
+        public bool ApplyPagination { get; set; }
+        public int Page { get; set; }
+        public int PageSize { get; set; }
+        public int PageReturnTotalCount { get; set; } = -1;
+
     }
 
     public enum SortDirection

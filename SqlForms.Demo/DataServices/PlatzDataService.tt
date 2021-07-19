@@ -84,7 +84,7 @@ namespace <#=Queries.First().Namespace#>
             {
                 var query = <#=query.Name#>Query(db, options, parameters);
                 query = Prepare(query, options, parameters);
-                var result = query.ToList();
+                var result = GetResult(query, options, parameters);
                 return result;
             }
         }

@@ -35,7 +35,7 @@ namespace Default
             {
                 var query = GetCustAddrCountListQuery(db, options, parameters);
                 query = Prepare(query, options, parameters);
-                var result = query.ToList();
+                var result = GetResult(query, options, parameters);
                 return result;
             }
         }
@@ -85,7 +85,7 @@ namespace Default
             {
                 var query = GetCustAddrSubQueryListQuery(db, options, parameters);
                 query = Prepare(query, options, parameters);
-                var result = query.ToList();
+                var result = GetResult(query, options, parameters);
                 return result;
             }
         }
@@ -146,7 +146,7 @@ namespace Default
             {
                 var query = GetCustListQuery(db, options, parameters);
                 query = Prepare(query, options, parameters);
-                var result = query.ToList();
+                var result = GetResult(query, options, parameters);
                 return result;
             }
         }
@@ -187,7 +187,7 @@ namespace Default
             {
                 var query = GetCustomerAddressListQuery(db, options, parameters);
                 query = Prepare(query, options, parameters);
-                var result = query.ToList();
+                var result = GetResult(query, options, parameters);
                 return result;
             }
         }
@@ -229,7 +229,7 @@ namespace Default
             {
                 var query = GetProdModelListQuery(db, options, parameters);
                 query = Prepare(query, options, parameters);
-                var result = query.ToList();
+                var result = GetResult(query, options, parameters);
                 return result;
             }
         }
@@ -256,7 +256,7 @@ namespace Default
             {
                 var query = GetWeightByCostListQuery(db, options, parameters);
                 query = Prepare(query, options, parameters);
-                var result = query.ToList();
+                var result = GetResult(query, options, parameters);
                 return result;
             }
         }
