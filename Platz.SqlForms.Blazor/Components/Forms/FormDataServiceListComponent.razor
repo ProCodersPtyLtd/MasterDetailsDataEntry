@@ -33,19 +33,19 @@
             {
                 <tr style="background-color: cadetblue">
 
-                @foreach (var f in _fields)
-                {
-                    @if (IsTextFilter(f))
+                    @foreach (var f in _fields)
                     {
-                        <td>
-                            <input class="form-control" value="@GetFilterValue(@f)" @onchange="@(async (a) => await FilterValueChanged(@f, a))" />
-                        </td>
+                        @if (IsTextFilter(f))
+                        {
+                            <td>
+                                <input class="form-control" value="@GetFilterValue(@f)" @onchange="@(async (a) => await FilterValueChanged(@f, a))" />
+                            </td>
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
                     }
-                    else
-                    {
-                        <td></td>
-                    }
-                }
 
                     <td>
                         <button class="btn btn-light" type="button" aria-haspopup="true" aria-expanded="false" @onclick="@(async () => await ClearFilters())">
@@ -88,6 +88,27 @@
         </tbody>
     </table>
 
+    @if (AllowPagination)
+    {
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-end">
+            <li class="page-item @(_queryOptions.Page == 0 ? "disabled": "")">
+                <a class="page-link" @onclick="async() => await PageClick(_queryOptions.Page - 1)" tabindex="-1">Previous</a>
+            </li>
+
+            @for (int i = 0; i < _queryOptions.PageReturnTotalCount / _queryOptions.PageSize + 1; i++)
+            {
+                var row = i;
+            <li class="page-item @(_queryOptions.Page == i ? "disabled": "")"><a class="page-link" @onclick="async() => await PageClick(row)">@(i + 1)</a></li>
+            }
+
+            <li class="page-item @(_queryOptions.Page == _queryOptions.PageReturnTotalCount / _queryOptions.PageSize ? "disabled": "")">
+                <a class="page-link" @onclick="async() => await PageClick(_queryOptions.Page + 1)">Next</a>
+            </li>
+        </ul>
+    </nav>
+    }
+
     <BottomButtonsComponent Form="_form" NavigateFormatParameters="GetNavigateFormatParameters()" ButtonActionClicked="ButtonActionClicked"
                             Buttons="_form.GetButtons()" ButtonNavigations="_form.GetButtonNavigations()" ButtonClicked="ButtonClicked" />
 </div>
@@ -104,6 +125,12 @@
     public bool? AllowSort { get; set; }
 
     [Parameter]
+    public bool AllowPagination { get; set; }
+
+    [Parameter]
+    public int? PageSize { get; set; }
+
+    [Parameter]
     public bool ShowFilter { get; set; }
 
     [Parameter]
@@ -118,6 +145,8 @@
     private System.Collections.IList _modelItems { get; set; }
     private string _sortColumn;
     private bool _isDescSort;
+    private int _page;
+    private QueryOptions _queryOptions;
     private Dictionary<string, string> _filters = new Dictionary<string, string>();
 
     protected override void OnInitialized()
@@ -136,23 +165,44 @@
         _form = Activator.CreateInstance<TForm>() as DataServiceBase;
         _fields = _form.GetDetailsFields().Where(f => f.Hidden == false);
 
-        var options = GetQueryOptions();
-        _modelItems = _form.ExecuteListQuery(options, ServiceParameters);
+        _queryOptions = GetQueryOptions();
+        _modelItems = _form.ExecuteListQuery(_queryOptions, ServiceParameters);
         _contextMenu = _form.GetContextLinks();
+    }
+
+    private int GetPageSize()
+    {
+        return PageSize ?? 10;
+    }
+
+    private void LoadPage()
+    {
+        _modelItems = _form.ExecuteListQuery(_queryOptions, ServiceParameters);
+        _contextMenu = _form.GetContextLinks();
+    }
+
+    private async Task PageClick(int page)
+    {
+        _queryOptions.Page = page;
+        LoadPage();
     }
 
     private QueryOptions GetQueryOptions()
     {
         var result = new QueryOptions()
         {
+            ApplyPagination = AllowPagination,
+            Page = 0,
+            PageSize = GetPageSize(),
+            PageReturnTotalCount = -1,
             SortColumn = _sortColumn,
             SortDirection = _isDescSort ? SortDirection.Desc: SortDirection.Asc,
 
-            Filters = _filters.Select(f => new FieldFilter 
-            { 
-                BindingProperty = f.Key, 
-                FilterType = _fields.First(x => ((DataField)x).BindingProperty == f.Key).FilterType, 
-                Filter = f.Value  
+            Filters = _filters.Select(f => new FieldFilter
+            {
+                BindingProperty = f.Key,
+                FilterType = _fields.First(x => ((DataField)x).BindingProperty == f.Key).FilterType,
+                Filter = f.Value
             }).ToList()
         };
 
@@ -240,7 +290,7 @@
     {
         var field = col as DataField;
 
-        return field.FilterType == FieldFilterType.TextContains || field.FilterType == FieldFilterType.TextStarts || 
+        return field.FilterType == FieldFilterType.TextContains || field.FilterType == FieldFilterType.TextStarts ||
             field.FilterType == FieldFilterType.TextEnds || field.FilterType == FieldFilterType.Text;
     }
 

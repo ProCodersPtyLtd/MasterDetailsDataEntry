@@ -36,7 +36,5 @@ namespace SqlForms.Demo.MyForms
 
             builder.SetListMethod(GetCustAddrCountList);
         }
-
-        //public void 
     }
 }

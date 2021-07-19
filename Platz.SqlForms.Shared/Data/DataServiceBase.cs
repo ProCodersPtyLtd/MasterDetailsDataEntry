@@ -153,6 +153,32 @@ namespace Platz.SqlForms
             return query;
         }
 
+        public static List<Q> GetResult<Q>(IQueryable<Q> query, QueryOptions options, params object[] parameters)
+        {
+            if (options.ApplyPagination)
+            {
+                if (options.PageReturnTotalCount == -1)
+                {
+                    options.PageReturnTotalCount = query.Count();
+                }
+
+                var page = query
+                    .Skip(options.Page * options.PageSize)
+                    .Take(options.PageSize);
+                //.GroupBy(e => new { Total = query.Count() })
+                //.FirstOrDefault();
+
+                //options.PageReturnTotalCount = page.Key.Total;
+                //return page.Select(e => e).ToList();
+
+                return page.ToList();
+            }
+            else
+            {
+                return query.ToList();
+            }
+        }
+
         public static IQueryable<Q> ApplyFilters<Q>(IQueryable<Q> query, List<FieldFilter> filters)
         {
             foreach (var filter in filters)
