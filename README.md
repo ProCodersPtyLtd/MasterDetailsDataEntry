@@ -64,10 +64,11 @@ https://docs.microsoft.com/en-us/sql/samples/adventureworks-install-configure?vi
 ### Release 0.4.0 - Jul-Aug'21
 - ObjectBuilder Group By queries
 - ObjectBuilder Subqueries
-- Grid Sorting, Pagination and Filtering (in progress)
+- Grid Sorting, Pagination and Filtering 
+- ObjectBuilder usability (in progress)
+- Seed projects for easy start
 ### Release 0.5.0 - Sep'21
 - Usability and error data recovery for builders and designers
-- Seed projects for easy start
 - Bug fixes
 ### Release 1.0.0 - Oct'21
 - Support documentation
@@ -75,7 +76,7 @@ https://docs.microsoft.com/en-us/sql/samples/adventureworks-install-configure?vi
 - Bug fixes
 
 ## Backlog
-- Improve page navigation dev experience 
+- Improve page navigation (links {0}{1}) dev experience 
 - ObjectBuiler Select functions (not Group By)
 - T4 tempalates for SchemaDesigner entities to support Group By and Subqueries
 - ObjectBuilder T4 template to generate business object CRUD operations' C# code
