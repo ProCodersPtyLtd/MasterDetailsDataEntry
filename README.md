@@ -83,3 +83,10 @@ https://docs.microsoft.com/en-us/sql/samples/adventureworks-install-configure?vi
 - ObjectBuilder definition of business object - entity mappings and CRUD operations
 - UI SQL forms to entry/edit business objects
 - Support of Postgres
+
+## Ideas
+- Form designer
+- Work Flow engine
+- Work Flow designer
+- Full no-code infrastructure
+- No-code cloud solution
