@@ -14,12 +14,29 @@
         <div class="float">
             <button class="btn btn-light" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample"
                     @onclick="@(() => SettingsClick())">
-                <span class="oi oi-ellipses"></span>
+                <span class="oi oi-chevron-bottom"></span>
             </button>
             <b>Settings: </b>
             &nbsp;
-            <label>Path</label>
-            <input readonly="readonly" @bind="StoreDataPath" style="width: 600px" />
+            <label>Path:</label>
+            &nbsp;
+            @*<input readonly="readonly" @bind="StoreDataPath" style="width: 600px" />*@
+            <label style="width: 600px; background-color: lightgray">@StoreDataPath</label>
+
+            &nbsp;
+            <button class="btn btn-primary" type="button" @onclick="LoadClick" data-toggle="modal" data-target="#loadModal" style="width: 120px">Load...</button>
+            &nbsp;
+            <button class="btn btn-primary" type="button" @onclick="SaveClick" style="width: 120px">Save</button>
+            &nbsp;
+            <button class="btn btn-secondary" type="button" @onclick="ValidateClick" style="width: 120px">Validate</button>
+
+            <div class="float-right">
+                <button class="btn btn-light" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample"
+                        @onclick="@(() => SettingsClick())"
+                        style="display: block; margin-left: auto; margin-right: 0;">
+                    <span class="oi oi-chevron-bottom"></span>
+                </button>
+            </div>
         </div>
     </p>
     <div class="collapse" id="collapseExample">
@@ -31,16 +48,16 @@
                 <tr>
                     <td style="vertical-align: top;">
                         <label>Data Service name</label>
-                        <input @bind="QueryController.StoreParameters.DataService" readonly="readonly" />
+                        <input @bind="QueryController.StoreParameters.DataService" readonly="readonly" style="background-color: lightgray" />
 
                         <label>Namespace</label>
-                        <input @bind="QueryController.StoreParameters.Namespace" readonly="readonly" />
+                        <input @bind="QueryController.StoreParameters.Namespace" readonly="readonly" style="background-color: lightgray" />
 
                         <label>Query Return Type name</label>
                         <input value="@QueryController.StoreParameters.QueryReturnType" @onchange="QueryReturnTypeChanged" />
 
                         <label>Query name</label>
-                        <input @bind="QueryController.StoreParameters.QueryName" />
+                        <input @bind="QueryController.StoreParameters.QueryName" readonly="readonly" style="background-color: lightgray" />
                     </td>
                     <td style="width: 300px; vertical-align: top;">
                         <label>Parameters</label>
@@ -61,7 +78,7 @@
                     <td style="width: 100%; vertical-align: top;">
                         <div class="plk-flex">
                             @*<label>Log</label>
-                            <textarea id="exampleFormControlTextarea1" rows="8" style="width: 100%" @bind="@QueryController.Errors" />*@
+                                <textarea id="exampleFormControlTextarea1" rows="8" style="width: 100%" @bind="@QueryController.Errors" />*@
 
                             <div style="vertical-align: top">
 
@@ -83,33 +100,21 @@
                                         <li><a data-toggle="tab" href="#joins">Relationships</a></li>
                                     </ul>*@
 
-                            <div class="tab-content">
-                                <div id="Log" class="tab-pane active">
-                                    <textarea id="exampleFormControlTextarea1" rows="8" style="width: 100%" @bind="@QueryController.Errors" />
+                                <div class="tab-content">
+                                    <div id="Log" class="tab-pane active">
+                                        <textarea id="exampleFormControlTextarea1" rows="8" style="width: 100%; overflow-y: scroll" @bind="@QueryController.Errors" />
+                                    </div>
+                                    <div id="Linq" class="tab-pane fade">
+                                        <textarea id="exampleFormControlTextarea2" readonly rows="8" style="width: 100%; overflow-y: scroll" @bind="@QueryController.LinqQuery" />
+                                    </div>
+                                    <div id="Sql" class="tab-pane fade">
+                                        <textarea id="exampleFormControlTextarea3" readonly rows="8" style="width: 100%; overflow-y: scroll" @bind="@QueryController.SqlQuery" />
+                                    </div>
                                 </div>
-                                <div id="Linq" class="tab-pane fade">
-                                    <textarea id="exampleFormControlTextarea2" readonly rows="8" style="width: 100%" @bind="@QueryController.LinqQuery" />
-                                </div>
-                                <div id="Sql" class="tab-pane fade">
-                                    <textarea id="exampleFormControlTextarea3" readonly rows="8" style="width: 100%" @bind="@QueryController.SqlQuery" />
-                                </div>
+
+
                             </div>
-
-
-                            </div>
-
-
-
-
-
-
-
-
-
-
-
                         </div>
-
                     </td>
                 </tr>
             </table>
@@ -133,21 +138,21 @@
                 </tr>
             </table>
 
-            <div class="float-right">
-                <button class="btn btn-light btn-sm" title="Add" @onclick="@(() => SettingsRightClick())">
-                    <span class="oi oi-fire"></span>
-                </button>
-            </div>
+            @*<div class="float-right">
+                    <button class="btn btn-light btn-sm" title="Add" @onclick="@(() => SettingsRightClick())">
+                        <span class="oi oi-fire"></span>
+                    </button>
+                </div>
 
-            <hr />
+                <hr />*@
 
-            <div class="float">
-                <button class="btn btn-primary" type="button" @onclick="SaveClick" style="width: 120px">Save</button>
-                &nbsp;
-                <button class="btn btn-secondary" type="button" @onclick="ValidateClick" style="width: 120px">Validate</button>
-                &nbsp;
-                <button class="btn btn-secondary" type="button" @onclick="LoadClick" data-toggle="modal" data-target="#loadModal" style="width: 120px">Load...</button>
-            </div>
+            @*<div class="float">
+                    <button class="btn btn-primary" type="button" @onclick="SaveClick" style="width: 120px">Save</button>
+                    &nbsp;
+                    <button class="btn btn-secondary" type="button" @onclick="ValidateClick" style="width: 120px">Validate</button>
+                    &nbsp;
+                    <button class="btn btn-secondary" type="button" @onclick="LoadClick" data-toggle="modal" data-target="#loadModal" style="width: 120px">Load...</button>
+                </div>*@
         </div>
     </div>
 
@@ -179,8 +184,8 @@
                             {
                                 var rowIndex = i;
 
-                            <a class="list-group-item list-group-item-action" @onclick="() => FileClick(rowIndex)" @ondblclick="async(a) => await FileDblClick(a, rowIndex)"
-                               data-toggle="list" href="#list-home" role="tab" aria-controls="home">@data[i]</a>
+                                <a class="list-group-item list-group-item-action" @onclick="() => FileClick(rowIndex)" @ondblclick="async(a) => await FileDblClick(a, rowIndex)"
+                                   data-toggle="list" href="#list-home" role="tab" aria-controls="home">@data[i]</a>
                             }
                         </div>
                     </div>
@@ -214,27 +219,46 @@
     </div>
 </div>
 
+<!-- Position it -->
+<div style="position: absolute; top: 0; right: 0; min-width: 300px;z-index: 100">
+
+    <!-- Then put toasts within -->
+    <div id="errorToast" class="toast" role="banner" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="3000" style="background-color: lightcoral;">
+        <div class="toast-header">
+            @*<img src="file" class="rounded mr-2" alt="...">*@
+            @*<span class="oi oi-file"></span>*@
+            <strong class="mr-auto">Error</strong>
+            <small class="text-muted">just now</small>
+            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="toast-body">@_toastErrorMessage</div>
+    </div>
+</div>
+
 @code {
-    [CascadingParameter]
-    public IQueryController QueryController { get; set; }
+        [CascadingParameter]
+        public IQueryController QueryController { get; set; }
 
-    [Parameter]
-    public string StoreDataPath { get; set; }
+        [Parameter]
+        public string StoreDataPath { get; set; }
 
-    [Parameter]
-    public string Namespace { get; set; }
+        [Parameter]
+        public string Namespace { get; set; }
 
-    [Parameter]
-    public string DataService { get; set; }
+        [Parameter]
+        public string DataService { get; set; }
 
-    [Parameter]
-    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+        [Parameter]
+        public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 
     private StoreQuery _query;
     private string _selectedFileName;
     private List<string> _files;
     private bool _fileNameChanged;
     private string _fileNameSaved;
+    private string _toastErrorMessage;
 
     private Task<IJSObjectReference> _module;
     private Task<IJSObjectReference> Module => _module ??= JS.InvokeAsync<IJSObjectReference>("import", "./_content/Platz.ObjectBuilder.Blazor/objectBuilder.js").AsTask();
@@ -261,6 +285,12 @@
     {
         var module = await Module;
         await module.InvokeVoidAsync("Collapse", "#collapseExample");
+    }
+
+    private async Task ExpandSettings()
+    {
+        var module = await Module;
+        await module.InvokeVoidAsync("CollapseShow", "#collapseExample");
     }
 
     private async Task LoadFile(MouseEventArgs args)
@@ -320,23 +350,37 @@
         if (canSave)
         {
             QueryController.SaveSchema(StoreDataPath);
-            QueryController.SaveQuery(StoreDataPath);
-            _fileNameSaved = fileName;
-            _fileNameChanged = false;
-            await module.InvokeVoidAsync("ShowToast", new object[] { "#saveToast" });
-            await CollapseSettings();
+            var success = QueryController.SaveQuery(StoreDataPath);
+
+            if (success)
+            {
+                _fileNameSaved = fileName;
+                _fileNameChanged = false;
+                await module.InvokeVoidAsync("ShowToast", new object[] { "#saveToast" });
+                await CollapseSettings();
+            }
+            else
+            {
+                _toastErrorMessage = $"Saving file {fileName} failed.";
+                await module.InvokeVoidAsync("ShowToast", new object[] { "#errorToast" });
+                ShowErrors();
+                StateHasChanged();
+            }
         }
     }
 
-    private void ValidateClick(MouseEventArgs args)
+    private async Task ValidateClick(MouseEventArgs args)
     {
         QueryController.Validate();
         ShowErrors();
+        await ExpandSettings();
         StateHasChanged();
     }
 
     private void ShowErrors()
     {
+        QueryController.Errors = null;
+
         if (QueryController.ValidationResults.Any())
         {
             foreach (var r in QueryController.ValidationResults)
@@ -347,6 +391,11 @@
         else
         {
             QueryController.Errors += "\r\n" + "Validation result: pass";
+        }
+
+        if (QueryController.ErrorLog.Length > 0)
+        {
+            QueryController.Errors += "\r\n" + QueryController.ErrorLog.ToString();
         }
     }
 
