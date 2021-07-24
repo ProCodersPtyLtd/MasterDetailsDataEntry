@@ -632,6 +632,7 @@ namespace Platz.ObjectBuilder
             try
             {
                 var result = _expressions.BuildExpressionTree(SelectedQuery.WhereClause);
+                QueryExpressionHelper.ReadFromSqlExpr(result);
             }
             catch(Exception exc)
             {

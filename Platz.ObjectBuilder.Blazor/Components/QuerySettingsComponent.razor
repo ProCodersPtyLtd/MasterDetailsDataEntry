@@ -238,20 +238,20 @@
 </div>
 
 @code {
-        [CascadingParameter]
-        public IQueryController QueryController { get; set; }
+    [CascadingParameter]
+    public IQueryController QueryController { get; set; }
 
-        [Parameter]
-        public string StoreDataPath { get; set; }
+    [Parameter]
+    public string StoreDataPath { get; set; }
 
-        [Parameter]
-        public string Namespace { get; set; }
+    [Parameter]
+    public string Namespace { get; set; }
 
-        [Parameter]
-        public string DataService { get; set; }
+    [Parameter]
+    public string DataService { get; set; }
 
-        [Parameter]
-        public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 
     private StoreQuery _query;
     private string _selectedFileName;
@@ -330,10 +330,11 @@
 
     private async Task SaveClick(MouseEventArgs args)
     {
-        ValidateClick(null);
+        Validate();
 
         if (QueryController.ValidationResults.Any())
         {
+            await ExpandSettings();
             return;
         }
 
@@ -363,16 +364,22 @@
             {
                 _toastErrorMessage = $"Saving file {fileName} failed.";
                 await module.InvokeVoidAsync("ShowToast", new object[] { "#errorToast" });
+                await ExpandSettings();
                 ShowErrors();
                 StateHasChanged();
             }
         }
     }
 
-    private async Task ValidateClick(MouseEventArgs args)
+    private void Validate()
     {
         QueryController.Validate();
         ShowErrors();
+    }
+
+    private async Task ValidateClick(MouseEventArgs args)
+    {
+        Validate();
         await ExpandSettings();
         StateHasChanged();
     }
@@ -397,6 +404,8 @@
         {
             QueryController.Errors += "\r\n" + QueryController.ErrorLog.ToString();
         }
+
+        QueryController.Errors = QueryController.Errors.Trim();
     }
 
     private void QueryReturnTypeChanged(ChangeEventArgs args)

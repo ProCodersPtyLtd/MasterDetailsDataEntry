@@ -133,39 +133,7 @@
     "GroupByFields": null,
     "Having": null,
     "Where": {
-      "Expression": {
-        "Value": null,
-        "QueryField": null,
-        "Param": null,
-        "Left": {
-          "Value": null,
-          "QueryField": {
-            "FieldAlias": null,
-            "IsOutput": false,
-            "GroupByFunction": null,
-            "GroupByFilter": null,
-            "Field": {
-              "ObjectAlias": "a",
-              "FieldName": "AddressId"
-            },
-            "Operation": null,
-            "RawExpression": null
-          },
-          "Param": null,
-          "Left": null,
-          "Operator": null,
-          "Right": null
-        },
-        "Operator": "\u003E",
-        "Right": {
-          "Value": "1",
-          "QueryField": null,
-          "Param": null,
-          "Left": null,
-          "Operator": null,
-          "Right": null
-        }
-      }
+      "Expression": null
     }
   }
 }
