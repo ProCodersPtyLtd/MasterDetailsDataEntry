@@ -203,7 +203,7 @@
 <div style="position: absolute; top: 0; right: 0; min-width: 300px;z-index: 100">
 
     <!-- Then put toasts within -->
-    <div id="saveToast" class="toast" role="banner" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="3000" style="background-color: lightgreen;">
+    <div id="successToast" class="toast" role="banner" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="3000" style="background-color: lightgreen;">
         <div class="toast-header">
             @*<img src="file" class="rounded mr-2" alt="...">*@
             @*<span class="oi oi-file"></span>*@
@@ -213,9 +213,7 @@
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        <div class="toast-body">
-            File  '@(_fileNameSaved)' saved successfully.
-        </div>
+        <div class="toast-body">@_toastSuccessMessage</div>
     </div>
 </div>
 
@@ -257,7 +255,7 @@
     private string _selectedFileName;
     private List<string> _files;
     private bool _fileNameChanged;
-    private string _fileNameSaved;
+    private string _toastSuccessMessage;
     private string _toastErrorMessage;
 
     private Task<IJSObjectReference> _module;
@@ -355,9 +353,9 @@
 
             if (success)
             {
-                _fileNameSaved = fileName;
+                _toastSuccessMessage = $"File '{fileName}' saved.";
                 _fileNameChanged = false;
-                await module.InvokeVoidAsync("ShowToast", new object[] { "#saveToast" });
+                await module.InvokeVoidAsync("ShowToast", new object[] { "#successToast" });
                 await CollapseSettings();
             }
             else
@@ -380,8 +378,20 @@
     private async Task ValidateClick(MouseEventArgs args)
     {
         Validate();
-        await ExpandSettings();
-        StateHasChanged();
+        var module = await Module;
+
+        if (QueryController.ValidationResults.Any())
+        {
+            _toastErrorMessage = $"Validation failed.";
+            await module.InvokeVoidAsync("ShowToast", new object[] { "#errorToast" });
+            await ExpandSettings();
+            StateHasChanged();
+        }
+        else
+        {
+            _toastSuccessMessage = $"Validation passed.";
+            await module.InvokeVoidAsync("ShowToast", new object[] { "#successToast" });
+        }
     }
 
     private void ShowErrors()
