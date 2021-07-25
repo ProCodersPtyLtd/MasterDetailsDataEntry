@@ -276,7 +276,28 @@
     "GroupByFields": null,
     "Having": null,
     "Where": {
-      "Expression": null
+      "Expression": {
+        "Value": null,
+        "QueryField": null,
+        "Param": null,
+        "Left": {
+          "Value": "1",
+          "QueryField": null,
+          "Param": null,
+          "Left": null,
+          "Operator": null,
+          "Right": null
+        },
+        "Operator": null,
+        "Right": {
+          "Value": "3",
+          "QueryField": null,
+          "Param": null,
+          "Left": null,
+          "Operator": null,
+          "Right": null
+        }
+      }
     }
   }
 }
