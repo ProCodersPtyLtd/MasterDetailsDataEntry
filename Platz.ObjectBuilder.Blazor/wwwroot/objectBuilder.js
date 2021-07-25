@@ -34,9 +34,20 @@ export function Collapse(name) {
     $(name).collapse('hide');
 }
 
+export function CollapseShow(name) {
+    $(name).collapse('show');
+}
+
 export function FocusElement(id) {
     //const element = document.getElementById(id);
     //element.focus();
     //element.select();
     $('#' + id).focus().select();
 }
+
+export function PreventLeaveApp() {
+    window.onbeforeunload = function () {
+        return "";
+    }
+}
+

@@ -23,6 +23,7 @@ namespace Platz.ObjectBuilder
         StoreSchema Schema { get; }
         IQueryModel MainQuery { get; }
         List<IQueryModel> SubQueryList { get; }
+        StringBuilder ErrorLog { get; }
     }
 
     public class QueryControllerModel : IQueryControllerModel
@@ -32,6 +33,7 @@ namespace Platz.ObjectBuilder
         public StoreSchema Schema { get; set; }
         public IQueryModel MainQuery { get; set; }
         public List<IQueryModel> SubQueryList { get; set; }
+        public StringBuilder ErrorLog { get; set; } = new StringBuilder();
     }
 
     public interface IQueryController : IQueryControllerModel
@@ -73,7 +75,7 @@ namespace Platz.ObjectBuilder
         void SetWhereClause(string text);
 
         StoreQuery GenerateQuery();
-        void SaveQuery(string path);
+        bool SaveQuery(string path);
         void SaveSchema(string path);
         void LoadFromFile(string path, string fileName);
 
@@ -91,6 +93,7 @@ namespace Platz.ObjectBuilder
  
     public class QueryController : IQueryController
     {
+        public StringBuilder ErrorLog { get; set; } = new StringBuilder();
         public bool NeedRedrawLinks { get; set; }
         public StoreQueryParameters StoreParameters { get; set; } = new StoreQueryParameters();
         public StoreSchema Schema { get; private set; }
@@ -267,11 +270,17 @@ namespace Platz.ObjectBuilder
             return id;
         }
 
-        public void SaveQuery(string path)
+        public bool SaveQuery(string path)
         {
             var fileName = GenerateFileName(path);
             var parameters = new StorageParameters { FileName = fileName };
             var query = GenerateQuery();
+
+            if (query == null)
+            {
+                return false;
+            }
+
             _storage.SaveQuery(query, parameters);
 
             LinqQuery = "";
@@ -282,6 +291,8 @@ namespace Platz.ObjectBuilder
                 var schemaFileName = Path.Combine(path, $"Schema.json");
                 LinqQuery = _linqGenerator.GenerateQuery(schemaFileName, fileName);
             }
+
+            return true;
         }
 
         public string GenerateFileName(string path)
@@ -303,6 +314,7 @@ namespace Platz.ObjectBuilder
 
         public StoreQuery GenerateQuery()
         {
+            ErrorLog.Clear();
             Validate();
 
             if (ValidationResults.Any())
@@ -312,16 +324,24 @@ namespace Platz.ObjectBuilder
 
             var subQueries = new List<StoreQuery>();
 
-            for (int i = 1; i < SubQueryList.Count; i++)
+            try
             {
-                var q = SubQueryList[i];
-                var gen = _engine.GenerateQuery(q);
-                subQueries.Add(gen);
-            }
+                for (int i = 1; i < SubQueryList.Count; i++)
+                {
+                    var q = SubQueryList[i];
+                    var gen = _engine.GenerateQuery(q);
+                    subQueries.Add(gen);
+                }
 
-            var result = _engine.GenerateQuery(MainQuery, StoreParameters);
-            result.Query.SubQueries = subQueries.ToDictionary(s => s.Name, s => s.Query);
-            return result;
+                var result = _engine.GenerateQuery(MainQuery, StoreParameters);
+                result.Query.SubQueries = subQueries.ToDictionary(s => s.Name, s => s.Query);
+                return result;
+            }
+            catch (Exception exc)
+            {
+                ErrorLog.AppendLine($"Cannot generate query: {exc.Message}");
+                return null;
+            }
         }
 
         public void Validate()
@@ -337,6 +357,7 @@ namespace Platz.ObjectBuilder
 
             var mainValRes = _engine.Validate(this);
             ValidationResults.AddRange(mainValRes);
+            CheckWhereClause();
         }
 
         private List<StoreObjectJoin> GenerateJoins()
@@ -611,10 +632,12 @@ namespace Platz.ObjectBuilder
             try
             {
                 var result = _expressions.BuildExpressionTree(SelectedQuery.WhereClause);
+                QueryExpressionHelper.ReadFromSqlExpr(result);
             }
             catch(Exception exc)
             {
-                Errors += "\r\n" + exc.Message;
+                ValidationResults.Add(new RuleValidationResult { IsFailed = true, Message = $"Where Clause error: {exc.Message}" });
+                //Errors += "\r\n" + exc.Message;
             }
         }
 

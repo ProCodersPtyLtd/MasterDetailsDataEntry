@@ -50,6 +50,12 @@
 
     private int _renderPass = 0;
 
+    protected override async Task OnInitializedAsync()
+    {
+        //var module = await Module;
+        //await module.InvokeVoidAsync("PreventLeaveApp", new object[] { });
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (_renderPass == 0)

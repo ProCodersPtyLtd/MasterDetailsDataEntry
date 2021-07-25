@@ -137,9 +137,17 @@ namespace Platz.ObjectBuilder.Expressions
             }
             else if (tokenList.Count == 3)
             {
+                expr.Operator = tokenList[1].Operator;
+
+                if (expr.Operator == null)
+                {
+                    // token 1 - left, token 2 - operator, token 3 - right
+                    throw new Exception("Token 2 is not an operator or operator is null.");
+                }
+
                 expr.Left = new Expr();
                 BuildTree(new TokenInfo[] { tokenList[0] }.ToList(), expr.Left);
-                expr.Operator = tokenList[1].Operator;
+
                 expr.Right = new Expr();
                 BuildTree(new TokenInfo[] { tokenList[2] }.ToList(), expr.Right);
             }

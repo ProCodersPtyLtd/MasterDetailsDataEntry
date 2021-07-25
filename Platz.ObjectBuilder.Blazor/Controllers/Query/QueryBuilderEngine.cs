@@ -292,8 +292,9 @@ namespace Platz.ObjectBuilder.Blazor.Controllers.Logic
             }
             catch (Exception exc)
             {
-                qc.Errors += "\r\n" + exc.Message;
-                return null;
+                //qc.Errors += "\r\n" + exc.Message;
+                //return null;
+                throw;
             }
         }
 

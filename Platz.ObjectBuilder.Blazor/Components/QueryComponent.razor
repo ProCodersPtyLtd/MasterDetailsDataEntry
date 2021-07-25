@@ -8,6 +8,10 @@
 
 <CascadingValue Value="@_queryController">
 
+    <div>
+        <QuerySettingsComponent StoreDataPath="@_fullStoreDataPath" DataService="@DataService" Namespace="@Namespace" ModelChanged="ModelChanged" />
+    </div>
+
     <div style="vertical-align: top">
         <ul class="nav nav-tabs" role="tablist">
             @for (int i = 0; i < GetTabQueries().Count(); i++)
@@ -33,9 +37,6 @@
             }
         </ul>
     </div>
-    <div>
-        <QuerySettingsComponent StoreDataPath="@_fullStoreDataPath" DataService="@DataService" Namespace="@Namespace" ModelChanged="ModelChanged" />
-    </div>
 
     <table style="width: 100%">
         <tr>
@@ -49,7 +50,7 @@
                 </div>
                 <div>
                     @*<QueryFromPanelComponent QueryController="_queryController" />*@
-                    <QueryFromPanelComponent ModelChanged="ModelChanged" Height="160" />
+                    <QueryFromPanelComponent ModelChanged="ModelChanged" Height="300" />
                 </div>
                 <div>
                     <QueryWherePanelComponent ModelChanged="ModelChanged" />

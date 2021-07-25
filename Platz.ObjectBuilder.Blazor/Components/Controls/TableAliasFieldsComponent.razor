@@ -47,6 +47,10 @@
                     {
                         <span id="@GetPkId(row)" class="oi oi-key"></span>
                     }
+                    else
+                    {
+                        <span id="@GetPkId(row)" class="oi oi-grid-four-up"></span>
+                    }
                 </td>
                 <td><input type="checkbox" checked="@GetSelectedValue(row)" @onchange="@(async (args) => await SelectClick(args, row))" /></td>
                 <td>@item.Name</td>
@@ -54,6 +58,10 @@
                     @if (item.Fk)
                     {
                         <span id="@GetFkId(row)" class="oi oi-infinity"></span>
+                    }
+                    else
+                    {
+                        <span id="@GetFkId(row)" class="oi oi-grid-four-up"></span>
                     }
                 </td>
             </tr>
