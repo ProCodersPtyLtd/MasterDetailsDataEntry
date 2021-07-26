@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Platz.ObjectBuilder.Blazor\Platz.ObjectBuilder.Blazor.csproj" />
+    <ProjectReference Include="..\SqlForms.Demo.Database\SqlForms.Demo.Database.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Platz.ObjectBuilder">
+      <HintPath>..\..\..\Platz.ObjectBuilder.Blazor\bin\Debug\net5.0\Platz.ObjectBuilder.dll</HintPath>
+    </Reference>
+    <Reference Include="Platz.SqlForms">
+      <HintPath>..\..\..\Platz.SqlForms\bin\Debug\net5.0\Platz.SqlForms.dll</HintPath>
+    </Reference>
+    <Reference Include="Platz.SqlForms.Blazor">
+      <HintPath>..\..\..\Platz.SqlForms\bin\Debug\net5.0\Platz.SqlForms.Blazor.dll</HintPath>
+    </Reference>
+    <Reference Include="Platz.SqlForms.Shared">
+      <HintPath>..\..\..\Platz.SqlForms\bin\Debug\net5.0\Platz.SqlForms.Shared.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
