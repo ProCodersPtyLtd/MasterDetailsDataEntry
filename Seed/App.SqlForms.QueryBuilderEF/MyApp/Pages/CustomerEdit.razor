@@ -1,0 +1,11 @@
+﻿@page "/CustomerEdit/{CustomerId:int}"
+
+
+<h1>Customer Edit</h1>
+
+<FormDynamicEditComponent TForm="MyCustomerEditForm" Id="@CustomerId" />
+
+@code {
+    [Parameter]
+    public int CustomerId { get; set; }
+}

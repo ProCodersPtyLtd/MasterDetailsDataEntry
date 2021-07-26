@@ -5,11 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="SqlForms\Forms\" />
-    <Folder Include="SqlForms\QueryStore\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\..\Platz.ObjectBuilder\Platz.ObjectBuilder.csproj" />
     <ProjectReference Include="..\..\..\Platz.SqlForms\Platz.SqlForms.csproj" />
     <ProjectReference Include="..\SqlForms.Demo.Database\SqlForms.Demo.Database.csproj" />

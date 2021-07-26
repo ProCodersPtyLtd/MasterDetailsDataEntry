@@ -1,0 +1,261 @@
+{
+  "Name": "GetCustAddrList",
+  "DataService": "MyDataService",
+  "Namespace": "MyApp.SqlForms",
+  "ReturnTypeName": "CustAddr",
+  "SchemaName": null,
+  "SchemaFile": "C:\\Repos\\MasterDetailsDataEntry\\Seed\\App.SqlForms.QueryBuilderEF\\MyApp\\SqlForms\\QueryStore\\Schema.json",
+  "SchemaVersion": null,
+  "Tags": null,
+  "Query": {
+    "QueryAlias": null,
+    "Comment": null,
+    "Parameters": {
+      "@p1": {
+        "Name": "@p1",
+        "Type": "Int32"
+      }
+    },
+    "Fields": {
+      "AddressId": {
+        "FieldAlias": "AddressId",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "GroupByFilter": null,
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "AddressId"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "AddressLine1": {
+        "FieldAlias": "AddressLine1",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "GroupByFilter": null,
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "AddressLine1"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "AddressLine2": {
+        "FieldAlias": "AddressLine2",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "GroupByFilter": null,
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "AddressLine2"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "City": {
+        "FieldAlias": "City",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "GroupByFilter": null,
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "City"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "CountryRegion": {
+        "FieldAlias": "CountryRegion",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "GroupByFilter": null,
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "CountryRegion"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "ModifiedDate": {
+        "FieldAlias": "ModifiedDate",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "GroupByFilter": null,
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "ModifiedDate"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "PostalCode": {
+        "FieldAlias": "PostalCode",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "GroupByFilter": null,
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "PostalCode"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "Rowguid": {
+        "FieldAlias": "Rowguid",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "GroupByFilter": null,
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "Rowguid"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "StateProvince": {
+        "FieldAlias": "StateProvince",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "GroupByFilter": null,
+        "Field": {
+          "ObjectAlias": "a",
+          "FieldName": "StateProvince"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "CustomerId": {
+        "FieldAlias": "CustomerId",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "GroupByFilter": null,
+        "Field": {
+          "ObjectAlias": "c",
+          "FieldName": "CustomerId"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "AddressType": {
+        "FieldAlias": "AddressType",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "GroupByFilter": null,
+        "Field": {
+          "ObjectAlias": "c",
+          "FieldName": "AddressType"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "Title": {
+        "FieldAlias": "Title",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "GroupByFilter": null,
+        "Field": {
+          "ObjectAlias": "cu",
+          "FieldName": "Title"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "FirstName": {
+        "FieldAlias": "FirstName",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "GroupByFilter": null,
+        "Field": {
+          "ObjectAlias": "cu",
+          "FieldName": "FirstName"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "LastName": {
+        "FieldAlias": "LastName",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "GroupByFilter": null,
+        "Field": {
+          "ObjectAlias": "cu",
+          "FieldName": "LastName"
+        },
+        "Operation": null,
+        "RawExpression": null
+      }
+    },
+    "Tables": {
+      "a": {
+        "ObjectAlias": "a",
+        "TableName": "Address",
+        "IsSubQuery": false
+      },
+      "c": {
+        "ObjectAlias": "c",
+        "TableName": "CustomerAddress",
+        "IsSubQuery": false
+      },
+      "cu": {
+        "ObjectAlias": "cu",
+        "TableName": "Customer",
+        "IsSubQuery": false
+      }
+    },
+    "SubQueries": {},
+    "Joins": [
+      {
+        "LeftObjectAlias": "cu",
+        "LeftField": "CustomerId",
+        "RightObjectAlias": "c",
+        "RightField": "CustomerId",
+        "JoinType": "Inner"
+      },
+      {
+        "LeftObjectAlias": "a",
+        "LeftField": "AddressId",
+        "RightObjectAlias": "c",
+        "RightField": "AddressId",
+        "JoinType": "Inner"
+      }
+    ],
+    "GroupByFields": null,
+    "Having": null,
+    "Where": {
+      "Expression": {
+        "Value": null,
+        "QueryField": null,
+        "Param": null,
+        "Left": {
+          "Value": null,
+          "QueryField": {
+            "FieldAlias": null,
+            "IsOutput": false,
+            "GroupByFunction": null,
+            "GroupByFilter": null,
+            "Field": {
+              "ObjectAlias": "c",
+              "FieldName": "CustomerId"
+            },
+            "Operation": null,
+            "RawExpression": null
+          },
+          "Param": null,
+          "Left": null,
+          "Operator": null,
+          "Right": null
+        },
+        "Operator": "=",
+        "Right": {
+          "Value": null,
+          "QueryField": null,
+          "Param": "@p1",
+          "Left": null,
+          "Operator": null,
+          "Right": null
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+﻿@page "/CustAddrList/{CustomerId:int}"
+
+<FormDynamicEditComponent TForm="MyCustomerHeaderForm" Id="@CustomerId" />
+<FormDataServiceListComponent ServiceParameters="@(new object[] { CustomerId })" TForm="MyCustomerAddrListForm" />
+
+
+@code {
+    [Parameter]
+    public int CustomerId { get; set; }
+}
