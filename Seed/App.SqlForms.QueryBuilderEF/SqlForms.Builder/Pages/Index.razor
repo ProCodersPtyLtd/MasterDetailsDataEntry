@@ -1,0 +1,14 @@
+﻿@page "/"
+
+@using Platz.ObjectBuilder
+
+<QueryComponent DbContextType="typeof(SqlForms.Demo.Database.AdventureWorks.AdventureWorksContext)" StoreDataPath="..\MyApp\SqlForms\QueryStore"
+                DataService="MyDataService" Namespace="MyApp.SqlForms" />
+
+
+@code {
+    //private Type GetContextType()
+    //{
+    //    return typeof(SqlForms.Demo.Database.AdventureWorksContext);
+    //}
+}
