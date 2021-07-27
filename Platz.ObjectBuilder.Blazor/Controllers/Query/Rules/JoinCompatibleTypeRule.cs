@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Platz.ObjectBuilder.Schema;
+using Platz.SqlForms;
 
 namespace Platz.ObjectBuilder.Blazor.Validation.Rules
 {
@@ -20,7 +21,7 @@ namespace Platz.ObjectBuilder.Blazor.Validation.Rules
                 var rightObject = qm.FromTables.First(t => t.Alias == join.Source.RightObjectAlias);
                 var rightProp = rightObject.Properties.First(p => p.Name == join.Source.RightField).OriginalStoreProperty;
 
-                if (leftProp.Type != rightProp.Type)
+                if (GetPropertyDataType(leftProp) != GetPropertyDataType(rightProp))
                 {
                     badJoins.Add($"{join.Source.GetJoinString()}({leftProp.Type} = {rightProp.Type})");
                 }
@@ -35,6 +36,16 @@ namespace Platz.ObjectBuilder.Blazor.Validation.Rules
                 return result;
             }
             return null;
+        }
+
+        private string GetPropertyDataType(StoreProperty p)
+        {
+            if (p.Type == "reference" && p.Fk)
+            {
+                return p.ForeignKeys[0].Type;
+            }
+
+            return p.Type;
         }
     }
 }

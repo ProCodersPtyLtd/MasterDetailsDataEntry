@@ -1,0 +1,362 @@
+﻿{
+  "Name": "GetCustAddrSubQueryList",
+  "DataService": "MyDataService",
+  "Namespace": "Default",
+  "ReturnTypeName": "CustAddrSubQuery",
+  "SchemaName": null,
+  "SchemaFile": "C:\\Repos\\MasterDetailsDataEntry\\SqlForms.Demo\\StoreData\\Schema.json",
+  "SchemaVersion": null,
+  "Tags": null,
+  "Query": {
+    "QueryAlias": null,
+    "Comment": null,
+    "Parameters": {},
+    "Fields": {
+      "CustomerId": {
+        "FieldAlias": "CustomerId",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "Field": {
+          "ObjectAlias": "q",
+          "FieldName": "CustomerId"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "AddressId": {
+        "FieldAlias": "AddressId",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "Field": {
+          "ObjectAlias": "q",
+          "FieldName": "AddressId"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "type2": {
+        "FieldAlias": "type2",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "Field": {
+          "ObjectAlias": "q",
+          "FieldName": "type2"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "ModifiedDate": {
+        "FieldAlias": "ModifiedDate",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "Field": {
+          "ObjectAlias": "q",
+          "FieldName": "ModifiedDate"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "CompanyName": {
+        "FieldAlias": "CompanyName",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "Field": {
+          "ObjectAlias": "c",
+          "FieldName": "CompanyName"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "EmailAddress": {
+        "FieldAlias": "EmailAddress",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "Field": {
+          "ObjectAlias": "c",
+          "FieldName": "EmailAddress"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "FirstName": {
+        "FieldAlias": "FirstName",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "Field": {
+          "ObjectAlias": "c",
+          "FieldName": "FirstName"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "LastName": {
+        "FieldAlias": "LastName",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "Field": {
+          "ObjectAlias": "c",
+          "FieldName": "LastName"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "MiddleName": {
+        "FieldAlias": "MiddleName",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "Field": {
+          "ObjectAlias": "c",
+          "FieldName": "MiddleName"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "NameStyle": {
+        "FieldAlias": "NameStyle",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "Field": {
+          "ObjectAlias": "c",
+          "FieldName": "NameStyle"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "PasswordHash": {
+        "FieldAlias": "PasswordHash",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "Field": {
+          "ObjectAlias": "c",
+          "FieldName": "PasswordHash"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "PasswordSalt": {
+        "FieldAlias": "PasswordSalt",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "Field": {
+          "ObjectAlias": "c",
+          "FieldName": "PasswordSalt"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "Phone": {
+        "FieldAlias": "Phone",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "Field": {
+          "ObjectAlias": "c",
+          "FieldName": "Phone"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "Rowguid": {
+        "FieldAlias": "Rowguid",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "Field": {
+          "ObjectAlias": "c",
+          "FieldName": "Rowguid"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "SalesPerson": {
+        "FieldAlias": "SalesPerson",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "Field": {
+          "ObjectAlias": "c",
+          "FieldName": "SalesPerson"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "Suffix": {
+        "FieldAlias": "Suffix",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "Field": {
+          "ObjectAlias": "c",
+          "FieldName": "Suffix"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "Title": {
+        "FieldAlias": "Title",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "Field": {
+          "ObjectAlias": "c",
+          "FieldName": "Title"
+        },
+        "Operation": null,
+        "RawExpression": null
+      }
+    },
+    "Tables": {
+      "q": {
+        "ObjectAlias": "q",
+        "TableName": "Query1",
+        "IsSubQuery": true
+      },
+      "c": {
+        "ObjectAlias": "c",
+        "TableName": "Customer",
+        "IsSubQuery": false
+      }
+    },
+    "SubQueries": {
+      "Query1": {
+        "QueryAlias": null,
+        "Comment": null,
+        "Parameters": {},
+        "Fields": {
+          "CustomerId": {
+            "FieldAlias": "CustomerId",
+            "IsOutput": true,
+            "GroupByFunction": null,
+            "Field": {
+              "ObjectAlias": "q",
+              "FieldName": "CustomerId"
+            },
+            "Operation": null,
+            "RawExpression": null
+          },
+          "AddressId": {
+            "FieldAlias": "AddressId",
+            "IsOutput": true,
+            "GroupByFunction": null,
+            "Field": {
+              "ObjectAlias": "q",
+              "FieldName": "AddressId"
+            },
+            "Operation": null,
+            "RawExpression": null
+          },
+          "type2": {
+            "FieldAlias": "type2",
+            "IsOutput": true,
+            "GroupByFunction": null,
+            "Field": {
+              "ObjectAlias": "q",
+              "FieldName": "type"
+            },
+            "Operation": null,
+            "RawExpression": null
+          },
+          "ModifiedDate": {
+            "FieldAlias": "ModifiedDate",
+            "IsOutput": true,
+            "GroupByFunction": null,
+            "Field": {
+              "ObjectAlias": "q",
+              "FieldName": "ModifiedDate"
+            },
+            "Operation": null,
+            "RawExpression": null
+          }
+        },
+        "Tables": {
+          "q": {
+            "ObjectAlias": "q",
+            "TableName": "Query2",
+            "IsSubQuery": true
+          }
+        },
+        "SubQueries": null,
+        "Joins": [],
+        "GroupByFields": null,
+        "Having": null,
+        "Where": {
+          "Expression": null
+        }
+      },
+      "Query2": {
+        "QueryAlias": null,
+        "Comment": null,
+        "Parameters": {},
+        "Fields": {
+          "CustomerId": {
+            "FieldAlias": "CustomerId",
+            "IsOutput": true,
+            "GroupByFunction": null,
+            "Field": {
+              "ObjectAlias": "c",
+              "FieldName": "CustomerId"
+            },
+            "Operation": null,
+            "RawExpression": null
+          },
+          "AddressId": {
+            "FieldAlias": "AddressId",
+            "IsOutput": true,
+            "GroupByFunction": null,
+            "Field": {
+              "ObjectAlias": "c",
+              "FieldName": "AddressId"
+            },
+            "Operation": null,
+            "RawExpression": null
+          },
+          "type": {
+            "FieldAlias": "type",
+            "IsOutput": true,
+            "GroupByFunction": null,
+            "Field": {
+              "ObjectAlias": "c",
+              "FieldName": "AddressType"
+            },
+            "Operation": null,
+            "RawExpression": null
+          },
+          "ModifiedDate": {
+            "FieldAlias": "ModifiedDate",
+            "IsOutput": true,
+            "GroupByFunction": null,
+            "Field": {
+              "ObjectAlias": "c",
+              "FieldName": "ModifiedDate"
+            },
+            "Operation": null,
+            "RawExpression": null
+          }
+        },
+        "Tables": {
+          "c": {
+            "ObjectAlias": "c",
+            "TableName": "CustomerAddress",
+            "IsSubQuery": false
+          }
+        },
+        "SubQueries": null,
+        "Joins": [],
+        "GroupByFields": null,
+        "Having": null,
+        "Where": {
+          "Expression": null
+        }
+      }
+    },
+    "Joins": [
+      {
+        "LeftObjectAlias": "c",
+        "LeftField": "CustomerId",
+        "RightObjectAlias": "q",
+        "RightField": "CustomerId",
+        "JoinType": "Inner"
+      }
+    ],
+    "GroupByFields": null,
+    "Having": null,
+    "Where": {
+      "Expression": null
+    }
+  }
+}
