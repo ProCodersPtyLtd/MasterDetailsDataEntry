@@ -16,7 +16,6 @@ namespace Default
     public partial interface IMyDataService
     {
         List<CustAddrCount> GetCustAddrCountList(QueryOptions options, params object[] parameters);
-        List<CustAddrSubQuery> GetCustAddrSubQueryList(QueryOptions options, params object[] parameters);
         List<Cust> GetCustList(QueryOptions options, params object[] parameters);
         List<CustomerAddress> GetCustomerAddressList(QueryOptions options, params object[] parameters);
         List<ProdModel> GetProdModelList(QueryOptions options, params object[] parameters);
@@ -74,67 +73,6 @@ namespace Default
                         Suffix = c.Suffix, 
                         Title = c.Title, 
                         AddrCount = q.AddrCount, 
-                    };
-
-            return query;
-        }
-
-        public List<CustAddrSubQuery> GetCustAddrSubQueryList(QueryOptions options, params object[] parameters)
-        {
-            using (var db = GetDbContext())
-            {
-                var query = GetCustAddrSubQueryListQuery(db, options, parameters);
-                query = Prepare(query, options, parameters);
-                var result = GetResult(query, options, parameters);
-                return result;
-            }
-        }
-
-        public IQueryable<CustAddrSubQuery> GetCustAddrSubQueryListQuery(AdventureWorksContext db, QueryOptions options, params object[] parameters)
-        {
-            
-                var Query2 =
-                    from c in db.CustomerAddress
-                    select new 
-                    { 
-                        CustomerId = c.CustomerId, 
-                        AddressId = c.AddressId, 
-                        type = c.AddressType, 
-                        ModifiedDate = c.ModifiedDate, 
-                    };
-            
-                var Query1 =
-                    from q in Query2
-                    select new 
-                    { 
-                        CustomerId = q.CustomerId, 
-                        AddressId = q.AddressId, 
-                        type2 = q.type, 
-                        ModifiedDate = q.ModifiedDate, 
-                    };
-            
-                var query =
-                    from c in db.Customer
-                    join q in Query1 on c.CustomerId equals q.CustomerId
-                    select new CustAddrSubQuery
-                    { 
-                        CustomerId = q.CustomerId, 
-                        AddressId = q.AddressId, 
-                        type2 = q.type2, 
-                        ModifiedDate = q.ModifiedDate, 
-                        CompanyName = c.CompanyName, 
-                        EmailAddress = c.EmailAddress, 
-                        FirstName = c.FirstName, 
-                        LastName = c.LastName, 
-                        MiddleName = c.MiddleName, 
-                        NameStyle = c.NameStyle, 
-                        PasswordHash = c.PasswordHash, 
-                        PasswordSalt = c.PasswordSalt, 
-                        Phone = c.Phone, 
-                        Rowguid = c.Rowguid, 
-                        SalesPerson = c.SalesPerson, 
-                        Suffix = c.Suffix, 
-                        Title = c.Title, 
                     };
 
             return query;
@@ -303,27 +241,6 @@ namespace Default
         public String Suffix { get; set; }
         public String Title { get; set; }
         public Int32 AddrCount { get; set; }
-    }
-
-    public partial class CustAddrSubQuery
-    {
-        public Int32 CustomerId { get; set; }
-        public Int32 AddressId { get; set; }
-        public String type2 { get; set; }
-        public DateTime ModifiedDate { get; set; }
-        public String CompanyName { get; set; }
-        public String EmailAddress { get; set; }
-        public String FirstName { get; set; }
-        public String LastName { get; set; }
-        public String MiddleName { get; set; }
-        public Boolean NameStyle { get; set; }
-        public String PasswordHash { get; set; }
-        public String PasswordSalt { get; set; }
-        public String Phone { get; set; }
-        public Guid Rowguid { get; set; }
-        public String SalesPerson { get; set; }
-        public String Suffix { get; set; }
-        public String Title { get; set; }
     }
 
     public partial class Cust

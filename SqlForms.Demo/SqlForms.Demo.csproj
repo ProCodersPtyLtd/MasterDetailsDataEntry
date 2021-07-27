@@ -19,25 +19,16 @@
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="DataServices\CrmDataContext.tt">
-      <LastGenOutput>CrmBoDataContext.cs</LastGenOutput>
+      <LastGenOutput>CrmDataContext.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
     <None Update="DataServices\PlatzSchemaStoreDataService.tt">
       <LastGenOutput>PlatzSchemaStoreDataService.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
-    <None Update="DataServices\PlatzDataServiceTemp.tt">
-      <LastGenOutput>PlatzDataServiceTemp.txt</LastGenOutput>
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </None>
     <None Update="DataServices\PlatzDataService.tt">
       <LastGenOutput>PlatzDataService.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
-    </None>
-    <None Update="DataServices\PlatzDataServiceTemp.txt">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>PlatzDataServiceTemp.tt</DependentUpon>
     </None>
     <None Update="DataServices\PlatzSchemaDataService.txt">
       <DesignTime>True</DesignTime>
@@ -59,15 +50,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="DataServices\CrmDataContext - Copy.cs">
-      <DependentUpon>CrmDataContext.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
     <Compile Update="DataServices\CrmBoContext.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>CrmBoContext.tt</DependentUpon>
+    </Compile>
+    <Compile Update="DataServices\CrmDataContext.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CrmDataContext.tt</DependentUpon>
     </Compile>
     <Compile Update="DataServices\PlatzDataService.cs">
       <DesignTime>True</DesignTime>
