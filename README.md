@@ -61,13 +61,15 @@ https://docs.microsoft.com/en-us/sql/samples/adventureworks-install-configure?vi
 - SchemaDesigner prototype, that allows to design database entities and save the schema to json
 - T4 template to geneate SchemaDesigner entities and data access layer
 - Upgrade ObjectBuilder to support SchemaDesigner entities
-### Release 0.4.0 - Jul-Aug'21
+### Release 0.4.0 - done
 - ObjectBuilder Group By queries
 - ObjectBuilder Subqueries
 - Grid Sorting, Pagination and Filtering 
-- ObjectBuilder usability (in progress)
+- ObjectBuilder usability
 - Seed projects for easy start
-### Release 0.5.0 - Sep'21
+### Release 0.5.0 - Sep'21 - In progress
+- Date, Decimal and Dropdown filters
+- T4 templates for SchemaDesigner entities to support Queries with Group By and Subqueries
 - Usability and error data recovery for builders and designers
 - Bug fixes
 ### Release 1.0.0 - Oct'21
@@ -75,10 +77,14 @@ https://docs.microsoft.com/en-us/sql/samples/adventureworks-install-configure?vi
 - Tutorials
 - Bug fixes
 
+### Release 2.0.0 - 2022
+- Forms designer
+- No-code full support
+- No-code to Low-code converter 
+
 ## Backlog
 - Improve page navigation (links {0}{1}) dev experience 
 - ObjectBuiler Select functions (not Group By)
-- T4 tempalates for SchemaDesigner entities to support Group By and Subqueries
 - ObjectBuilder T4 template to generate business object CRUD operations' C# code
 - ObjectBuilder definition of business object - entity mappings and CRUD operations
 - UI SQL forms to entry/edit business objects
