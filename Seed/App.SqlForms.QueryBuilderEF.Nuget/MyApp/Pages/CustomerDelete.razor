@@ -1,0 +1,10 @@
+﻿@page "/CustomerDelete/{CustomerId:int}"
+
+<h1>Customer Edit</h1>
+
+<FormDynamicEditComponent TForm="MyCustomerEditForm" Id="@CustomerId" ForDelete="true"/>
+
+@code {
+    [Parameter]
+    public int CustomerId { get; set; }
+}
