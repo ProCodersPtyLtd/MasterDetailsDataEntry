@@ -13,6 +13,7 @@
       "Name": "Address",
       "Type": null,
       "Comment": null,
+      "Order": 0,
       "Properties": {
         "Id": {
           "Name": "Id",
@@ -104,6 +105,7 @@
       "Name": "Person",
       "Type": null,
       "Comment": null,
+      "Order": 0,
       "Properties": {
         "Id": {
           "Name": "Id",
