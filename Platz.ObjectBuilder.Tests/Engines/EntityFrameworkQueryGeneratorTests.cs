@@ -16,7 +16,7 @@ namespace Platz.ObjectBuilder.Tests.Engines
         public void GenerateSimpleJoinQueryTest()
         {
             var gen = new EntityFrameworkQueryGenerator();
-            var s = "schema.json";
+            var s = "Crm2.schema.json";
             var q = "GetPersonAddressList.json";
             var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             path = Path.GetFullPath(Path.Combine(path, @"..\..\..\.."));

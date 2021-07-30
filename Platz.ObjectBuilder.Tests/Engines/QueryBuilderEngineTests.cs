@@ -24,7 +24,7 @@ namespace Platz.ObjectBuilder.Tests.Engines
             var parameters = new StorageParameters { FileName = "Getq1List.json", Path = @"C:\Repos\MasterDetailsDataEntry\SqlForms.Demo\StoreNew\" };
             var storeQuery = storage.LoadQuery(parameters);
             var reader = new JsonStoreSchemaReader(storage);
-            var schema = reader.ReadSchema(new JsonStoreSchemaReaderParameters { SchemaFile = @"C:\Repos\MasterDetailsDataEntry\SqlForms.Demo\StoreNew\Schema.json" });
+            var schema = reader.ReadSchema(new JsonStoreSchemaReaderParameters { SchemaFile = @"C:\Repos\MasterDetailsDataEntry\SqlForms.Demo\StoreNew\Crm2.Schema.json" });
             var result = engine.LoadQueryFromStoreQuery(schema, storeQuery);
         }
     }
