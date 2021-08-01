@@ -94,11 +94,17 @@
     <Compile Include="..\Platz.ObjectBuilder\Schema\JsonStoreSchemaParser.cs">
       <Link>JsonStoreSchemaParser.cs</Link>
     </Compile>
+    <Compile Include="..\Platz.SqlForms.Shared\Data\Model\StoreForm.cs">
+      <Link>StoreForm.cs</Link>
+    </Compile>
     <Compile Include="..\Platz.SqlForms.Shared\Data\Model\StoreQuery.cs">
       <Link>StoreQuery.cs</Link>
     </Compile>
     <Compile Include="..\Platz.SqlForms.Shared\Data\Model\StoreSchema.cs">
       <Link>StoreSchema.cs</Link>
+    </Compile>
+    <Compile Include="..\Platz.SqlForms.Shared\Model\FieldFilterType.cs">
+      <Link>FieldFilterType.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -1,0 +1,26 @@
+﻿@using Platz.ObjectBuilder.Blazor
+@using Platz.ObjectBuilder.Blazor.Controllers
+@using Platz.ObjectBuilder.Blazor.Forms
+
+@namespace Platz.ObjectBuilder
+
+@inject IFormBuilderController _formsPageController
+
+<CascadingValue Value="@_formsPageController">
+
+    <h3>Forms Builder</h3>
+
+    <div style="width: 520px">
+        <FormsPageContentComponent Height="780" ModelChanged="ModelChanged" />
+    </div>
+
+</CascadingValue>
+
+@code 
+{
+
+    private async Task ModelChanged(ChangeEventArgs args)
+    {
+        StateHasChanged();
+    }
+}

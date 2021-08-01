@@ -1,0 +1,69 @@
+﻿@using Platz.ObjectBuilder.Blazor
+@using Platz.ObjectBuilder.Blazor.Controllers
+@using Platz.ObjectBuilder.Blazor.Model
+
+@namespace Platz.ObjectBuilder.Blazor.Forms
+
+@if (Field != null)
+{
+<div @onclick="CaptionClick">
+    <div style="background-color: @(Field.Active ? "dodgerblue": "gray"); width: 500px; height: 32px;">
+        &nbsp;
+        @($"{Field.Order}: {Field.Name} {GetControlName()}({Field.Binding})")
+
+        <div class="float-right">
+            <button class="btn btn-danger btn-sm" title="Cancel" @onclick="@(async (args) => await DeleteClick(args, Field.Binding))"
+                    style="display: block; margin-left: auto; margin-right: 0;">
+                <span class="oi oi-x"></span>
+            </button>
+        </div>
+    </div>
+
+    <div style="width: 500px; min-height: 50px; background-color: lightgray">
+        
+        @if (Field.ComponentType == FieldComponentType.TextEdit)
+        { 
+            <FormsPageTextEditComponent Field="@Field" ModelChanged="@ModelChanged" />
+        }
+
+    </div>
+</div>
+}
+
+
+@code {
+    [CascadingParameter]
+    public IFormBuilderController FormsPageController { get; set; }
+
+    [Parameter]
+    public FieldComponent Field { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    private async Task DeleteClick(MouseEventArgs e, string binding)
+    { }
+
+    private async Task CaptionClick(MouseEventArgs e)
+    {
+        FormsPageController.SetActive(Field);
+        await ModelChanged.InvokeAsync();
+    }
+
+    private string GetControlName()
+    {
+        return Field.ComponentType.ToString();
+
+        switch (Field.ComponentType)
+        {
+            case FieldComponentType.Dropdown:
+                return "Dropdown";
+            case FieldComponentType.DateEdit:
+                return "Date Edit";
+
+            case FieldComponentType.TextEdit:
+            default:
+                return "Text Edit";
+        }
+    }
+}

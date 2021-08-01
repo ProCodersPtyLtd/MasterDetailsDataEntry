@@ -9,6 +9,12 @@ namespace Platz.ObjectBuilder
 {
     public class JsonStoreSchemaParser : IStoreSchemaSerializer
     {
+        public StoreForm ReadForm(string json)
+        {
+            var result = new StoreForm();
+            return result;
+        }
+
         public StoreSchema ReadSchema(string json)
         {
             var data = JsonSerializer.Deserialize<StoreSchema>(json);
