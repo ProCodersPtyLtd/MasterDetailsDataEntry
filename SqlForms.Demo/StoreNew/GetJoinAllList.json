@@ -3,9 +3,9 @@
   "DataService": "Crm2DataService",
   "Namespace": "Default.StoreNew",
   "ReturnTypeName": "JoinAll",
-  "SchemaName": "Crm2",
-  "SchemaFile": "C:\\Repos\\MasterDetailsDataEntry\\SqlForms.Demo\\StoreNew\\Crm2.schema.json",
-  "SchemaVersion": "1.0",
+  "SchemaName": null,
+  "SchemaFile": "C:\\Repos\\MasterDetailsDataEntry\\SqlForms.Demo\\StoreNew\\Crm2.Schema.json",
+  "SchemaVersion": null,
   "Tags": null,
   "Query": {
     "QueryAlias": null,
@@ -16,6 +16,7 @@
         "FieldAlias": "Id",
         "IsOutput": true,
         "GroupByFunction": null,
+        "GroupByFilter": null,
         "Field": {
           "ObjectAlias": "a",
           "FieldName": "Id"
@@ -27,6 +28,7 @@
         "FieldAlias": "Line1",
         "IsOutput": true,
         "GroupByFunction": null,
+        "GroupByFilter": null,
         "Field": {
           "ObjectAlias": "a",
           "FieldName": "Line1"
@@ -38,6 +40,7 @@
         "FieldAlias": "Suburb",
         "IsOutput": true,
         "GroupByFunction": null,
+        "GroupByFilter": null,
         "Field": {
           "ObjectAlias": "a",
           "FieldName": "Suburb"
@@ -49,6 +52,7 @@
         "FieldAlias": "State",
         "IsOutput": true,
         "GroupByFunction": null,
+        "GroupByFilter": null,
         "Field": {
           "ObjectAlias": "a",
           "FieldName": "State"
@@ -60,6 +64,7 @@
         "FieldAlias": "PostCode",
         "IsOutput": true,
         "GroupByFunction": null,
+        "GroupByFilter": null,
         "Field": {
           "ObjectAlias": "a",
           "FieldName": "PostCode"
@@ -71,6 +76,7 @@
         "FieldAlias": "Deleted",
         "IsOutput": true,
         "GroupByFunction": null,
+        "GroupByFilter": null,
         "Field": {
           "ObjectAlias": "a",
           "FieldName": "Deleted"
@@ -82,6 +88,7 @@
         "FieldAlias": "Country",
         "IsOutput": true,
         "GroupByFunction": null,
+        "GroupByFilter": null,
         "Field": {
           "ObjectAlias": "a",
           "FieldName": "Country"
@@ -93,6 +100,7 @@
         "FieldAlias": "Name",
         "IsOutput": true,
         "GroupByFunction": null,
+        "GroupByFilter": null,
         "Field": {
           "ObjectAlias": "p",
           "FieldName": "Name"
@@ -104,6 +112,7 @@
         "FieldAlias": "Surname",
         "IsOutput": true,
         "GroupByFunction": null,
+        "GroupByFilter": null,
         "Field": {
           "ObjectAlias": "p",
           "FieldName": "Surname"
@@ -115,6 +124,7 @@
         "FieldAlias": "Phone",
         "IsOutput": true,
         "GroupByFunction": null,
+        "GroupByFilter": null,
         "Field": {
           "ObjectAlias": "p",
           "FieldName": "Phone"
@@ -126,9 +136,22 @@
         "FieldAlias": "Dob",
         "IsOutput": true,
         "GroupByFunction": null,
+        "GroupByFilter": null,
         "Field": {
           "ObjectAlias": "p",
           "FieldName": "Dob"
+        },
+        "Operation": null,
+        "RawExpression": null
+      },
+      "PrimaryAddressId": {
+        "FieldAlias": "PrimaryAddressId",
+        "IsOutput": true,
+        "GroupByFunction": null,
+        "GroupByFilter": null,
+        "Field": {
+          "ObjectAlias": "p",
+          "FieldName": "PrimaryAddressId"
         },
         "Operation": null,
         "RawExpression": null
@@ -137,6 +160,7 @@
         "FieldAlias": "PersonId",
         "IsOutput": true,
         "GroupByFunction": null,
+        "GroupByFilter": null,
         "Field": {
           "ObjectAlias": "pe",
           "FieldName": "PersonId"
@@ -148,6 +172,7 @@
         "FieldAlias": "AddressId",
         "IsOutput": true,
         "GroupByFunction": null,
+        "GroupByFilter": null,
         "Field": {
           "ObjectAlias": "pe",
           "FieldName": "AddressId"
@@ -159,18 +184,21 @@
     "Tables": {
       "a": {
         "ObjectAlias": "a",
-        "TableName": "Address"
+        "TableName": "Address",
+        "IsSubQuery": false
       },
       "p": {
         "ObjectAlias": "p",
-        "TableName": "Person"
+        "TableName": "Person",
+        "IsSubQuery": false
       },
       "pe": {
         "ObjectAlias": "pe",
-        "TableName": "PersonAddress"
+        "TableName": "PersonAddress",
+        "IsSubQuery": false
       }
     },
-    "SubQueries": null,
+    "SubQueries": {},
     "Joins": [
       {
         "LeftObjectAlias": "p",

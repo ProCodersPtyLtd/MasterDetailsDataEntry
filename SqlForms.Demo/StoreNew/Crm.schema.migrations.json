@@ -2,12 +2,13 @@
   "SchemaName": "Crm",
   "Migrations": [
     {
+      "FromVersion": null,
       "Version": "1.0",
       "VersionKey": "ff40d9d5-3b68-4eb7-9fb3-b4d1e219ecc6",
       "Commands": [
         {
           "Operation": 1,
-          "OperationCode": null,
+          "OperationCode": "CreateSchema",
           "SchemaName": "Crm",
           "TableName": null,
           "ColumnName": null,
@@ -26,6 +27,7 @@
             "Name": "Address",
             "Type": null,
             "Comment": null,
+            "Order": 0,
             "Properties": {
               "Id": {
                 "Name": "Id",
@@ -126,6 +128,7 @@
             "Name": "Person",
             "Type": null,
             "Comment": null,
+            "Order": 0,
             "Properties": {
               "Id": {
                 "Name": "Id",
@@ -201,7 +204,9 @@
           },
           "Column": null
         }
-      ]
+      ],
+      "Created": "2021-07-30T10:07:13.4358798Z",
+      "Status": 1
     }
   ]
 }

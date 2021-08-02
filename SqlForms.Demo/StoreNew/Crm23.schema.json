@@ -1,12 +1,12 @@
 {
-  "Name": null,
+  "Name": "Crm23",
   "DbContextName": "CrmDataContext",
   "Namespace": "Default",
   "Title": null,
   "Type": null,
   "Comment": null,
   "Tags": [],
-  "Version": null,
+  "Version": "1.0",
   "VersionKey": "ca248b3a-8b13-4a6f-a5c8-2e6dcae16059",
   "Definitions": {
     "Address": {

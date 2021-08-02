@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Platz.ObjectBuilder.Blazor\Platz.ObjectBuilder.Blazor.csproj" />
+    <ProjectReference Include="..\..\..\Platz.SqlForms\Platz.SqlForms.csproj" />
+    <ProjectReference Include="..\SqlForms.Demo.Database\SqlForms.Demo.Database.csproj" />
+  </ItemGroup>
+
+</Project>

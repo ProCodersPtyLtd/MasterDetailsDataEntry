@@ -19,14 +19,5 @@ namespace Platz.SqlForms
         public FieldBuisnessObjectMapping BuisnessObjectMapping { get; set; } = new FieldBuisnessObjectMapping();
     }
 
-    public enum FieldFilterType
-    {
-        None,
-        Text,
-        TextStarts,
-        TextContains,
-        TextEnds,
-        NumExpression,
-        Select
-    }
+    
 }

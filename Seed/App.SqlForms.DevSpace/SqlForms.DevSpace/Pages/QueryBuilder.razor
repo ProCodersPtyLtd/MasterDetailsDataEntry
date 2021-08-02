@@ -1,0 +1,6 @@
+﻿@page "/qb"
+
+@using Platz.ObjectBuilder
+
+<QueryComponent DbContextType="typeof(SqlForms.Demo.Database.AdventureWorks.AdventureWorksContext)" StoreDataPath="..\MyApp\SqlForms\QueryStore"
+                DataService="MyDataService" Namespace="MyApp.SqlForms" />

@@ -4,7 +4,7 @@
   "Namespace": "Default.StoreNew",
   "ReturnTypeName": "q1",
   "SchemaName": null,
-  "SchemaFile": "C:\\Repos\\MasterDetailsDataEntry\\SqlForms.Demo\\StoreNew\\Schema.json",
+  "SchemaFile": "C:\\Repos\\MasterDetailsDataEntry\\SqlForms.Demo\\StoreNew\\Crm2.Schema.json",
   "SchemaVersion": null,
   "Tags": null,
   "Query": {
@@ -16,6 +16,7 @@
         "FieldAlias": "Id",
         "IsOutput": true,
         "GroupByFunction": null,
+        "GroupByFilter": null,
         "Field": {
           "ObjectAlias": "a",
           "FieldName": "Id"
@@ -27,6 +28,7 @@
         "FieldAlias": "Line1",
         "IsOutput": true,
         "GroupByFunction": null,
+        "GroupByFilter": null,
         "Field": {
           "ObjectAlias": "a",
           "FieldName": "Line1"
@@ -38,6 +40,7 @@
         "FieldAlias": "Suburb",
         "IsOutput": true,
         "GroupByFunction": null,
+        "GroupByFilter": null,
         "Field": {
           "ObjectAlias": "a",
           "FieldName": "Suburb"
@@ -49,6 +52,7 @@
         "FieldAlias": "State",
         "IsOutput": true,
         "GroupByFunction": null,
+        "GroupByFilter": null,
         "Field": {
           "ObjectAlias": "a",
           "FieldName": "State"
@@ -60,6 +64,7 @@
         "FieldAlias": "PostCode",
         "IsOutput": true,
         "GroupByFunction": null,
+        "GroupByFilter": null,
         "Field": {
           "ObjectAlias": "a",
           "FieldName": "PostCode"
@@ -71,6 +76,7 @@
         "FieldAlias": "Deleted",
         "IsOutput": true,
         "GroupByFunction": null,
+        "GroupByFilter": null,
         "Field": {
           "ObjectAlias": "a",
           "FieldName": "Deleted"
@@ -82,31 +88,10 @@
         "FieldAlias": "Country",
         "IsOutput": true,
         "GroupByFunction": null,
+        "GroupByFilter": null,
         "Field": {
           "ObjectAlias": "a",
           "FieldName": "Country"
-        },
-        "Operation": null,
-        "RawExpression": null
-      },
-      "PersonId": {
-        "FieldAlias": "PersonId",
-        "IsOutput": true,
-        "GroupByFunction": null,
-        "Field": {
-          "ObjectAlias": "q",
-          "FieldName": "PersonId"
-        },
-        "Operation": null,
-        "RawExpression": null
-      },
-      "AddressId": {
-        "FieldAlias": "AddressId",
-        "IsOutput": true,
-        "GroupByFunction": null,
-        "Field": {
-          "ObjectAlias": "q",
-          "FieldName": "AddressId"
         },
         "Operation": null,
         "RawExpression": null
@@ -117,89 +102,10 @@
         "ObjectAlias": "a",
         "TableName": "Address",
         "IsSubQuery": false
-      },
-      "q": {
-        "ObjectAlias": "q",
-        "TableName": "Query1",
-        "IsSubQuery": true
       }
     },
-    "SubQueries": {
-      "Query1": {
-        "QueryAlias": null,
-        "Comment": null,
-        "Parameters": {},
-        "Fields": {
-          "Id": {
-            "FieldAlias": "Id",
-            "IsOutput": true,
-            "GroupByFunction": null,
-            "Field": {
-              "ObjectAlias": "p",
-              "FieldName": "Id"
-            },
-            "Operation": null,
-            "RawExpression": null
-          },
-          "PersonId": {
-            "FieldAlias": "PersonId",
-            "IsOutput": true,
-            "GroupByFunction": null,
-            "Field": {
-              "ObjectAlias": "p",
-              "FieldName": "PersonId"
-            },
-            "Operation": null,
-            "RawExpression": null
-          },
-          "AddressId": {
-            "FieldAlias": "AddressId",
-            "IsOutput": true,
-            "GroupByFunction": null,
-            "Field": {
-              "ObjectAlias": "p",
-              "FieldName": "AddressId"
-            },
-            "Operation": null,
-            "RawExpression": null
-          },
-          "Deleted": {
-            "FieldAlias": "Deleted",
-            "IsOutput": true,
-            "GroupByFunction": null,
-            "Field": {
-              "ObjectAlias": "p",
-              "FieldName": "Deleted"
-            },
-            "Operation": null,
-            "RawExpression": null
-          }
-        },
-        "Tables": {
-          "p": {
-            "ObjectAlias": "p",
-            "TableName": "PersonAddress",
-            "IsSubQuery": false
-          }
-        },
-        "SubQueries": null,
-        "Joins": [],
-        "GroupByFields": null,
-        "Having": null,
-        "Where": {
-          "Expression": null
-        }
-      }
-    },
-    "Joins": [
-      {
-        "LeftObjectAlias": "a",
-        "LeftField": "Id",
-        "RightObjectAlias": "q",
-        "RightField": "AddressId",
-        "JoinType": "Inner"
-      }
-    ],
+    "SubQueries": {},
+    "Joins": [],
     "GroupByFields": null,
     "Having": null,
     "Where": {

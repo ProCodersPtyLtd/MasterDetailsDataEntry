@@ -17,6 +17,7 @@ namespace Default.StoreNew
     {
         List<JoinAll> GetJoinAllList(params object[] parameters);
         List<PersonAddress> GetPersonAddressList(params object[] parameters);
+        List<q1> Getq1List(params object[] parameters);
     }
 
     #endregion
@@ -40,6 +41,7 @@ SELECT
     , JSON_VALUE(p.data, '$.Surname') AS Surname
     , JSON_VALUE(p.data, '$.Phone') AS Phone
     , TRY_CAST(JSON_VALUE(p.data, '$.Dob') AS DATETIME) AS Dob
+    , p.PrimaryAddressId AS PrimaryAddressId
     , pe.PersonId AS PersonId
     , pe.AddressId AS AddressId
 FROM [Crm2].[Person] p
@@ -80,6 +82,24 @@ WHERE ((a.Deleted = 0) AND (p.Deleted = 0)) AND (pe.Id = @p1)
             return result;
         }
 
+        public List<q1> Getq1List(params object[] parameters)
+        {
+            var sql = @$"
+SELECT
+      a.Id AS Id
+    , JSON_VALUE(a.data, '$.Line1') AS Line1
+    , JSON_VALUE(a.data, '$.Suburb') AS Suburb
+    , JSON_VALUE(a.data, '$.State') AS State
+    , JSON_VALUE(a.data, '$.PostCode') AS PostCode
+    , TRY_CAST(JSON_VALUE(a.data, '$.Deleted') AS BIT) AS Deleted
+    , JSON_VALUE(a.data, '$.Country') AS Country
+FROM [Crm2].[Address] a
+";
+            using var db = GetDbContext();
+            var result = db.ExecuteQuery<q1>(sql, parameters);
+            return result;
+        }
+
     }
 
     #endregion
@@ -99,6 +119,7 @@ WHERE ((a.Deleted = 0) AND (p.Deleted = 0)) AND (pe.Id = @p1)
         public string Surname { get; set; }
         public string Phone { get; set; }
         public DateTime? Dob { get; set; }
+        public int PrimaryAddressId { get; set; }
         public int? PersonId { get; set; }
         public int? AddressId { get; set; }
     }
@@ -119,6 +140,17 @@ WHERE ((a.Deleted = 0) AND (p.Deleted = 0)) AND (pe.Id = @p1)
         public DateTime? Dob { get; set; }
         public int Id { get; set; }
         public int PrimaryAddressId { get; set; }
+    }
+
+    public partial class q1
+    {
+        public int Id { get; set; }
+        public string Line1 { get; set; }
+        public string Suburb { get; set; }
+        public string State { get; set; }
+        public string PostCode { get; set; }
+        public bool Deleted { get; set; }
+        public string Country { get; set; }
     }
 
     #endregion
