@@ -1,0 +1,35 @@
+﻿@page "/"
+
+@using Platz.ObjectBuilder
+
+<div style="vertical-align: top">
+
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#w1"><button class="close closeTab" type="button">×</button>Window1</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#w2"><button class="close closeTab" type="button">×</button>Wind2</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#w3"><button class="close closeTab" type="button">×</button>Wind3</a>
+        </li>
+    </ul>
+
+
+    @*<ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#tables">Entities</a></li>
+            <li><a data-toggle="tab" href="#joins">Relationships</a></li>
+        </ul>*@
+
+    <div class="tab-content">
+        <div id="w1" class="container tab-pane active">
+        </div>
+        <div id="w2" class="container tab-pane fade">
+        </div>
+        <div id="w3" class="container tab-pane fade">
+        </div>
+    </div>
+
+
+</div>
