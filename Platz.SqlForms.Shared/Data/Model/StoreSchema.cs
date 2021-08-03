@@ -6,7 +6,7 @@ using System.Text;
 namespace Platz.SqlForms
 {
     // trying to define classes that serialized to jsonSchema
-    public class StoreSchema
+    public class StoreSchema : IStoreObject
     {
         public string Name { get; set; }
         public string DbContextName { get; set; }

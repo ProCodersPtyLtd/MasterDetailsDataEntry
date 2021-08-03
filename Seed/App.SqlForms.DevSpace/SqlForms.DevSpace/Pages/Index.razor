@@ -5,12 +5,25 @@
 <div style="vertical-align: top">
 
     <ul class="nav nav-tabs" role="tablist">
+        @{
+            var index = 0;
+        }
+
+        @foreach (var w in _spaceController.GetEditWindows())
+        {
+            var rowIndex = index;
+
         <li class="nav-item">
-            <a class="nav-link active" data-toggle="tab" href="#w1" @onclick="@(async() => await TabClick(0))">
-                <button class="close closeTab" type="button" @onclick="@(async() => await TabCloseClick(0))">×</button>CRM
+            <a class="nav-link @(w.StoreObject.Name == _spaceController.ActiveWindow ? "active" : "")" data-toggle="tab" href="#w1" 
+                    @onclick="@(async () => await TabClick(rowIndex))">
+                <button class="close closeTab" type="button" @onclick="@(async () => await TabCloseClick(rowIndex))">×</button>
+                @w.StoreObject.Name
             </a>
         </li>
-        <li class="nav-item">
+
+            index++;
+        }
+        @*<li class="nav-item">
             <a class="nav-link" data-toggle="tab" href="#w2" @onclick="@(async() => await TabClick(1))">
                 <button class="close closeTab" type="button" @onclick="@(async() => await TabCloseClick(1))">×</button>Query1
             </a>
@@ -19,7 +32,7 @@
             <a class="nav-link" data-toggle="tab" href="#w3" @onclick="@(async() => await TabClick(2))">
                 <button class="close closeTab" type="button" @onclick="@(async() => await TabCloseClick(2))">×</button>Form1
             </a>
-        </li>
+        </li>*@
     </ul>
 
     @* we don't need bs containers - use blazor events
@@ -37,6 +50,9 @@
 </div>
 
 @code {
+    [CascadingParameter]
+    public ISpaceController _spaceController { get; set; }
+
     private int _selectedIndex;
 
     private async Task TabClick(int index)

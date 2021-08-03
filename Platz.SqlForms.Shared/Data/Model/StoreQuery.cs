@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Platz.SqlForms
 {
-    public class StoreQuery
+    public class StoreQuery : IStoreObject
     {
         public string Name { get; set; }
         public string DataService { get; set; }

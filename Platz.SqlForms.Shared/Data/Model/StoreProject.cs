@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Platz.SqlForms
 {
-    public class StoreProject
+    public class StoreProject : IStoreObject
     {
+        public string Name { get; set; }
         public Dictionary<string, StoreSchema> Schemas { get; set; }
         public Dictionary<string, StoreSchemaMigrations> SchemaMigrations { get; set; }
         public Dictionary<string, StoreQuery> Queries { get; set; }

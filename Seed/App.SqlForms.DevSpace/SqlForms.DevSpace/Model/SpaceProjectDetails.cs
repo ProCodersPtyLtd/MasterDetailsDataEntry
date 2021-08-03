@@ -11,6 +11,7 @@ namespace SqlForms.DevSpace.Model
 {
     public class SpaceProjectDetails
     {
+        public List<EditWindowDetails> EditWindows { get; set; } = new List<EditWindowDetails>();
         public List<SchemaDetails> Schemas { get; set; } = new List<SchemaDetails>();
         public List<QueryDetails> Queries { get; set; } = new List<QueryDetails>();
         public List<FormDetails> Forms { get; set; } = new List<FormDetails>();

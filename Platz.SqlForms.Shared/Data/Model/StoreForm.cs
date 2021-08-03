@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Platz.SqlForms
 {
-    public class StoreForm
+    public class StoreForm : IStoreObject
     {
         public string Name { get; set; }
 
