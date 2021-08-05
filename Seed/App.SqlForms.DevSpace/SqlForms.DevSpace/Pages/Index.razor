@@ -13,39 +13,45 @@
         {
             var rowIndex = index;
 
-        <li class="nav-item">
-            <a class="nav-link @(w.StoreObject.Name == _spaceController.ActiveWindow ? "active" : "")" data-toggle="tab" href="#w1" 
-                    @onclick="@(async () => await TabClick(rowIndex))">
-                <button class="close closeTab" type="button" @onclick="@(async () => await TabCloseClick(rowIndex))">×</button>
-                @w.StoreObject.Name
-            </a>
-        </li>
+            <li class="nav-item">
+                <a class="nav-link @(w.StoreObject.Name == _spaceController.ActiveWindow ? "active" : "")" data-toggle="tab" href="#w@(GetTabTarget(w))"
+                   @onclick="@(async () => await TabClick(rowIndex))">
+                    <button class="close closeTab" type="button" @onclick="@(async () => await TabCloseClick(rowIndex))">×</button>
+                    @w.StoreObject.Name
+                </a>
+            </li>
 
             index++;
         }
         @*<li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#w2" @onclick="@(async() => await TabClick(1))">
-                <button class="close closeTab" type="button" @onclick="@(async() => await TabCloseClick(1))">×</button>Query1
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#w3" @onclick="@(async() => await TabClick(2))">
-                <button class="close closeTab" type="button" @onclick="@(async() => await TabCloseClick(2))">×</button>Form1
-            </a>
-        </li>*@
+                <a class="nav-link" data-toggle="tab" href="#w2" @onclick="@(async() => await TabClick(1))">
+                    <button class="close closeTab" type="button" @onclick="@(async() => await TabCloseClick(1))">×</button>Query1
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#w3" @onclick="@(async() => await TabClick(2))">
+                    <button class="close closeTab" type="button" @onclick="@(async() => await TabCloseClick(2))">×</button>Form1
+                </a>
+            </li>*@
     </ul>
 
     @* we don't need bs containers - use blazor events
-    <div class="tab-content">
-        <div id="w1" class="container tab-pane active">
-        </div>
-        <div id="w2" class="container tab-pane fade">
-        </div>
-        <div id="w3" class="container tab-pane fade">
-        </div>
-    </div>*@
+        <div class="tab-content">
+            <div id="w" class="container tab-pane active">
+                Hello
+            </div>
+            <div id="wSchema" class="container tab-pane fade">
+                Schema designer
+            </div>
+            <div id="wQuery" class="container tab-pane fade">
+                Query designer
+            </div>
+            <div id="wForm" class="container tab-pane fade">
+                Form designer
+            </div>
+        </div>*@
 
-    <EditorPage />
+    <EditorPage ModelChanged="ModelChanged" />
 
 </div>
 
@@ -53,14 +59,39 @@
     [CascadingParameter]
     public ISpaceController _spaceController { get; set; }
 
-    private int _selectedIndex;
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    //private int _selectedIndex;
+
+    protected override async Task OnAfterRenderAsync(bool first)
+    {
+    }
+
+    private string GetTabTarget(EditWindowDetails item)
+    {
+        EditWindowType type = _spaceController.GetStoreObjectType(item.StoreObject);
+
+        switch (type)
+        {
+            case EditWindowType.Schema:
+                return "Schema";
+            case EditWindowType.Query:
+                return "Query";
+            case EditWindowType.Form:
+                return "Form";
+            default:
+                return "";
+        }
+    }
 
     private async Task TabClick(int index)
     {
         // if (index > _tabs.Count-1) return;
 
-        _selectedIndex = index;
-        StateHasChanged();
+        //_selectedIndex = index;
+        _spaceController.ActivateWindow(index);
+        await ModelChanged.InvokeAsync();
     }
 
     private async Task TabCloseClick(int index)

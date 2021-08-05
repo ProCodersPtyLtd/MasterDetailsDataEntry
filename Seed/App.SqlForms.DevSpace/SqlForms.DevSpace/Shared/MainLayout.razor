@@ -8,24 +8,15 @@
         @*<div class="wrapper">*@
 
         <div class="sidebar">
-            @*<NavMenu />*@
-            <ProjectMenu />
+            <ProjectMenu ModelChanged="ModelChanged"/>
         </div>
 
-
         <div style="width: 100%;">
-            @*<div class="top-row px-4">
-                    <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-                </div>*@
-
-            <div class="top-row px-4">
-                <ProjectToolBar />
-
-            </div>
+            @*<div class="top-row px-4">*@
+                <ProjectToolBar ModelChanged="ModelChanged" FullStoreDataPath="C:\repo\data\DevSpace"/>
+            @*</div>*@
 
             <div class="content px-4">
-
-
                 @Body
             </div>
         </div>
@@ -35,8 +26,13 @@
 </CascadingValue>
 
 @code { 
-    
+
     protected override async Task OnInitializedAsync()
     {
+    }
+
+    private async Task ModelChanged(ChangeEventArgs args)
+    {
+        StateHasChanged();
     }
 } 

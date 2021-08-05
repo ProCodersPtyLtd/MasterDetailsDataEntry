@@ -15,9 +15,10 @@ namespace SqlForms.DevSpace.Model
 
     public enum EditWindowType
     {
-        ProjectSettings = 1,
-        Schema = 10,
-        Query = 20,
-        Form = 30
+        Unknown = 0,
+        ProjectSettings = 10,
+        Schema = 20,
+        Query = 30,
+        Form = 40
     }
 }

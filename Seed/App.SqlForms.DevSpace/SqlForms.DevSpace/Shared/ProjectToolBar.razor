@@ -1,48 +1,172 @@
-﻿
+﻿@implements IAsyncDisposable
 
-<ul class="nav nav-pills" id="mainNav">
-    <li class="nav-item">
-        @*<a class="nav-link " href="#">Active</a>*@
-        <button class="btn btn-light" type="button">
-            <span class="oi oi-file"></span>
-            New Project
-        </button>
-    </li>
-    <li class="nav-item">
-        <button class="btn btn-light" type="button">
-            <span class="oi oi-cloud-download"></span>
-            Load Project
-        </button>
-    </li>
-    <li class="nav-item">
-        <button class="btn btn-light" type="button">
-            <span class="oi oi-data-transfer-upload"></span>
-            Save Project
-        </button>
-    </li>
-    <li class="nav-item tbend">
-        <button class="btn btn-light" type="button">
-            <span class="oi oi-hard-drive"></span>
-            Save All
-        </button>
-    </li>
+@inject IJSRuntime JS
 
-    <li class="nav-item">
-        <button class="btn btn-light" type="button">
-            <span class="oi oi-fire"></span>
-            Some Button
-        </button>
-    </li>
+<div class="top-row px-4">
+    <ul class="nav nav-pills" id="mainNav">
+        <li class="nav-item">
+            @*<a class="nav-link " href="#">Active</a>*@
+            <button class="btn btn-light" type="button">
+                <span class="oi oi-file"></span>
+                New Project
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="btn btn-light" type="button" @onclick="LoadClick" data-toggle="modal" data-target="#loadModal">
+                <span class="oi oi-cloud-download"></span>
+                Load Project
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="btn btn-light" type="button">
+                <span class="oi oi-data-transfer-upload"></span>
+                Save Project
+            </button>
+        </li>
+        <li class="nav-item tbend">
+            <button class="btn btn-light" type="button">
+                <span class="oi oi-hard-drive"></span>
+                Save All
+            </button>
+        </li>
 
-    <li class="nav-item">
-        <button class="btn btn-light" type="button">
-            <span class="oi oi-fire"></span>
-            Another Button
-        </button>
-    </li>
+        <li class="nav-item">
+            <button class="btn btn-light" type="button">
+                <span class="oi oi-fire"></span>
+                Some Button
+            </button>
+        </li>
 
-</ul>
+        <li class="nav-item">
+            <button class="btn btn-light" type="button">
+                <span class="oi oi-fire"></span>
+                Another Button
+            </button>
+        </li>
+
+    </ul>
+</div>
+
+@*<input type="file" id="fileOpen" style="opacity: 0" @onchange="OpenFileChanged">*@
+
+@*<InputFile OnChange="@LoadFiles" multiple />*@
+
+<div class="modal fade" id="loadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Load Project</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Path:</label>
+                        <input readonly="readonly" @bind="FullStoreDataPath" style="width: 100%" />
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Projects:</label>
+                        @{
+                            var data = GetLoadFiles();
+                        }
+
+                        <div class="list-group overflow-auto" id="list-tab" role="tablist" style="max-height: 400px;">
+                            @for (int i = 0; i < data.Count; i++)
+                            {
+                                var rowIndex = i;
+
+                                <a class="list-group-item list-group-item-action" @onclick="() => FileClick(rowIndex)" @ondblclick="async(a) => await FileDblClick(a, rowIndex)"
+                                   data-toggle="list" href="#list-home" role="tab" aria-controls="home">@data[i]</a>
+                            }
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" @onclick="LoadFile">Load</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @code {
+    [CascadingParameter]
+    public ISpaceController _spaceController { get; set; }
 
+    [Parameter]
+    public string FullStoreDataPath { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    private List<string> _files = new List<string>();
+    private string _selectedFileName;
+    private bool _fileNameChanged;
+
+    private Task<IJSObjectReference> _module;
+    private Task<IJSObjectReference> Module => _module ??= JS.InvokeAsync<IJSObjectReference>("import", "./_content/Platz.ObjectBuilder.Blazor/objectBuilder.js").AsTask();
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_module != null)
+        {
+            var module = await _module;
+            await module.DisposeAsync();
+        }
+    }
+
+    private async Task OpenFileChanged(ChangeEventArgs a)
+    {
+        var module = await Module;
+        var fileName = await module.InvokeAsync<object>("GetFileName", "fileOpen");
+    }
+
+    private async Task LoadClick(MouseEventArgs a)
+    {
+        //var module = await Module;
+        //await module.InvokeVoidAsync("OpenFileClick", "fileOpen");
+    }
+
+    private void LoadFiles(InputFileChangeEventArgs e)
+    {
+    }
+
+
+
+    private List<string> GetLoadFiles()
+    {
+        var result = _spaceController.Loader.GetFolders(FullStoreDataPath);
+        _files = result;
+        return result;
+    }
+
+    private async Task DialogLoadClick(MouseEventArgs args)
+    { }
+
+    private async Task FileDblClick(MouseEventArgs args, int row)
+    {
+        var module = await Module;
+
+        _selectedFileName = _files[row];
+        await module.InvokeVoidAsync("HideModal", new object[] { "#loadModal" });
+        await LoadFile(args);
+    }
+
+    private void FileClick(int row)
+    {
+        _selectedFileName = _files[row];
+    }
+
+    private async Task LoadFile(MouseEventArgs args)
+    {
+        if (!string.IsNullOrWhiteSpace(_selectedFileName))
+        {
+            _spaceController.LoadModel(_selectedFileName);
+            await ModelChanged.InvokeAsync(null);
+            _fileNameChanged = false;
+        }
+    }
 }

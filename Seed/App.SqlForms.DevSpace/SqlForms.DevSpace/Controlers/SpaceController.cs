@@ -1,4 +1,5 @@
 ﻿using Platz.SqlForms;
+using SqlForms.DevSpace.Logic;
 using SqlForms.DevSpace.Model;
 using System;
 using System.Collections.Generic;
@@ -10,32 +11,52 @@ namespace SqlForms.DevSpace.Controlers
     public interface ISpaceController
     {
         SpaceProjectDetails Model { get; }
+        IProjectLoader Loader { get; }
         string ActiveWindow { get; }
+        int ActiveWindowIndex { get; }
 
         void CreateNewProject();
         List<StoreSchema> GetProjectSchemas();
         List<StoreQuery> GetProjectQueries();
         List<StoreForm> GetProjectForms();
         List<EditWindowDetails> GetEditWindows();
+        bool ActivateWindow(IStoreObject item);
+        void ActivateWindow(int index);
+        void OpenWindow(IStoreObject item);
+        EditWindowType GetStoreObjectType(IStoreObject item);
+        void LoadModel(string name);
     }
 
     public class SpaceController : ISpaceController
     {
+        private readonly IProjectLoader _projectLoader;
+
         public SpaceProjectDetails Model { get; set; }
         public string ActiveWindow { get; set; }
+        public int ActiveWindowIndex { get; set; }
 
-        public SpaceController()
+        public IProjectLoader Loader { get { return _projectLoader; } }
+
+        public SpaceController(IProjectLoader projectLoader)
         {
+            _projectLoader = projectLoader;
             CreateNewProject();
 
             // ToDo: remove demo data initialization
-            ActiveWindow = "Schema1";
-            var s1 = new StoreSchema { Name = ActiveWindow };
+            var sch = "Schema1";
+            var s1 = new StoreSchema { Name = sch };
             Model.Schemas.Add(new SchemaDetails { Schema = s1 });
             var f1 = new StoreForm { Name = "CustomerEdit" };
+            ActiveWindow = "CustomerEdit";
             Model.Forms.Add(new FormDetails { Form = f1 });
+            Model.Forms.Add(new FormDetails { Form = new StoreForm { Name = "CustomerList" } });
+            Model.Forms.Add(new FormDetails { Form = new StoreForm { Name = "CustomerAddressList" } });
+            //Model.EditWindows.Add(new EditWindowDetails { StoreObject = s1, Type = EditWindowType.Schema });
+
+            Model.Queries.Add(new QueryDetails { Query = new StoreQuery { Name = "GetCustomerAddressList" } });
+            Model.Queries.Add(new QueryDetails { Query = new StoreQuery { Name = "GetCustomerList" } });
+
             Model.EditWindows.Add(new EditWindowDetails { StoreObject = f1, Type = EditWindowType.Form });
-            Model.EditWindows.Add(new EditWindowDetails { StoreObject = s1, Type = EditWindowType.Schema });
         }
 
         public void CreateNewProject()
@@ -64,6 +85,80 @@ namespace SqlForms.DevSpace.Controlers
         public List<EditWindowDetails> GetEditWindows()
         {
             var result = Model.EditWindows;
+            return result;
+        }
+
+        public bool ActivateWindow(IStoreObject item)
+        {
+            var w = GetEditWindows().FirstOrDefault(x => x.StoreObject == item);
+
+            if (w != null)
+            {
+                ActiveWindowIndex = GetEditWindows().IndexOf(w);
+                ActiveWindow = w.StoreObject.Name;
+                return true;
+            }
+
+            return false;
+        }
+
+        public void OpenWindow(IStoreObject item)
+        {
+            if (ActivateWindow(item))
+            {
+                return;
+            }
+
+            var w = new EditWindowDetails { StoreObject = item, Type = GetStoreObjectType(item) };
+            Model.EditWindows.Add(w);
+            ActivateWindow(item);
+        }
+
+        public EditWindowType GetStoreObjectType(IStoreObject item)
+        {
+            if (item is StoreSchema)
+            {
+                return EditWindowType.Schema;
+            }
+            else if (item is StoreQuery)
+            {
+                return EditWindowType.Query;
+            }
+            else if (item is StoreForm)
+            {
+                return EditWindowType.Form;
+            }
+            else if (item is StoreProject)
+            {
+                return EditWindowType.ProjectSettings;
+            }
+
+            return EditWindowType.Unknown;
+        }
+
+        public void ActivateWindow(int index)
+        {
+            ActiveWindowIndex = index;
+            ActiveWindow = Model.EditWindows[index].StoreObject.Name;
+        }
+
+        public void LoadModel(string name)
+        {
+            var project = _projectLoader.Load(name);
+            Model = new SpaceProjectDetails();
+            Model.Schemas = project.Schemas.Values.Select(x => new SchemaDetails { Schema = x, SchemaMigrations = project.SchemaMigrations[x.Name] }).ToList();
+            Model.Queries = project.Queries.Values.Select(x => new QueryDetails { Query = x }).ToList();
+            Model.Forms = project.Forms.Values.Select(x => new FormDetails { Form = x }).ToList();
+            Model.EditWindows = project.Settings.EditWindows.Select(s => new EditWindowDetails { StoreObject = FindModelStoreObject(s) }).ToList();
+            Model.EditWindows.ForEach(w => w.Type = GetStoreObjectType(w.StoreObject));
+        }
+
+        private IStoreObject FindModelStoreObject(string name)
+        {
+            var result = Model.Schemas.FirstOrDefault(x => x.Schema.Name == name) as IStoreObject ?? 
+                Model.Queries.FirstOrDefault(x => x.Query.Name == name) as IStoreObject ??
+                Model.Forms.FirstOrDefault(x => x.Form.Name == name) as IStoreObject;
+
             return result;
         }
     }

@@ -9,21 +9,33 @@
         <li class="active">
             <a href="#schemaSubmenu" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">Schema</a>
             <ul class="collapse show list-unstyled" id="schemaSubmenu">
+                @{
+                    var i1 = 0;
+                }
+
                 @foreach (var schema in _spaceController.GetProjectSchemas())
                 {
-                <li>
-                    <a href="#">@schema.Name</a>
-                </li>
+                    var index = i1;
+
+                    <li>
+                        <a href="" @onclick="async () => await SchemaClick(index, schema)" @ondblclick="async () => await SchemaDblClick(index, schema)">@schema.Name</a>
+                    </li>
                 }
             </ul>
         </li>
         <li>
             <a href="#queriesSubmenu" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">Queries</a>
             <ul class="collapse show list-unstyled" id="queriesSubmenu">
+                @{
+                    var i2 = 0;
+                }
+
                 @foreach (var query in _spaceController.GetProjectQueries())
                 {
+                    var index = i2;
+
                     <li>
-                        <a href="#">@query.Name</a>
+                        <a href="" @onclick="async () => await QueryClick(index, query)">@query.Name</a>
                     </li>
                 }
             </ul>
@@ -31,10 +43,16 @@
         <li>
             <a href="#formsSubmenu" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">Forms</a>
             <ul class="collapse show list-unstyled" id="formsSubmenu">
+                @{
+                    var i3 = 0;
+                }
+
                 @foreach (var f in _spaceController.GetProjectForms())
                 {
+                    var index = i3;
+
                     <li>
-                        <a href="#">@f.Name</a>
+                        <a href="" @onclick="async () => await FormClick(index, f)">@f.Name</a>
                     </li>
                 }
             </ul>
@@ -48,4 +66,32 @@
 @code {
     [CascadingParameter]
     public ISpaceController _spaceController { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    private async Task SchemaClick(int index, IStoreObject item)
+    {
+        //_spaceController.ActivateWindow(item);
+        _spaceController.OpenWindow(item);
+        await ModelChanged.InvokeAsync();
+    }
+
+    private async Task SchemaDblClick(int index, StoreSchema item)
+    {
+        _spaceController.OpenWindow(item);
+        await ModelChanged.InvokeAsync();
+    }
+
+    private async Task QueryClick(int index, IStoreObject item)
+    {
+        _spaceController.OpenWindow(item);
+        await ModelChanged.InvokeAsync();
+    }
+
+    private async Task FormClick(int index, IStoreObject item)
+    {
+        _spaceController.OpenWindow(item);
+        await ModelChanged.InvokeAsync();
+    }
 }
