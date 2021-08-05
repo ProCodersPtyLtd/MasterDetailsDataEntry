@@ -1,0 +1,14 @@
+﻿<h5>EditorPage</h5>
+
+Window: @_spaceController.ActiveWindowIndex
+
+@code {
+    [CascadingParameter]
+    public ISpaceController _spaceController { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    //[Parameter]
+    //public int ItemIndex { get; set; }
+}

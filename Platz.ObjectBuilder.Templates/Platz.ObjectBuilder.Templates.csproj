@@ -106,6 +106,7 @@
     <Compile Include="..\Platz.SqlForms.Shared\Model\FieldFilterType.cs">
       <Link>FieldFilterType.cs</Link>
     </Compile>
+    <Compile Include="IStoreObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

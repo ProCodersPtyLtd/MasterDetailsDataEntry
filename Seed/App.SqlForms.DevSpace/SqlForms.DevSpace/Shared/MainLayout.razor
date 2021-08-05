@@ -1,22 +1,38 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    @*<div class="wrapper">*@
+@inject ISpaceController _spaceController
+
+<CascadingValue Value="@_spaceController">
+
+    <div class="page">
+        @*<div class="wrapper">*@
+
         <div class="sidebar">
-            @*<NavMenu />*@
-            <ProjectMenu />
+            <ProjectMenu ModelChanged="ModelChanged"/>
         </div>
 
-        
-
-        <div class="main">
-            @*<div class="top-row px-4">
-                <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-            </div>*@
+        <div style="width: 100%;">
+            @*<div class="top-row px-4">*@
+                <ProjectToolBar ModelChanged="ModelChanged" FullStoreDataPath="C:\repo\data\DevSpace"/>
+            @*</div>*@
 
             <div class="content px-4">
                 @Body
             </div>
         </div>
-    @*</div>*@
-</div>
+        @*</div>*@
+    </div>
+
+</CascadingValue>
+
+@code { 
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+    private async Task ModelChanged(ChangeEventArgs args)
+    {
+        StateHasChanged();
+    }
+} 

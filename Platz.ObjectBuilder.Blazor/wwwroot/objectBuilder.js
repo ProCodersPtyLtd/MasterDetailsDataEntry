@@ -45,6 +45,16 @@ export function FocusElement(id) {
     $('#' + id).focus().select();
 }
 
+export function OpenFileClick(id) {
+    $('#' + id).trigger('click');
+}
+
+export function GetFileName(id) {
+    var res = document.getElementById(id).files[0];
+    return res;
+}
+
+// not working
 export function PreventLeaveApp() {
     window.onbeforeunload = function () {
         return "";
