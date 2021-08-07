@@ -88,11 +88,6 @@ namespace SqlForms.DevSpace.Logic
             return result;
         }
 
-        public void SaveAll(StoreProject project)
-        {
-            throw new NotImplementedException();
-        }
-
         public void SaveAll(StoreProject project, string location)
         {
             throw new NotImplementedException();

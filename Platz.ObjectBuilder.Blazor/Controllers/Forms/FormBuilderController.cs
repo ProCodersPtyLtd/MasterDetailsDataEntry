@@ -10,55 +10,103 @@ namespace Platz.ObjectBuilder
 {
     public interface IFormBuilderController
     {
-        FormBuilderModel BuilderModel { get; set; }
+        FormBuilderModel Model { get; set; }
 
-        List<FieldComponent> GetPageFieldComponents();
-        void SetActive(FieldComponent field);
-        void ReOrderFields(IList<FieldComponent> items);
+        List<FieldComponentModel> GetPageFieldComponents();
+        void SetActive(FieldComponentModel field);
+        void ReOrderFields(IList<FieldComponentModel> items);
+        bool PageActive { get; }
+
+        void SetSchemas(List<StoreSchema> storeSchemas);
+        void SetQueries(List<StoreQuery> storeQueries);
+        void RefreshDatasources();
     }
     public class FormBuilderController : IFormBuilderController
     {
-        private List<FieldComponent> _fields;
+        //private List<FieldComponentModel> _fields;
+        private List<StoreSchema> _storeSchemas;
+        private List<StoreQuery> _storeQueries;
 
-        public FormBuilderModel BuilderModel 
-        {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
-        }
+        public bool PageActive { get; set; }
+
+        public FormBuilderModel Model { get; set; }
 
         public FormBuilderController()
         {
             // ToDo: remove this simulation
-            _fields = new List<FieldComponent>();
-            _fields.Add(new FieldComponent { Name = "Name", Binding = "$.Name", ComponentType = FieldComponentType.TextEdit, StoreField = new StoreFormField() });
-            _fields.Add(new FieldComponent { Name = "Type", Binding = "$.Type", ComponentType = FieldComponentType.Dropdown, StoreField = new StoreFormField() });
-            _fields.Add(new FieldComponent { Name = "Created", Binding = "$.CreatedDate", ComponentType = FieldComponentType.DateEdit, StoreField = new StoreFormField() });
+            Model = new FormBuilderModel();
+            Model.Fields.Add(new FieldComponentModel { Name = "Name", Binding = "$.Name", ComponentType = FieldComponentType.TextEdit, StoreField = new StoreFormField() });
+            Model.Fields.Add(new FieldComponentModel { Name = "Type", Binding = "$.Type", ComponentType = FieldComponentType.Dropdown, StoreField = new StoreFormField() });
+            Model.Fields.Add(new FieldComponentModel { Name = "Created", Binding = "$.CreatedDate", ComponentType = FieldComponentType.DateEdit, StoreField = new StoreFormField() });
             
             ApplySortOrder();
         }
 
-        public List<FieldComponent> GetPageFieldComponents()
+        public List<FieldComponentModel> GetPageFieldComponents()
         {
-            return _fields;
+            return Model.Fields;
         }
 
-        public void ReOrderFields(IList<FieldComponent> items)
+        public void ReOrderFields(IList<FieldComponentModel> items)
         {
             // Actually Dropzone compnents reorders our _fields property
-            _fields = items.ToList();
+            Model.Fields = items.ToList();
             ApplySortOrder();
         }
 
         private void ApplySortOrder()
         {
             int i = 0;
-            _fields.ForEach(f => f.Order = i++);
+            Model.Fields.ForEach(f => f.Order = i++);
         }
 
-        public void SetActive(FieldComponent field)
+        public void SetActive(FieldComponentModel field)
         {
-            _fields.ForEach(f => f.Active = false);
+            Model.Fields.ForEach(f => f.Active = false);
+
+            if (field == null)
+            {
+                PageActive = true;
+                return;
+            }
+
+            PageActive = false;
             field.Active = true;
+        }
+
+        public void SetSchemas(List<StoreSchema> storeSchemas)
+        {
+            _storeSchemas = storeSchemas;
+            Model.Schemas = _storeSchemas.Select(x => x.Name).ToList();
+        }
+
+        public void SetQueries(List<StoreQuery> storeQueries)
+        {
+            _storeQueries = storeQueries;
+            //Model.Datasources = _storeQueries.Select(x => x.Name).ToList();
+        }
+
+        public void RefreshDatasources()
+        {
+            Model.Datasources = new List<string>();
+
+            if (string.IsNullOrWhiteSpace(Model.Schema))
+            {
+                return;
+            }
+
+            Model.Datasources.AddRange(_storeQueries.Where(x => x.SchemaName == Model.Schema).Select(x => x.Name).OrderBy(x => x));
+
+            Model.Datasources.AddRange(_storeSchemas.First(x => x.Name == Model.Schema).Definitions.Keys.OrderBy(x => x));
+
+            if (Model.IsListForm)
+            {
+
+            }
+            else
+            {
+
+            }
         }
     }
 }

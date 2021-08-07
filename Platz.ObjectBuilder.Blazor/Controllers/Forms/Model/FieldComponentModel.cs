@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Platz.ObjectBuilder.Blazor.Model
 {
-    public class FieldComponent
+    public class FieldComponentModel
     {
         public string Name { get; set; }
         public string Binding { get; set; }

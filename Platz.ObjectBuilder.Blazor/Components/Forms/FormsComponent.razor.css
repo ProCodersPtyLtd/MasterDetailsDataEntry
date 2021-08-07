@@ -1,0 +1,31 @@
+﻿::deep .forms-grid {
+    margin: 5px 0 0 0;
+}
+
+::deep .forms-cap-active {
+    padding: 0 0 0 10px;
+    background-color: dodgerblue;
+    height: 32px;
+}
+
+::deep .forms-cap {
+    padding: 0 0 0 10px;
+    background-color: gray;
+    height: 32px;
+}
+
+::deep .forms-uncap {
+    padding: 0 0 0 10px;
+    background-color: lightgray;
+    height: 32px;
+}
+
+::deep .forms-widget {
+    width: 500px;
+}
+
+::deep .forms-widget-body {
+    width: 500px;
+    min-height: 50px;
+    background-color: lightgray
+}

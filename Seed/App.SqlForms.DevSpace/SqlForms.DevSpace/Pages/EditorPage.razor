@@ -1,6 +1,11 @@
-﻿<h5>EditorPage</h5>
+﻿@*<h5>EditorPage</h5>
 
-Window: @_spaceController.ActiveWindowIndex
+Window: @_spaceController.ActiveWindowIndex*@
+
+@if (_spaceController.ActiveWindow.Type == EditWindowType.Form)
+{
+    <FormsComponent Height="740"/>
+}
 
 @code {
     [CascadingParameter]
@@ -11,4 +16,5 @@ Window: @_spaceController.ActiveWindowIndex
 
     //[Parameter]
     //public int ItemIndex { get; set; }
+
 }

@@ -1,4 +1,5 @@
-﻿using Platz.SqlForms;
+﻿using Platz.ObjectBuilder;
+using Platz.SqlForms;
 using SqlForms.DevSpace.Logic;
 using SqlForms.DevSpace.Model;
 using System;
@@ -12,7 +13,8 @@ namespace SqlForms.DevSpace.Controlers
     {
         SpaceProjectDetails Model { get; }
         IProjectLoader Loader { get; }
-        string ActiveWindow { get; }
+        EditWindowDetails ActiveWindow { get; }
+        string ActiveWindowName { get; }
         int ActiveWindowIndex { get; }
 
         void CreateNewProject();
@@ -30,16 +32,27 @@ namespace SqlForms.DevSpace.Controlers
     public class SpaceController : ISpaceController
     {
         private readonly IProjectLoader _projectLoader;
+        private readonly IFormBuilderController _formBuilderController;
 
         public SpaceProjectDetails Model { get; set; }
-        public string ActiveWindow { get; set; }
+        public string ActiveWindowName { get; set; }
         public int ActiveWindowIndex { get; set; }
 
         public IProjectLoader Loader { get { return _projectLoader; } }
 
-        public SpaceController(IProjectLoader projectLoader)
+        public EditWindowDetails ActiveWindow
+        {
+            get
+            {
+                var wnds = GetEditWindows();
+                return wnds.Count > 0 ? wnds[ActiveWindowIndex]: null;
+            }
+        }
+
+        public SpaceController(IProjectLoader projectLoader, IFormBuilderController formBuilderController)
         {
             _projectLoader = projectLoader;
+            _formBuilderController = formBuilderController;
             CreateNewProject();
 
             // ToDo: remove demo data initialization
@@ -47,7 +60,7 @@ namespace SqlForms.DevSpace.Controlers
             var s1 = new StoreSchema { Name = sch };
             Model.Schemas.Add(new SchemaDetails { Schema = s1 });
             var f1 = new StoreForm { Name = "CustomerEdit" };
-            ActiveWindow = "CustomerEdit";
+            ActiveWindowName = "CustomerEdit";
             Model.Forms.Add(new FormDetails { Form = f1 });
             Model.Forms.Add(new FormDetails { Form = new StoreForm { Name = "CustomerList" } });
             Model.Forms.Add(new FormDetails { Form = new StoreForm { Name = "CustomerAddressList" } });
@@ -57,6 +70,13 @@ namespace SqlForms.DevSpace.Controlers
             Model.Queries.Add(new QueryDetails { Query = new StoreQuery { Name = "GetCustomerList" } });
 
             Model.EditWindows.Add(new EditWindowDetails { StoreObject = f1, Type = EditWindowType.Form });
+            UpdateFormBuilder();
+        }
+
+        private void UpdateFormBuilder()
+        {
+            _formBuilderController.SetSchemas(GetProjectSchemas());
+            _formBuilderController.SetQueries(GetProjectQueries());
         }
 
         public void CreateNewProject()
@@ -95,7 +115,7 @@ namespace SqlForms.DevSpace.Controlers
             if (w != null)
             {
                 ActiveWindowIndex = GetEditWindows().IndexOf(w);
-                ActiveWindow = w.StoreObject.Name;
+                ActiveWindowName = w.StoreObject.Name;
                 return true;
             }
 
@@ -139,7 +159,7 @@ namespace SqlForms.DevSpace.Controlers
         public void ActivateWindow(int index)
         {
             ActiveWindowIndex = index;
-            ActiveWindow = Model.EditWindows[index].StoreObject.Name;
+            ActiveWindowName = Model.EditWindows[index].StoreObject.Name;
         }
 
         public void LoadModel(string name)

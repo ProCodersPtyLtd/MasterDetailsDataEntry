@@ -14,7 +14,7 @@
             var rowIndex = index;
 
             <li class="nav-item">
-                <a class="nav-link @(w.StoreObject.Name == _spaceController.ActiveWindow ? "active" : "")" data-toggle="tab" href="#w@(GetTabTarget(w))"
+                <a class="nav-link @(w.StoreObject.Name == _spaceController.ActiveWindowName ? "active" : "")" data-toggle="tab" href="#w@(GetTabTarget(w))"
                    @onclick="@(async () => await TabClick(rowIndex))">
                     <button class="close closeTab" type="button" @onclick="@(async () => await TabCloseClick(rowIndex))">×</button>
                     @w.StoreObject.Name

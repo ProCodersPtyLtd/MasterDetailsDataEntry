@@ -8,16 +8,32 @@
 
 <CascadingValue Value="@_formsPageController">
 
-    <h3>Forms Builder</h3>
+    <div class="container" style="margin-left: 0; margin-right: 0">
+        <div class="row">
+            <div class="col-lg">
+                <FormsPageContentComponent Height="Height" ModelChanged="ModelChanged" />
+            </div>
+            <div class="col-lg">
+                <FormsPropertiesComponent />
 
-    <div style="width: 520px">
+                <FormsInfoComponent />
+            </div>
+        </div>
+    </div>
+
+    @*<div style="width: 520px">
         <FormsPageContentComponent Height="780" ModelChanged="ModelChanged" />
     </div>
+    <div>
+        <FormsFieldPropertiesComponent />
+    </div>*@
 
 </CascadingValue>
 
 @code 
 {
+    [Parameter]
+    public double Height { get; set; } = 780;
 
     private async Task ModelChanged(ChangeEventArgs args)
     {
