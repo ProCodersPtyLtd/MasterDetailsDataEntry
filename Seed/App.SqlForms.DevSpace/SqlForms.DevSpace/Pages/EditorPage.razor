@@ -2,7 +2,7 @@
 
 Window: @_spaceController.ActiveWindowIndex*@
 
-@if (_spaceController.ActiveWindow.Type == EditWindowType.Form)
+@if (_spaceController.ActiveWindow?.Type == EditWindowType.Form)
 {
     <FormsComponent Height="740"/>
 }

@@ -171,6 +171,7 @@ namespace SqlForms.DevSpace.Controlers
             Model.Forms = project.Forms.Values.Select(x => new FormDetails { Form = x }).ToList();
             Model.EditWindows = project.Settings.EditWindows.Select(s => new EditWindowDetails { StoreObject = FindModelStoreObject(s) }).ToList();
             Model.EditWindows.ForEach(w => w.Type = GetStoreObjectType(w.StoreObject));
+            UpdateFormBuilder();
         }
 
         private IStoreObject FindModelStoreObject(string name)

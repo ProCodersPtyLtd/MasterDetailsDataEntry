@@ -21,7 +21,7 @@
                 </div>
                 <div class="col-sm-8">
                     <select class="form-control selectpicker" value="@_ctrl.Model.Schema" @onchange="SchemaChanged">
-                        <option value="0"></option>
+                        <option value=""></option>
 
                         @foreach (var item in _ctrl.Model.Schemas)
                         {
@@ -36,7 +36,7 @@
                 </div>
                 <div class="col-sm-8">
                     <select class="form-control selectpicker" value="@_ctrl.Model.Datasource" @onchange="DatasourceChanged">
-                        <option value="0"></option>
+                        <option value=""></option>
 
                         @foreach (var item in _ctrl.Model.Datasources)
                         {

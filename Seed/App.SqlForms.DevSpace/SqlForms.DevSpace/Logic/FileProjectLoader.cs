@@ -61,7 +61,7 @@ namespace SqlForms.DevSpace.Logic
                 var schema = JsonSerializer.Deserialize<StoreSchema>(json);
                 result.Schemas.Add(schema.Name, schema);
 
-                var migrationFile = file.Substring(0, file.Length - ".schema.json".Length - 1) + ".schema.migrations.json";
+                var migrationFile = file.Substring(0, file.Length - ".schema.json".Length) + ".schema.migrations.json";
                 json = File.ReadAllText(migrationFile);
                 var migration = JsonSerializer.Deserialize<StoreSchemaMigrations>(json);
                 result.SchemaMigrations.Add(schema.Name, migration);
