@@ -11,6 +11,7 @@ namespace Platz.ObjectBuilder
     public interface IFormBuilderController
     {
         FormBuilderModel Model { get; set; }
+        void Changed();
 
         List<FieldComponentModel> GetPageFieldComponents();
         void SetActive(FieldComponentModel field);
@@ -20,6 +21,13 @@ namespace Platz.ObjectBuilder
         void SetSchemas(List<StoreSchema> storeSchemas);
         void SetQueries(List<StoreQuery> storeQueries);
         void RefreshDatasources();
+
+        // Toolbar
+        void AddTextEdit();
+        void MoveUp();
+        void MoveDown();
+        void Clear();
+        void GenerateFromEntity();
     }
     public class FormBuilderController : IFormBuilderController
     {
@@ -107,6 +115,41 @@ namespace Platz.ObjectBuilder
             {
 
             }
+        }
+
+        public void Changed()
+        {
+            Model.IsDirty = true;
+        }
+
+        public void AddTextEdit()
+        {
+            throw new NotImplementedException();
+            Changed();
+        }
+
+        public void MoveUp()
+        {
+            throw new NotImplementedException();
+            Changed();
+        }
+
+        public void MoveDown()
+        {
+            throw new NotImplementedException();
+            Changed();
+        }
+
+        public void Clear()
+        {
+            Model.Fields.Clear();
+            Changed();
+        }
+
+        public void GenerateFromEntity()
+        {
+            throw new NotImplementedException();
+            Changed();
         }
     }
 }

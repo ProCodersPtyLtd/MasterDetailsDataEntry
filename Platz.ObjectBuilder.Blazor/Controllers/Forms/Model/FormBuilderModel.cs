@@ -8,6 +8,7 @@ namespace Platz.ObjectBuilder.Blazor.Model
 {
     public class FormBuilderModel
     {
+        public bool IsDirty { get; set; }
         public string Name { get; set; }
         public bool IsListForm { get; set; }
         public string Schema { get; set; }

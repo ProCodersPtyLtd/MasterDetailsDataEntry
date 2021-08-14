@@ -13,9 +13,9 @@ namespace SqlForms.DevSpace
     {
         public static IServiceCollection AddDevSpace([NotNullAttribute] this IServiceCollection services)
         {
-            services.AddSingleton<ISpaceController, SpaceController>();
-            services.AddSingleton<IProjectLoader, FileProjectLoader>();
-            services.AddSingleton<IFormBuilderController, FormBuilderController>();
+            services.AddScoped<ISpaceController, SpaceController>();
+            services.AddScoped<IProjectLoader, FileProjectLoader>();
+            services.AddScoped<IFormBuilderController, FormBuilderController>();
 
             return services;
         }

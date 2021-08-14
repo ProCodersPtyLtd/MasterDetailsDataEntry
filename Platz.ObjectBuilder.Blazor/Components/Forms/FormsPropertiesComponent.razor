@@ -6,7 +6,7 @@
     {
         <div class="forms-uncap">Form</div>
 
-        <div class="container forms-grid">
+        <div class="forms-grid">
             <div class="row">
                 <div class="col-sm-4">
                     Name
@@ -15,6 +15,29 @@
                     <input id="BindingInput" @bind-value="FormsPageController.Model.Name" class="form-control" />
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col-sm-4">
+                    Type
+                </div>
+                <div class="col-sm-8">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDisabled" id="flexRadioDisabled" 
+                               checked="@(!_ctrl.Model.IsListForm)" @onchange="EditFormChanged" >
+                        <label class="form-check-label" for="flexRadioDisabled">
+                            Edit Form
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="flexRadioDisabled" id="flexRadioCheckedDisabled" 
+                               checked="@(_ctrl.Model.IsListForm)" @onchange="ListFormChanged">
+                        <label class="form-check-label" for="flexRadioCheckedDisabled">
+                            List Navigation Form
+                        </label>
+                    </div>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-sm-4">
                     Schema
@@ -65,4 +88,10 @@
     {
         _ctrl.Model.Datasource = a.Value.ToString();
     }
+
+    private async Task EditFormChanged(ChangeEventArgs a)
+    { }
+
+    private async Task ListFormChanged(ChangeEventArgs a)
+    { }
 }

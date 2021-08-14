@@ -1,7 +1,41 @@
-﻿::deep .forms-grid {
-    margin: 5px 0 0 0;
+﻿::deep .forms-big {
+    padding: 5px 0 0 0;
+    margin: 0 0 0 0;
 }
 
+::deep .forms-tb-buttons {
+}
+
+::deep .forms-tb-buttons button{
+    width: 100%;
+    margin: 0 0 5px 0;
+}
+
+::deep .forms-tb-buttons-field {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0 5px 0;
+}
+
+::deep .forms-toolbar {
+    padding: 0 0 0 0;
+    margin: 0 0 0 0;
+    width: 100%;
+}
+
+::deep .tb-margin {
+    margin: 0 0 5px 0;
+}
+
+::deep .tb-wide {
+    margin: 0 0 5px 0;
+    width: 100%;
+}
+
+::deep .forms-grid {
+    margin: 5px 0 0 0;
+}
 ::deep .forms-cap-active {
     padding: 0 0 0 10px;
     background-color: dodgerblue;

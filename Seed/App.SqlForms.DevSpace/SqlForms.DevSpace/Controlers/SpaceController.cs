@@ -56,21 +56,23 @@ namespace SqlForms.DevSpace.Controlers
             CreateNewProject();
 
             // ToDo: remove demo data initialization
-            var sch = "Schema1";
-            var s1 = new StoreSchema { Name = sch };
-            Model.Schemas.Add(new SchemaDetails { Schema = s1 });
-            var f1 = new StoreForm { Name = "CustomerEdit" };
-            ActiveWindowName = "CustomerEdit";
-            Model.Forms.Add(new FormDetails { Form = f1 });
-            Model.Forms.Add(new FormDetails { Form = new StoreForm { Name = "CustomerList" } });
-            Model.Forms.Add(new FormDetails { Form = new StoreForm { Name = "CustomerAddressList" } });
-            //Model.EditWindows.Add(new EditWindowDetails { StoreObject = s1, Type = EditWindowType.Schema });
+            LoadModel(@"C:\Repos\MasterDetailsDataEntry\Seed\App.SqlForms.DevSpace\data\Project1");
 
-            Model.Queries.Add(new QueryDetails { Query = new StoreQuery { Name = "GetCustomerAddressList" } });
-            Model.Queries.Add(new QueryDetails { Query = new StoreQuery { Name = "GetCustomerList" } });
+            //var sch = "Schema1";
+            //var s1 = new StoreSchema { Name = sch };
+            //Model.Schemas.Add(new SchemaDetails { Schema = s1 });
+            //var f1 = new StoreForm { Name = "CustomerEdit" };
+            //ActiveWindowName = "CustomerEdit";
+            //Model.Forms.Add(new FormDetails { Form = f1 });
+            //Model.Forms.Add(new FormDetails { Form = new StoreForm { Name = "CustomerList" } });
+            //Model.Forms.Add(new FormDetails { Form = new StoreForm { Name = "CustomerAddressList" } });
+            ////Model.EditWindows.Add(new EditWindowDetails { StoreObject = s1, Type = EditWindowType.Schema });
 
-            Model.EditWindows.Add(new EditWindowDetails { StoreObject = f1, Type = EditWindowType.Form });
-            UpdateFormBuilder();
+            //Model.Queries.Add(new QueryDetails { Query = new StoreQuery { Name = "GetCustomerAddressList" } });
+            //Model.Queries.Add(new QueryDetails { Query = new StoreQuery { Name = "GetCustomerList" } });
+
+            //Model.EditWindows.Add(new EditWindowDetails { StoreObject = f1, Type = EditWindowType.Form });
+            //UpdateFormBuilder();
         }
 
         private void UpdateFormBuilder()
