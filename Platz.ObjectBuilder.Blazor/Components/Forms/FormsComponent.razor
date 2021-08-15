@@ -39,8 +39,11 @@
     [Parameter]
     public double Height { get; set; } = 780;
 
-    private async Task ModelChanged(ChangeEventArgs args)
-    {
-        StateHasChanged();
-    }
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    //private async Task ModelChanged(ChangeEventArgs args)
+    //{
+    //    StateHasChanged();
+    //}
 }

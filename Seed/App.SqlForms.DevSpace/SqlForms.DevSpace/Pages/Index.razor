@@ -1,40 +1,39 @@
 ﻿@page "/"
+    <!--
+    @using Platz.ObjectBuilder
 
-@using Platz.ObjectBuilder
+    <div style="vertical-align: top">
 
-<div style="vertical-align: top">
+        <ul class="nav nav-tabs" role="tablist">
+            @{
+                var index = 0;
+            }
 
-    <ul class="nav nav-tabs" role="tablist">
-        @{
-            var index = 0;
-        }
+            @foreach (var w in _spaceController.GetEditWindows())
+            {
+                var rowIndex = index;
 
-        @foreach (var w in _spaceController.GetEditWindows())
-        {
-            var rowIndex = index;
+                <li class="nav-item">
+                    <a class="nav-link @(w.StoreObject.Name == _spaceController.ActiveWindowName ? "active" : "")" data-toggle="tab" href="#w@(GetTabTarget(w))"
+                       @onclick="@(async () => await TabClick(rowIndex))">
+                        <button class="close closeTab" type="button" @onclick="@(async () => await TabCloseClick(rowIndex))">×</button>
+                        @w.StoreObject.Name
+                    </a>
+                </li>
 
-            <li class="nav-item">
-                <a class="nav-link @(w.StoreObject.Name == _spaceController.ActiveWindowName ? "active" : "")" data-toggle="tab" href="#w@(GetTabTarget(w))"
-                   @onclick="@(async () => await TabClick(rowIndex))">
-                    <button class="close closeTab" type="button" @onclick="@(async () => await TabCloseClick(rowIndex))">×</button>
-                    @w.StoreObject.Name
-                </a>
-            </li>
-
-            index++;
-        }
-        @*<li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#w2" @onclick="@(async() => await TabClick(1))">
-                    <button class="close closeTab" type="button" @onclick="@(async() => await TabCloseClick(1))">×</button>Query1
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#w3" @onclick="@(async() => await TabClick(2))">
-                    <button class="close closeTab" type="button" @onclick="@(async() => await TabCloseClick(2))">×</button>Form1
-                </a>
-            </li>*@
-    </ul>
-
+                index++;
+            }-->
+    @*<li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#w2" @onclick="@(async() => await TabClick(1))">
+                <button class="close closeTab" type="button" @onclick="@(async() => await TabCloseClick(1))">×</button>Query1
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#w3" @onclick="@(async() => await TabClick(2))">
+                <button class="close closeTab" type="button" @onclick="@(async() => await TabCloseClick(2))">×</button>Form1
+            </a>
+        </li>*@
+    <!--</ul>-->
     @* we don't need bs containers - use blazor events
         <div class="tab-content">
             <div id="w" class="container tab-pane active">
@@ -51,50 +50,50 @@
             </div>
         </div>*@
 
-    <EditorPage ModelChanged="ModelChanged" />
+    <!--<EditorPage ModelChanged="ModelChanged" />
 
-</div>
+    </div>
 
-@code {
-    [CascadingParameter]
-    public ISpaceController _spaceController { get; set; }
+    @code {
+        [CascadingParameter]
+        public ISpaceController _spaceController { get; set; }
 
-    [Parameter]
-    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+        [Parameter]
+        public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 
-    //private int _selectedIndex;
+        //private int _selectedIndex;
 
-    protected override async Task OnAfterRenderAsync(bool first)
-    {
-    }
-
-    private string GetTabTarget(EditWindowDetails item)
-    {
-        EditWindowType type = _spaceController.GetStoreObjectType(item.StoreObject);
-
-        switch (type)
+        protected override async Task OnAfterRenderAsync(bool first)
         {
-            case EditWindowType.Schema:
-                return "Schema";
-            case EditWindowType.Query:
-                return "Query";
-            case EditWindowType.Form:
-                return "Form";
-            default:
-                return "";
         }
-    }
 
-    private async Task TabClick(int index)
-    {
-        // if (index > _tabs.Count-1) return;
+        private string GetTabTarget(EditWindowDetails item)
+        {
+            EditWindowType type = _spaceController.GetStoreObjectType(item.StoreObject);
 
-        //_selectedIndex = index;
-        _spaceController.ActivateWindow(index);
-        await ModelChanged.InvokeAsync();
-    }
+            switch (type)
+            {
+                case EditWindowType.Schema:
+                    return "Schema";
+                case EditWindowType.Query:
+                    return "Query";
+                case EditWindowType.Form:
+                    return "Form";
+                default:
+                    return "";
+            }
+        }
 
-    private async Task TabCloseClick(int index)
-    {
-    }
-}
+        private async Task TabClick(int index)
+        {
+            // if (index > _tabs.Count-1) return;
+
+            //_selectedIndex = index;
+            _spaceController.ActivateWindow(index);
+            await ModelChanged.InvokeAsync();
+        }
+
+        private async Task TabCloseClick(int index)
+        {
+        }
+    }-->
