@@ -4,77 +4,20 @@
 
     @if (FormsPageController.PageActive)
     {
-        <div class="forms-uncap">Form</div>
-
-        <div class="forms-grid">
-            <div class="row">
-                <div class="col-sm-4">
-                    Name
-                </div>
-                <div class="col-sm-8">
-                    <input id="BindingInput" @bind-value="FormsPageController.Model.Name" class="form-control" />
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-4">
-                    Type
-                </div>
-                <div class="col-sm-8">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="flexRadioDisabled" id="flexRadioDisabled" 
-                               checked="@(!_ctrl.Model.IsListForm)" @onchange="EditFormChanged" >
-                        <label class="form-check-label" for="flexRadioDisabled">
-                            Edit Form
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="flexRadioDisabled" id="flexRadioCheckedDisabled" 
-                               checked="@(_ctrl.Model.IsListForm)" @onchange="ListFormChanged">
-                        <label class="form-check-label" for="flexRadioCheckedDisabled">
-                            List Navigation Form
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-4">
-                    Schema
-                </div>
-                <div class="col-sm-8">
-                    <select class="form-control selectpicker" value="@_ctrl.Model.Schema" @onchange="SchemaChanged">
-                        <option value=""></option>
-
-                        @foreach (var item in _ctrl.Model.Schemas)
-                        {
-                            <option value="@item">@item</option>
-                        }
-                    </select>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-4">
-                    Datasource
-                </div>
-                <div class="col-sm-8">
-                    <select class="form-control selectpicker" value="@_ctrl.Model.Datasource" @onchange="DatasourceChanged">
-                        <option value=""></option>
-
-                        @foreach (var item in _ctrl.Model.Datasources)
-                        {
-                            <option value="@item">@item</option>
-                        }
-                    </select>
-                </div>
-            </div>
-        </div>
+        <FormsPagePropertiesComponent /> 
+    }
+    else if (_ctrl.ActiveField != null)
+    {
+        <FormsFieldPropertiesComponent Field="_ctrl.ActiveField" ModelChanged="ModelChanged" />
     }
 </div>
 
 @code {
     [CascadingParameter]
     public IFormBuilderController FormsPageController { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 
     private IFormBuilderController _ctrl {  get { return FormsPageController; } }
 

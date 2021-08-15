@@ -4,16 +4,64 @@
 
 @namespace Platz.ObjectBuilder.Blazor.Forms
 
-<table>
+<div class=".forms-big">
+    <div class="row-nospace-sm">
+        <div class="col-sm-6 forms-nospace">
+            Label
+            <input id="LabelInput" value="@Field.StoreField.Label" class="form-control" @onchange="LabelChanged" />
+        </div>
+        <div class="col-sm-6 forms-nospace">
+            Binding
+            <select id="BindingInput" value="@Field.StoreField.BindingProperty" class="form-control" @onchange="BindingChanged">
+                <option value=""></option>
+
+                @foreach (var b in FormsPageController.GetEntityBindings())
+                {
+                    <option value="@b">@b</option>
+                }
+            </select>
+            @*<input id="BindingInput" list="BindingList" value="@Field.StoreField.BindingProperty" class="form-control" @onchange="BindingChanged" autocomplete="off" />
+            <datalist id="BindingList">
+                @foreach (var b in FormsPageController.GetEntityBindings())
+                {
+                <option value="@b"></option>
+                }
+            </datalist>
+        </div>
+        <div class="col-sm-1 forms-nospace">
+            &nbsp;
+            <button class="btn btn-light btn-sm forms-btn-center" @onclick="SetBindingClick">...</button>*@
+        </div>
+    </div>
+    <div class="row-nospace-sm">
+        <div class="col-sm-7 forms-nospace">
+            <input type="checkbox" class="" checked="@Field.StoreField.Required" @onchange="RequiredChanged" id="check1" />
+            <label for="check1">Required</label>
+            &nbsp;
+            <input type="checkbox" class="" checked="@Field.StoreField.Hidden" @onchange="HiddenChanged" id="check3" />
+            <label for="check3">Hidden</label>
+            &nbsp;
+            <input type="checkbox" class="" checked="@Field.StoreField.ReadOnly" @onchange="ReadOnlyChanged" id="check2" />
+            <label for="check2">Read only</label>
+        </div>
+        <div class="col-sm-5 forms-nospace">
+            <button class="btn btn-light btn-sm" @onclick="RulesClick">Rules[1] ...</button>
+            &nbsp;
+            <button class="btn btn-light btn-sm" @onclick="RulesClick">Events ...</button>
+        </div>
+    </div>
+    </div>
+
+<!--<table>
     <tr>
         <td>
             Label
             <input id="LabelInput" value="@Field.StoreField.Label" class="form-control" @onchange="LabelChanged" />
         </td>
-        <td>
+        <td>-->
             @*Binding
             <input id="BindingInput" value="@Field.StoreField.BindingProperty" class="form-control" @onchange="BindingChanged" />*@
-            Advanced
+            <!--Advanced
             <div>
                 <button class="btn btn-light btn-sm" @onclick="RulesClick">Binding ...</button>
                 &nbsp;
@@ -44,13 +92,16 @@
             <input id="LabelInput" value="@Field.StoreField.Format" class="form-control" @onchange="FormatChanged" />
         </td>
         <td>
-           
+
         </td>
     </tr>
     }
-</table>
+</table>-->
 
 @code {
+    [CascadingParameter]
+    public IFormBuilderController FormsPageController { get; set; }
+
     [Parameter]
     public FieldComponentModel Field { get; set; }
 
@@ -59,14 +110,38 @@
 
     private async Task LabelChanged(ChangeEventArgs args)
     {
+        Field.StoreField.Label = args.Value.ToString();
+        FormsPageController.Changed();
     }
     private async Task BindingChanged(ChangeEventArgs args)
     {
+        Field.StoreField.BindingProperty = args.Value.ToString();
+
+        if (string.IsNullOrWhiteSpace(Field.StoreField.Label))
+        {
+            Field.StoreField.Label = Field.StoreField.BindingProperty.Replace("$.", "");
+        }
+
+        await Change();
     }
+
     private async Task RequiredChanged(ChangeEventArgs args)
     {
+        Field.StoreField.Required = Convert.ToBoolean(args.Value);
+        await Change();
     }
     private async Task ReadOnlyChanged(ChangeEventArgs args)
+    {
+        Field.StoreField.ReadOnly = Convert.ToBoolean(args.Value);
+        await Change();
+    }
+    private async Task HiddenChanged(ChangeEventArgs args)
+    {
+        Field.StoreField.Hidden = Convert.ToBoolean(args.Value);
+        await Change();
+    }
+
+    private async Task SetBindingClick(MouseEventArgs args)
     {
     }
     private async Task FormatChanged(ChangeEventArgs args)
@@ -76,5 +151,9 @@
     {
     }
 
-
+    private async Task Change()
+    {
+        FormsPageController.Changed();
+        await ModelChanged.InvokeAsync();
+    }
 }

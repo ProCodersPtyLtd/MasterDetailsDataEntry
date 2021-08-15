@@ -9,13 +9,13 @@ namespace Platz.ObjectBuilder.Blazor.Model
 {
     public class FieldComponentModel
     {
-        public string Name { get; set; }
-        public string Binding { get; set; }
+        //public string Name { get; set; }
+        //public string Binding { get; set; }
         public bool Active { get; set; }
         public int Order { get; set; }
         public FieldComponentType ComponentType { get; set; }
 
-        public StoreFormField StoreField { get; set; }
+        public StoreFormField StoreField { get; set; } = new StoreFormField();
     }
 
     public enum FieldComponentType

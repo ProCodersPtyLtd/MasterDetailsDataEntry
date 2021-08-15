@@ -6,5 +6,12 @@
 
 
 @code {
+    [CascadingParameter]
+    public IFormBuilderController FormController { get; set; }
 
+    [Parameter]
+    public double Height { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 }

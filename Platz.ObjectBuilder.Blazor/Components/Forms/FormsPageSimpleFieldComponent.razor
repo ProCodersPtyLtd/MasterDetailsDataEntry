@@ -9,10 +9,10 @@
 <div @onclick="CaptionClick" @onclick:stopPropagation="true">
     <div class="forms-widget @GetCaptionClass()">
         &nbsp;
-        @($"{Field.Order}: {Field.Name} {GetControlName()}({Field.Binding})")
+        @($"{Field.Order}: {Field.StoreField.Label} {GetControlName()}({Field.StoreField.BindingProperty})")
 
         <div class="float-right">
-            <button class="btn btn-danger btn-sm" title="Cancel" @onclick="@(async (args) => await DeleteClick(args, Field.Binding))"
+            <button class="btn btn-danger btn-sm" title="Cancel" @onclick="@(async (args) => await DeleteClick(args, Field.StoreField.BindingProperty))"
                     style="display: block; margin-left: auto; margin-right: 0;">
                 <span class="oi oi-x"></span>
             </button>
@@ -47,7 +47,10 @@
     }
 
     private async Task DeleteClick(MouseEventArgs e, string binding)
-    { }
+    {
+        FormsPageController.DeleteField(Field);
+        await ModelChanged.InvokeAsync();
+    }
 
     private async Task CaptionClick(MouseEventArgs e)
     {

@@ -3,9 +3,13 @@
     margin: 0 0 0 0;
 }
 
-::deep .forms-tb-buttons {
+::deep .forms-btn-center {
+    display: block;
+    margin: 1px auto 0 auto;
 }
 
+::deep .forms-tb-buttons {
+}
 ::deep .forms-tb-buttons button{
     width: 100%;
     margin: 0 0 5px 0;
@@ -36,6 +40,29 @@
 ::deep .forms-grid {
     margin: 5px 0 0 0;
 }
+
+::deep .forms-nospace {
+    margin: 2px 0 0 0;
+    padding: 0 0 0 0;
+}
+
+::deep .row-nospace-sm {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 2px 2px 2px;
+    padding: 1px 1px 1px 1px;
+}
+
+::deep .nospace-sm {
+    margin: 1px 1px 1px 1px;
+    padding: 1px 1px 1px 1px;
+}
+
+::deep .nospace-sm2 {
+    margin: 0 2px 2px 2px;
+    padding: 0 0 0 0;
+}
+
 ::deep .forms-cap-active {
     padding: 0 0 0 10px;
     background-color: dodgerblue;
