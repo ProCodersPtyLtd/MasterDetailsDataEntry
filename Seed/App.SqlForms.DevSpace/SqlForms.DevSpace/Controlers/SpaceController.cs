@@ -22,10 +22,11 @@ namespace SqlForms.DevSpace.Controlers
         void CreateNewForm();
         List<StoreSchema> GetProjectSchemas();
         List<StoreQuery> GetProjectQueries();
-        List<StoreForm> GetProjectForms();
+        List<FormDetails> GetProjectForms();
         List<EditWindowDetails> GetEditWindows();
         bool ActivateWindow(IStoreObject item);
         void ActivateWindow(int index);
+        void CloseWindow(int index);
         void OpenWindow(IStoreObject item);
         EditWindowType GetStoreObjectType(IStoreObject item);
         void LoadModel(string name);
@@ -100,9 +101,9 @@ namespace SqlForms.DevSpace.Controlers
             return result;
         }
 
-        public List<StoreForm> GetProjectForms()
+        public List<FormDetails> GetProjectForms()
         {
-            var result = Model.Forms.Select(s => s.Form).OrderBy(s => s.Name).ToList();
+            var result = Model.Forms.Select(s => s).OrderBy(s => s.DisplayName).ToList();
             return result;
         }
 
@@ -114,6 +115,11 @@ namespace SqlForms.DevSpace.Controlers
 
         public void ActivateWindow(int index)
         {
+            if (index >= Model.EditWindows.Count)
+            {
+                return;
+            }
+
             var item = Model.EditWindows[index].StoreObject;
             ActivateWindow(item);
             //ActiveWindowIndex = index;
@@ -170,7 +176,7 @@ namespace SqlForms.DevSpace.Controlers
                 return;
             }
 
-            var w = new EditWindowDetails { StoreObject = item, Type = GetStoreObjectType(item) };
+            var w = new EditWindowDetails { StoreObject = item, StoreObjectDetails = FindModelStoreObjectDetails(item), Type = GetStoreObjectType(item) };
             Model.EditWindows.Add(w);
             ActivateWindow(item);
         }
@@ -204,9 +210,25 @@ namespace SqlForms.DevSpace.Controlers
             Model.Schemas = project.Schemas.Values.Select(x => new SchemaDetails { Schema = x, SchemaMigrations = project.SchemaMigrations[x.Name] }).ToList();
             Model.Queries = project.Queries.Values.Select(x => new QueryDetails { Query = x }).ToList();
             Model.Forms = project.Forms.Values.Select(x => new FormDetails { Form = x }).ToList();
-            Model.EditWindows = project.Settings.EditWindows.Select(s => new EditWindowDetails { StoreObject = FindModelStoreObject(s) }).ToList();
+            
+            Model.EditWindows = project.Settings.EditWindows.Select(
+                s => 
+                {
+                    var obj = FindModelStoreObject(s);
+                    return new EditWindowDetails { StoreObject = obj, StoreObjectDetails = FindModelStoreObjectDetails(obj) };
+                }).ToList();
+            
             Model.EditWindows.ForEach(w => w.Type = GetStoreObjectType(w.StoreObject));
             UpdateFormBuilder();
+        }
+
+        private IStoreObjectDetails FindModelStoreObjectDetails(IStoreObject item)
+        {
+            var result = Model.Schemas.FirstOrDefault(x => x.Schema == item) as IStoreObjectDetails ??
+                Model.Queries.FirstOrDefault(x => x.Query == item) as IStoreObjectDetails ??
+                Model.Forms.FirstOrDefault(x => x.Form == item) as IStoreObjectDetails;
+
+            return result;
         }
 
         private IStoreObject FindModelStoreObject(string name)
@@ -225,6 +247,7 @@ namespace SqlForms.DevSpace.Controlers
             ApplyNewFormDefaults(formDetails);
             Model.Forms.Add(formDetails);
             OpenWindow(form);
+            formDetails.Model.IsDirty = true;
         }
 
         private void ApplyNewFormDefaults(FormDetails formDetails)
@@ -250,6 +273,19 @@ namespace SqlForms.DevSpace.Controlers
             } while (Model.Forms.Any(f => f.Form.Name == name));
 
             return name;
+        }
+
+        public void CloseWindow(int index)
+        {
+            var w = Model.EditWindows[index];
+            w.StoreObjectDetails.DiscardChanges();
+            Model.EditWindows.RemoveAt(index);
+
+            if (Model.EditWindows.Any())
+            {
+                var newIndex = Math.Min(index, Model.EditWindows.Count-1);
+                ActivateWindow(newIndex);
+            }
         }
     }
 }

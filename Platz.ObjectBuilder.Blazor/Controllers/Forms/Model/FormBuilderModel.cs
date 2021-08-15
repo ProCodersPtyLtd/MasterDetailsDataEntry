@@ -28,6 +28,15 @@ namespace Platz.ObjectBuilder.Blazor.Model
         public List<string> Datasources { get; set; } = new List<string>();
         public List<FieldComponentModel> Fields { get; set; } = new List<FieldComponentModel>();
 
+        public string DisplayName
+        {
+            get
+            {
+                string dirty = IsDirty ? "*" : "";
+                return $"{Name}{dirty}";
+            }
+        }
+
         public static void CopyFrom(FormBuilderModel model, StoreForm form)
         {
             model.Name = form.Name;

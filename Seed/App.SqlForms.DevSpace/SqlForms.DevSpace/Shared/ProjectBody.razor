@@ -1,6 +1,8 @@
 ﻿@using Platz.ObjectBuilder
 @using Platz.SqlForms
 
+@inject IJSRuntime JS
+
 <div style="vertical-align: top">
 
     <ul class="nav nav-tabs" role="tablist">
@@ -16,7 +18,7 @@
                 <a class="nav-link @(w.StoreObject.Name == _spaceController.ActiveWindowName ? "active" : "")" data-toggle="tab" href="#w@(GetTabTarget(w))"
                    @onclick="@(async () => await TabClick(rowIndex))">
                     <button class="close closeTab" type="button" @onclick="@(async () => await TabCloseClick(rowIndex))">×</button>
-                    @w.StoreObject.Name
+                    @w.StoreObjectDetails.DisplayName
                 </a>
             </li>
 
@@ -95,5 +97,20 @@
 
     private async Task TabCloseClick(int index)
     {
+        var ws = _spaceController.GetEditWindows()[index];
+
+        if (ws.StoreObjectDetails.DisplayName.EndsWith("*"))
+        {
+            // are you sure
+            var canClose = await JS.InvokeAsync<bool>("confirm", $"Your changes not saved. Are you sure you want to close '{ws.StoreObjectDetails.DisplayName}' ?");
+
+            if (!canClose)
+            {
+                return;
+            }
+        }
+
+        _spaceController.CloseWindow(index);
+        await ModelChanged.InvokeAsync();
     }
 }

@@ -89,14 +89,14 @@
 
     private async Task Change()
     {
-        FormsPageController.Changed();
+        FormsPageController.Change();
         await ModelChanged.InvokeAsync();
     }
 
     private async Task LabelChanged(ChangeEventArgs args)
     {
         Field.StoreField.Label = args.Value.ToString();
-        FormsPageController.Changed();
+        FormsPageController.Change();
     }
     private async Task BindingChanged(ChangeEventArgs args)
     {

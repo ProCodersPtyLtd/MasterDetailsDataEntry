@@ -11,7 +11,7 @@ namespace Platz.ObjectBuilder
     public interface IFormBuilderController
     {
         FormBuilderModel Model { get; set; }
-        void Changed();
+        void Change();
 
         List<FieldComponentModel> GetPageFieldComponents();
         void SetActive(FieldComponentModel field);
@@ -133,7 +133,7 @@ namespace Platz.ObjectBuilder
             }
         }
 
-        public void Changed()
+        public void Change()
         {
             Model.IsDirty = true;
         }
@@ -142,31 +142,31 @@ namespace Platz.ObjectBuilder
         {
             var f = new FieldComponentModel { ComponentType = FieldComponentType.TextEdit };
             Model.Fields.Add(f);
-            Changed();
+            Change();
         }
 
         public void MoveUp()
         {
             throw new NotImplementedException();
-            Changed();
+            Change();
         }
 
         public void MoveDown()
         {
             throw new NotImplementedException();
-            Changed();
+            Change();
         }
 
         public void Clear()
         {
             Model.Fields.Clear();
-            Changed();
+            Change();
         }
 
         public void GenerateFromEntity()
         {
             throw new NotImplementedException();
-            Changed();
+            Change();
         }
 
         public List<string> GetEntityBindings()
@@ -195,12 +195,13 @@ namespace Platz.ObjectBuilder
         {
             SetActive(null);
             Model.Fields.Remove(field);
-            Changed();
+            Change();
         }
 
         public void UpdateFormName(string name)
         {
-            throw new NotImplementedException();
+            Model.Name = name;
+            Change();
         }
     }
 }
