@@ -8,7 +8,7 @@
                     Name
                 </div>
                 <div class="col-sm-8 forms-nospace">
-                    <input id="BindingInput" @bind-value="FormsPageController.Model.Name" class="form-control" />
+                    <input id="BindingInput" value="@FormsPageController.Model.Name" @onchange="FormNameChanged" class="form-control" />
                 </div>
             </div>
 
@@ -70,6 +70,9 @@
     [CascadingParameter]
     public IFormBuilderController FormsPageController { get; set; }
 
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
     private IFormBuilderController _ctrl {  get { return FormsPageController; } }
 
     private async Task SchemaChanged(ChangeEventArgs a)
@@ -86,6 +89,18 @@
     private async Task EditFormChanged(ChangeEventArgs a)
     { }
 
+    private async Task FormNameChanged(ChangeEventArgs a)
+    {
+        _ctrl.UpdateFormName(a.Value.ToString());
+        await Change();
+    }
+
     private async Task ListFormChanged(ChangeEventArgs a)
     { }
+
+    private async Task Change()
+    {
+        FormsPageController.Changed();
+        await ModelChanged.InvokeAsync();
+    }
 }

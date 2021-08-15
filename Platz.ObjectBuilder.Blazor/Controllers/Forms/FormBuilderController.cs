@@ -32,6 +32,8 @@ namespace Platz.ObjectBuilder
         void GenerateFromEntity();
 
         List<string> GetEntityBindings();
+        void SwitchModel(FormBuilderModel model);
+        void UpdateFormName(string name);
     }
     public class FormBuilderController : IFormBuilderController
     {
@@ -55,6 +57,11 @@ namespace Platz.ObjectBuilder
             //Model.Fields.Add(new FieldComponentModel { Name = "Created", Binding = "$.CreatedDate", ComponentType = FieldComponentType.DateEdit, StoreField = new StoreFormField() });
             
             ApplySortOrder();
+        }
+
+        public void SwitchModel(FormBuilderModel model)
+        {
+            Model = model;
         }
 
         public List<FieldComponentModel> GetPageFieldComponents()
@@ -189,6 +196,11 @@ namespace Platz.ObjectBuilder
             SetActive(null);
             Model.Fields.Remove(field);
             Changed();
+        }
+
+        public void UpdateFormName(string name)
+        {
+            throw new NotImplementedException();
         }
     }
 }

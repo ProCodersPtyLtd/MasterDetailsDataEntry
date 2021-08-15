@@ -9,8 +9,11 @@ namespace Platz.SqlForms
     public class StoreForm : IStoreObject
     {
         public string Name { get; set; }
+        public bool IsListForm { get; set; }
+        public string Schema { get; set; }
+        public string Datasource { get; set; }
 
-        public Dictionary<string, StoreFormField> Fields { get; set; }
+        public Dictionary<string, StoreFormField> Fields { get; set; } = new Dictionary<string, StoreFormField>();
     }
 
     public class StoreFormField
@@ -24,6 +27,7 @@ namespace Platz.SqlForms
         public bool Hidden { get; set; }
         public bool? ReadOnly { get; set; }
         public string Format { get; set; }
+        public int Order { get; set; }
         public FieldFilterType FilterType { get; set; }
     }
 }

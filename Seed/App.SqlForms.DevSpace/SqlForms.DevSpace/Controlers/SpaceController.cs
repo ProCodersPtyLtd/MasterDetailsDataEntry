@@ -1,4 +1,5 @@
 ﻿using Platz.ObjectBuilder;
+using Platz.ObjectBuilder.Blazor.Model;
 using Platz.SqlForms;
 using SqlForms.DevSpace.Logic;
 using SqlForms.DevSpace.Model;
@@ -18,6 +19,7 @@ namespace SqlForms.DevSpace.Controlers
         int ActiveWindowIndex { get; }
 
         void CreateNewProject();
+        void CreateNewForm();
         List<StoreSchema> GetProjectSchemas();
         List<StoreQuery> GetProjectQueries();
         List<StoreForm> GetProjectForms();
@@ -110,6 +112,14 @@ namespace SqlForms.DevSpace.Controlers
             return result;
         }
 
+        public void ActivateWindow(int index)
+        {
+            var item = Model.EditWindows[index].StoreObject;
+            ActivateWindow(item);
+            //ActiveWindowIndex = index;
+            //ActiveWindowName = Model.EditWindows[index].StoreObject.Name;
+        }
+
         public bool ActivateWindow(IStoreObject item)
         {
             var w = GetEditWindows().FirstOrDefault(x => x.StoreObject == item);
@@ -118,10 +128,39 @@ namespace SqlForms.DevSpace.Controlers
             {
                 ActiveWindowIndex = GetEditWindows().IndexOf(w);
                 ActiveWindowName = w.StoreObject.Name;
+
+                if (GetStoreObjectType(item) == EditWindowType.Form)
+                {
+                    FormBuilderControllerSwitchModel(item as StoreForm); 
+                    //_formBuilderController.SwitchModel(form.Model);
+                }
+
                 return true;
             }
 
             return false;
+        }
+
+        private FormDetails FormBuilderControllerSwitchModel(StoreForm item)
+        {
+            var d = Model.Forms.First(f => f.Form == item);
+            var newModel = d.Model == null;
+
+            if (d.Model == null)
+            {
+                d.Model = new FormBuilderModel(item);
+            }
+
+            _formBuilderController.SwitchModel(d.Model);
+            UpdateFormBuilder();
+            _formBuilderController.RefreshDatasources();
+
+            if (newModel)
+            {
+                _formBuilderController.SetActive(null);
+            }
+
+            return d;
         }
 
         public void OpenWindow(IStoreObject item)
@@ -158,12 +197,6 @@ namespace SqlForms.DevSpace.Controlers
             return EditWindowType.Unknown;
         }
 
-        public void ActivateWindow(int index)
-        {
-            ActiveWindowIndex = index;
-            ActiveWindowName = Model.EditWindows[index].StoreObject.Name;
-        }
-
         public void LoadModel(string name)
         {
             var project = _projectLoader.Load(name);
@@ -183,6 +216,40 @@ namespace SqlForms.DevSpace.Controlers
                 Model.Forms.FirstOrDefault(x => x.Form.Name == name) as IStoreObject;
 
             return result;
+        }
+
+        public void CreateNewForm()
+        {
+            var form = new StoreForm();
+            var formDetails = new FormDetails { Form = form };
+            ApplyNewFormDefaults(formDetails);
+            Model.Forms.Add(formDetails);
+            OpenWindow(form);
+        }
+
+        private void ApplyNewFormDefaults(FormDetails formDetails)
+        {
+            formDetails.Form.Name = GetNextFormName();
+
+            if (Model.Schemas.Count == 1)
+            {
+                formDetails.Form.Schema = Model.Schemas.First().Schema.Name;
+                formDetails.Form.Schema = Model.Schemas.First().Schema.Name;
+            }
+        }
+
+        private string GetNextFormName()
+        {
+            int i = 0;
+            string name;
+
+            do
+            {
+                i++;
+                name = $"Form{i}";
+            } while (Model.Forms.Any(f => f.Form.Name == name));
+
+            return name;
         }
     }
 }
