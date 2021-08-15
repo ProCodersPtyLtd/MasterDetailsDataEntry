@@ -1,0 +1,92 @@
+﻿::deep .forms-big {
+    padding: 5px 0 0 0;
+    margin: 0 0 0 0;
+}
+
+::deep .forms-btn-center {
+    display: block;
+    margin: 1px auto 0 auto;
+}
+
+::deep .forms-tb-buttons {
+}
+::deep .forms-tb-buttons button{
+    width: 100%;
+    margin: 0 0 5px 0;
+}
+
+::deep .forms-tb-buttons-field {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0 5px 0;
+}
+
+::deep .forms-toolbar {
+    padding: 0 0 0 0;
+    margin: 0 0 0 0;
+    width: 100%;
+}
+
+::deep .tb-margin {
+    margin: 0 0 5px 0;
+}
+
+::deep .tb-wide {
+    margin: 0 0 5px 0;
+    width: 100%;
+}
+
+::deep .forms-grid {
+    margin: 5px 0 0 0;
+}
+
+::deep .forms-nospace {
+    margin: 2px 0 0 0;
+    padding: 0 0 0 0;
+}
+
+::deep .row-nospace-sm {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 2px 2px 2px;
+    padding: 1px 1px 1px 1px;
+}
+
+::deep .nospace-sm {
+    margin: 1px 1px 1px 1px;
+    padding: 1px 1px 1px 1px;
+}
+
+::deep .nospace-sm2 {
+    margin: 0 2px 2px 2px;
+    padding: 0 0 0 0;
+}
+
+::deep .forms-cap-active {
+    padding: 0 0 0 10px;
+    background-color: dodgerblue;
+    height: 32px;
+}
+
+::deep .forms-cap {
+    padding: 0 0 0 10px;
+    background-color: gray;
+    height: 32px;
+}
+
+::deep .forms-uncap {
+    padding: 0 0 0 10px;
+    background-color: lightgray;
+    height: 32px;
+}
+
+::deep .forms-widget {
+    width: 500px;
+}
+
+::deep .forms-widget-body {
+    width: 500px;
+    min-height: 50px;
+    background-color: lightgray
+}

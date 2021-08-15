@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Platz.ObjectBuilder;
 using SqlForms.DevSpace.Controlers;
 using SqlForms.DevSpace.Logic;
 using System;
@@ -12,8 +13,9 @@ namespace SqlForms.DevSpace
     {
         public static IServiceCollection AddDevSpace([NotNullAttribute] this IServiceCollection services)
         {
-            services.AddSingleton<ISpaceController, SpaceController>();
-            services.AddSingleton<IProjectLoader, FileProjectLoader>();
+            services.AddScoped<ISpaceController, SpaceController>();
+            services.AddScoped<IProjectLoader, FileProjectLoader>();
+            services.AddScoped<IFormBuilderController, FormBuilderController>();
 
             return services;
         }

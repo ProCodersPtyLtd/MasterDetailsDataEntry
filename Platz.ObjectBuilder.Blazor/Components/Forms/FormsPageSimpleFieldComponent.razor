@@ -6,20 +6,20 @@
 
 @if (Field != null)
 {
-<div @onclick="CaptionClick">
-    <div style="background-color: @(Field.Active ? "dodgerblue": "gray"); width: 500px; height: 32px;">
+<div @onclick="CaptionClick" @onclick:stopPropagation="true">
+    <div class="forms-widget @GetCaptionClass()">
         &nbsp;
-        @($"{Field.Order}: {Field.Name} {GetControlName()}({Field.Binding})")
+        @($"{Field.Order}: {Field.StoreField.Label} {GetControlName()}({Field.StoreField.BindingProperty})")
 
         <div class="float-right">
-            <button class="btn btn-danger btn-sm" title="Cancel" @onclick="@(async (args) => await DeleteClick(args, Field.Binding))"
+            <button class="btn btn-danger btn-sm" title="Cancel" @onclick="@(async (args) => await DeleteClick(args, Field.StoreField.BindingProperty))"
                     style="display: block; margin-left: auto; margin-right: 0;">
                 <span class="oi oi-x"></span>
             </button>
         </div>
     </div>
 
-    <div style="width: 500px; min-height: 50px; background-color: lightgray">
+    <div class="forms-widget-body">
         
         @if (Field.ComponentType == FieldComponentType.TextEdit)
         { 
@@ -36,13 +36,21 @@
     public IFormBuilderController FormsPageController { get; set; }
 
     [Parameter]
-    public FieldComponent Field { get; set; }
+    public FieldComponentModel Field { get; set; }
 
     [Parameter]
     public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 
+    private string GetCaptionClass()
+    {
+        return Field.Active ? "forms-cap-active" : "forms-cap";
+    }
+
     private async Task DeleteClick(MouseEventArgs e, string binding)
-    { }
+    {
+        FormsPageController.DeleteField(Field);
+        await ModelChanged.InvokeAsync();
+    }
 
     private async Task CaptionClick(MouseEventArgs e)
     {

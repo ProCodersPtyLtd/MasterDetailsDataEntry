@@ -32,17 +32,25 @@
 
         <li class="nav-item">
             <button class="btn btn-light" type="button">
-                <span class="oi oi-fire"></span>
-                Some Button
+                <span class="oi oi-layers"></span>
+                New Schema
             </button>
         </li>
 
         <li class="nav-item">
             <button class="btn btn-light" type="button">
-                <span class="oi oi-fire"></span>
-                Another Button
+                <span class="oi oi-command"></span>
+                New Query
             </button>
         </li>
+
+        <li class="nav-item">
+            <button class="btn btn-light" type="button" @onclick="NewFormClick">
+                <span class="oi oi-spreadsheet"></span>
+                New Form
+            </button>
+        </li>
+
 
     </ul>
 </div>
@@ -141,6 +149,12 @@
         var result = _spaceController.Loader.GetFolders(FullStoreDataPath);
         _files = result;
         return result;
+    }
+
+    private async Task NewFormClick(MouseEventArgs args)
+    {
+        _spaceController.CreateNewForm();
+        await ModelChanged.InvokeAsync();
     }
 
     private async Task DialogLoadClick(MouseEventArgs args)

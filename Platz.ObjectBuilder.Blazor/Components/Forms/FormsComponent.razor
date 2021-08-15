@@ -8,19 +8,42 @@
 
 <CascadingValue Value="@_formsPageController">
 
-    <h3>Forms Builder</h3>
+    @*<div class="container" style="margin-left: 0; margin-right: 0">*@
+    <div class="forms-big" style="padding: 5px 0 0 0;">
+            <div class="row">
+                <div class="col-lg-6" style="padding: 0 0 0 15px;">
+                    <FormsPageContentComponent Height="Height" ModelChanged="ModelChanged" />
+                </div>
+                <div class="col-lg-1" style="padding: 0 5px 0 5px;">
+                    <FormsPageToolbarComponent Height="Height" ModelChanged="ModelChanged"/>
+                </div>
+                <div class="col-lg-5" style="padding: 0 15px 0 0;">
+                    <FormsPropertiesComponent ModelChanged="ModelChanged"/>
 
-    <div style="width: 520px">
+                    <FormsInfoComponent ModelChanged="ModelChanged"/>
+                </div>
+            </div>
+    </div>
+
+    @*<div style="width: 520px">
         <FormsPageContentComponent Height="780" ModelChanged="ModelChanged" />
     </div>
+    <div>
+        <FormsFieldPropertiesComponent />
+    </div>*@
 
 </CascadingValue>
 
 @code 
 {
+    [Parameter]
+    public double Height { get; set; } = 780;
 
-    private async Task ModelChanged(ChangeEventArgs args)
-    {
-        StateHasChanged();
-    }
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    //private async Task ModelChanged(ChangeEventArgs args)
+    //{
+    //    StateHasChanged();
+    //}
 }

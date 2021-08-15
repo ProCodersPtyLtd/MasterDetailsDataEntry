@@ -1,10 +1,10 @@
-﻿@*<h5>EditorPage</h5>
+﻿@using Platz.SqlForms
+@using Platz.ObjectBuilder
 
-Window: @_spaceController.ActiveWindowIndex*@
 
-<!--@if (_spaceController.ActiveWindow?.Type == EditWindowType.Form)
+@if (_spaceController.ActiveWindow?.Type == EditWindowType.Form)
 {
-    <FormsComponent Height="740"/>
+    <FormsComponent Height="740" ModelChanged="ModelChanged" />
 }
 
 @code {
@@ -17,4 +17,4 @@ Window: @_spaceController.ActiveWindowIndex*@
     //[Parameter]
     //public int ItemIndex { get; set; }
 
-}-->
+}

@@ -1,0 +1,40 @@
+﻿@namespace Platz.ObjectBuilder.Blazor.Forms
+
+<div style="height: 390px; border-width: 1px; border-style: solid;">
+
+    @if (FormsPageController.PageActive)
+    {
+        <FormsPagePropertiesComponent ModelChanged="ModelChanged"/> 
+    }
+    else if (_ctrl.ActiveField != null)
+    {
+        <FormsFieldPropertiesComponent Field="_ctrl.ActiveField" ModelChanged="ModelChanged" />
+    }
+</div>
+
+@code {
+    [CascadingParameter]
+    public IFormBuilderController FormsPageController { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    private IFormBuilderController _ctrl {  get { return FormsPageController; } }
+
+    private async Task SchemaChanged(ChangeEventArgs a)
+    {
+        _ctrl.Model.Schema = a.Value.ToString();
+        _ctrl.RefreshDatasources();
+    }
+
+    private async Task DatasourceChanged(ChangeEventArgs a)
+    {
+        _ctrl.Model.Datasource = a.Value.ToString();
+    }
+
+    private async Task EditFormChanged(ChangeEventArgs a)
+    { }
+
+    private async Task ListFormChanged(ChangeEventArgs a)
+    { }
+}

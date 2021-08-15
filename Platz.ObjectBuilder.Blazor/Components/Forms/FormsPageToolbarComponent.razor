@@ -1,0 +1,88 @@
+﻿@namespace Platz.ObjectBuilder.Blazor.Forms
+
+    <div class="forms-uncap">Controls</div>
+
+    <div class="forms-toolbar forms-grid">
+        <div class="forms-tb-buttons">
+            <div>
+                <button class="btn btn-secondary tb-wide" type="button" @onclick="TextEditClick">TextEdit</button>
+            </div>
+            <div>
+                <button class="btn btn-secondary tb-wide" type="button">Dropdown</button>
+            </div>
+            <div>
+                <button class="btn btn-secondary tb-wide" type="button">Checkbox</button>
+            </div>
+            <div>
+                <button class="btn btn-secondary tb-wide" type="button">DateEdit</button>
+            </div>
+            <div>
+                <button class="btn btn-secondary tb-wide" type="button">NumberEdit</button>
+            </div>
+        </div>
+
+        <div class="forms-tb-buttons-field">
+            <button class="btn btn-primary" type="button" @onclick="UpClick">
+                <span class="oi oi-arrow-circle-top"></span>
+            </button>
+        </div>
+
+        <div class="forms-tb-buttons-field">
+            <button class="btn btn-primary" type="button" @onclick="Downlick">
+                <span class="oi oi-arrow-circle-bottom"></span>
+            </button>
+        </div>
+
+        <div class="forms-tb-buttons">
+            <button class="btn btn-secondary" type="button" @onclick="GenerateClick">
+                Generate...
+            </button>
+        </div>
+
+        <div class="forms-tb-buttons">
+            <button class="btn btn-secondary" type="button" @onclick="ClearClick">
+                Clear...
+            </button>
+        </div>
+    </div>
+
+    @code {
+        [CascadingParameter]
+        public IFormBuilderController FormController { get; set; }
+
+        [Parameter]
+        public double Height { get; set; }
+
+        [Parameter]
+        public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+        private async Task TextEditClick(MouseEventArgs a)
+        {
+            FormController.AddTextEdit();
+            await ModelChanged.InvokeAsync();
+        }
+
+        private async Task UpClick(MouseEventArgs a)
+        {
+            FormController.MoveUp();
+            await ModelChanged.InvokeAsync();
+        }
+
+        private async Task Downlick(MouseEventArgs a)
+        {
+            FormController.MoveDown();
+            await ModelChanged.InvokeAsync();
+        }
+
+        private async Task GenerateClick(MouseEventArgs a)
+        {
+            FormController.GenerateFromEntity();
+            await ModelChanged.InvokeAsync();
+        }
+
+        private async Task ClearClick(MouseEventArgs a)
+        {
+            FormController.Clear();
+            await ModelChanged.InvokeAsync();
+        }
+    }

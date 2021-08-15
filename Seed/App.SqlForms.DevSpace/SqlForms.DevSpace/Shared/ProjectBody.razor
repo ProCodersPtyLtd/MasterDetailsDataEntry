@@ -1,0 +1,116 @@
+﻿@using Platz.ObjectBuilder
+@using Platz.SqlForms
+
+@inject IJSRuntime JS
+
+<div style="vertical-align: top">
+
+    <ul class="nav nav-tabs" role="tablist">
+        @{
+            var index = 0;
+        }
+
+        @foreach (var w in _spaceController.GetEditWindows())
+        {
+            var rowIndex = index;
+
+            <li class="nav-item">
+                <a class="nav-link @(w.StoreObject.Name == _spaceController.ActiveWindowName ? "active" : "")" data-toggle="tab" href="#w@(GetTabTarget(w))"
+                   @onclick="@(async () => await TabClick(rowIndex))">
+                    <button class="close closeTab" type="button" @onclick="@(async () => await TabCloseClick(rowIndex))">×</button>
+                    @w.StoreObjectDetails.DisplayName
+                </a>
+            </li>
+
+            index++;
+        }
+        @*<li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#w2" @onclick="@(async() => await TabClick(1))">
+                    <button class="close closeTab" type="button" @onclick="@(async() => await TabCloseClick(1))">×</button>Query1
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#w3" @onclick="@(async() => await TabClick(2))">
+                    <button class="close closeTab" type="button" @onclick="@(async() => await TabCloseClick(2))">×</button>Form1
+                </a>
+            </li>*@
+    </ul>
+
+    @* we don't need bs containers - use blazor events
+        <div class="tab-content">
+            <div id="w" class="container tab-pane active">
+                Hello
+            </div>
+            <div id="wSchema" class="container tab-pane fade">
+                Schema designer
+            </div>
+            <div id="wQuery" class="container tab-pane fade">
+                Query designer
+            </div>
+            <div id="wForm" class="container tab-pane fade">
+                Form designer
+            </div>
+        </div>*@
+
+    <ProjectEditorPage ModelChanged="ModelChanged" />
+
+</div>
+
+@code {
+    [CascadingParameter]
+    public ISpaceController _spaceController { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    //private int _selectedIndex;
+
+    protected override async Task OnAfterRenderAsync(bool first)
+    {
+    }
+
+    private string GetTabTarget(EditWindowDetails item)
+    {
+        EditWindowType type = _spaceController.GetStoreObjectType(item.StoreObject);
+
+        switch (type)
+        {
+            case EditWindowType.Schema:
+                return "Schema";
+            case EditWindowType.Query:
+                return "Query";
+            case EditWindowType.Form:
+                return "Form";
+            default:
+                return "";
+        }
+    }
+
+    private async Task TabClick(int index)
+    {
+        // if (index > _tabs.Count-1) return;
+
+        //_selectedIndex = index;
+        _spaceController.ActivateWindow(index);
+        await ModelChanged.InvokeAsync();
+    }
+
+    private async Task TabCloseClick(int index)
+    {
+        var ws = _spaceController.GetEditWindows()[index];
+
+        if (ws.StoreObjectDetails.DisplayName.EndsWith("*"))
+        {
+            // are you sure
+            var canClose = await JS.InvokeAsync<bool>("confirm", $"Your changes not saved. Are you sure you want to close '{ws.StoreObjectDetails.DisplayName}' ?");
+
+            if (!canClose)
+            {
+                return;
+            }
+        }
+
+        _spaceController.CloseWindow(index);
+        await ModelChanged.InvokeAsync();
+    }
+}

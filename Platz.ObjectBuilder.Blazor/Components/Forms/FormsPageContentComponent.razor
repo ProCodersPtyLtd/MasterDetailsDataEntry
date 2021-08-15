@@ -5,57 +5,71 @@
 
 @namespace Platz.ObjectBuilder.Blazor.Forms
 
-<h5>Control Flow</h5>
+    <div @onclick="PageClicked">
+        <div class="@GetPageClass()">
+            <h5>Control Flow</h5>
+        </div>
 
-<div class="grid-container overflow-auto" style="min-height: 600px; height: @(Height)px; width: auto; background-color: aliceblue;" @onscroll="() => Refresh()" >
+        <div class="grid-container overflow-auto" style="min-height: 600px; height: @(Height)px; width: auto; background-color: aliceblue;" @onscroll="() => Refresh()">
 
-    <div class="svg-panel-container2" style="z-index: -10; position: absolute; opacity: 0.9; width: 450px;">
-        <svg @ref="_svgRef" width="auto" height="@(Height)">
-            @if (_lines != null)
-            {
-                @foreach (var l in _lines)
-                {
-                    <line x1="@l.X1" y1="@l.Y1" x2="@l.X2" y2="@l.Y2" stroke="black" stroke-width="3px" stroke-linecap="round" />
-                }
-            }
-            @*<line x1="0" y1="0" x2="300" y2="500" stroke="black" stroke-width="4px" stroke-linecap="round" />*@
-        </svg>
+            <div class="svg-panel-container2" style="z-index: -10; position: absolute; opacity: 0.9; width: 450px;">
+                <svg @ref="_svgRef" width="auto" height="@(Height)">
+                    @if (_lines != null)
+                    {
+                        @foreach (var l in _lines)
+                        {
+                            <line x1="@l.X1" y1="@l.Y1" x2="@l.X2" y2="@l.Y2" stroke="black" stroke-width="3px" stroke-linecap="round" />
+                        }
+                    }
+                    @*<line x1="0" y1="0" x2="300" y2="500" stroke="black" stroke-width="4px" stroke-linecap="round" />*@
+                </svg>
+            </div>
+
+            <Dropzone @ref="_dropzone" Class="drag-container" Items="FormController.GetPageFieldComponents()" ItemWrapperClass="drag-item"
+                      TItem="FieldComponentModel" OnItemDrop="@ItemDropped">
+                <div>
+                    @*<div class="grid-item">@context.Name</div>*@
+                    <FormsPageSimpleFieldComponent Field="@context" ModelChanged="ModelChanged" />
+                </div>
+            </Dropzone>
+        </div>
     </div>
 
-    <Dropzone @ref="_dropzone" Class="drag-container" Items="FormController.GetPageFieldComponents()" ItemWrapperClass="drag-item" 
-              TItem="FieldComponent" OnItemDrop="@ItemDropped" >
-        <div>
-            @*<div class="grid-item">@context.Name</div>*@
-            <FormsPageSimpleFieldComponent Field="@context" ModelChanged="ModelChanged" />
-        </div>
-    </Dropzone>
-</div>
 
+    @code {
+        [CascadingParameter]
+        public IFormBuilderController FormController { get; set; }
 
+        [Parameter]
+        public double Height { get; set; }
 
-@code {
-    [CascadingParameter]
-    public IFormBuilderController FormController { get; set; }
+        [Parameter]
+        public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 
-    [Parameter]
-    public double Height { get; set; }
+        private ElementReference _svgRef;
+        private Dropzone<FieldComponentModel> _dropzone;
+        private List<LinePoints> _lines { get; set; }
 
-    [Parameter]
-    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+        private void Refresh()
+        {
+            //_needRefreshLinks = true;
+            //_renderPass = 1;
+            //StateHasChanged();
+        }
 
-    private ElementReference _svgRef;
-    private Dropzone<FieldComponent> _dropzone;
-    private List<LinePoints> _lines { get; set; }
+        private string GetPageClass()
+        {
+            return FormController.PageActive ? "forms-cap-active" : "forms-cap";
+        }
 
-    private void Refresh()
-    {
-        //_needRefreshLinks = true;
-        //_renderPass = 1;
-        //StateHasChanged();
+        private async Task ItemDropped(FieldComponentModel item)
+        {
+            FormController.ReOrderFields(_dropzone.Items);
+        }
+
+        private async Task PageClicked(MouseEventArgs args)
+        {
+            FormController.SetActive(null);
+            await ModelChanged.InvokeAsync();
+        }
     }
-
-    private async Task ItemDropped(FieldComponent item)
-    {
-        FormController.ReOrderFields(_dropzone.Items);
-    }
-}

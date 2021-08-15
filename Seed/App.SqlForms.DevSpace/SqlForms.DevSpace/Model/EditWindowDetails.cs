@@ -11,6 +11,8 @@ namespace SqlForms.DevSpace.Model
         public EditWindowType Type { get; set; }
 
         public IStoreObject StoreObject { get; set; }
+
+        public IStoreObjectDetails StoreObjectDetails { get; set; }
     }
 
     public enum EditWindowType

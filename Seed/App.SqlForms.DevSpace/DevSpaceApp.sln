@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Platz.SqlForms", "..\..\Pla
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Platz.SqlForms.Shared", "..\..\Platz.SqlForms.Shared\Platz.SqlForms.Shared.csproj", "{BA4470B8-19A7-44F0-AFE2-84A855CCB5CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlForms.DevSpace", "SqlForms.DevSpace\SqlForms.DevSpace.csproj", "{1CA8002F-542D-4DEE-8001-99532F70AC54}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlForms.DevSpace", "SqlForms.DevSpace\SqlForms.DevSpace.csproj", "{1CA8002F-542D-4DEE-8001-99532F70AC54}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
