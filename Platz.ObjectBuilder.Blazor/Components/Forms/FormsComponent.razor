@@ -1,6 +1,8 @@
 ﻿@using Platz.ObjectBuilder.Blazor
 @using Platz.ObjectBuilder.Blazor.Controllers
 @using Platz.ObjectBuilder.Blazor.Forms
+@using Platz.ObjectBuilder.Blazor.Model
+@using Platz.SqlForms
 
 @namespace Platz.ObjectBuilder
 
@@ -34,6 +36,71 @@
 
 </CascadingValue>
 
+<div class="modal fade" id="fieldRulesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Rules</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <div class="list-group overflow-auto" id="list-tab" role="tablist" style="max-height: 400px;">
+                            @for (int i = 0; i < _rules.Count; i++)
+                            {
+                                var rowIndex = i;
+
+                                <a class="list-group-item list-group-item-action" @onclick="() => RuleClick(rowIndex)"
+                                   data-toggle="list" href="#list-home" role="tab" aria-controls="home">@_rules[i].DisplayName</a>
+                            }
+                        </div>
+                        <br/>
+                        <button type="button" class="btn btn-success" @onclick="AddRulesClick">Add</button>
+                    </div>
+                    <div class="form-group">
+
+                        @if (SelectedFieldRule != null)
+                        {
+                        <div class=".forms-big">
+                            <div class="row-nospace-sm">
+                                <div class="col-sm-6 forms-nospace">
+                                    Name
+                                    <input id="NameInput" value="@SelectedFieldRule.Name" class="form-control" @onchange="RuleNameChanged" />
+                                </div>
+                                <div class="col-sm-6 forms-nospace">
+                                    Trigger
+                                    <select id="BindingInput" value="@SelectedFieldRule.Trigger" class="form-control" @onchange="RuleTriggerChanged">
+                                        @*<option value=""></option>*@
+
+                                        @foreach (var b in GetRuleTriggers())
+                                        {
+                                            <option value="@b">@b.ToString()</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row-nospace-sm">
+                                <div class="col-sm-12 forms-nospace">
+                                    <textarea id="exampleFormControlTextarea1" rows="8" style="width: 100%" />
+                                </div>
+                            </div>
+                         </div>
+                         }
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" @onclick="SaveRulesClick">Save Rules</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @code 
 {
     [Parameter]
@@ -46,4 +113,36 @@
     //{
     //    StateHasChanged();
     //}
+
+    private List<FieldRuleModel> _rules = (new FieldRuleModel[] { new FieldRuleModel { Name = "MyRule1", Trigger = FormRuleTriggers.Change, Code = "" } }).ToList();
+    private int SelectedRuleIndex;
+    private FieldRuleModel SelectedFieldRule;
+
+    private List<FormRuleTriggers> GetRuleTriggers()
+    {
+        //var result = Enum. GetNames(typeof(Platz.SqlForms.FormRuleTriggers)).ToList();
+        var result = Enum.GetValues(typeof(FormRuleTriggers)).Cast<FormRuleTriggers>().ToList();
+        return result;
+    }
+
+
+    private List<FieldRuleModel> GetRules()
+    {
+        return _rules;
+    }
+
+    private async Task AddRulesClick(MouseEventArgs a)
+    { }
+    private async Task RuleNameChanged(ChangeEventArgs a)
+    { }
+    private async Task RuleTriggerChanged(ChangeEventArgs a)
+    { }
+    private async Task SaveRulesClick(MouseEventArgs a)
+    { }
+
+    private async Task RuleClick(int index)
+    {
+        SelectedRuleIndex = index;
+        SelectedFieldRule = GetRules()[SelectedRuleIndex];
+    }
 }
