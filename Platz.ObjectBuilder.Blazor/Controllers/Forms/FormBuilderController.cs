@@ -222,6 +222,8 @@ namespace Platz.ObjectBuilder
             SelectedRuleIndex = -1;
         }
 
+        #region Validation
+        // ToDo: remove all codegeneration and compilation logic to a dedicated specialized class
         private static Assembly SystemRuntime = Assembly.Load(new AssemblyName("System.Runtime"));
 
         public async Task<List<string>> ValidateDirtyRules(List<FieldRuleModel> rules)
@@ -316,11 +318,6 @@ namespace Platz.ObjectBuilder
 
         }
 
-        public void ApplyActiveFieldRules(List<FieldRuleModel> rules)
-        {
-            throw new NotImplementedException();
-        }
-
         // ToDo: refactor!!! This is a copypaste from EntityFrameworkQueryGenerator
         private void AppendQueryReturnType(StringBuilder sb, StoreSchema schema, StoreQuery query)
         {
@@ -368,5 +365,14 @@ namespace Platz.ObjectBuilder
     }}");
 
         }
+
+        #endregion
+
+        public void ApplyActiveFieldRules(List<FieldRuleModel> rules)
+        {
+            rules.ForEach(r => r.IsDirty = false);
+            rules.CopyListTo(ActiveField.Rules);
+        }
+
     }
 }

@@ -22,6 +22,18 @@ namespace MasterDetailsDataEntry.Tests.Helpers
         }
 
         [Fact]
+        public void CopyToNoSetterTest()
+        {
+            var orderItem = new OrderItemExt { Id = 2, IsMajor = true, ItemName = "pasta" };
+            var orderItemCopy = new OrderItemExt();
+            var copyHash = orderItemCopy.GetHashCode();
+            orderItem.CopyTo(orderItemCopy);
+            var copyHashAfterCopy = orderItemCopy.GetHashCode();
+            Assert.Equal(orderItem.ItemName, orderItemCopy.ItemName);
+            Assert.Equal(copyHash, copyHashAfterCopy);
+        }
+
+        [Fact]
         public void CanRestorePreviousStateTest()
         {
             var orderItem = new OrderItem { Id = 2, IsMajor = true, ItemName = "pasta", Price = 10.1m };
@@ -67,5 +79,10 @@ namespace MasterDetailsDataEntry.Tests.Helpers
             list1[0].Id = -1;
             Assert.NotEqual(list1[0].Id, list2[0].Id);
         }
+    }
+
+    public class OrderItemExt : OrderItem
+    {
+        public string DisplayName { get { return $"{Id}:{ItemName}"; } }
     }
 }

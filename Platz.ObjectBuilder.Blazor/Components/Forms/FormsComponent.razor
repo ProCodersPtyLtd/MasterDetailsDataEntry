@@ -8,32 +8,33 @@
 @namespace Platz.ObjectBuilder
 
 @inject IFormBuilderController _formsPageController
+@inject IJSRuntime JS
 
 <CascadingValue Value="@_formsPageController">
 
     @*<div class="container" style="margin-left: 0; margin-right: 0">*@
     <div class="forms-big" style="padding: 5px 0 0 0;">
-            <div class="row">
-                <div class="col-lg-6" style="padding: 0 0 0 15px;">
-                    <FormsPageContentComponent Height="Height" ModelChanged="ModelChanged" />
-                </div>
-                <div class="col-lg-1" style="padding: 0 5px 0 5px;">
-                    <FormsPageToolbarComponent Height="Height" ModelChanged="ModelChanged"/>
-                </div>
-                <div class="col-lg-5" style="padding: 0 15px 0 0;">
-                    <FormsPropertiesComponent ModelChanged="ModelChanged"/>
-
-                    <FormsInfoComponent ModelChanged="ModelChanged"/>
-                </div>
+        <div class="row">
+            <div class="col-lg-6" style="padding: 0 0 0 15px;">
+                <FormsPageContentComponent Height="Height" ModelChanged="ModelChanged" />
             </div>
+            <div class="col-lg-1" style="padding: 0 5px 0 5px;">
+                <FormsPageToolbarComponent Height="Height" ModelChanged="ModelChanged" />
+            </div>
+            <div class="col-lg-5" style="padding: 0 15px 0 0;">
+                <FormsPropertiesComponent ModelChanged="ModelChanged" />
+
+                <FormsInfoComponent ModelChanged="ModelChanged" />
+            </div>
+        </div>
     </div>
 
     @*<div style="width: 520px">
-        <FormsPageContentComponent Height="780" ModelChanged="ModelChanged" />
-    </div>
-    <div>
-        <FormsFieldPropertiesComponent />
-    </div>*@
+            <FormsPageContentComponent Height="780" ModelChanged="ModelChanged" />
+        </div>
+        <div>
+            <FormsFieldPropertiesComponent />
+        </div>*@
 
 </CascadingValue>
 
@@ -51,19 +52,19 @@
                     <div class="form-group">
                         @if (_rules.Count == 0)
                         {
-                            @:no records
+                            @:no rules defined
                         }
                         else
                         {
-                        <div class="list-group overflow-auto" id="list-tab" role="tablist" style="max-height: 200px;">
-                            @for (int i = 0; i < _rules.Count; i++)
-                            {
-                                var rowIndex = i;
+                            <div class="list-group overflow-auto" id="list-tab" role="tablist" style="max-height: 200px;">
+                                @for (int i = 0; i < _rules.Count; i++)
+                                {
+                                    var rowIndex = i;
 
-                                <a class="list-group-item list-group-item-action @(i == _formsPageController.SelectedRuleIndex ? "active": "")" 
-                                   @onclick="() => RuleClick(rowIndex)" data-toggle="list" href="#list-home" role="tab" aria-controls="home">@_rules[i].DisplayName</a>
-                            }
-                        </div>
+                                    <a class="list-group-item list-group-item-action @(i == _formsPageController.SelectedRuleIndex ? "active": "")"
+                                       @onclick="() => RuleClick(rowIndex)" data-toggle="list" href="#list-home" role="tab" aria-controls="home">@_rules[i].DisplayName</a>
+                                }
+                            </div>
                         }
                         <br />
                         <button type="button" class="btn btn-success" @onclick="AddRulesClick">Add</button>
@@ -74,42 +75,42 @@
 
                         @if (SelectedFieldRule != null)
                         {
-                        <div class=".forms-big">
-                            <div class="row-nospace-sm">
-                                <div class="col-sm-6 forms-nospace">
-                                    Name
-                                    <input id="NameInput" value="@SelectedFieldRule.Name" class="form-control" @onchange="RuleNameChanged" />
-                                </div>
-                                <div class="col-sm-6 forms-nospace">
-                                    Trigger
-                                    <select id="BindingInput" value="@SelectedFieldRule.Trigger" class="form-control" @onchange="RuleTriggerChanged">
-                                        @*<option value=""></option>*@
+                            <div class=".forms-big">
+                                <div class="row-nospace-sm">
+                                    <div class="col-sm-6 forms-nospace">
+                                        Name
+                                        <input id="NameInput" value="@SelectedFieldRule.Name" class="form-control" @onchange="RuleNameChanged" />
+                                    </div>
+                                    <div class="col-sm-6 forms-nospace">
+                                        Trigger
+                                        <select id="BindingInput" value="@SelectedFieldRule.Trigger" class="form-control" @onchange="RuleTriggerChanged">
+                                            @*<option value=""></option>*@
 
-                                        @foreach (var b in GetRuleTriggers())
-                                        {
-                                            <option value="@b">@b.ToString()</option>
-                                        }
-                                    </select>
+                                            @foreach (var b in GetRuleTriggers())
+                                            {
+                                                <option value="@b">@b.ToString()</option>
+                                            }
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="row-nospace-sm">
-                                <div class="col-sm-12 forms-nospace">
-                                    <label>@GetMethodDefinition()</label>
-                                    <textarea id="exampleFormControlTextarea1" rows="8" style="width: 100%" value="@SelectedFieldRule.Code" @onchange="RuleCodeChanged" />
+                                <div class="row-nospace-sm">
+                                    <div class="col-sm-12 forms-nospace">
+                                        <label>@GetMethodDefinition()</label>
+                                        <textarea id="exampleFormControlTextarea1" rows="8" style="width: 100%" value="@SelectedFieldRule.Code" @onchange="RuleCodeChanged" />
+                                    </div>
                                 </div>
-                            </div>
 
-                            @if (_showRulesErrors)
-                            {
-                            <div class="row-nospace-sm">
-                                <div class="col-sm-12 forms-nospace">
-                                    <label>Validation errors</label>
-                                    <textarea id="rulesErrorsMemo" rows="4" readonly="readonly" style="width: 100%; color: red; background-color: black" value="@_rulesErrors" />
-                                </div>
+                                @if (_showRulesErrors)
+                                {
+                                    <div class="row-nospace-sm">
+                                        <div class="col-sm-12 forms-nospace">
+                                            <label>Validation errors</label>
+                                            <textarea id="rulesErrorsMemo" rows="4" readonly="readonly" style="width: 100%; color: red; background-color: black" value="@_rulesErrors" />
+                                        </div>
+                                    </div>
+                                }
                             </div>
-                            }
-                        </div>
                         }
                     </div>
                 </form>
@@ -117,19 +118,19 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-secondary" @onclick="ValidateRulesClick">Validate</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" @onclick="SaveRulesClick">Save Rules</button>
+                <button type="button" class="btn btn-primary" @onclick="SaveRulesClick">Save Rules</button>
             </div>
         </div>
     </div>
 </div>
 
-@code 
+@code
 {
-    [Parameter]
-    public double Height { get; set; } = 780;
+        [Parameter]
+        public double Height { get; set; } = 780;
 
-    [Parameter]
-    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+        [Parameter]
+        public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 
     //private async Task ModelChanged(ChangeEventArgs args)
     //{
@@ -137,8 +138,10 @@
     //}
 
     private bool _showRulesErrors;
-
     private string _rulesErrors;
+    private Task<IJSObjectReference> _module;
+    private Task<IJSObjectReference> Module => _module ??= JS.InvokeAsync<IJSObjectReference>("import", "./_content/Platz.ObjectBuilder.Blazor/objectBuilder.js").AsTask();
+
 
     private List<FieldRuleModel> _rules = (new FieldRuleModel[] { new FieldRuleModel { Name = "MyRule1", Trigger = FormRuleTriggers.Change, Code = "" } }).ToList();
     //private int SelectedRuleIndex;
@@ -146,7 +149,7 @@
     {
         get
         {
-            if (_formsPageController.SelectedRuleIndex == -1)
+            if (_formsPageController.SelectedRuleIndex == -1 || _formsPageController.SelectedRuleIndex >= _rules.Count)
             {
                 return null;
             }
@@ -204,7 +207,10 @@
     }
     private async Task DeleteRulesClick(MouseEventArgs a)
     {
-
+        if (SelectedFieldRule != null)
+        {
+            _rules.Remove(SelectedFieldRule);
+        }
     }
     private async Task RuleNameChanged(ChangeEventArgs a)
     {
@@ -250,6 +256,8 @@
         if (ok)
         {
             _formsPageController.ApplyActiveFieldRules(_formsPageController.ActiveFieldRules);
+            var module = await Module;
+            await module.InvokeVoidAsync("HideModal", new object[] { "#fieldRulesModal" });
         }
     }
 

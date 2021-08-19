@@ -46,8 +46,11 @@ namespace Platz.SqlForms.Shared
 
             foreach (var property in properties)
             {
-                var value = property.GetValue(source);
-                property.SetValue(target, value);
+                if (property.GetSetMethod() != null)
+                {
+                    var value = property.GetValue(source);
+                    property.SetValue(target, value);
+                }
             }
         }
 
