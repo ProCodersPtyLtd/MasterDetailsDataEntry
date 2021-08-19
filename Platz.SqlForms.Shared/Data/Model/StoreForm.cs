@@ -21,13 +21,17 @@ namespace Platz.SqlForms
         public string BindingProperty { get; set; }
         public string DataType { get; set; }
         public string ControlType { get; set; }
+        // ControlReadOnly
         public string ViewModeControlType { get; set; }
         public string Label { get; set; }
         public bool Required { get; set; }
         public bool Hidden { get; set; }
         public bool? ReadOnly { get; set; }
+        public bool PrimaryKey { get; set; }
+        public bool Unique { get; set; }
         public string Format { get; set; }
         public int Order { get; set; }
+        public bool Filter { get; set; }
         public FieldFilterType FilterType { get; set; }
     }
 }
