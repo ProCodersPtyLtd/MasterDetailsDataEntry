@@ -26,6 +26,8 @@ namespace Platz.ObjectBuilder.Blazor.Model
 
         public StoreFormField StoreField { get; set; } = new StoreFormField();
 
+        public List<FieldRuleModel> Rules { get; set; } = new List<FieldRuleModel>();
+
         public static void CopyFrom(FieldComponentModel model, StoreFormField field)
         {
             model.StoreField = field;

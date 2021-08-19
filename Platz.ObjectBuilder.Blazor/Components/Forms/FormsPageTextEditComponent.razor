@@ -147,8 +147,11 @@
     private async Task FormatChanged(ChangeEventArgs args)
     {
     }
+
     private async Task RulesClick(MouseEventArgs args)
     {
+        FormsPageController.SetActive(Field);
+        FormsPageController.PrepareActiveFieldRulesForEdit();
     }
 
     private async Task Change()

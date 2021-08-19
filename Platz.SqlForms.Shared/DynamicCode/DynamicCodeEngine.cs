@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Emit;
 using Platz.SqlForms.Shared.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,8 @@ namespace Platz.SqlForms.Shared.DynamicCode
         private readonly MemoryStream _ms;
         private Assembly _assembly;
 
+        public EmitResult CompilationResult { get; private set; }
+
         public DynamicCodeEngine()
         { 
             _ms = new MemoryStream();
@@ -32,9 +35,20 @@ namespace Platz.SqlForms.Shared.DynamicCode
         [MethodImpl(MethodImplOptions.NoInlining)]
         public void CreateCodeEngine(Compilation compilation)
         {
-            var cr = compilation.Emit(_ms);
-            _ms.Seek(0, SeekOrigin.Begin);
-            _assembly = _context.LoadFromStream(_ms);
+            try
+            {
+                CompilationResult = compilation.Emit(_ms);
+
+                if (CompilationResult.Success)
+                {
+                    _ms.Seek(0, SeekOrigin.Begin);
+                    _assembly = _context.LoadFromStream(_ms);
+                }
+            }
+            catch(Exception exc)
+            {
+
+            }
 
             //var greetMethod = type.GetMethod("Hello");
             //var result = (int)greetMethod.Invoke(instance, new object[] { i });

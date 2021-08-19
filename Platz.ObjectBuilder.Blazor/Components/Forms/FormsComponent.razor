@@ -3,6 +3,7 @@
 @using Platz.ObjectBuilder.Blazor.Forms
 @using Platz.ObjectBuilder.Blazor.Model
 @using Platz.SqlForms
+@using Platz.SqlForms.Shared
 
 @namespace Platz.ObjectBuilder
 
@@ -48,17 +49,26 @@
             <div class="modal-body">
                 <form>
                     <div class="form-group">
-                        <div class="list-group overflow-auto" id="list-tab" role="tablist" style="max-height: 400px;">
+                        @if (_rules.Count == 0)
+                        {
+                            @:no records
+                        }
+                        else
+                        {
+                        <div class="list-group overflow-auto" id="list-tab" role="tablist" style="max-height: 200px;">
                             @for (int i = 0; i < _rules.Count; i++)
                             {
                                 var rowIndex = i;
 
-                                <a class="list-group-item list-group-item-action" @onclick="() => RuleClick(rowIndex)"
-                                   data-toggle="list" href="#list-home" role="tab" aria-controls="home">@_rules[i].DisplayName</a>
+                                <a class="list-group-item list-group-item-action @(i == _formsPageController.SelectedRuleIndex ? "active": "")" 
+                                   @onclick="() => RuleClick(rowIndex)" data-toggle="list" href="#list-home" role="tab" aria-controls="home">@_rules[i].DisplayName</a>
                             }
                         </div>
-                        <br/>
+                        }
+                        <br />
                         <button type="button" class="btn btn-success" @onclick="AddRulesClick">Add</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-danger" @onclick="DeleteRulesClick">Delete</button>
                     </div>
                     <div class="form-group">
 
@@ -85,16 +95,28 @@
 
                             <div class="row-nospace-sm">
                                 <div class="col-sm-12 forms-nospace">
-                                    <textarea id="exampleFormControlTextarea1" rows="8" style="width: 100%" />
+                                    <label>@GetMethodDefinition()</label>
+                                    <textarea id="exampleFormControlTextarea1" rows="8" style="width: 100%" value="@SelectedFieldRule.Code" @onchange="RuleCodeChanged" />
                                 </div>
                             </div>
-                         </div>
-                         }
+
+                            @if (_showRulesErrors)
+                            {
+                            <div class="row-nospace-sm">
+                                <div class="col-sm-12 forms-nospace">
+                                    <label>Validation errors</label>
+                                    <textarea id="rulesErrorsMemo" rows="4" readonly="readonly" style="width: 100%; color: red; background-color: black" value="@_rulesErrors" />
+                                </div>
+                            </div>
+                            }
+                        </div>
+                        }
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" @onclick="ValidateRulesClick">Validate</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal" @onclick="SaveRulesClick">Save Rules</button>
             </div>
         </div>
@@ -114,9 +136,31 @@
     //    StateHasChanged();
     //}
 
+    private bool _showRulesErrors;
+
+    private string _rulesErrors;
+
     private List<FieldRuleModel> _rules = (new FieldRuleModel[] { new FieldRuleModel { Name = "MyRule1", Trigger = FormRuleTriggers.Change, Code = "" } }).ToList();
-    private int SelectedRuleIndex;
-    private FieldRuleModel SelectedFieldRule;
+    //private int SelectedRuleIndex;
+    public FieldRuleModel SelectedFieldRule
+    {
+        get
+        {
+            if (_formsPageController.SelectedRuleIndex == -1)
+            {
+                return null;
+            }
+            else
+            {
+                return _rules[_formsPageController.SelectedRuleIndex];
+            }
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        _rules = _formsPageController.ActiveFieldRules;
+    }
 
     private List<FormRuleTriggers> GetRuleTriggers()
     {
@@ -125,24 +169,107 @@
         return result;
     }
 
-
-    private List<FieldRuleModel> GetRules()
+    private string GetMethodDefinition()
     {
-        return _rules;
+        var ds = _formsPageController.Model.Datasource ?? "to_be_defined";
+        var result = $"public FormRuleResult {SelectedFieldRule.Name}(RuleArgs<{ds}> a)";
+        return result;
+    }
+
+
+    //private List<FieldRuleModel> GetRules()
+    //{
+    //    return _rules;
+    //}
+
+    private string GetRuleName()
+    {
+        for (int i = 1; i < 999; i++)
+        {
+            var name = $"{_formsPageController.ActiveField.StoreField.Label.TrimName()}Rule{i}";
+
+            if (!_rules.Any(r => r.Name == name))
+            {
+                return name;
+            }
+        }
+
+        return "Rule1";
     }
 
     private async Task AddRulesClick(MouseEventArgs a)
-    { }
+    {
+        _rules.Add(new FieldRuleModel { IsDirty = true, Name = GetRuleName(), Trigger = FormRuleTriggers.ChangeSubmit });
+        SelectRule(_rules.Count - 1);
+    }
+    private async Task DeleteRulesClick(MouseEventArgs a)
+    {
+
+    }
     private async Task RuleNameChanged(ChangeEventArgs a)
-    { }
+    {
+        SelectedFieldRule.IsDirty = true;
+        SelectedFieldRule.Name = a.Value.ToString();
+    }
     private async Task RuleTriggerChanged(ChangeEventArgs a)
-    { }
+    {
+        SelectedFieldRule.IsDirty = true;
+        SelectedFieldRule.Trigger = Enum.Parse<FormRuleTriggers>(a.Value.ToString());
+    }
+    private async Task RuleCodeChanged(ChangeEventArgs a)
+    {
+        SelectedFieldRule.IsDirty = true;
+        SelectedFieldRule.Code = a.Value.ToString();
+    }
+
+    private async Task<bool> ValidateRulesClick(MouseEventArgs a)
+    {
+        _showRulesErrors = false;
+        _rulesErrors = "";
+        var result = await _formsPageController.ValidateDirtyRules(_formsPageController.ActiveFieldRules);
+
+        if (result.Any())
+        {
+            _showRulesErrors = true;
+
+            foreach (var row in result)
+            {
+                _rulesErrors += row + "\r\n";
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
     private async Task SaveRulesClick(MouseEventArgs a)
-    { }
+    {
+        var ok = await ValidateRulesClick(a);
+
+        if (ok)
+        {
+            _formsPageController.ApplyActiveFieldRules(_formsPageController.ActiveFieldRules);
+        }
+    }
 
     private async Task RuleClick(int index)
     {
-        SelectedRuleIndex = index;
-        SelectedFieldRule = GetRules()[SelectedRuleIndex];
+        SelectRule(index);
+    }
+
+    private void SelectRule(int index)
+    {
+        _formsPageController.SelectedRuleIndex = index;
+        StateHasChanged();
+
+        //if (_formsPageController.SelectedRuleIndex == -1)
+        //{
+        //    SelectedFieldRule = null;
+        //}
+        //else
+        //{
+        //    SelectedFieldRule = _rules[_formsPageController.SelectedRuleIndex];
+        //}
     }
 }

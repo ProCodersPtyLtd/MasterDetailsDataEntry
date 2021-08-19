@@ -40,5 +40,32 @@ namespace MasterDetailsDataEntry.Tests.Helpers
             Assert.Equal(10.1m, orderItem.Price);
             Assert.Equal(hash, hash2);
         }
+
+        [Fact]
+        public void CopyListToTest()
+        {
+            var orderItem1 = new OrderItem { Id = 2, IsMajor = true, ItemName = "pasta" };
+            var orderItem2 = new OrderItem { Id = 3, IsMajor = false, ItemName = "keks" };
+            var list1 = new List<OrderItem>();
+            list1.Add(orderItem1);
+            list1.Add(orderItem2);
+
+            var list2 = new List<OrderItem>();
+            list1.CopyListTo(list2);
+
+            Assert.Equal(list1.Count, list2.Count);
+            Assert.Equal(list1[0].Id, list2[0].Id);
+            Assert.Equal(list1[0].ItemName, list2[0].ItemName);
+            Assert.Equal(list1[0].IsMajor, list2[0].IsMajor);
+            Assert.Equal(list1[1].ItemName, list2[1].ItemName);
+            Assert.Equal(list1[1].ItemName, list2[1].ItemName);
+            Assert.Equal(list1[1].IsMajor, list2[1].IsMajor);
+
+            list1.Add(new OrderItem());
+            Assert.NotEqual(list1.Count, list2.Count);
+
+            list1[0].Id = -1;
+            Assert.NotEqual(list1[0].Id, list2[0].Id);
+        }
     }
 }

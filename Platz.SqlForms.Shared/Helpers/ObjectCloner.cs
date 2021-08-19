@@ -50,5 +50,16 @@ namespace Platz.SqlForms.Shared
                 property.SetValue(target, value);
             }
         }
+
+        public static void CopyListTo(this System.Collections.IList source, System.Collections.IList target)
+        {
+            target.Clear();
+
+            foreach (var item in source)
+            {
+                var copy = item.GetCopy();
+                target.Add(copy);
+            }
+        }
     }
 }

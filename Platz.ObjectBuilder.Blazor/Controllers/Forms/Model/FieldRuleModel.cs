@@ -16,7 +16,12 @@ namespace Platz.ObjectBuilder.Blazor.Model
 
         public string DisplayName
         {
-            get { return $"On{Trigger.ToString()} : {Name}"; }
+            get 
+            {
+                var dirty = IsDirty ? "*" : "";
+                var result = $"On{Trigger.ToString()} : {Name}{dirty}";
+                return result;
+            }
         }
     }
 }
