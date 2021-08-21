@@ -45,7 +45,9 @@
             <label for="check2">Read only</label>
         </div>
         <div class="col-sm-5 forms-nospace">
-            <button class="btn btn-light btn-sm" @onclick="RulesClick">Rules[1] ...</button>
+            <button class="btn btn-light btn-sm" @onclick="RulesClick" data-toggle="modal" data-target="#fieldRulesModal">
+            Rules@(Field.Rules.Count > 0 ? $"[{Field.Rules.Count}]": "") ...
+            </button>
             &nbsp;
             <button class="btn btn-light btn-sm" @onclick="RulesClick">Events ...</button>
         </div>
@@ -147,8 +149,11 @@
     private async Task FormatChanged(ChangeEventArgs args)
     {
     }
+
     private async Task RulesClick(MouseEventArgs args)
     {
+        FormsPageController.SetActive(Field);
+        FormsPageController.PrepareActiveFieldRulesForEdit();
     }
 
     private async Task Change()

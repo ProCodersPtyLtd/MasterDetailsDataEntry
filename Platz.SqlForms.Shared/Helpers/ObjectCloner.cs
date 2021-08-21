@@ -46,8 +46,22 @@ namespace Platz.SqlForms.Shared
 
             foreach (var property in properties)
             {
-                var value = property.GetValue(source);
-                property.SetValue(target, value);
+                if (property.GetSetMethod() != null)
+                {
+                    var value = property.GetValue(source);
+                    property.SetValue(target, value);
+                }
+            }
+        }
+
+        public static void CopyListTo(this System.Collections.IList source, System.Collections.IList target)
+        {
+            target.Clear();
+
+            foreach (var item in source)
+            {
+                var copy = item.GetCopy();
+                target.Add(copy);
             }
         }
     }
