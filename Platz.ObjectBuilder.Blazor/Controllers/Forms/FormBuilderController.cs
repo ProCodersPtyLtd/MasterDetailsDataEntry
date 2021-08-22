@@ -36,6 +36,7 @@ namespace Platz.ObjectBuilder
 
         // Toolbar
         void AddTextEdit();
+        void AddActionButton();
         void MoveUp();
         void MoveDown();
         void Clear();
@@ -153,6 +154,15 @@ namespace Platz.ObjectBuilder
         public void AddTextEdit()
         {
             var f = new FieldComponentModel { ComponentType = FieldComponentType.TextEdit };
+            Model.Fields.Add(f);
+            Change();
+        }
+
+        public void AddActionButton()
+        {
+            var f = new FieldComponentModel { ComponentType = FieldComponentType.ActionButton };
+            f.StoreButton.Action = ButtonActionTypes.Submit.ToString();
+            f.StoreButton.Text = f.StoreButton.Action;
             Model.Fields.Add(f);
             Change();
         }
@@ -374,5 +384,6 @@ namespace Platz.ObjectBuilder
             rules.CopyListTo(ActiveField.Rules);
         }
 
+        
     }
 }
