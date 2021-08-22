@@ -19,6 +19,9 @@
             <div>
                 <button class="btn btn-secondary tb-wide" type="button">NumberEdit</button>
             </div>
+            <div>
+                <button class="btn btn-secondary tb-wide" type="button" @onclick="ActionButtonClick">ActionButton</button>
+            </div>
         </div>
 
         <div class="forms-tb-buttons-field">
@@ -59,6 +62,12 @@
         private async Task TextEditClick(MouseEventArgs a)
         {
             FormController.AddTextEdit();
+            await ModelChanged.InvokeAsync();
+        }
+
+        private async Task ActionButtonClick(MouseEventArgs a)
+        {
+            FormController.AddActionButton();
             await ModelChanged.InvokeAsync();
         }
 

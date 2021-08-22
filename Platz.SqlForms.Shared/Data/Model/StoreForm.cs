@@ -14,6 +14,7 @@ namespace Platz.SqlForms
         public string Datasource { get; set; }
 
         public Dictionary<string, StoreFormField> Fields { get; set; } = new Dictionary<string, StoreFormField>();
+        public Dictionary<string, StoreFormButton> Buttons { get; set; } = new Dictionary<string, StoreFormButton>();
     }
 
     public class StoreFormField
@@ -33,5 +34,14 @@ namespace Platz.SqlForms
         public int Order { get; set; }
         public bool Filter { get; set; }
         public FieldFilterType FilterType { get; set; }
+    }
+
+    public class StoreFormButton
+    {
+        public string Action { get; set; }
+        public string Text { get; set; }
+        public string Hint { get; set; }
+        public string LinkText { get; set; }
+        public int Order { get; set; }
     }
 }
