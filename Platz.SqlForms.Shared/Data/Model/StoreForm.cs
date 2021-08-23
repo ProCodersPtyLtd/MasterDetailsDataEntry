@@ -15,6 +15,24 @@ namespace Platz.SqlForms
 
         public Dictionary<string, StoreFormField> Fields { get; set; } = new Dictionary<string, StoreFormField>();
         public Dictionary<string, StoreFormButton> Buttons { get; set; } = new Dictionary<string, StoreFormButton>();
+
+        // Page Properties
+        public string PagePath { get; set; }
+        public Dictionary<string, StorePageParameter> PageParameters { get; set; } = new Dictionary<string, StorePageParameter>();
+        public StoreForm PageHeaderForm { get; set; }
+    }
+
+    public class StorePageParameter
+    {
+        public string Name { get; set; }
+        public string DataType { get; set; }
+        public int Order { get; set; }
+
+        // Mapping to Query StoreQueryParameter.Name of Datasource, can be null if not mapped
+        public string DatasourceQueryParameterMapping { get; set; }
+
+        // Mapping to parameter in HeaderForm
+        public string HeaderFormParameterMapping { get; set; }
     }
 
     public class StoreFormField

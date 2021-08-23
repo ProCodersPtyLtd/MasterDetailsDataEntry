@@ -1,0 +1,150 @@
+﻿@using Platz.ObjectBuilder.Blazor.Model
+
+@namespace Platz.ObjectBuilder.Blazor.Forms
+
+<div class="plk-flex overflow-auto" style="min-height: 160px; height: 160px">
+    <div style="background-color: lightgrey; min-height: 160px; ">
+        <table style="width: 100%">
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Query map</th>
+                <th>Header map</th>
+                <th style="width: 110px"></th>
+            </tr>
+
+            @for (int rowIndex = 0; rowIndex < _model.Count; rowIndex++)
+            {
+                var item = _model[rowIndex];
+                var row = rowIndex;
+
+                <tr>
+                    <td>
+                        <input style="height: 34px;" class="form-control" value="@item.Name"
+                               @onchange="@(async (args) => await NameChanged(args, row))" />
+                    </td>
+                    <td style="text-align: center">
+
+                        @*<div class="select-editable">*@
+                        <select style="height: 34px;" value="@item.DataType"
+                                @onchange="@(async (args) => await TypeChanged(args, row))" class="form-control selectpicker">
+
+                            @foreach (var f in GetDataTypes())
+                            {
+                                <option value="@f">@f</option>
+                            }
+                        </select>
+                    </td>
+                    <td style="text-align: center">
+                        <select style="height: 34px;" value="@item.DatasourceQueryParameterMapping"
+                                @onchange="@(async (args) => await QueryMappingChanged(args, row))" class="form-control selectpicker">
+                            <option value=""></option>
+
+                            @foreach (var f in _ctrl.Model.QueryParams)
+                            {
+                                <option value="@f">@f</option>
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <select style="height: 34px;" value="@item.HeaderFormParameterMapping"
+                                @onchange="@(async (args) => await HeaderMappingChanged(args, row))" class="form-control selectpicker">
+                            <option value=""></option>
+
+                            @foreach (var f in _ctrl.Model.HeaderParams)
+                            {
+                                <option value="@f">@f</option>
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn btn-light btn-sm" title="Up" @onclick="@(async (args) => await UpColumnClick(args, row))">
+                            <span class="oi oi-arrow-circle-top"></span>
+                        </button>
+                        
+                        <button class="btn btn-light btn-sm" title="Down" @onclick="@(async (args) => await DownColumnClick(args, row))">
+                            <span class="oi oi-arrow-circle-bottom"></span>
+                        </button>
+                        
+                        <button class="btn btn-light btn-sm" title="Delete" @onclick="@(async (args) => await DeleteColumnClick(args, row))">
+                            <span class="oi oi-trash"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
+
+@code {
+    [CascadingParameter]
+    public IFormBuilderController FormsPageController { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    private IFormBuilderController _ctrl { get { return FormsPageController; } }
+
+    private List<PageParameterModel> _model { get { return FormsPageController.Model.PageParameters; } }
+
+    private string[] GetDataTypes()
+    {
+        return PageParameterModel.DataTypes;
+    }
+
+    private async Task NameChanged(ChangeEventArgs args, int row)
+    {
+        _model[row].Name = args.Value.ToString();
+        await Change();
+    }
+    private async Task TypeChanged(ChangeEventArgs args, int row)
+    {
+        _model[row].DataType = args.Value.ToString();
+        await Change();
+    }
+    private async Task QueryMappingChanged(ChangeEventArgs args, int row)
+    {
+        _model[row].DatasourceQueryParameterMapping = args.Value.ToString();
+        await Change();
+    }
+    private async Task HeaderMappingChanged(ChangeEventArgs args, int row)
+    {
+        _model[row].HeaderFormParameterMapping = args.Value.ToString();
+        await Change();
+    }
+    private async Task UpColumnClick(MouseEventArgs args, int row)
+    {
+        if (row > 0 && row < _ctrl.Model.PageParameters.Count)
+        {
+            var p = _ctrl.Model.PageParameters[row - 1];
+            _ctrl.Model.PageParameters[row - 1] = _ctrl.Model.PageParameters[row];
+            _ctrl.Model.PageParameters[row] = p;
+            await Change();
+        }
+    }
+    private async Task DownColumnClick(MouseEventArgs args, int row)
+    {
+        if (row > -1 && row < _ctrl.Model.PageParameters.Count-1)
+        {
+            var p = _ctrl.Model.PageParameters[row + 1];
+            _ctrl.Model.PageParameters[row + 1] = _ctrl.Model.PageParameters[row];
+            _ctrl.Model.PageParameters[row] = p;
+            await Change();
+        }
+    }
+    private async Task DeleteColumnClick(MouseEventArgs args, int row)
+    {
+        if (row < FormsPageController.Model.PageParameters.Count)
+        {
+            FormsPageController.Model.PageParameters.RemoveAt(row);
+            await Change();
+        }
+    }
+
+    private async Task Change()
+    {
+        _ctrl.Change();
+        await ModelChanged.InvokeAsync(null);
+    }
+}

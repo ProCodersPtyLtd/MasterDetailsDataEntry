@@ -1,70 +1,131 @@
-﻿@namespace Platz.ObjectBuilder.Blazor.Forms
+﻿@using Platz.ObjectBuilder.Blazor.Model
 
-        <div class="forms-uncap">Form</div>
+@namespace Platz.ObjectBuilder.Blazor.Forms
 
-        <div class="forms-grid">
-            <div class="row-nospace-sm">
-                <div class="col-sm-4 forms-nospace">
-                    Name
-                </div>
-                <div class="col-sm-8 forms-nospace">
-                    <input id="BindingInput" value="@FormsPageController.Model.Name" @onchange="FormNameChanged" class="form-control" />
-                </div>
+<div class="forms-uncap">Form</div>
+
+<div class="forms-grid">
+    <div class="row-nospace-sm">
+        <div class="col-sm-4 forms-nospace">
+            Name
+        </div>
+        <div class="col-sm-8 forms-nospace">
+            <input id="BindingInput" value="@FormsPageController.Model.Name" @onchange="FormNameChanged" class="form-control" />
+        </div>
+    </div>
+
+    <div class="row-nospace-sm">
+        <div class="col-sm-4 forms-nospace">
+            Type
+        </div>
+        <div class="col-sm-8 forms-nospace">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDisabled" id="flexRadioDisabled"
+                       checked="@(!_ctrl.Model.IsListForm)" @onchange="EditFormChanged">
+                <label class="form-check-label" for="flexRadioDisabled">
+                    Edit Form
+                </label>
             </div>
-
-            <div class="row-nospace-sm">
-                <div class="col-sm-4 forms-nospace">
-                    Type
-                </div>
-                <div class="col-sm-8 forms-nospace">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="flexRadioDisabled" id="flexRadioDisabled" 
-                               checked="@(!_ctrl.Model.IsListForm)" @onchange="EditFormChanged" >
-                        <label class="form-check-label" for="flexRadioDisabled">
-                            Edit Form
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="flexRadioDisabled" id="flexRadioCheckedDisabled" 
-                               checked="@(_ctrl.Model.IsListForm)" @onchange="ListFormChanged">
-                        <label class="form-check-label" for="flexRadioCheckedDisabled">
-                            List Navigation Form
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-4">
-                    Schema
-                </div>
-                <div class="col-sm-8">
-                    <select class="form-control selectpicker" value="@_ctrl.Model.Schema" @onchange="SchemaChanged">
-                        <option value=""></option>
-
-                        @foreach (var item in _ctrl.Model.Schemas)
-                        {
-                            <option value="@item">@item</option>
-                        }
-                    </select>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-4">
-                    Datasource
-                </div>
-                <div class="col-sm-8">
-                    <select class="form-control selectpicker" value="@_ctrl.Model.Datasource" @onchange="DatasourceChanged">
-                        <option value=""></option>
-
-                        @foreach (var item in _ctrl.Model.Datasources)
-                        {
-                            <option value="@item">@item</option>
-                        }
-                    </select>
-                </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDisabled" id="flexRadioCheckedDisabled"
+                       checked="@(_ctrl.Model.IsListForm)" @onchange="ListFormChanged">
+                <label class="form-check-label" for="flexRadioCheckedDisabled">
+                    List Navigation Form
+                </label>
             </div>
         </div>
+    </div>
+
+    <div class="row-nospace-sm">
+        <div class="col-sm-4 forms-nospace">
+            Schema
+        </div>
+        <div class="col-sm-8 forms-nospace">
+            <select class="form-control selectpicker" value="@_ctrl.Model.Schema" @onchange="SchemaChanged">
+                <option value=""></option>
+
+                @foreach (var item in _ctrl.Model.Schemas)
+                {
+                    <option value="@item">@item</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="row-nospace-sm">
+        <div class="col-sm-4 forms-nospace">
+            Datasource
+        </div>
+        <div class="col-sm-8 forms-nospace">
+            <select class="form-control selectpicker" value="@_ctrl.Model.Datasource" @onchange="DatasourceChanged">
+                <option value=""></option>
+
+                @foreach (var item in _ctrl.Model.Datasources)
+                {
+                    <option value="@item">@item</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="row-nospace-sm">
+        <b>Page Properties</b>
+    </div>
+    <div class="row-nospace-sm">
+        <div class="col-sm-4 forms-nospace">
+            Path
+        </div>
+        <div class="col-sm-8 forms-nospace">
+            <input id="PagePathInput" value="@FormsPageController.Model.PagePath" @onchange="PagePathChanged" class="form-control" />
+        </div>
+    </div>
+    <div class="row-nospace-sm">
+        <div class="col-sm-4 forms-nospace">
+            Header form
+        </div>
+        <div class="col-sm-8 forms-nospace">
+            <select class="form-control selectpicker" value="@_ctrl.Model.PageHeaderForm" @onchange="PageHeaderFormChanged">
+                <option value=""></option>
+
+                @foreach (var item in _ctrl.GetAvailableFormReferences())
+                {
+                    <option value="@item">@item</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="row-nospace-sm">
+        <div class="col-sm-4 forms-nospace">
+            Parameters
+        </div>
+        <div class="col-sm-8 forms-nospace">
+            <button class="btn btn-light btn-sm" title="Add parameter" style="display: block; margin-left: auto; margin-right: 0;" @onclick="AddParameter">
+                <span class="oi oi-plus"></span>
+            </button>
+
+            @*<button class="btn btn-light btn-sm" title="Cancel" @onclick="DeleteParameter">
+                    <span class="oi oi-delete"></span>
+                </button>*@
+        </div>
+    </div>
+    <div class="row-nospace-sm">
+        @if (FormsPageController.Model.PageParameters.Count == 0)
+        {
+            <div class="col-sm-4 forms-nospace">
+            </div>
+            <div class="col-sm-8 forms-nospace">
+                No parameters defined
+            </div>
+        }
+        else
+        {
+            <div class="col-sm-12 forms-nospace">
+                <FormsParametersComponent ModelChanged="ModelChanged" />
+            </div>
+        }
+    </div>
+
+</div>
+
 
 @code {
     [CascadingParameter]
@@ -73,17 +134,20 @@
     [Parameter]
     public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 
-    private IFormBuilderController _ctrl {  get { return FormsPageController; } }
+    private IFormBuilderController _ctrl { get { return FormsPageController; } }
 
     private async Task SchemaChanged(ChangeEventArgs a)
     {
         _ctrl.Model.Schema = a.Value.ToString();
         _ctrl.RefreshDatasources();
+        await Change();
     }
 
     private async Task DatasourceChanged(ChangeEventArgs a)
     {
         _ctrl.Model.Datasource = a.Value.ToString();
+        _ctrl.RefreshQueryParams();
+        await Change();
     }
 
     private async Task EditFormChanged(ChangeEventArgs a)
@@ -96,6 +160,24 @@
     }
 
     private async Task ListFormChanged(ChangeEventArgs a)
+    { }
+
+    private async Task PagePathChanged(ChangeEventArgs a)
+    { }
+    private async Task PageHeaderFormChanged(ChangeEventArgs a)
+    {
+        _ctrl.Model.PageHeaderForm = a.Value.ToString();
+        _ctrl.RefreshHeaderParams();
+        await Change();
+    }
+
+    private async Task AddParameter(MouseEventArgs a)
+    {
+        FormsPageController.Model.PageParameters.Add(new PageParameterModel { DataType = "int", Order = FormsPageController.Model.PageParameters.Count });
+        await Change();
+    }
+
+    private async Task DeleteParameter(MouseEventArgs a)
     { }
 
     private async Task Change()

@@ -22,7 +22,8 @@ namespace SqlForms.DevSpace.Controlers
         void CreateNewForm();
         List<StoreSchema> GetProjectSchemas();
         List<StoreQuery> GetProjectQueries();
-        List<FormDetails> GetProjectForms();
+        List<StoreForm> GetProjectForms();
+        List<FormDetails> GetProjectFormsDetails();
         List<EditWindowDetails> GetEditWindows();
         bool ActivateWindow(IStoreObject item);
         void ActivateWindow(int index);
@@ -82,6 +83,7 @@ namespace SqlForms.DevSpace.Controlers
         {
             _formBuilderController.SetSchemas(GetProjectSchemas());
             _formBuilderController.SetQueries(GetProjectQueries());
+            _formBuilderController.SetForms(GetProjectForms());
         }
 
         public void CreateNewProject()
@@ -101,7 +103,13 @@ namespace SqlForms.DevSpace.Controlers
             return result;
         }
 
-        public List<FormDetails> GetProjectForms()
+        public List<StoreForm> GetProjectForms()
+        {
+            var result = Model.Forms.Select(s => s.Form).OrderBy(s => s.Name).ToList();
+            return result;
+        }
+
+        public List<FormDetails> GetProjectFormsDetails()
         {
             var result = Model.Forms.Select(s => s).OrderBy(s => s.DisplayName).ToList();
             return result;
