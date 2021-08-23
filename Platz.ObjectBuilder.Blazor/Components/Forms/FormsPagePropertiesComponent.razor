@@ -86,7 +86,7 @@
             <select class="form-control selectpicker" value="@_ctrl.Model.PageHeaderForm" @onchange="PageHeaderFormChanged">
                 <option value=""></option>
 
-                @foreach (var item in _ctrl.Model.Datasources)
+                @foreach (var item in _ctrl.GetAvailableFormReferences())
                 {
                     <option value="@item">@item</option>
                 }
@@ -140,11 +140,14 @@
     {
         _ctrl.Model.Schema = a.Value.ToString();
         _ctrl.RefreshDatasources();
+        await Change();
     }
 
     private async Task DatasourceChanged(ChangeEventArgs a)
     {
         _ctrl.Model.Datasource = a.Value.ToString();
+        _ctrl.RefreshQueryParams();
+        await Change();
     }
 
     private async Task EditFormChanged(ChangeEventArgs a)
@@ -162,7 +165,11 @@
     private async Task PagePathChanged(ChangeEventArgs a)
     { }
     private async Task PageHeaderFormChanged(ChangeEventArgs a)
-    { }
+    {
+        _ctrl.Model.PageHeaderForm = a.Value.ToString();
+        _ctrl.RefreshHeaderParams();
+        await Change();
+    }
 
     private async Task AddParameter(MouseEventArgs a)
     {

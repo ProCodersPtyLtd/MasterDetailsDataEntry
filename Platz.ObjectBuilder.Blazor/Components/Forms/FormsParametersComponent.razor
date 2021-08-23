@@ -38,21 +38,23 @@
                     <td style="text-align: center">
                         <select style="height: 34px;" value="@item.DatasourceQueryParameterMapping"
                                 @onchange="@(async (args) => await QueryMappingChanged(args, row))" class="form-control selectpicker">
+                            <option value=""></option>
 
-                            @*@foreach (var f in GetDataTypes())
-                                {
-                                    <option value="@f">@f</option>
-                                }*@
+                            @foreach (var f in _ctrl.Model.QueryParams)
+                            {
+                                <option value="@f">@f</option>
+                            }
                         </select>
                     </td>
                     <td>
                         <select style="height: 34px;" value="@item.HeaderFormParameterMapping"
                                 @onchange="@(async (args) => await HeaderMappingChanged(args, row))" class="form-control selectpicker">
+                            <option value=""></option>
 
-                            @*@foreach (var f in GetDataTypes())
-                                {
-                                    <option value="@f">@f</option>
-                                }*@
+                            @foreach (var f in _ctrl.Model.HeaderParams)
+                            {
+                                <option value="@f">@f</option>
+                            }
                         </select>
                     </td>
                     <td>
@@ -113,11 +115,23 @@
     }
     private async Task UpColumnClick(MouseEventArgs args, int row)
     {
-        await Change();
+        if (row > 0 && row < _ctrl.Model.PageParameters.Count)
+        {
+            var p = _ctrl.Model.PageParameters[row - 1];
+            _ctrl.Model.PageParameters[row - 1] = _ctrl.Model.PageParameters[row];
+            _ctrl.Model.PageParameters[row] = p;
+            await Change();
+        }
     }
     private async Task DownColumnClick(MouseEventArgs args, int row)
     {
-        await Change();
+        if (row > -1 && row < _ctrl.Model.PageParameters.Count-1)
+        {
+            var p = _ctrl.Model.PageParameters[row + 1];
+            _ctrl.Model.PageParameters[row + 1] = _ctrl.Model.PageParameters[row];
+            _ctrl.Model.PageParameters[row] = p;
+            await Change();
+        }
     }
     private async Task DeleteColumnClick(MouseEventArgs args, int row)
     {

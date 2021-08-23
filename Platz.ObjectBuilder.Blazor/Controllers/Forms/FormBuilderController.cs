@@ -32,7 +32,10 @@ namespace Platz.ObjectBuilder
 
         void SetSchemas(List<StoreSchema> storeSchemas);
         void SetQueries(List<StoreQuery> storeQueries);
+        void SetForms(List<StoreForm> storeForms);
         void RefreshDatasources();
+        void RefreshQueryParams();
+        void RefreshHeaderParams();
 
         // Toolbar
         void AddTextEdit();
@@ -45,6 +48,7 @@ namespace Platz.ObjectBuilder
         List<string> GetEntityBindings();
         void SwitchModel(FormBuilderModel model);
         void UpdateFormName(string name);
+        List<string> GetAvailableFormReferences();
     }
     public class FormBuilderController : IFormBuilderController
     {
@@ -53,6 +57,7 @@ namespace Platz.ObjectBuilder
         //private List<FieldComponentModel> _fields;
         private List<StoreSchema> _storeSchemas;
         private List<StoreQuery> _storeQueries;
+        private List<StoreForm> _storeForms;
 
         public bool PageActive { get; set; }
         public FieldComponentModel ActiveField { get; set; }
@@ -121,6 +126,11 @@ namespace Platz.ObjectBuilder
         {
             _storeQueries = storeQueries;
             //Model.Datasources = _storeQueries.Select(x => x.Name).ToList();
+        }
+
+        public void SetForms(List<StoreForm> storeForms)
+        {
+            _storeForms = storeForms;
         }
 
         public void RefreshDatasources()
@@ -384,6 +394,33 @@ namespace Platz.ObjectBuilder
             rules.CopyListTo(ActiveField.Rules);
         }
 
-        
+        public List<string> GetAvailableFormReferences()
+        {
+            var result = _storeForms.Where(m => m.Name != Model.Name && m.Name != Model.OriginalName).Select(f => f.Name).ToList();
+            return result;
+        }
+
+        public void RefreshQueryParams()
+        {
+            Model.QueryParams.Clear();
+
+            if (!string.IsNullOrWhiteSpace(Model.Datasource) && Model.Datasource.StartsWith(DS_QUERY_START))
+            {
+                var name = Model.Datasource.Replace(DS_QUERY_START, "");
+                var q = _storeQueries.First(x => x.SchemaName == Model.Schema && x.Name == name);
+                Model.QueryParams = q.Query.Parameters.Values.OrderBy(x => x.Order).Select(x => x.Name).ToList();
+            }
+        }
+
+        public void RefreshHeaderParams()
+        {
+            Model.HeaderParams.Clear();
+
+            if (!string.IsNullOrWhiteSpace(Model.PageHeaderForm))
+            {
+                var form = _storeForms.First(f => f.Name == Model.PageHeaderForm);
+                Model.HeaderParams = form.PageParameters.Values.OrderBy(x => x.Order).Select(x => x.Name).ToList();
+            }
+        }
     }
 }

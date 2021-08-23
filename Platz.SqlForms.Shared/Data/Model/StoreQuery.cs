@@ -27,6 +27,7 @@ namespace Platz.SqlForms
 
         // int, string, date, etc.
         public string Type { get; set; }
+        public int Order { get; set; }
     }
 
     public class StoreQueryDefinition
