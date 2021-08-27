@@ -18,6 +18,7 @@ namespace SqlForms.DevSpace.Controlers
         string ActiveWindowName { get; }
         int ActiveWindowIndex { get; }
 
+        void SaveAll();
         void CreateNewProject();
         void CreateNewForm();
         List<StoreSchema> GetProjectSchemas();
@@ -37,6 +38,8 @@ namespace SqlForms.DevSpace.Controlers
     {
         private readonly IProjectLoader _projectLoader;
         private readonly IFormBuilderController _formBuilderController;
+
+        private string _projectPath;
 
         public SpaceProjectDetails Model { get; set; }
         public string ActiveWindowName { get; set; }
@@ -211,9 +214,10 @@ namespace SqlForms.DevSpace.Controlers
             return EditWindowType.Unknown;
         }
 
-        public void LoadModel(string name)
+        public void LoadModel(string projectPath)
         {
-            var project = _projectLoader.Load(name);
+            _projectPath = projectPath;
+            var project = _projectLoader.Load(projectPath);
             Model = new SpaceProjectDetails();
             Model.Schemas = project.Schemas.Values.Select(x => new SchemaDetails { Schema = x, SchemaMigrations = project.SchemaMigrations[x.Name] }).ToList();
             Model.Queries = project.Queries.Values.Select(x => new QueryDetails { Query = x }).ToList();
@@ -294,6 +298,20 @@ namespace SqlForms.DevSpace.Controlers
                 var newIndex = Math.Min(index, Model.EditWindows.Count-1);
                 ActivateWindow(newIndex);
             }
+        }
+
+        public void SaveAll()
+        {
+            if (!string.IsNullOrWhiteSpace(_projectPath))
+            {
+                var project = AssembleStoreProject();
+                _projectLoader.SaveAll(project, _projectPath);
+            }
+        }
+
+        private StoreProject AssembleStoreProject()
+        {
+            throw new NotImplementedException();
         }
     }
 }
