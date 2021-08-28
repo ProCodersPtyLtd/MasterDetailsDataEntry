@@ -17,7 +17,9 @@ namespace SqlForms.DevSpace.Controlers
         EditWindowDetails ActiveWindow { get; }
         string ActiveWindowName { get; }
         int ActiveWindowIndex { get; }
+        List<ValidationOutputItem> ValidationResult { get; }
 
+        bool Validate();
         void SaveAll();
         void CreateNewProject();
         void CreateNewForm();
@@ -44,6 +46,7 @@ namespace SqlForms.DevSpace.Controlers
         public SpaceProjectDetails Model { get; set; }
         public string ActiveWindowName { get; set; }
         public int ActiveWindowIndex { get; set; }
+        public List<ValidationOutputItem> ValidationResult { get; set; } = new List<ValidationOutputItem>();
 
         public IProjectLoader Loader { get { return _projectLoader; } }
 
@@ -302,16 +305,31 @@ namespace SqlForms.DevSpace.Controlers
 
         public void SaveAll()
         {
-            if (!string.IsNullOrWhiteSpace(_projectPath))
+            if (string.IsNullOrWhiteSpace(_projectPath))
             {
-                var project = AssembleStoreProject();
-                _projectLoader.SaveAll(project, _projectPath);
+                throw new Exception("Project path cannot be empty");
             }
+
+            Validate();
+            var project = AssembleStoreProject();
+            var renames = FindAllRenames();
+            _projectLoader.SaveAll(project, _projectPath, renames);
+        }
+
+        private List<ObjectRenameItem> FindAllRenames()
+        {
+            var result = new List<ObjectRenameItem>();
+            return result;
         }
 
         private StoreProject AssembleStoreProject()
         {
             throw new NotImplementedException();
+        }
+
+        public bool Validate()
+        {
+            return true;
         }
     }
 }

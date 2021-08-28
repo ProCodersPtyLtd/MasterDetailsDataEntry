@@ -1,5 +1,6 @@
 ﻿using Platz.ObjectBuilder;
 using Platz.SqlForms;
+using SqlForms.DevSpace.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -88,7 +89,7 @@ namespace SqlForms.DevSpace.Logic
             return result;
         }
 
-        public void SaveAll(StoreProject project, string location)
+        public void SaveAll(StoreProject project, string location, List<ObjectRenameItem> renames)
         {
             throw new NotImplementedException();
         }
