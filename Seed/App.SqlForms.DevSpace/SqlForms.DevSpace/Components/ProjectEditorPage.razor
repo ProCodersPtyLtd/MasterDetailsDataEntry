@@ -1,0 +1,27 @@
+﻿@using Platz.SqlForms
+@using Platz.ObjectBuilder
+
+@namespace SqlForms.DevSpace.Components
+
+@if (_spaceController.ActiveWindow?.Type == EditWindowType.Form)
+{
+    <FormsComponent Height="@_height" ModelChanged="ModelChanged" />
+}
+else if (_spaceController.ActiveWindow?.Type == EditWindowType.Output)
+{
+    <OutputWindowComponent Height="@_height" ModelChanged="ModelChanged" />
+}
+    
+
+@code {
+    [CascadingParameter]
+    public ISpaceController _spaceController { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    int _height = 750;
+    //[Parameter]
+    //public int ItemIndex { get; set; }
+
+}

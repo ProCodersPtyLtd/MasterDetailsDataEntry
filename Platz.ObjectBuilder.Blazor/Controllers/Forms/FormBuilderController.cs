@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Platz.ObjectBuilder.Blazor.Model;
+using Platz.ObjectBuilder.Blazor.Validation;
 using Platz.SqlForms;
 using Platz.SqlForms.Shared;
 using Platz.SqlForms.Shared.DynamicCode;
@@ -18,6 +19,7 @@ namespace Platz.ObjectBuilder
         FormBuilderModel Model { get; set; }
         void Change();
 
+        List<RuleValidationResult> Validate(FormBuilderModel model = null);
         List<FieldComponentModel> GetPageFieldComponents();
         void SetActive(FieldComponentModel field);
         void DeleteField(FieldComponentModel field);
@@ -54,6 +56,8 @@ namespace Platz.ObjectBuilder
     {
         public const string DS_QUERY_START = "q: ";
 
+        private readonly IBuilderRuleFactory<IFormBuilderRule, FormBuilderModel> _ruleEngine;
+
         //private List<FieldComponentModel> _fields;
         private List<StoreSchema> _storeSchemas;
         private List<StoreQuery> _storeQueries;
@@ -66,8 +70,9 @@ namespace Platz.ObjectBuilder
 
         public FormBuilderModel Model { get; set; }
 
-        public FormBuilderController()
+        public FormBuilderController(IBuilderRuleFactory<IFormBuilderRule, FormBuilderModel> ruleEngine)
         {
+            _ruleEngine = ruleEngine;
             // ToDo: remove this simulation
             Model = new FormBuilderModel();
             //Model.Fields.Add(new FieldComponentModel { Name = "Name", Binding = "$.Name", ComponentType = FieldComponentType.TextEdit, StoreField = new StoreFormField() });
@@ -421,6 +426,11 @@ namespace Platz.ObjectBuilder
                 var form = _storeForms.First(f => f.Name == Model.PageHeaderForm);
                 Model.HeaderParams = form.PageParameters.Values.OrderBy(x => x.Order).Select(x => x.Name).ToList();
             }
+        }
+
+        public List<RuleValidationResult> Validate(FormBuilderModel model = null)
+        {
+            return _ruleEngine.ValidateAllRules(model ?? Model);
         }
     }
 }

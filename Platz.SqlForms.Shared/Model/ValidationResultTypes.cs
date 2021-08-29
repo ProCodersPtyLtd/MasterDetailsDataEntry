@@ -7,6 +7,7 @@ namespace Platz.SqlForms
     public enum ValidationResultTypes
     {
         Ok,
+        Information,
         Warning,
         Error
     }

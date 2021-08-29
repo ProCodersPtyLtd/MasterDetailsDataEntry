@@ -52,11 +52,11 @@ namespace Platz.ObjectBuilder.Blazor.Validation
             {
                 var vr = rule.Validate(qm);
 
-                if (vr != null && vr.IsFailed)
+                if (vr != null && vr.Type == SqlForms.ValidationResultTypes.Error)
                 {
                     result.Add(vr);
 
-                    if (vr.Results.Any())
+                    if (vr.Results != null && vr.Results.Any())
                     {
                         result.AddRange(vr.Results);
                     }

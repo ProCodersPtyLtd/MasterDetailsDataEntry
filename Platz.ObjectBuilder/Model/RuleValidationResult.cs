@@ -1,4 +1,5 @@
 ﻿using Platz.Shared;
+using Platz.SqlForms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,10 @@ namespace Platz.ObjectBuilder
     {
         public string RuleName { get; set; }
         public string Message { get; set; }
-        public bool IsFailed { get; set; }
+        public string Location { get; set; }
+
+        //public bool IsFailed { get; set; }
+        public ValidationResultTypes Type { get; set; }
         public List<RuleValidationResult> Results { get; set; }
 
         public RuleValidationResult()
@@ -21,7 +25,8 @@ namespace Platz.ObjectBuilder
         {
             RuleName = ruleName;
             Message = message;
-            IsFailed = true;
+            //IsFailed = true;
+            Type = ValidationResultTypes.Error;
         }
 
         public RuleValidationResult(string message) : this(StackTraceHelper.GetCallingClass().Name, message)

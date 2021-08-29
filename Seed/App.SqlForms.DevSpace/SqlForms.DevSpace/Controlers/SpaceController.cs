@@ -42,6 +42,7 @@ namespace SqlForms.DevSpace.Controlers
         private readonly IFormBuilderController _formBuilderController;
 
         private string _projectPath;
+        private StoreProject _currentProject;
 
         public SpaceProjectDetails Model { get; set; }
         public string ActiveWindowName { get; set; }
@@ -183,6 +184,20 @@ namespace SqlForms.DevSpace.Controlers
             return d;
         }
 
+        public void OpenSpecialWindow(string name, EditWindowType type)
+        {
+            var w = Model.EditWindows.FirstOrDefault(x => x.Type == type && x.StoreObject.Name == name);
+
+            if (w == null)
+            {
+                w = new EditWindowDetails { StoreObject = new SpecialWindowStoreObject { Name = name }, Type = type };
+                Model.EditWindows.Add(w);
+            }
+
+            ActiveWindowIndex = GetEditWindows().IndexOf(w);
+            ActiveWindowName = w.StoreObject.Name;
+        }
+
         public void OpenWindow(IStoreObject item)
         {
             if (ActivateWindow(item))
@@ -221,6 +236,7 @@ namespace SqlForms.DevSpace.Controlers
         {
             _projectPath = projectPath;
             var project = _projectLoader.Load(projectPath);
+            _currentProject = project;
             Model = new SpaceProjectDetails();
             Model.Schemas = project.Schemas.Values.Select(x => new SchemaDetails { Schema = x, SchemaMigrations = project.SchemaMigrations[x.Name] }).ToList();
             Model.Queries = project.Queries.Values.Select(x => new QueryDetails { Query = x }).ToList();
@@ -310,7 +326,12 @@ namespace SqlForms.DevSpace.Controlers
                 throw new Exception("Project path cannot be empty");
             }
 
-            Validate();
+            if (!Validate())
+            {
+                // We show errors but continue save operation
+                OpenSpecialWindow("Output", EditWindowType.Output);
+            }
+
             var project = AssembleStoreProject();
             var renames = FindAllRenames();
             _projectLoader.SaveAll(project, _projectPath, renames);
@@ -324,12 +345,24 @@ namespace SqlForms.DevSpace.Controlers
 
         private StoreProject AssembleStoreProject()
         {
-            throw new NotImplementedException();
+            // until save is not implemented
+            var result = _currentProject;
+            return result;
         }
 
         public bool Validate()
         {
-            return true;
+            ValidationResult.Clear();
+
+            foreach (var fm in Model.Forms.Select(f => f.Model))
+            {
+                var formsValidations = _formBuilderController.Validate(fm);
+                var formItems = formsValidations.Select(r => new ValidationOutputItem(r, ValidationLocationType.Form)).ToList();
+                ValidationResult.AddRange(formItems);
+            }
+
+            var fail = ValidationResult.Any();
+            return !fail;
         }
     }
 }

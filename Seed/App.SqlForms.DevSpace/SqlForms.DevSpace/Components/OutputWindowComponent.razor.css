@@ -1,0 +1,7 @@
+﻿table, th, td {
+    border: 1px solid grey;
+}
+
+table {
+    width: 100%;
+}

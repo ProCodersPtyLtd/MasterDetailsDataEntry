@@ -18,9 +18,15 @@ namespace SqlForms.DevSpace.Model
     public enum EditWindowType
     {
         Unknown = 0,
+        Output = 1,
         ProjectSettings = 10,
         Schema = 20,
         Query = 30,
         Form = 40
+    }
+
+    public class SpecialWindowStoreObject : IStoreObject
+    {
+        public string Name { get; set; }
     }
 }

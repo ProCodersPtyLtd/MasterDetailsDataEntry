@@ -91,7 +91,6 @@ namespace SqlForms.DevSpace.Logic
 
         public void SaveAll(StoreProject project, string location, List<ObjectRenameItem> renames)
         {
-            throw new NotImplementedException();
         }
     }
 }

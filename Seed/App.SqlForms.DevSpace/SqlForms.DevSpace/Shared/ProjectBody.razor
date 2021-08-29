@@ -18,7 +18,7 @@
                 <a class="nav-link @(w.StoreObject.Name == _spaceController.ActiveWindowName ? "active" : "")" data-toggle="tab" href="#w@(GetTabTarget(w))"
                    @onclick="@(async () => await TabClick(rowIndex))">
                     <button class="close closeTab" type="button" @onclick="@(async () => await TabCloseClick(rowIndex))">×</button>
-                    @w.StoreObjectDetails.DisplayName
+                    @GetTabName(w)
                 </a>
             </li>
 
@@ -67,6 +67,12 @@
 
     protected override async Task OnAfterRenderAsync(bool first)
     {
+    }
+
+    private string GetTabName(EditWindowDetails w)
+    {
+        var result = w.StoreObjectDetails?.DisplayName ?? w.StoreObject.Name;
+        return result;
     }
 
     private string GetTabTarget(EditWindowDetails item)
