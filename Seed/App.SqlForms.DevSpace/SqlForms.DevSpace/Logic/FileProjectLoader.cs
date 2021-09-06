@@ -91,6 +91,54 @@ namespace SqlForms.DevSpace.Logic
 
         public void SaveAll(StoreProject project, string location, List<ObjectRenameItem> renames)
         {
+            SaveFile(location, project.Name, project.Settings, StoreProjectItemType.Project);
+
+            // forms
+            foreach (var form in project.Forms.Values)
+            {
+                SaveFile(location, form.Name, form, StoreProjectItemType.Form);
+            }
+
+            ClearRenamed(project, location, renames);
+        }
+
+        private void SaveFile(string location, string name, object data, StoreProjectItemType type)
+        {
+            var file = name + "." + GetProjectItemExtension(type);
+            file = Path.Combine(location, file);
+            var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(file, json);
+        }
+
+        private void ClearRenamed(StoreProject project, string location, List<ObjectRenameItem> renames)
+        {
+            foreach (var rn in renames)
+            {
+                var name = rn.OrignalName + "." + GetProjectItemExtension(rn.Type);
+                var fileName = Path.Combine(location, name);
+
+                if (File.Exists(fileName))
+                {
+                    File.Delete(fileName);
+                }
+            }
+        }
+
+        private string GetProjectItemExtension(StoreProjectItemType type)
+        {
+            switch (type)
+            {
+                case StoreProjectItemType.Project:
+                    return "project.json";
+                case StoreProjectItemType.Form:
+                    return "form.json";
+                case StoreProjectItemType.Query:
+                    return "query.json";
+                case StoreProjectItemType.Schema:
+                    return "schema.json";
+            }
+
+            return "";
         }
     }
 }

@@ -67,7 +67,7 @@ namespace SqlForms.DevSpace.Controlers
             CreateNewProject();
 
             // ToDo: remove demo data initialization
-            LoadModel(@"C:\Repos\MasterDetailsDataEntry\Seed\App.SqlForms.DevSpace\data\Project1");
+            LoadModel(@"C:\Repos\MasterDetailsDataEntry\Seed\App.SqlForms.DevSpace\SqlForms.DevSpace\data\Project1");
 
             //var sch = "Schema1";
             //var s1 = new StoreSchema { Name = sch };
@@ -340,13 +340,31 @@ namespace SqlForms.DevSpace.Controlers
         private List<ObjectRenameItem> FindAllRenames()
         {
             var result = new List<ObjectRenameItem>();
+
+            // Forms
+            var formRenames = Model.Forms.Where(f => f.Model.OriginalName != f.Model.Name)
+                .Select(f => new ObjectRenameItem { Name = f.Model.Name, OrignalName = f.Model.OriginalName, Type = StoreProjectItemType.Form });
+
+            result.AddRange(formRenames);
+
             return result;
         }
 
         private StoreProject AssembleStoreProject()
         {
-            // until save is not implemented
-            var result = _currentProject;
+            var result = new StoreProject();
+            result.Schemas = new Dictionary<string, StoreSchema>();
+            result.SchemaMigrations = new Dictionary<string, StoreSchemaMigrations>();
+            result.Queries = new Dictionary<string, StoreQuery>();
+            result.Forms = new Dictionary<string, StoreForm>();
+
+            // Forms
+            foreach (var form in Model.Forms)
+            {
+                var storeForm = form.Model.ToStore();
+                result.Forms.Add(storeForm.Name, storeForm);
+            }
+
             return result;
         }
 

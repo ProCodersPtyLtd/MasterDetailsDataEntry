@@ -54,8 +54,24 @@ namespace Platz.ObjectBuilder.Blazor.Model
             model.IsListForm = form.IsListForm;
             model.Fields = form.Fields.Values.Select(f => new FieldComponentModel(f)).ToList();
             model.PagePath = form.PagePath;
-            model.PageHeaderForm = form.PageHeaderForm?.Name;
+            //model.PageHeaderForm = form.PageHeaderForm?.Name;
+            model.PageHeaderForm = form.PageHeaderForm;
             model.PageParameters = form.PageParameters.Values.Select(f => new PageParameterModel(f)).ToList();
+        }
+
+        public StoreForm ToStore()
+        {
+            var src = this;
+            var form = new StoreForm();
+            form.Name = src.Name;
+            form.Schema = src.Schema;
+            form.Datasource = src.Datasource;
+            form.IsListForm = src.IsListForm;
+            form.Fields = src.Fields.ToDictionary(f => f.StoreField.BindingProperty, f => f.ToStore()); 
+            form.PagePath = src.PagePath;
+            form.PageHeaderForm = src.PageHeaderForm;
+            form.PageParameters = src.PageParameters.ToDictionary(p => p.Name, p => p.ToStore());
+            return form;
         }
     }
 
@@ -89,6 +105,18 @@ namespace Platz.ObjectBuilder.Blazor.Model
             model.Order = item.Order;
             model.DatasourceQueryParameterMapping = item.DatasourceQueryParameterMapping;
             model.HeaderFormParameterMapping = item.HeaderFormParameterMapping;
+        }
+
+        public StorePageParameter ToStore()
+        {
+            var src = this;
+            var par = new StorePageParameter();
+            par.Name = src.Name;
+            par.DataType = src.DataType;
+            par.Order = src.Order;
+            par.DatasourceQueryParameterMapping = src.DatasourceQueryParameterMapping;
+            par.HeaderFormParameterMapping = src.HeaderFormParameterMapping;
+            return par;
         }
     }
 

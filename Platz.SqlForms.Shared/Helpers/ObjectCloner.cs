@@ -26,6 +26,14 @@ namespace Platz.SqlForms.Shared
             return target;
         }
 
+        public static T GetCopy<T>(this T source)
+            where T : class
+        {
+            var target = New(source);
+            source.CopyTo(target);
+            return (T)target;
+        }
+
         public static object GetCopy(this object source)
         {
             var target = New(source);

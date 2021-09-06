@@ -1,0 +1,36 @@
+{
+  "Name": "FormName1",
+  "IsListForm": false,
+  "Schema": "Crm2",
+  "Datasource": "Address",
+  "Fields": {
+    "$.Suburb": {
+      "BindingProperty": "$.Suburb",
+      "DataType": null,
+      "ControlType": "TextEdit",
+      "ViewModeControlType": null,
+      "Label": "Suburb",
+      "Required": false,
+      "Hidden": false,
+      "ReadOnly": null,
+      "PrimaryKey": false,
+      "Unique": false,
+      "Format": null,
+      "Order": 0,
+      "Filter": false,
+      "FilterType": 0
+    }
+  },
+  "Buttons": {},
+  "PagePath": null,
+  "PageParameters": {
+    "q1": {
+      "Name": "q1",
+      "DataType": "int",
+      "Order": 0,
+      "DatasourceQueryParameterMapping": null,
+      "HeaderFormParameterMapping": null
+    }
+  },
+  "PageHeaderForm": null
+}
