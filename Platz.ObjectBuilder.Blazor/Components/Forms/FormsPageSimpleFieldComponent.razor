@@ -6,28 +6,76 @@
 
 @if (Field != null)
 {
-<div @onclick="CaptionClick" @onclick:stopPropagation="true">
-    <div class="forms-widget @GetCaptionClass()">
-        &nbsp;
-        @($"{Field.Order}: {Field.StoreField.Label} {GetControlName()}({Field.StoreField.BindingProperty})")
+<div @onmouseover="@(e => { Field.FullView = true; })" @onmouseover:stopPropagation="true" @onmouseout:stopPropagation="true" @onmouseout="@(e => { Field.FullView = false; })">
 
-        <div class="float-right">
-            <button class="btn btn-danger btn-sm" title="Cancel" @onclick="@(async (args) => await DeleteClick(args, Field.StoreField.BindingProperty))"
-                    style="display: block; margin-left: auto; margin-right: 0;">
-                <span class="oi oi-x"></span>
-            </button>
+    @if (Field.Active || Field.FullView)
+    {
+    <div @onclick="CaptionClick" @onclick:stopPropagation="true">
+        <div class="forms-widget @GetCaptionClass()">
+            &nbsp;
+            @($"{Field.Order}: {Field.StoreField.Label} {GetControlName()}({Field.StoreField.BindingProperty})")
+
+            <div class="float-right">
+                <button class="btn btn-danger btn-sm" title="Cancel" @onclick="@(async (args) => await DeleteClick(args, Field.StoreField.BindingProperty))"
+                        style="display: block; margin-left: auto; margin-right: 0;">
+                    <span class="oi oi-x"></span>
+                </button>
+            </div>
+        </div>
+
+        <div class="forms-widget-body">
+        
+            @if (Field.ComponentType == FieldComponentType.TextEdit)
+            { 
+                <FormsPageTextEditComponent Field="@Field" ModelChanged="@ModelChanged" />
+            }
+
         </div>
     </div>
+    }
+    else
+    {
+            
+        <div @onclick="CaptionClick" @onclick:stopPropagation="true">
+            <div class="forms-widget forms-widget-preview">
 
-    <div class="forms-widget-body">
-        
-        @if (Field.ComponentType == FieldComponentType.TextEdit)
-        { 
-            <FormsPageTextEditComponent Field="@Field" ModelChanged="@ModelChanged" />
-        }
+                <div class="forms-grid">
+                    <div class="row-nospace-sm">
+                        <div class="col-sm-1 forms-nospace">
+                             @($"{Field.Order}:")
+                        </div>
+                        <div class="col-sm-5 forms-nospace">
+                            @if (Field.ComponentType != FieldComponentType.ActionButton)
+                            {
+                            <label>@Field.StoreField.Label</label>
+                            }
+                        </div>
+                        <div class="col-sm-6 forms-nospace">
+                            @switch (Field.ComponentType)
+                            {
+                                case FieldComponentType.TextEdit:
+                                    <input value="@Field.StoreField.BindingProperty" class="form-control" readonly="readonly" />
+                                    break;
+                                case FieldComponentType.DateEdit:
+                                    <input type="date" class="form-control" readonly="readonly" />
+                                    break;
+                                case FieldComponentType.Dropdown:
+                                    <select value="@Field.StoreField.BindingProperty" class="form-control" readonly="readonly" >
+                                        <option value="@Field.StoreField.BindingProperty">@Field.StoreField.BindingProperty</option>
+                                    </select>
+                                    break;
+                                case FieldComponentType.ActionButton:
+                                    <button class="@GetButtonClass()">@Field.StoreButton.Text</button>
+                                    break;
+                            }
+                        </div>
+                    </div>
+                </div>
 
+            </div>
+        </div>
+    }
     </div>
-</div>
 }
 
 
@@ -41,9 +89,27 @@
     [Parameter]
     public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 
+    //private bool _fullView;
+
     private string GetCaptionClass()
     {
         return Field.Active ? "forms-cap-active" : "forms-cap";
+    }
+
+    private string GetButtonClass()
+    {
+        switch (Field.StoreButton.Action)
+        {
+            case "Submit":
+                return "btn btn-primary";
+            case "Cancel":
+            case "Close":
+                return "btn btn-info";
+            case "Delete":
+                return "btn btn-danger";
+            default:
+                return "btn btn-secondary";
+        }
     }
 
     private async Task DeleteClick(MouseEventArgs e, string binding)

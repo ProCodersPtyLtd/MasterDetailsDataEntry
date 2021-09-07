@@ -27,6 +27,7 @@ namespace Platz.ObjectBuilder.Blazor.Model
         //public string Name { get; set; }
         //public string Binding { get; set; }
         public bool Active { get; set; }
+        public bool FullView { get; set; } 
         public int Order { get; set; }
         public FieldComponentType ComponentType { get; set; }
 

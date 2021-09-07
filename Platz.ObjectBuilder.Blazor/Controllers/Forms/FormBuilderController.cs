@@ -163,6 +163,7 @@ namespace Platz.ObjectBuilder
 
         public void Change()
         {
+            ApplySortOrder();
             Model.IsDirty = true;
         }
 
@@ -184,14 +185,32 @@ namespace Platz.ObjectBuilder
 
         public void MoveUp()
         {
-            throw new NotImplementedException();
-            Change();
+            if (ActiveField != null)
+            {
+                var i = Model.Fields.IndexOf(ActiveField);
+
+                if (i > 0)
+                {
+                    Model.Fields.RemoveAt(i);
+                    Model.Fields.Insert(i - 1, ActiveField);
+                    Change();
+                }
+            }
         }
 
         public void MoveDown()
         {
-            throw new NotImplementedException();
-            Change();
+            if (ActiveField != null)
+            {
+                var i = Model.Fields.IndexOf(ActiveField);
+
+                if (i < Model.Fields.Count-1)
+                {
+                    Model.Fields.RemoveAt(i);
+                    Model.Fields.Insert(i + 1, ActiveField);
+                    Change();
+                }
+            }
         }
 
         public void Clear()

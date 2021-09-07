@@ -5,7 +5,7 @@
 
 @namespace Platz.ObjectBuilder.Blazor.Forms
 
-    <div @onclick="PageClicked">
+    <div @onclick="PageClicked" @onmouseover="@(e => { FormController.GetPageFieldComponents().ForEach(f => f.FullView = false); })">
         <div class="@GetPageClass()">
             <h5>Control Flow</h5>
         </div>
