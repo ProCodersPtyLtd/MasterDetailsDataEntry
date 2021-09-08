@@ -5,7 +5,8 @@
 
 @namespace Platz.ObjectBuilder.Blazor.Forms
 
-    <div @onclick="PageClicked" @onmouseover="@(e => { FormController.GetPageFieldComponents().ForEach(f => f.FullView = false); })">
+    @*<div @onclick="PageClicked" @onmouseover="@(e => { FormController.GetPageFieldComponents().ForEach(f => f.FullView = false); })">*@
+    <div @onclick="PageClicked">
         <div class="@GetPageClass()">
             <h5>Control Flow</h5>
         </div>
@@ -29,7 +30,7 @@
                       TItem="FieldComponentModel" OnItemDrop="@ItemDropped">
                 <div>
                     @*<div class="grid-item">@context.Name</div>*@
-                    <FormsPageSimpleFieldComponent Field="@context" ModelChanged="ModelChanged" />
+                    <DesignSimpleFieldComponent Field="@context" ModelChanged="ModelChanged" />
                 </div>
             </Dropzone>
         </div>

@@ -108,6 +108,7 @@ namespace Platz.ObjectBuilder
         public void SetActive(FieldComponentModel field)
         {
             Model.Fields.ForEach(f => f.Active = false);
+            Model.Fields.ForEach(f => f.FullView = false);
             ActiveField = null;
 
             if (field == null || Model.Fields.IndexOf(field) == -1)
@@ -118,6 +119,7 @@ namespace Platz.ObjectBuilder
 
             PageActive = false;
             field.Active = true;
+            field.FullView = true;
             ActiveField = field;
         }
 

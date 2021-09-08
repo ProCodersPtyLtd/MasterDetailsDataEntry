@@ -61,5 +61,7 @@ namespace Platz.SqlForms
         public string Hint { get; set; }
         public string LinkText { get; set; }
         public int Order { get; set; }
+        public bool Hidden { get; set; }
+        public bool? ReadOnly { get; set; }
     }
 }

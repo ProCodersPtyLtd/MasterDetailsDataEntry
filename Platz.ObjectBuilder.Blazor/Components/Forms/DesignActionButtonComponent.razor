@@ -1,0 +1,93 @@
+﻿@using Platz.ObjectBuilder.Blazor
+@using Platz.ObjectBuilder.Blazor.Controllers
+@using Platz.ObjectBuilder.Blazor.Model
+@using Platz.SqlForms
+
+@namespace Platz.ObjectBuilder.Blazor.Forms
+
+<div class=".forms-big">
+    <div class="row-nospace-sm">
+        <div class="col-sm-6 forms-nospace">
+            Label
+            <input id="LabelInput" value="@Field.StoreButton.Text" class="form-control" @onchange="LabelChanged" />
+        </div>
+        <div class="col-sm-6 forms-nospace">
+            Action
+            <select id="ActionInput" value="@Field.StoreButton.Action" class="form-control" @onchange="ButtonActionChanged">
+
+                @foreach (var b in GetButtonActionTypes())
+                {
+                    <option value="@b">@b</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="row-nospace-sm">
+        <div class="col-sm-7 forms-nospace">
+            <input type="checkbox" class="" checked="@Field.StoreField.Hidden" @onchange="HiddenChanged" id="check3" />
+            <label for="check3">Hidden</label>
+            &nbsp;
+            <input type="checkbox" class="" checked="@Field.StoreField.ReadOnly" @onchange="ReadOnlyChanged" id="check2" />
+            <label for="check2">Read only</label>
+        </div>
+        <div class="col-sm-5 forms-nospace">
+        </div>
+    </div>
+    </div>
+
+
+@code {
+    [CascadingParameter]
+    public IFormBuilderController FormsPageController { get; set; }
+
+    [Parameter]
+    public FieldComponentModel Field { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    private List<ButtonActionTypes> GetButtonActionTypes()
+    {
+        var result = Enum.GetValues(typeof(ButtonActionTypes)).Cast<ButtonActionTypes>().ToList();
+        return result;
+    }
+
+    private async Task LabelChanged(ChangeEventArgs args)
+    {
+        Field.StoreButton.Text = args.Value.ToString();
+        FormsPageController.Change();
+        await Change();
+    }
+
+    private async Task ButtonActionChanged(ChangeEventArgs args)
+    {
+        Field.StoreButton.Action = args.Value.ToString();
+        var actions = GetButtonActionTypes();
+
+        // if empty or equal to action from list - was set automatically
+        if (string.IsNullOrWhiteSpace(Field.StoreButton.Text) || actions.Any(a => a.ToString() == Field.StoreButton.Text))
+        {
+            Field.StoreButton.Text = Field.StoreButton.Action;
+        }
+
+        await Change();
+    }
+
+    private async Task ReadOnlyChanged(ChangeEventArgs args)
+    {
+        Field.StoreButton.ReadOnly = Convert.ToBoolean(args.Value);
+        await Change();
+    }
+
+    private async Task HiddenChanged(ChangeEventArgs args)
+    {
+        Field.StoreButton.Hidden = Convert.ToBoolean(args.Value);
+        await Change();
+    }
+
+    private async Task Change()
+    {
+        FormsPageController.Change();
+        await ModelChanged.InvokeAsync();
+    }
+}
