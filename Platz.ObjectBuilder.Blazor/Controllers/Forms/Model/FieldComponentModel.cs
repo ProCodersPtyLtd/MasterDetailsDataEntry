@@ -1,4 +1,5 @@
 ﻿using Platz.SqlForms;
+using Platz.SqlForms.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,7 @@ namespace Platz.ObjectBuilder.Blazor.Model
         //public string Name { get; set; }
         //public string Binding { get; set; }
         public bool Active { get; set; }
+        public bool FullView { get; set; } 
         public int Order { get; set; }
         public FieldComponentType ComponentType { get; set; }
 
@@ -36,7 +38,7 @@ namespace Platz.ObjectBuilder.Blazor.Model
 
         public static void CopyFrom(FieldComponentModel model, StoreFormField field)
         {
-            model.StoreField = field;
+            model.StoreField = field.GetCopy();
             model.Order = field.Order;
             model.ComponentType = GetComponentType(field.ControlType);
         }
@@ -46,6 +48,14 @@ namespace Platz.ObjectBuilder.Blazor.Model
             model.StoreButton = button;
             model.Order = button.Order;
             model.ComponentType = FieldComponentType.ActionButton;
+        }
+
+        public StoreFormField ToStore()
+        {
+            var field = StoreField.GetCopy();
+            field.ControlType = ComponentType.ToString();
+
+            return field;
         }
 
         private static Dictionary<string, FieldComponentType> FieldComponentTypeMap = new Dictionary<string, FieldComponentType> 

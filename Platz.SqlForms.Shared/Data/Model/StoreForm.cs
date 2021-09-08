@@ -19,7 +19,7 @@ namespace Platz.SqlForms
         // Page Properties
         public string PagePath { get; set; }
         public Dictionary<string, StorePageParameter> PageParameters { get; set; } = new Dictionary<string, StorePageParameter>();
-        public StoreForm PageHeaderForm { get; set; }
+        public string PageHeaderForm { get; set; }
     }
 
     public class StorePageParameter

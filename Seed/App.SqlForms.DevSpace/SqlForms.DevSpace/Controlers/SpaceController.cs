@@ -17,7 +17,10 @@ namespace SqlForms.DevSpace.Controlers
         EditWindowDetails ActiveWindow { get; }
         string ActiveWindowName { get; }
         int ActiveWindowIndex { get; }
+        List<ValidationOutputItem> ValidationResult { get; }
 
+        bool Validate();
+        void SaveAll();
         void CreateNewProject();
         void CreateNewForm();
         List<StoreSchema> GetProjectSchemas();
@@ -38,9 +41,13 @@ namespace SqlForms.DevSpace.Controlers
         private readonly IProjectLoader _projectLoader;
         private readonly IFormBuilderController _formBuilderController;
 
+        private string _projectPath;
+        private StoreProject _currentProject;
+
         public SpaceProjectDetails Model { get; set; }
         public string ActiveWindowName { get; set; }
         public int ActiveWindowIndex { get; set; }
+        public List<ValidationOutputItem> ValidationResult { get; set; } = new List<ValidationOutputItem>();
 
         public IProjectLoader Loader { get { return _projectLoader; } }
 
@@ -60,7 +67,7 @@ namespace SqlForms.DevSpace.Controlers
             CreateNewProject();
 
             // ToDo: remove demo data initialization
-            LoadModel(@"C:\Repos\MasterDetailsDataEntry\Seed\App.SqlForms.DevSpace\data\Project1");
+            LoadModel(@"C:\Repos\MasterDetailsDataEntry\Seed\App.SqlForms.DevSpace\SqlForms.DevSpace\data\Project1");
 
             //var sch = "Schema1";
             //var s1 = new StoreSchema { Name = sch };
@@ -177,6 +184,20 @@ namespace SqlForms.DevSpace.Controlers
             return d;
         }
 
+        public void OpenSpecialWindow(string name, EditWindowType type)
+        {
+            var w = Model.EditWindows.FirstOrDefault(x => x.Type == type && x.StoreObject.Name == name);
+
+            if (w == null)
+            {
+                w = new EditWindowDetails { StoreObject = new SpecialWindowStoreObject { Name = name }, Type = type };
+                Model.EditWindows.Add(w);
+            }
+
+            ActiveWindowIndex = GetEditWindows().IndexOf(w);
+            ActiveWindowName = w.StoreObject.Name;
+        }
+
         public void OpenWindow(IStoreObject item)
         {
             if (ActivateWindow(item))
@@ -211,9 +232,11 @@ namespace SqlForms.DevSpace.Controlers
             return EditWindowType.Unknown;
         }
 
-        public void LoadModel(string name)
+        public void LoadModel(string projectPath)
         {
-            var project = _projectLoader.Load(name);
+            _projectPath = projectPath;
+            var project = _projectLoader.Load(projectPath);
+            _currentProject = project;
             Model = new SpaceProjectDetails();
             Model.Schemas = project.Schemas.Values.Select(x => new SchemaDetails { Schema = x, SchemaMigrations = project.SchemaMigrations[x.Name] }).ToList();
             Model.Queries = project.Queries.Values.Select(x => new QueryDetails { Query = x }).ToList();
@@ -294,6 +317,70 @@ namespace SqlForms.DevSpace.Controlers
                 var newIndex = Math.Min(index, Model.EditWindows.Count-1);
                 ActivateWindow(newIndex);
             }
+        }
+
+        public void SaveAll()
+        {
+            if (string.IsNullOrWhiteSpace(_projectPath))
+            {
+                throw new Exception("Project path cannot be empty");
+            }
+
+            if (!Validate())
+            {
+                // We show errors but continue save operation
+                OpenSpecialWindow("Output", EditWindowType.Output);
+            }
+
+            var project = AssembleStoreProject();
+            var renames = FindAllRenames();
+            _projectLoader.SaveAll(project, _projectPath, renames);
+        }
+
+        private List<ObjectRenameItem> FindAllRenames()
+        {
+            var result = new List<ObjectRenameItem>();
+
+            // Forms
+            var formRenames = Model.Forms.Where(f => f.Model.OriginalName != f.Model.Name)
+                .Select(f => new ObjectRenameItem { Name = f.Model.Name, OrignalName = f.Model.OriginalName, Type = StoreProjectItemType.Form });
+
+            result.AddRange(formRenames);
+
+            return result;
+        }
+
+        private StoreProject AssembleStoreProject()
+        {
+            var result = new StoreProject();
+            result.Schemas = new Dictionary<string, StoreSchema>();
+            result.SchemaMigrations = new Dictionary<string, StoreSchemaMigrations>();
+            result.Queries = new Dictionary<string, StoreQuery>();
+            result.Forms = new Dictionary<string, StoreForm>();
+
+            // Forms
+            foreach (var form in Model.Forms)
+            {
+                var storeForm = form.Model.ToStore();
+                result.Forms.Add(storeForm.Name, storeForm);
+            }
+
+            return result;
+        }
+
+        public bool Validate()
+        {
+            ValidationResult.Clear();
+
+            foreach (var fm in Model.Forms.Select(f => f.Model))
+            {
+                var formsValidations = _formBuilderController.Validate(fm);
+                var formItems = formsValidations.Select(r => new ValidationOutputItem(r, ValidationLocationType.Form)).ToList();
+                ValidationResult.AddRange(formItems);
+            }
+
+            var fail = ValidationResult.Any();
+            return !fail;
         }
     }
 }

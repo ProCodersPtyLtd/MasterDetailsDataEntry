@@ -3,6 +3,7 @@ using Platz.ObjectBuilder.Blazor;
 using Platz.ObjectBuilder.Blazor.Controllers;
 using Platz.ObjectBuilder.Blazor.Controllers.Logic;
 using Platz.ObjectBuilder.Blazor.Controllers.Schema;
+using Platz.ObjectBuilder.Blazor.Model;
 using Platz.ObjectBuilder.Blazor.Validation;
 using Platz.ObjectBuilder.Engine;
 using Platz.ObjectBuilder.Expressions;
@@ -35,6 +36,7 @@ namespace Platz.ObjectBuilder
 
             services.AddSingleton<IBuilderRuleFactory<IQueryBuilderRule, IQueryControllerModel>, BuilderRuleFactory<IQueryBuilderRule, IQueryControllerModel>>();
             services.AddSingleton<IBuilderRuleFactory<ISchemaBuilderRule, DesignSchema>, BuilderRuleFactory<ISchemaBuilderRule, DesignSchema>>();
+            services.AddSingleton<IBuilderRuleFactory<IFormBuilderRule, FormBuilderModel>, BuilderRuleFactory<IFormBuilderRule, FormBuilderModel>>();
             return services;
         }
     }

@@ -1,0 +1,33 @@
+﻿
+<div class="grid-container overflow-auto" style="height: @(Height)px; width: auto; background-color: aliceblue;">
+    <table>
+        <tr>
+            <th>Validation</th>
+            <th>Location</th>
+            <th>Rule</th>
+            <th>Message</th>
+        </tr>
+
+        @foreach(var item in _spaceController.ValidationResult)
+        {
+            <tr>
+                <td>@item.Type.ToString()</td>
+                <td>@item.LocationType.ToString()</td>
+                <td>@item.RuleName</td>
+                <td>@item.Message</td>
+            </tr>
+        }
+    </table>
+
+</div>
+
+@code {
+    [CascadingParameter]
+    public ISpaceController _spaceController { get; set; }
+
+    [Parameter]
+    public double Height { get; set; } = 780;
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+}

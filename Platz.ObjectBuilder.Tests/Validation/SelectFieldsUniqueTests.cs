@@ -29,7 +29,7 @@ namespace Platz.ObjectBuilder.Tests.Validation
             var vr = rule.Validate(qc.MainQuery);
 
             Assert.NotNull(vr);
-            Assert.True(vr.IsFailed);
+            Assert.Equal(ValidationResultTypes.Error, vr.Type);
             Assert.Contains("id", vr.Message);
             Assert.DoesNotContain("myid", vr.Message);
         }

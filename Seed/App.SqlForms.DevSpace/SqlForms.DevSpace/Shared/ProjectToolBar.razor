@@ -24,7 +24,7 @@
             </button>
         </li>
         <li class="nav-item tbend">
-            <button class="btn btn-light" type="button">
+            <button class="btn btn-light" type="button" @onclick="SaveAllClick">
                 <span class="oi oi-hard-drive"></span>
                 Save All
             </button>
@@ -142,7 +142,11 @@
     {
     }
 
-
+    private async Task SaveAllClick(MouseEventArgs args)
+    {
+        _spaceController.SaveAll();
+         await ModelChanged.InvokeAsync();
+    }
 
     private List<string> GetLoadFiles()
     {

@@ -636,7 +636,7 @@ namespace Platz.ObjectBuilder
             }
             catch(Exception exc)
             {
-                ValidationResults.Add(new RuleValidationResult { IsFailed = true, Message = $"Where Clause error: {exc.Message}" });
+                ValidationResults.Add(new RuleValidationResult { Type = ValidationResultTypes.Error, Message = $"Where Clause error: {exc.Message}" });
                 //Errors += "\r\n" + exc.Message;
             }
         }
