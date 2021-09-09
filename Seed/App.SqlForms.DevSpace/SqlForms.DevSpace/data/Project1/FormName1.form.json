@@ -30,6 +30,13 @@
       "Order": 0,
       "DatasourceQueryParameterMapping": null,
       "HeaderFormParameterMapping": null
+    },
+    "q2": {
+      "Name": "q2",
+      "DataType": "int",
+      "Order": 1,
+      "DatasourceQueryParameterMapping": null,
+      "HeaderFormParameterMapping": null
     }
   },
   "PageHeaderForm": null

@@ -51,6 +51,9 @@ namespace Platz.ObjectBuilder
         void SwitchModel(FormBuilderModel model);
         void UpdateFormName(string name);
         List<string> GetAvailableFormReferences();
+        void PreloadButtonParameters(FieldComponentModel field);
+        List<string> GetAvailableFormParameters();
+        List<string> GetAvailableFormParameters(string form);
     }
     public class FormBuilderController : IFormBuilderController
     {
@@ -452,6 +455,33 @@ namespace Platz.ObjectBuilder
         public List<RuleValidationResult> Validate(FormBuilderModel model = null)
         {
             return _ruleEngine.ValidateAllRules(model ?? Model);
+        }
+
+        public void PreloadButtonParameters(FieldComponentModel field)
+        {
+            field.StoreButton.NavigationParameterMapping.Clear();
+
+            if (!string.IsNullOrWhiteSpace(field.StoreButton.NavigationTargetForm))
+            {
+                var form = _storeForms.First(f => f.Name == field.StoreButton.NavigationTargetForm);
+                field.StoreButton.NavigationParameterMapping = form.PageParameters.Values.OrderBy(x => x.Order).Select(x => new StoreNavigationParameter { Name = x.Name }).ToList();
+            }
+        }
+
+        public List<string> GetAvailableFormParameters()
+        {
+            return Model.PageParameters.OrderBy(x => x.Order).Select(x => x.Name).ToList();
+        }
+
+        public List<string> GetAvailableFormParameters(string name)
+        {
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                var form = _storeForms.First(f => f.Name == name);
+                return form.PageParameters.Values.OrderBy(x => x.Order).Select(x => x.Name).ToList();
+            }
+
+            return new List<string>();
         }
     }
 }

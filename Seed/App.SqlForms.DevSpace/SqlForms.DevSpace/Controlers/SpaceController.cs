@@ -361,7 +361,7 @@ namespace SqlForms.DevSpace.Controlers
             // Forms
             foreach (var form in Model.Forms)
             {
-                var storeForm = form.Model.ToStore();
+                var storeForm = form.Model?.IsDirty == true ? form.Model.ToStore() : form.Form;
                 result.Forms.Add(storeForm.Name, storeForm);
             }
 
