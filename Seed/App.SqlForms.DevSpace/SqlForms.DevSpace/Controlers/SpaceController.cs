@@ -342,7 +342,7 @@ namespace SqlForms.DevSpace.Controlers
             var result = new List<ObjectRenameItem>();
 
             // Forms
-            var formRenames = Model.Forms.Where(f => f.Model.OriginalName != f.Model.Name)
+            var formRenames = Model.Forms.Where(f => f.Model?.IsDirty == true && f.Model.OriginalName != f.Model.Name)
                 .Select(f => new ObjectRenameItem { Name = f.Model.Name, OrignalName = f.Model.OriginalName, Type = StoreProjectItemType.Form });
 
             result.AddRange(formRenames);
@@ -361,7 +361,7 @@ namespace SqlForms.DevSpace.Controlers
             // Forms
             foreach (var form in Model.Forms)
             {
-                var storeForm = form.Model.ToStore();
+                var storeForm = form.Model?.IsDirty == true ? form.Model.ToStore() : form.Form;
                 result.Forms.Add(storeForm.Name, storeForm);
             }
 

@@ -92,7 +92,8 @@
 }
 
 ::deep .forms-widget-preview {
-    padding: 0 0 0 10px;
+    padding: 0 0 0 0;
+    width: 502px;
     background-color: lightgray;
     border-style: dashed;
     border-radius: 5px;

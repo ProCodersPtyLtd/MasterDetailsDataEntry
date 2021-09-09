@@ -6,11 +6,11 @@
 
 @if (Field != null)
 {
-<div @onmouseover="@(e => { Field.FullView = true; })" @onmouseover:stopPropagation="true" @onmouseout:stopPropagation="true" @onmouseout="@(e => { Field.FullView = false; })">
-
+@*<div @onmouseover="@(e => { Field.FullView = true; })" @onmouseover:stopPropagation="true" @onmouseout:stopPropagation="true" @onmouseout="@(e => { Field.FullView = false; })">*@
+<div>
     @if (Field.Active || Field.FullView)
     {
-    <div @onclick="CaptionClick" @onclick:stopPropagation="true">
+    <div class="forms-widget-preview" @onclick="CaptionClick" @onclick:stopPropagation="true">
         <div class="forms-widget @GetCaptionClass()">
             &nbsp;
             @($"{Field.Order}: {Field.StoreField.Label} {GetControlName()}({Field.StoreField.BindingProperty})")
@@ -25,9 +25,14 @@
 
         <div class="forms-widget-body">
         
-            @if (Field.ComponentType == FieldComponentType.TextEdit)
+            @switch (Field.ComponentType)
             { 
-                <FormsPageTextEditComponent Field="@Field" ModelChanged="@ModelChanged" />
+                case FieldComponentType.TextEdit:
+                    <DesignTextEditComponent Field="@Field" ModelChanged="@ModelChanged" />
+                    break;
+                case FieldComponentType.ActionButton:
+                    <DesignActionButtonComponent Field="@Field" ModelChanged="@ModelChanged" />
+                    break;
             }
 
         </div>

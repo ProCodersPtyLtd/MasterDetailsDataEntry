@@ -1,10 +1,10 @@
 {
-  "Name": "FormName1",
+  "Name": "Form1",
   "IsListForm": false,
   "Schema": "Crm2",
   "Datasource": "Address",
-  "Fields": {
-    "$.Suburb": {
+  "Fields": [
+    {
       "BindingProperty": "$.Suburb",
       "DataType": null,
       "ControlType": "TextEdit",
@@ -20,17 +20,17 @@
       "Filter": false,
       "FilterType": 0
     }
-  },
-  "Buttons": {},
-  "PagePath": null,
-  "PageParameters": {
-    "q1": {
-      "Name": "q1",
+  ],
+  "ActionButtons": [],
+  "PagePath": "AddressForm",
+  "PageParameters": [
+    {
+      "Name": "id",
       "DataType": "int",
       "Order": 0,
       "DatasourceQueryParameterMapping": null,
       "HeaderFormParameterMapping": null
     }
-  },
+  ],
   "PageHeaderForm": null
 }

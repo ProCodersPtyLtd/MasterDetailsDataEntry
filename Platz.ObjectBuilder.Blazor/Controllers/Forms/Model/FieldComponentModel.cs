@@ -45,9 +45,11 @@ namespace Platz.ObjectBuilder.Blazor.Model
 
         public static void CopyFrom(FieldComponentModel model, StoreFormButton button)
         {
-            model.StoreButton = button;
+            model.StoreButton = button.GetCopy();
             model.Order = button.Order;
             model.ComponentType = FieldComponentType.ActionButton;
+            model.StoreButton.NavigationParameterMapping = new List<StoreNavigationParameter>();
+            button.NavigationParameterMapping.CopyListTo(model.StoreButton.NavigationParameterMapping);
         }
 
         public StoreFormField ToStore()
@@ -56,6 +58,17 @@ namespace Platz.ObjectBuilder.Blazor.Model
             field.ControlType = ComponentType.ToString();
 
             return field;
+        }
+
+        public StoreFormButton ToStoreButton()
+        {
+            var button = StoreButton.GetCopy();
+            button.Order = Order;
+            // prepare new collection as target for copy operation
+            button.NavigationParameterMapping = new List<StoreNavigationParameter>();
+            StoreButton.NavigationParameterMapping.CopyListTo(button.NavigationParameterMapping);
+
+            return button;
         }
 
         private static Dictionary<string, FieldComponentType> FieldComponentTypeMap = new Dictionary<string, FieldComponentType> 

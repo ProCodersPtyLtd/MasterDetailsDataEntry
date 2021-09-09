@@ -51,6 +51,9 @@ namespace Platz.ObjectBuilder
         void SwitchModel(FormBuilderModel model);
         void UpdateFormName(string name);
         List<string> GetAvailableFormReferences();
+        void PreloadButtonParameters(FieldComponentModel field);
+        List<string> GetAvailableFormParameters();
+        List<string> GetAvailableFormParameters(string form);
     }
     public class FormBuilderController : IFormBuilderController
     {
@@ -108,6 +111,7 @@ namespace Platz.ObjectBuilder
         public void SetActive(FieldComponentModel field)
         {
             Model.Fields.ForEach(f => f.Active = false);
+            Model.Fields.ForEach(f => f.FullView = false);
             ActiveField = null;
 
             if (field == null || Model.Fields.IndexOf(field) == -1)
@@ -118,6 +122,7 @@ namespace Platz.ObjectBuilder
 
             PageActive = false;
             field.Active = true;
+            field.FullView = true;
             ActiveField = field;
         }
 
@@ -420,7 +425,7 @@ namespace Platz.ObjectBuilder
 
         public List<string> GetAvailableFormReferences()
         {
-            var result = _storeForms.Where(m => m.Name != Model.Name && m.Name != Model.OriginalName).Select(f => f.Name).ToList();
+            var result = _storeForms.Where(m => m.Name != Model.Name && m.Name != Model.OriginalName).Select(f => f.PagePath ?? f.Name).ToList();
             return result;
         }
 
@@ -443,13 +448,40 @@ namespace Platz.ObjectBuilder
             if (!string.IsNullOrWhiteSpace(Model.PageHeaderForm))
             {
                 var form = _storeForms.First(f => f.Name == Model.PageHeaderForm);
-                Model.HeaderParams = form.PageParameters.Values.OrderBy(x => x.Order).Select(x => x.Name).ToList();
+                Model.HeaderParams = form.PageParameters.OrderBy(x => x.Order).Select(x => x.Name).ToList();
             }
         }
 
         public List<RuleValidationResult> Validate(FormBuilderModel model = null)
         {
             return _ruleEngine.ValidateAllRules(model ?? Model);
+        }
+
+        public void PreloadButtonParameters(FieldComponentModel field)
+        {
+            field.StoreButton.NavigationParameterMapping.Clear();
+
+            if (!string.IsNullOrWhiteSpace(field.StoreButton.NavigationTargetForm))
+            {
+                var form = _storeForms.First(f => f.Name == field.StoreButton.NavigationTargetForm || f.PagePath == field.StoreButton.NavigationTargetForm);
+                field.StoreButton.NavigationParameterMapping = form.PageParameters.OrderBy(x => x.Order).Select(x => new StoreNavigationParameter { Name = x.Name }).ToList();
+            }
+        }
+
+        public List<string> GetAvailableFormParameters()
+        {
+            return Model.PageParameters.OrderBy(x => x.Order).Select(x => x.Name).ToList();
+        }
+
+        public List<string> GetAvailableFormParameters(string name)
+        {
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                var form = _storeForms.First(f => f.Name == name);
+                return form.PageParameters.OrderBy(x => x.Order).Select(x => x.Name).ToList();
+            }
+
+            return new List<string>();
         }
     }
 }

@@ -72,7 +72,7 @@
     </div>
     <div class="row-nospace-sm">
         <div class="col-sm-4 forms-nospace">
-            Path
+            Navigation Path
         </div>
         <div class="col-sm-8 forms-nospace">
             <input id="PagePathInput" value="@FormsPageController.Model.PagePath" @onchange="PagePathChanged" class="form-control" />
@@ -163,7 +163,10 @@
     { }
 
     private async Task PagePathChanged(ChangeEventArgs a)
-    { }
+    {
+        FormsPageController.Model.PagePath = a.Value.ToString();
+        await Change();
+    }
     private async Task PageHeaderFormChanged(ChangeEventArgs a)
     {
         _ctrl.Model.PageHeaderForm = a.Value.ToString();

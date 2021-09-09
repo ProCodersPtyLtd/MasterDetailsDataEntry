@@ -44,11 +44,91 @@
 
                 <div class="row-nospace-sm">
                     <div class="col-sm-4 forms-nospace">
+                        Attributes
+                    </div>
+                    <div class="col-sm-8 forms-nospace">
+                        <input type="checkbox" class="" checked="@Field.StoreButton.Hidden" @onchange="ButtonHiddenChanged" id="check33" />
+                        <label for="check33">Hidden</label>
+                        <br />
+                        <input type="checkbox" class="" checked="@Field.StoreButton.ReadOnly" @onchange="ButtonReadOnlyChanged" id="check22" />
+                        <label for="check22">Read only</label>
+                    </div>
+                </div>
+
+                <div class="row-nospace-sm">
+                    <div class="col-sm-4 forms-nospace">
                         Navigation Link
                     </div>
                     <div class="col-sm-8 forms-nospace">
-                        <input id="BindingInput" value="@Field.StoreButton.LinkText" @onchange="ButtonLinkChanged" class="form-control" />
+                        @*<input id="BindingInput" value="@Field.StoreButton.LinkText" @onchange="ButtonLinkChanged" class="form-control" />*@
+                        <input id="BindingInput" value="@GetNavigationLinkText()" readonly="readonly" class="form-control" />
                     </div>
+                </div>
+
+                <div class="row-nospace-sm">
+                    <div class="col-sm-4 forms-nospace">
+                        Target form
+                    </div>
+                    <div class="col-sm-8 forms-nospace">
+                        <select class="form-control selectpicker" value="@Field.StoreButton.NavigationTargetForm" @onchange="NavigationTargetFormChanged">
+                            <option value=""></option>
+
+                            @foreach (var item in _ctrl.GetAvailableFormReferences())
+                            {
+                                <option value="@item">@item</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row-nospace-sm">
+                    <div class="col-sm-4 forms-nospace">
+                        Parameters mapping
+                    </div>
+
+                    @if (Field.StoreButton.NavigationParameterMapping.Count == 0)
+                    {
+                        <div class="col-sm-8 forms-nospace">
+                            Target form has no parameters defined
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-sm-8 forms-nospace">
+                            @*<div class="plk-flex overflow-auto" style="min-height: 160px; height: 160px">*@
+                                <div style="background-color: lightgrey ">
+                                    <table style="width: 100%">
+                                        <tr>
+                                            <th>Target form parameter</th>
+                                            <th>This form parameter</th>
+                                        </tr>
+
+                                        @for (int i = 0; i < Field.StoreButton.NavigationParameterMapping.Count; i++)
+                                        {
+                                            var rowIndex = i;
+
+                                            <tr>
+                                                <td>@Field.StoreButton.NavigationParameterMapping[i].Name</td>
+
+                                                <td>
+                                                    <select class="form-control selectpicker" 
+                                                            value="@Field.StoreButton.NavigationParameterMapping[rowIndex].SupplyingParameterMapping" 
+                                                            @onchange="async (a) => await NavigationParameterChanged(a, rowIndex)">
+                                                        <option value=""></option>
+
+                                                        @foreach (var item in _ctrl.GetAvailableFormParameters())
+                                                        {
+                                                            <option value="@item">@item</option>
+                                                        }
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </table>
+                                </div>
+                            @*</div>*@
+                        </div>
+                    }
                 </div>
             }
             else
@@ -140,6 +220,18 @@
         await ModelChanged.InvokeAsync();
     }
 
+    private string GetNavigationLinkText()
+    {
+        var result = $"{Field.StoreButton.NavigationTargetForm}";
+
+        foreach (var p in Field.StoreButton.NavigationParameterMapping)
+        {
+            result += $"/{{{p.SupplyingParameterMapping}}}";
+        }
+
+        return result;
+    }
+
     private List<ButtonActionTypes> GetButtonActionTypes()
     {
         var result = Enum.GetValues(typeof(ButtonActionTypes)).Cast<ButtonActionTypes>().ToList();
@@ -149,7 +241,7 @@
     private async Task ButtonTextChanged(ChangeEventArgs args)
     {
         Field.StoreButton.Text = args.Value.ToString();
-        FormsPageController.Change();
+        await Change();
     }
     private async Task ButtonActionChanged(ChangeEventArgs args)
     {
@@ -167,18 +259,39 @@
     private async Task ButtonHintChanged(ChangeEventArgs args)
     {
         Field.StoreButton.Hint = args.Value.ToString();
-        FormsPageController.Change();
+        await Change();
     }
-    private async Task ButtonLinkChanged(ChangeEventArgs args)
+    //private async Task ButtonLinkChanged(ChangeEventArgs args)
+    //{
+    //    Field.StoreButton.LinkText = args.Value.ToString();
+    //    FormsPageController.Change();
+    //}
+    private async Task NavigationTargetFormChanged(ChangeEventArgs args)
     {
-        Field.StoreButton.LinkText = args.Value.ToString();
-        FormsPageController.Change();
+        Field.StoreButton.NavigationTargetForm = args.Value.ToString();
+        FormsPageController.PreloadButtonParameters(Field);
+        await Change();
     }
-
+    private async Task NavigationParameterChanged(ChangeEventArgs args, int row)
+    {
+        Field.StoreButton.NavigationParameterMapping[row].SupplyingParameterMapping = args.Value.ToString();
+        await Change();
+    }
+    private async Task ButtonReadOnlyChanged(ChangeEventArgs args)
+    {
+        Field.StoreButton.ReadOnly = Convert.ToBoolean(args.Value);
+        await Change();
+    }
+    private async Task ButtonHiddenChanged(ChangeEventArgs args)
+    {
+        Field.StoreButton.Hidden = Convert.ToBoolean(args.Value);
+        await Change();
+    }
+        
     private async Task LabelChanged(ChangeEventArgs args)
     {
         Field.StoreField.Label = args.Value.ToString();
-        FormsPageController.Change();
+        await Change();
     }
     private async Task BindingChanged(ChangeEventArgs args)
     {
