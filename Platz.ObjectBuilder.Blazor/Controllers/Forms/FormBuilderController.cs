@@ -425,7 +425,7 @@ namespace Platz.ObjectBuilder
 
         public List<string> GetAvailableFormReferences()
         {
-            var result = _storeForms.Where(m => m.Name != Model.Name && m.Name != Model.OriginalName).Select(f => f.Name).ToList();
+            var result = _storeForms.Where(m => m.Name != Model.Name && m.Name != Model.OriginalName).Select(f => f.PagePath ?? f.Name).ToList();
             return result;
         }
 
@@ -448,7 +448,7 @@ namespace Platz.ObjectBuilder
             if (!string.IsNullOrWhiteSpace(Model.PageHeaderForm))
             {
                 var form = _storeForms.First(f => f.Name == Model.PageHeaderForm);
-                Model.HeaderParams = form.PageParameters.Values.OrderBy(x => x.Order).Select(x => x.Name).ToList();
+                Model.HeaderParams = form.PageParameters.OrderBy(x => x.Order).Select(x => x.Name).ToList();
             }
         }
 
@@ -463,8 +463,8 @@ namespace Platz.ObjectBuilder
 
             if (!string.IsNullOrWhiteSpace(field.StoreButton.NavigationTargetForm))
             {
-                var form = _storeForms.First(f => f.Name == field.StoreButton.NavigationTargetForm);
-                field.StoreButton.NavigationParameterMapping = form.PageParameters.Values.OrderBy(x => x.Order).Select(x => new StoreNavigationParameter { Name = x.Name }).ToList();
+                var form = _storeForms.First(f => f.Name == field.StoreButton.NavigationTargetForm || f.PagePath == field.StoreButton.NavigationTargetForm);
+                field.StoreButton.NavigationParameterMapping = form.PageParameters.OrderBy(x => x.Order).Select(x => new StoreNavigationParameter { Name = x.Name }).ToList();
             }
         }
 
@@ -478,7 +478,7 @@ namespace Platz.ObjectBuilder
             if (!string.IsNullOrWhiteSpace(name))
             {
                 var form = _storeForms.First(f => f.Name == name);
-                return form.PageParameters.Values.OrderBy(x => x.Order).Select(x => x.Name).ToList();
+                return form.PageParameters.OrderBy(x => x.Order).Select(x => x.Name).ToList();
             }
 
             return new List<string>();

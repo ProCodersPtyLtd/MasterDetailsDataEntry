@@ -52,11 +52,13 @@ namespace Platz.ObjectBuilder.Blazor.Model
             model.Schema = form.Schema;
             model.Datasource = form.Datasource;
             model.IsListForm = form.IsListForm;
-            model.Fields = form.Fields.Values.Select(f => new FieldComponentModel(f)).ToList();
+            model.Fields = form.Fields.OrderBy(x => x.Order).Select(f => new FieldComponentModel(f)).ToList();
+            var buttons = form.ActionButtons.OrderBy(x => x.Order).Select(f => new FieldComponentModel(f)).ToList();
+            model.Fields.AddRange(buttons);
             model.PagePath = form.PagePath;
             //model.PageHeaderForm = form.PageHeaderForm?.Name;
             model.PageHeaderForm = form.PageHeaderForm;
-            model.PageParameters = form.PageParameters.Values.Select(f => new PageParameterModel(f)).ToList();
+            model.PageParameters = form.PageParameters.OrderBy(x => x.Order).Select(f => new PageParameterModel(f)).ToList();
         }
 
         public StoreForm ToStore()
@@ -67,10 +69,11 @@ namespace Platz.ObjectBuilder.Blazor.Model
             form.Schema = src.Schema;
             form.Datasource = src.Datasource;
             form.IsListForm = src.IsListForm;
-            form.Fields = src.Fields.ToDictionary(f => f.StoreField.BindingProperty, f => f.ToStore()); 
+            form.Fields = src.Fields.Where(f => f.ComponentType != FieldComponentType.ActionButton).Select(f => f.ToStore()).ToList(); 
+            form.ActionButtons = src.Fields.Where(f => f.ComponentType == FieldComponentType.ActionButton).Select(f => f.ToStoreButton()).ToList();
             form.PagePath = src.PagePath;
             form.PageHeaderForm = src.PageHeaderForm;
-            form.PageParameters = src.PageParameters.ToDictionary(p => p.Name, p => p.ToStore());
+            form.PageParameters = src.PageParameters.Select(p => p.ToStore()).ToList();
             return form;
         }
     }

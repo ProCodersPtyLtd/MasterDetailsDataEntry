@@ -342,7 +342,7 @@ namespace SqlForms.DevSpace.Controlers
             var result = new List<ObjectRenameItem>();
 
             // Forms
-            var formRenames = Model.Forms.Where(f => f.Model.OriginalName != f.Model.Name)
+            var formRenames = Model.Forms.Where(f => f.Model?.IsDirty == true && f.Model.OriginalName != f.Model.Name)
                 .Select(f => new ObjectRenameItem { Name = f.Model.Name, OrignalName = f.Model.OriginalName, Type = StoreProjectItemType.Form });
 
             result.AddRange(formRenames);

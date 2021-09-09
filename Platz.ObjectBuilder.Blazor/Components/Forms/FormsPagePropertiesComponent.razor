@@ -163,7 +163,10 @@
     { }
 
     private async Task PagePathChanged(ChangeEventArgs a)
-    { }
+    {
+        FormsPageController.Model.PagePath = a.Value.ToString();
+        await Change();
+    }
     private async Task PageHeaderFormChanged(ChangeEventArgs a)
     {
         _ctrl.Model.PageHeaderForm = a.Value.ToString();

@@ -1,0 +1,54 @@
+{
+  "Name": "Form2",
+  "IsListForm": false,
+  "Schema": "Crm2",
+  "Datasource": "Person",
+  "Fields": [
+    {
+      "BindingProperty": "$.Surname",
+      "DataType": null,
+      "ControlType": "TextEdit",
+      "ViewModeControlType": null,
+      "Label": "Surname",
+      "Required": false,
+      "Hidden": false,
+      "ReadOnly": null,
+      "PrimaryKey": false,
+      "Unique": false,
+      "Format": null,
+      "Order": 0,
+      "Filter": false,
+      "FilterType": 0
+    }
+  ],
+  "ActionButtons": [
+    {
+      "Action": "Submit",
+      "Text": "Submit",
+      "Hint": null,
+      "Order": 1,
+      "Hidden": false,
+      "ReadOnly": true,
+      "NavigationTargetForm": "AddressForm",
+      "NavigationParameterMapping": [
+        {
+          "Name": "id",
+          "DataType": null,
+          "Order": 0,
+          "SupplyingParameterMapping": "addressId"
+        }
+      ]
+    }
+  ],
+  "PagePath": null,
+  "PageParameters": [
+    {
+      "Name": "addressId",
+      "DataType": "int",
+      "Order": 0,
+      "DatasourceQueryParameterMapping": null,
+      "HeaderFormParameterMapping": null
+    }
+  ],
+  "PageHeaderForm": null
+}

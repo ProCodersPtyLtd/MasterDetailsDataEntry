@@ -44,6 +44,19 @@
 
                 <div class="row-nospace-sm">
                     <div class="col-sm-4 forms-nospace">
+                        Attributes
+                    </div>
+                    <div class="col-sm-8 forms-nospace">
+                        <input type="checkbox" class="" checked="@Field.StoreButton.Hidden" @onchange="ButtonHiddenChanged" id="check33" />
+                        <label for="check33">Hidden</label>
+                        <br />
+                        <input type="checkbox" class="" checked="@Field.StoreButton.ReadOnly" @onchange="ButtonReadOnlyChanged" id="check22" />
+                        <label for="check22">Read only</label>
+                    </div>
+                </div>
+
+                <div class="row-nospace-sm">
+                    <div class="col-sm-4 forms-nospace">
                         Navigation Link
                     </div>
                     <div class="col-sm-8 forms-nospace">
@@ -264,7 +277,16 @@
         Field.StoreButton.NavigationParameterMapping[row].SupplyingParameterMapping = args.Value.ToString();
         await Change();
     }
-
+    private async Task ButtonReadOnlyChanged(ChangeEventArgs args)
+    {
+        Field.StoreButton.ReadOnly = Convert.ToBoolean(args.Value);
+        await Change();
+    }
+    private async Task ButtonHiddenChanged(ChangeEventArgs args)
+    {
+        Field.StoreButton.Hidden = Convert.ToBoolean(args.Value);
+        await Change();
+    }
         
     private async Task LabelChanged(ChangeEventArgs args)
     {
