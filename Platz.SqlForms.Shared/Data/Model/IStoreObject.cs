@@ -9,6 +9,7 @@ namespace Platz.SqlForms
     public interface IStoreObject
     {
         public string Name { get; set; }
+        public bool Validated { get; set; }
     }
 
     

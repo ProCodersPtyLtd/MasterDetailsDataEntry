@@ -335,6 +335,19 @@ namespace SqlForms.DevSpace.Controlers
             var project = AssembleStoreProject();
             var renames = FindAllRenames();
             _projectLoader.SaveAll(project, _projectPath, renames);
+            ResetDirty();
+        }
+
+        private void ResetDirty()
+        {
+            // Forms
+            foreach (var form in Model.Forms)
+            {
+                if (form.Model?.IsDirty == true)
+                {
+                    form.Model.IsDirty = false;
+                }
+            }
         }
 
         private List<ObjectRenameItem> FindAllRenames()
@@ -372,9 +385,10 @@ namespace SqlForms.DevSpace.Controlers
         {
             ValidationResult.Clear();
 
-            foreach (var fm in Model.Forms.Select(f => f.Model))
+            foreach (var fm in Model.Forms.Select(f => f.Model).Where(f => f != null))
             {
                 var formsValidations = _formBuilderController.Validate(fm);
+                fm.Validated = !formsValidations.Any(v => v.Type == ValidationResultTypes.Error);
                 var formItems = formsValidations.Select(r => new ValidationOutputItem(r, ValidationLocationType.Form)).ToList();
                 ValidationResult.AddRange(formItems);
             }

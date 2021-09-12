@@ -11,6 +11,7 @@ namespace Platz.SqlForms
     {
         public string Name { get; set; }
         public StoreProjectSettings Settings { get; set; } = new StoreProjectSettings();
+        public bool Validated { get; set; }
 
         [JsonIgnore]
         public Dictionary<string, StoreSchema> Schemas { get; set; }
