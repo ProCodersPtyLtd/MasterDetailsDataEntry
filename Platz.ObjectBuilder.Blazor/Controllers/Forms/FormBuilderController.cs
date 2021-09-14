@@ -41,6 +41,10 @@ namespace Platz.ObjectBuilder
 
         // Toolbar
         void AddTextEdit();
+        void AddDropdown();
+        void AddCheckbox();
+        void AddDateEdit();
+        void AddNumberEdit();
         void AddActionButton();
         void MoveUp();
         void MoveDown();
@@ -175,6 +179,30 @@ namespace Platz.ObjectBuilder
         public void AddTextEdit()
         {
             var f = new FieldComponentModel { ComponentType = FieldComponentType.TextEdit };
+            Model.Fields.Add(f);
+            Change();
+        }
+        public void AddDropdown()
+        {
+            var f = new FieldComponentModel { ComponentType = FieldComponentType.Dropdown };
+            Model.Fields.Add(f);
+            Change();
+        }
+        public void AddCheckbox()
+        {
+            var f = new FieldComponentModel { ComponentType = FieldComponentType.Checkbox };
+            Model.Fields.Add(f);
+            Change();
+        }
+        public void AddDateEdit()
+        {
+            var f = new FieldComponentModel { ComponentType = FieldComponentType.DateEdit };
+            Model.Fields.Add(f);
+            Change();
+        }
+        public void AddNumberEdit()
+        {
+            var f = new FieldComponentModel { ComponentType = FieldComponentType.NumberEdit };
             Model.Fields.Add(f);
             Change();
         }

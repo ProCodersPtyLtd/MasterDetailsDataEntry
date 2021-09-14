@@ -334,8 +334,19 @@ namespace SqlForms.DevSpace.Controlers
 
             var project = AssembleStoreProject();
             var renames = FindAllRenames();
-            _projectLoader.SaveAll(project, _projectPath, renames);
-            ResetDirty();
+
+            try
+            {
+                _projectLoader.SaveAll(project, _projectPath, renames);
+                ResetDirty();
+            }
+            catch(Exception exc)
+            {
+                var cr = new ValidationOutputItem { LocationType = ValidationLocationType.Project, Message = "Operation Save All failed: " + exc.Message, 
+                    Type = ValidationResultTypes.Error };
+                
+                ValidationResult.Add(cr);
+            }
         }
 
         private void ResetDirty()
