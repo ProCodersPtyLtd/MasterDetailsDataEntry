@@ -16,6 +16,7 @@ namespace Platz.SqlForms
         public string SchemaVersion { get; set; }
         public string[] Tags { get; set; }
         public StoreQueryDefinition Query { get; set; }
+        public bool Validated { get; set; }
     }
 
     // The first property in these classes is a Key in Dictionary

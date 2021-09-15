@@ -99,3 +99,13 @@
     border-radius: 5px;
     border-width: 1px;
 }
+
+::deep .widget-preview {
+    position: relative;
+}
+
+::deep .widget-preview-sign {
+    position: absolute;
+    top: 0px;
+    right: 20px;
+}

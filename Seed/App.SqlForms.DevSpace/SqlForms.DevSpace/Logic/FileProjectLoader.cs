@@ -104,6 +104,11 @@ namespace SqlForms.DevSpace.Logic
 
         private void SaveFile(string location, string name, object data, StoreProjectItemType type)
         {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new Exception("File cannot have empty name");
+            }
+
             var file = name + "." + GetProjectItemExtension(type);
             file = Path.Combine(location, file);
             var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });

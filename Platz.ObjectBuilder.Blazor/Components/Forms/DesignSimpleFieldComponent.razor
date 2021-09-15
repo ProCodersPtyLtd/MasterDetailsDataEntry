@@ -50,23 +50,37 @@
                              @($"{Field.Order}:")
                         </div>
                         <div class="col-sm-5 forms-nospace">
-                            @if (Field.ComponentType != FieldComponentType.ActionButton)
+                            @if (Field.ComponentType != FieldComponentType.ActionButton && Field.ComponentType != FieldComponentType.Checkbox)
                             {
-                            <label>@Field.StoreField.Label</label>
+                            <label>@GetLabelText()</label>
                             }
                         </div>
-                        <div class="col-sm-6 forms-nospace">
+                        <div class="col-sm-6 forms-nospace widget-preview">
+                            @if (Field.ComponentType != FieldComponentType.ActionButton)
+                            {
+                            <small class="widget-preview-sign">
+                                @GetBindingText()
+                            </small>
+                            }
+
                             @switch (Field.ComponentType)
                             {
                                 case FieldComponentType.TextEdit:
-                                    <input value="@Field.StoreField.BindingProperty" class="form-control" readonly="readonly" />
+                                    <input value="Text" class="form-control" readonly="readonly" />
                                     break;
                                 case FieldComponentType.DateEdit:
                                     <input type="date" class="form-control" readonly="readonly" />
                                     break;
+                                case FieldComponentType.NumberEdit:
+                                    <input type="number" class="form-control" value="100.00" readonly="readonly" />
+                                    break;
+                                case FieldComponentType.Checkbox:
+                                    <input type="checkbox" class="" checked="checked" readonly="readonly" id="check222"/>
+                                    <label for="check222">@GetLabelText()</label>
+                                    break;
                                 case FieldComponentType.Dropdown:
-                                    <select value="@Field.StoreField.BindingProperty" class="form-control" readonly="readonly" >
-                                        <option value="@Field.StoreField.BindingProperty">@Field.StoreField.BindingProperty</option>
+                                    <select value="Select" class="form-control" readonly="readonly" >
+                                        <option value="Select">Select</option>
                                     </select>
                                     break;
                                 case FieldComponentType.ActionButton:
@@ -99,6 +113,17 @@
     private string GetCaptionClass()
     {
         return Field.Active ? "forms-cap-active" : "forms-cap";
+    }
+
+    private string GetBindingText()
+    {
+        var s = Field.StoreField.BindingProperty;
+        return string.IsNullOrWhiteSpace(s) ? "Empty binding" : s;
+    }
+    private string GetLabelText()
+    {
+        var s = Field.StoreField.Label;
+        return string.IsNullOrWhiteSpace(s) ? "Empty label" : s;
     }
 
     private string GetButtonClass()

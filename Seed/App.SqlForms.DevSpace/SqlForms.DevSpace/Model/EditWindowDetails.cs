@@ -28,5 +28,6 @@ namespace SqlForms.DevSpace.Model
     public class SpecialWindowStoreObject : IStoreObject
     {
         public string Name { get; set; }
+        public bool Validated { get; set; }
     }
 }

@@ -5,7 +5,7 @@
   "Datasource": "Person",
   "Fields": [
     {
-      "BindingProperty": "$.Surname",
+      "BindingProperty": "$.Phone",
       "DataType": null,
       "ControlType": "TextEdit",
       "ViewModeControlType": null,
@@ -50,5 +50,6 @@
       "HeaderFormParameterMapping": null
     }
   ],
-  "PageHeaderForm": null
+  "PageHeaderForm": null,
+  "Validated": true
 }

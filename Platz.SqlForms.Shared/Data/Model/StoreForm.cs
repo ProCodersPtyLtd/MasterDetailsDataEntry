@@ -20,6 +20,7 @@ namespace Platz.SqlForms
         public string PagePath { get; set; }
         public List<StorePageParameter> PageParameters { get; set; } = new List<StorePageParameter> ();
         public string PageHeaderForm { get; set; }
+        public bool Validated { get; set; }
     }
 
     public class StorePageParameter
