@@ -11,6 +11,10 @@ else if (_spaceController.ActiveWindow?.Type == EditWindowType.Output)
 {
     <OutputWindowComponent Height="@_height" ModelChanged="ModelChanged" />
 }
+else if (_spaceController.ActiveWindow?.Type == EditWindowType.CodePreview)
+{
+    <CodePreviewWindowComponent Height="_height" Details="_spaceController.ActiveWindow" ModelChanged="ModelChanged" />
+}
 
     
 
@@ -22,7 +26,5 @@ else if (_spaceController.ActiveWindow?.Type == EditWindowType.Output)
     public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 
     int _height = 750;
-    //[Parameter]
-    //public int ItemIndex { get; set; }
 
 }

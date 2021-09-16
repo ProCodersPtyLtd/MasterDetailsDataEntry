@@ -1,0 +1,30 @@
+﻿
+    <textarea id="exampleFormControlTextarea1" class="form-control" style="width: 100%; height: @(Height)px; color: darkblue;" value="@GetText()" readonly="readonly" />
+
+@code {
+    [CascadingParameter]
+    public ISpaceController _spaceController { get; set; }
+
+    [Parameter]
+    public double Height { get; set; } = 780;
+
+    [Parameter]
+    public EditWindowDetails Details { get; set; } 
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    private string GetText()
+    {
+        return (Details.StoreObject as SpecialWindowStoreObject).Content.Code;
+        return @"
+function setHeight(jq_in){
+    jq_in.each(function(index, elem){
+        // This line will work with pure Javascript (taken from NicB's answer):
+        elem.style.height = elem.scrollHeight+'px'; 
+    });
+}
+setHeight($('<put selector here>'));
+";
+    }
+}

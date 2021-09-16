@@ -19,6 +19,7 @@ namespace SqlForms.DevSpace.Model
     {
         Unknown = 0,
         Output = 1,
+        CodePreview = 2,
         ProjectSettings = 10,
         Schema = 20,
         Query = 30,
@@ -29,5 +30,11 @@ namespace SqlForms.DevSpace.Model
     {
         public string Name { get; set; }
         public bool Validated { get; set; }
+        public SpecialWindowContent Content { get; set; }
+    }
+
+    public class SpecialWindowContent
+    {
+        public string Code { get; set; }
     }
 }

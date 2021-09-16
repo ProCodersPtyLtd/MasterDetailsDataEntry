@@ -1,5 +1,6 @@
 ﻿using Platz.ObjectBuilder;
 using Platz.ObjectBuilder.Blazor.Model;
+using Platz.ObjectBuilder.Engine;
 using Platz.SqlForms;
 using SqlForms.DevSpace.Logic;
 using SqlForms.DevSpace.Model;
@@ -23,6 +24,7 @@ namespace SqlForms.DevSpace.Controlers
         void SaveAll();
         void CreateNewProject();
         void CreateNewForm();
+        void PreviewCode();
         List<StoreSchema> GetProjectSchemas();
         List<StoreQuery> GetProjectQueries();
         List<StoreForm> GetProjectForms();
@@ -40,6 +42,7 @@ namespace SqlForms.DevSpace.Controlers
     {
         private readonly IProjectLoader _projectLoader;
         private readonly IFormBuilderController _formBuilderController;
+        private readonly FormCodeGenerator _formCodeGenerator;
 
         private string _projectPath;
         private StoreProject _currentProject;
@@ -64,6 +67,7 @@ namespace SqlForms.DevSpace.Controlers
         {
             _projectLoader = projectLoader;
             _formBuilderController = formBuilderController;
+            _formCodeGenerator = new FormCodeGenerator();
             CreateNewProject();
 
             // ToDo: remove demo data initialization
@@ -184,13 +188,13 @@ namespace SqlForms.DevSpace.Controlers
             return d;
         }
 
-        public void OpenSpecialWindow(string name, EditWindowType type)
+        public void OpenSpecialWindow(string name, EditWindowType type, SpecialWindowContent content = null)
         {
             var w = Model.EditWindows.FirstOrDefault(x => x.Type == type && x.StoreObject.Name == name);
 
             if (w == null)
             {
-                w = new EditWindowDetails { StoreObject = new SpecialWindowStoreObject { Name = name }, Type = type };
+                w = new EditWindowDetails { StoreObject = new SpecialWindowStoreObject { Name = name, Content = content }, Type = type };
                 Model.EditWindows.Add(w);
             }
 
@@ -309,7 +313,7 @@ namespace SqlForms.DevSpace.Controlers
         public void CloseWindow(int index)
         {
             var w = Model.EditWindows[index];
-            w.StoreObjectDetails.DiscardChanges();
+            w.StoreObjectDetails?.DiscardChanges();
             Model.EditWindows.RemoveAt(index);
 
             if (Model.EditWindows.Any())
@@ -317,6 +321,39 @@ namespace SqlForms.DevSpace.Controlers
                 var newIndex = Math.Min(index, Model.EditWindows.Count-1);
                 ActivateWindow(newIndex);
             }
+        }
+        public void PreviewCode()
+        {
+            // Forms
+            if (ActiveWindow != null && ActiveWindow.Type == EditWindowType.Form)
+            {
+                ShowGeneratedFormCode(ActiveWindow);
+            }
+        }
+
+        private void ShowGeneratedFormCode(EditWindowDetails wnd)
+        {
+            // Validate form before generateion
+            var formDetails = wnd.StoreObjectDetails as FormDetails;
+            var formModel = (formDetails)?.Model;
+
+            var formsValidations = _formBuilderController.Validate(formModel);
+            formModel.Validated = !formsValidations.Any(v => v.Type == ValidationResultTypes.Error);
+
+            if (!formModel.Validated)
+            {
+                var formItems = formsValidations.Select(r => new ValidationOutputItem(r, ValidationLocationType.Form)).ToList();
+                ValidationResult.Clear();
+                ValidationResult.AddRange(formItems);
+                OpenSpecialWindow("Output", EditWindowType.Output);
+                return;
+            }
+
+            var storeForm = formModel.ToStore();
+            var pageCode = _formCodeGenerator.GenerateRazorPageForm(storeForm);
+            var formCode = _formCodeGenerator.GenerateFormForm(storeForm);
+            var code = pageCode + "\r\n" + formCode;
+            OpenSpecialWindow($"Code preview: {ActiveWindow.StoreObject.Name}", EditWindowType.CodePreview, new SpecialWindowContent { Code = code });
         }
 
         public void SaveAll()
@@ -396,6 +433,7 @@ namespace SqlForms.DevSpace.Controlers
         {
             ValidationResult.Clear();
 
+            // Forms
             foreach (var fm in Model.Forms.Select(f => f.Model).Where(f => f != null))
             {
                 var formsValidations = _formBuilderController.Validate(fm);
