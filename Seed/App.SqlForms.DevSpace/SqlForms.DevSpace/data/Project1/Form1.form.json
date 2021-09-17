@@ -19,6 +19,22 @@
       "Order": 0,
       "Filter": false,
       "FilterType": 0
+    },
+    {
+      "BindingProperty": null,
+      "DataType": null,
+      "ControlType": "TextEdit",
+      "ViewModeControlType": null,
+      "Label": null,
+      "Required": false,
+      "Hidden": false,
+      "ReadOnly": null,
+      "PrimaryKey": false,
+      "Unique": false,
+      "Format": null,
+      "Order": 0,
+      "Filter": false,
+      "FilterType": 0
     }
   ],
   "ActionButtons": [],
@@ -33,5 +49,5 @@
     }
   ],
   "PageHeaderForm": null,
-  "Validated": false
+  "Validated": true
 }

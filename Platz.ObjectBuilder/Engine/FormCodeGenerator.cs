@@ -1,4 +1,5 @@
-﻿using Platz.SqlForms;
+﻿using Platz.ObjectBuilder.Model;
+using Platz.SqlForms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +10,16 @@ namespace Platz.ObjectBuilder.Engine
 {
     public class FormCodeGenerator
     {
-        public object GenerateRazorPageForm(StoreForm storeForm)
+        public CodeGenerationSection GenerateRazorPageForm(StoreForm storeForm)
         {
-            return "";
+            var result = new CodeGenerationSection() { FileName = storeForm.Name + ".razor.cs" };
+            return result;
         }
 
-        public object GenerateFormForm(StoreForm storeForm)
+        public CodeGenerationSection GenerateFormForm(StoreForm storeForm)
         {
-            return "";
+            var result = new CodeGenerationSection() { FileName = storeForm.Name + ".cs" };
+            return result;
         }
     }
 }

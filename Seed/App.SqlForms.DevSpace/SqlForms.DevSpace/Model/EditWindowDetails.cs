@@ -1,4 +1,5 @@
-﻿using Platz.SqlForms;
+﻿using Platz.ObjectBuilder.Model;
+using Platz.SqlForms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,8 +34,19 @@ namespace SqlForms.DevSpace.Model
         public SpecialWindowContent Content { get; set; }
     }
 
-    public class SpecialWindowContent
+    public abstract class SpecialWindowContent
     {
-        public string Code { get; set; }
     }
+
+    public class CodePreviewSpecialWindowContent : SpecialWindowContent
+    {
+        public List<CodeGenerationSection> Sections { get; set; } = new List<CodeGenerationSection>();
+
+        public CodePreviewSpecialWindowContent(IEnumerable<CodeGenerationSection> sections)
+        {
+            Sections.AddRange(sections);
+        }
+    }
+
+    
 }

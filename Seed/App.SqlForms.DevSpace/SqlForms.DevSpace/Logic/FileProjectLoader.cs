@@ -51,7 +51,7 @@ namespace SqlForms.DevSpace.Logic
             }
 
             var projectJson = File.ReadAllText(name);
-            result.Name = name;
+            result.Name = Path.GetFileName(name).Replace(".project.json", "");
             result.Settings = JsonSerializer.Deserialize<StoreProjectSettings>(projectJson);
 
             var files = Directory.GetFiles(dir, "*.schema.json");

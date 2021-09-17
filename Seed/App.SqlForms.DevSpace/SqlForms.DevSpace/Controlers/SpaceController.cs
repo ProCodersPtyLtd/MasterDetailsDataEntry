@@ -1,6 +1,7 @@
 ﻿using Platz.ObjectBuilder;
 using Platz.ObjectBuilder.Blazor.Model;
 using Platz.ObjectBuilder.Engine;
+using Platz.ObjectBuilder.Model;
 using Platz.SqlForms;
 using SqlForms.DevSpace.Logic;
 using SqlForms.DevSpace.Model;
@@ -352,8 +353,8 @@ namespace SqlForms.DevSpace.Controlers
             var storeForm = formModel.ToStore();
             var pageCode = _formCodeGenerator.GenerateRazorPageForm(storeForm);
             var formCode = _formCodeGenerator.GenerateFormForm(storeForm);
-            var code = pageCode + "\r\n" + formCode;
-            OpenSpecialWindow($"Code preview: {ActiveWindow.StoreObject.Name}", EditWindowType.CodePreview, new SpecialWindowContent { Code = code });
+            var code = new CodeGenerationSection[] { pageCode, formCode };
+            OpenSpecialWindow($"Code preview: {ActiveWindow.StoreObject.Name}", EditWindowType.CodePreview, new CodePreviewSpecialWindowContent(code));
         }
 
         public void SaveAll()
@@ -383,6 +384,7 @@ namespace SqlForms.DevSpace.Controlers
                     Type = ValidationResultTypes.Error };
                 
                 ValidationResult.Add(cr);
+                OpenSpecialWindow("Output", EditWindowType.Output);
             }
         }
 
@@ -414,6 +416,7 @@ namespace SqlForms.DevSpace.Controlers
         private StoreProject AssembleStoreProject()
         {
             var result = new StoreProject();
+            result.Name = _currentProject.Name;
             result.Schemas = new Dictionary<string, StoreSchema>();
             result.SchemaMigrations = new Dictionary<string, StoreSchemaMigrations>();
             result.Queries = new Dictionary<string, StoreQuery>();
