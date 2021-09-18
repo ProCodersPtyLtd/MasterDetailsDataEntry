@@ -1,5 +1,7 @@
 {
   "Name": "Form2",
+  "Namespace": null,
+  "IsDynamicContext": false,
   "IsListForm": false,
   "Schema": "Crm2",
   "Datasource": "Person",
@@ -18,7 +20,8 @@
       "Format": null,
       "Order": 0,
       "Filter": false,
-      "FilterType": 0
+      "FilterType": 0,
+      "Rules": null
     }
   ],
   "ActionButtons": [
@@ -40,6 +43,7 @@
       ]
     }
   ],
+  "Caption": null,
   "PagePath": null,
   "PageParameters": [
     {

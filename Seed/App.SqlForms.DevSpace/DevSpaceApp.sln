@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Platz.SqlForms.Shared", "..
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlForms.DevSpace", "SqlForms.DevSpace\SqlForms.DevSpace.csproj", "{1CA8002F-542D-4DEE-8001-99532F70AC54}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Platz.SqlForms.Blazor", "..\..\Platz.SqlForms.Blazor\Platz.SqlForms.Blazor.csproj", "{62622CDF-CDE8-41CB-8A36-D70AF5C9D1A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{1CA8002F-542D-4DEE-8001-99532F70AC54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CA8002F-542D-4DEE-8001-99532F70AC54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CA8002F-542D-4DEE-8001-99532F70AC54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62622CDF-CDE8-41CB-8A36-D70AF5C9D1A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62622CDF-CDE8-41CB-8A36-D70AF5C9D1A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62622CDF-CDE8-41CB-8A36-D70AF5C9D1A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62622CDF-CDE8-41CB-8A36-D70AF5C9D1A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -69,6 +75,7 @@ Global
 		{F32BCBB7-CD89-4495-9071-9D85238D9C2D} = {D26A3CBA-9EB5-4633-978B-9EDADDF05C4E}
 		{B1EF87C8-EA7F-4E23-B025-64BF21627234} = {D26A3CBA-9EB5-4633-978B-9EDADDF05C4E}
 		{BA4470B8-19A7-44F0-AFE2-84A855CCB5CC} = {D26A3CBA-9EB5-4633-978B-9EDADDF05C4E}
+		{62622CDF-CDE8-41CB-8A36-D70AF5C9D1A3} = {D26A3CBA-9EB5-4633-978B-9EDADDF05C4E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6B5B9857-BE0F-4D81-BDCF-0EEEE498B9C5}

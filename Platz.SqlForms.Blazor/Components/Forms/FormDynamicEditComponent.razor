@@ -75,6 +75,10 @@
     [Parameter]
     public object[] ServiceParameters { get; set; }
 
+    // if FormParameters specified then Id and ServiceParameters ignored
+    [Parameter]
+    public object[] FormParameters { get; set; }
+
     [Parameter]
     public bool ReadOnly { get; set; }
 
@@ -110,7 +114,29 @@
             throw new SqlFormException($"Cannot create IDynamicEditForm of type '{typeof(TForm).FullName}'");
         }
 
-        _controller.SetParameters(_form, Id, ServiceParameters, ControllerDataChanged);
+        var id = GetId();
+        var parameters = GetParameters();
+        _controller.SetParameters(_form, id, parameters, ControllerDataChanged);
+    }
+
+    private int GetId()
+    {
+        if (FormParameters != null && FormParameters.Any())
+        {
+            return (int)FormParameters[0];
+        }
+
+        return Id;
+    }
+
+    private object[] GetParameters()
+    {
+        if (FormParameters != null && FormParameters.Any())
+        {
+            return FormParameters.Skip(1).ToArray();
+        }
+
+        return ServiceParameters;
     }
 
     private bool AllowEdit()

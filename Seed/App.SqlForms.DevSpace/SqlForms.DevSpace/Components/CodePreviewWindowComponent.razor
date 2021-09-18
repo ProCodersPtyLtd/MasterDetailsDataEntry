@@ -1,18 +1,24 @@
 ﻿@using Platz.ObjectBuilder.Model
 @using SqlForms.DevSpace.Model
 
+@inject IJSRuntime JS
+
 <br/>
 
 @foreach (var item in GetData())
 {
     <label>@item.FileName</label>
+    
     <div class="float-right">
         <button class="btn btn-info" title="Cancel" @onclick="@(async (args) => await CopyClick(item))"
-                style="width: 160px; display: block; margin-left: auto; margin-right: 0;">
+                style="width: 120px; display: block; margin-left: auto; margin-right: 0;">
             <span class="oi oi-clipboard">&nbsp; Copy</span>
         </button>
     </div>
-    <textarea id="exampleFormControlTextarea1" class="form-control" style="width: 100%; height: @(GetHeight())px; color: darkblue;" value="@item.Code" readonly="readonly" />
+
+    <textarea id="exampleFormControlTextarea1" class="form-control" 
+        style="width: 100%; height: @(GetHeight())px; color: darkblue; font-family: 'Cascadia Mono'; font-size: smaller" 
+        value="@item.Code" readonly="readonly" />
 }
 
 @code {
@@ -34,10 +40,18 @@
         return h;
     }
 
+    private ValueTask WriteTextAsync(string text)
+    {
+        return JS.InvokeVoidAsync("navigator.clipboard.writeText", text);
+    }
+
     private List<CodeGenerationSection> GetData()
     {
         return ((Details.StoreObject as SpecialWindowStoreObject).Content as CodePreviewSpecialWindowContent).Sections;
-    }    private async Task CopyClick(CodeGenerationSection item)    {}
+    }    private async Task CopyClick(CodeGenerationSection item)
+    {
+        await WriteTextAsync(item.Code);        
+    }
     @*private string GetText()
     {
         return (Details.StoreObject as SpecialWindowStoreObject).Content.Code;

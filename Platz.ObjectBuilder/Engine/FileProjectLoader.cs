@@ -1,6 +1,5 @@
 ﻿using Platz.ObjectBuilder;
 using Platz.SqlForms;
-using SqlForms.DevSpace.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +7,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace SqlForms.DevSpace.Logic
+namespace Platz.ObjectBuilder.Engine
 {
     public class FileProjectLoader : IProjectLoader
     {
@@ -144,6 +143,16 @@ namespace SqlForms.DevSpace.Logic
             }
 
             return "";
+        }
+
+        public StoreSchema LoadSchema(string folderName, string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public StoreQuery LoadQuery(string folderName, string name)
+        {
+            throw new NotImplementedException();
         }
     }
 }

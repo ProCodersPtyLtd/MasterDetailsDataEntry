@@ -6,20 +6,164 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Platz.ObjectBuilder.Engine
+namespace Platz.ObjectBuilder.Engine;
+public class FormCodeGenerator
 {
-    public class FormCodeGenerator
+    //private readonly IProjectLoader _loader;
+
+    //public FormCodeGenerator(IProjectLoader projectLoader)
+    //{
+    //    _loader = projectLoader;
+    //}
+
+    public CodeGenerationSection GenerateEditRazorPageForm(StoreForm form)
     {
-        public CodeGenerationSection GenerateRazorPageForm(StoreForm storeForm)
+        var result = new CodeGenerationSection() { FileName = form.Name + ".razor.cs" };
+        var sb = new StringBuilder();
+        var psb = new StringBuilder();
+        var fpsb = new StringBuilder();
+        var comma = "";
+
+        foreach (var p in form.PageParameters)
         {
-            var result = new CodeGenerationSection() { FileName = storeForm.Name + ".razor.cs" };
-            return result;
+            string pt = "";
+
+            switch (p.DataType)
+            {
+                case "int":
+                    pt = ":int";
+                    break;
+            }
+
+            psb.Append($"/{{{p.Name}{pt}}}");
+            fpsb.Append($"{comma}{p.Name}");
+            comma = ", ";
         }
 
-        public CodeGenerationSection GenerateFormForm(StoreForm storeForm)
+        sb.AppendLine(@$"@page ""/{form.PagePath}{psb.ToString()}""");
+
+        sb.AppendLine(@$"@using Platz.SqlForms");
+
+        sb.AppendLine(@$"@using {form.Namespace}");
+        sb.AppendLine();
+
+        if (!string.IsNullOrWhiteSpace(form.Caption))
         {
-            var result = new CodeGenerationSection() { FileName = storeForm.Name + ".cs" };
-            return result;
+            sb.AppendLine(@$"<h1>{form.Caption}</h1>");
+            sb.AppendLine();
         }
+
+        sb.AppendLine($@"<FormDynamicEditComponent TForm = ""{form.Name}"" FormParameters = ""new object[] {{ {fpsb.ToString()} }}"" /> ");
+
+        sb.AppendLine(@"
+@code {");
+
+        foreach (var p in form.PageParameters)
+        {
+            sb.AppendLine(@$"    [Parameter]");
+            sb.AppendLine(@$"    public {p.DataType} {p.Name} {{ get; set; }}");
+        }
+
+        sb.AppendLine(@"}");
+
+        result.Code = sb.ToString();
+        return result;
     }
+
+    public CodeGenerationSection GenerateEditForm(StoreForm form, StoreCodeGeneratorContext ctx)
+    {
+        var result = new CodeGenerationSection() { FileName = form.Name + ".cs" };
+        var sb = new StringBuilder();
+
+        sb.AppendLine(@$"using Platz.SqlForms;");
+        sb.AppendLine();
+
+        sb.AppendLine(@$"namespace {form.Namespace};");
+
+        var schema = ctx.Schemas[form.Schema];
+
+        sb.Append(@$"
+public class {form.Name} : DynamicEditFormBase<{schema.DbContextName}>
+{{");
+        sb.Append(@$"
+    protected override void Define(DynamicFormBuilder builder)
+    {{");
+        sb.Append(@$"
+        builder.Entity<{form.Datasource}>(e =>
+        {{");
+
+        foreach (var field in form.Fields.OrderBy(f => f.Order))
+        {
+            sb.AppendLine();
+            sb.Append($"            e.Property(p => p.{field.BindingProperty.Replace("$.", "")})");
+            sb.Append($".Label({field.Label})");
+
+            if (field.PrimaryKey == true)
+            {
+                sb.Append(".IsPrimaryKey()");
+            }
+
+            if (field.Unique == true)
+            {
+                sb.Append(".IsUnique()");
+            }
+
+            if (field.Required == true)
+            {
+                sb.Append(".IsRequired()");
+            }
+
+            if (field.ReadOnly == true)
+            {
+                sb.Append(".IsReadOnly()");
+            }
+
+            if (field.Hidden == true)
+            {
+                sb.Append(".IsHidden()");
+            }
+
+            if (!string.IsNullOrWhiteSpace(field.Format))
+            {
+                sb.Append($".Format({field.Format})");
+            }
+
+            foreach (var rule in field.Rules)
+            {
+                sb.Append($".Rule({rule.Name})");
+            }
+
+            sb.Append(";");
+        }
+
+        sb.Append(@$"
+        }});");
+        sb.AppendLine(@$"
+    }}");
+
+        foreach (var field in form.Fields.OrderBy(f => f.Order))
+        {
+            foreach (var rule in field.Rules)
+            {
+                sb.AppendLine();
+                sb.AppendLine($"    public FormRuleResult {rule.Name}(RuleArgs<{form.Datasource}> a)");
+                sb.AppendLine($"    {{");
+                var tabCode = rule.Code.Replace("\n", "\n        ");
+                sb.AppendLine($"        {tabCode}");
+                sb.AppendLine($"    }}");
+            }
+        }
+
+        sb.AppendLine(@$"}}");
+
+        result.Code = sb.ToString();
+        return result;
+    }
+}
+
+public class StoreCodeGeneratorContext
+{
+    public Dictionary<string, StoreSchema> Schemas { get; set; }
+    public Dictionary<string, StoreQuery> Queries { get; set; }
+    public Dictionary<string, StoreForm> Forms { get; set; }
 }

@@ -1,5 +1,7 @@
 {
   "Name": "Form1",
+  "Namespace": "X2",
+  "IsDynamicContext": false,
   "IsListForm": false,
   "Schema": "Crm2",
   "Datasource": "Address",
@@ -18,14 +20,15 @@
       "Format": null,
       "Order": 0,
       "Filter": false,
-      "FilterType": 0
+      "FilterType": 0,
+      "Rules": []
     },
     {
-      "BindingProperty": null,
+      "BindingProperty": "$.State",
       "DataType": null,
       "ControlType": "TextEdit",
       "ViewModeControlType": null,
-      "Label": null,
+      "Label": "State2",
       "Required": false,
       "Hidden": false,
       "ReadOnly": null,
@@ -34,10 +37,18 @@
       "Format": null,
       "Order": 0,
       "Filter": false,
-      "FilterType": 0
+      "FilterType": 0,
+      "Rules": [
+        {
+          "Name": "StateRule1",
+          "Trigger": "ChangeSubmit",
+          "Code": "var result = new FormRuleResult(); \nreturn result;"
+        }
+      ]
     }
   ],
   "ActionButtons": [],
+  "Caption": "Form1",
   "PagePath": "AddressForm",
   "PageParameters": [
     {

@@ -21,6 +21,7 @@ namespace Platz.ObjectBuilder.Blazor.Model
 
         public bool IsDirty { get; set; }
         public string Name { get; set; }
+        public string Namespace { get; set; }
         public string OriginalName { get; set; }
         public bool Validated { get; set; }
         public bool IsListForm { get; set; }
@@ -33,6 +34,7 @@ namespace Platz.ObjectBuilder.Blazor.Model
         public List<FieldComponentModel> Fields { get; set; } = new List<FieldComponentModel>();
 
         // Page Properties
+        public string Caption { get; set; }
         public string PagePath { get; set; }
         public List<PageParameterModel> PageParameters { get; set; } = new List<PageParameterModel>();
         public string PageHeaderForm { get; set; }
@@ -50,6 +52,7 @@ namespace Platz.ObjectBuilder.Blazor.Model
         {
             model.Name = form.Name;
             model.OriginalName = form.Name;
+            model.Namespace = form.Namespace;
             model.Validated = form.Validated;
             model.Schema = form.Schema;
             model.Datasource = form.Datasource;
@@ -57,6 +60,7 @@ namespace Platz.ObjectBuilder.Blazor.Model
             model.Fields = form.Fields.OrderBy(x => x.Order).Select(f => new FieldComponentModel(f)).ToList();
             var buttons = form.ActionButtons.OrderBy(x => x.Order).Select(f => new FieldComponentModel(f)).ToList();
             model.Fields.AddRange(buttons);
+            model.Caption = form.Caption;
             model.PagePath = form.PagePath;
             //model.PageHeaderForm = form.PageHeaderForm?.Name;
             model.PageHeaderForm = form.PageHeaderForm;
@@ -68,12 +72,14 @@ namespace Platz.ObjectBuilder.Blazor.Model
             var src = this;
             var form = new StoreForm();
             form.Name = src.Name;
+            form.Namespace = src.Namespace;
             form.Validated = src.Validated;
             form.Schema = src.Schema;
             form.Datasource = src.Datasource;
             form.IsListForm = src.IsListForm;
             form.Fields = src.Fields.Where(f => f.ComponentType != FieldComponentType.ActionButton).Select(f => f.ToStore()).ToList(); 
             form.ActionButtons = src.Fields.Where(f => f.ComponentType == FieldComponentType.ActionButton).Select(f => f.ToStoreButton()).ToList();
+            form.Caption = src.Caption;
             form.PagePath = src.PagePath;
             form.PageHeaderForm = src.PageHeaderForm;
             form.PageParameters = src.PageParameters.Select(p => p.ToStore()).ToList();

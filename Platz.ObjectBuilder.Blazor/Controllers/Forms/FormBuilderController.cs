@@ -54,6 +54,8 @@ namespace Platz.ObjectBuilder
         List<string> GetEntityBindings();
         void SwitchModel(FormBuilderModel model);
         void UpdateFormName(string name);
+        void UpdateFormNamespace(string name);
+        void UpdateFormCaption(string name);
         List<string> GetAvailableFormReferences();
         void PreloadButtonParameters(FieldComponentModel field);
         List<string> GetAvailableFormParameters();
@@ -292,6 +294,16 @@ namespace Platz.ObjectBuilder
             Model.Name = name;
             Change();
         }
+        public void UpdateFormNamespace(string name)
+        {
+            Model.Namespace = name;
+            Change();
+        }
+        public void UpdateFormCaption(string name)
+        {
+            Model.Caption = name;
+            Change();
+        }
 
         public void PrepareActiveFieldRulesForEdit()
         {
@@ -449,6 +461,7 @@ namespace Platz.ObjectBuilder
         {
             rules.ForEach(r => r.IsDirty = false);
             rules.CopyListTo(ActiveField.Rules);
+            Change();
         }
 
         public List<string> GetAvailableFormReferences()

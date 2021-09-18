@@ -3,7 +3,6 @@ using Platz.ObjectBuilder.Blazor.Model;
 using Platz.ObjectBuilder.Engine;
 using Platz.ObjectBuilder.Model;
 using Platz.SqlForms;
-using SqlForms.DevSpace.Logic;
 using SqlForms.DevSpace.Model;
 using System;
 using System.Collections.Generic;
@@ -289,6 +288,7 @@ namespace SqlForms.DevSpace.Controlers
         private void ApplyNewFormDefaults(FormDetails formDetails)
         {
             formDetails.Form.Name = GetNextFormName();
+            formDetails.Form.Caption = "Default";
 
             if (Model.Schemas.Count == 1)
             {
@@ -350,11 +350,76 @@ namespace SqlForms.DevSpace.Controlers
                 return;
             }
 
-            var storeForm = formModel.ToStore();
-            var pageCode = _formCodeGenerator.GenerateRazorPageForm(storeForm);
-            var formCode = _formCodeGenerator.GenerateFormForm(storeForm);
-            var code = new CodeGenerationSection[] { pageCode, formCode };
-            OpenSpecialWindow($"Code preview: {ActiveWindow.StoreObject.Name}", EditWindowType.CodePreview, new CodePreviewSpecialWindowContent(code));
+            // Edit form
+            if (!formModel.IsListForm)
+            {
+                var storeForm = formModel.ToStore();
+                
+                //var storeQuery = Model.Queries.FirstOrDefault(q => q.Query.Name == storeForm.Datasource)?.Query;
+                //var storeSchema = Model.Schemas.FirstOrDefault(q => q.Schema.Name == storeForm.Schema)?.Schema;
+                //var storeTable = FindTable(storeForm.Schema, storeForm.Datasource);
+                //var storeTableName = Model.Schemas.FirstOrDefault(q => q.Schema.Name == storeForm.Schema).Schema.Definitions.Keys.FirstOrDefault(k => k == storeForm.Datasource);
+
+
+                var ctx = GetCodeGenerationContext();
+                var pageCode = _formCodeGenerator.GenerateEditRazorPageForm(storeForm);
+                var formCode = _formCodeGenerator.GenerateEditForm(storeForm, ctx);
+                var code = new CodeGenerationSection[] { pageCode, formCode };
+                OpenSpecialWindow($"Code preview: {ActiveWindow.StoreObject.Name}", EditWindowType.CodePreview, new CodePreviewSpecialWindowContent(code));
+            }
+        }
+
+        private StoreCodeGeneratorContext GetCodeGenerationContext()
+        {
+            var ctx = new StoreCodeGeneratorContext();
+            // ToDo: we implement code generation of the fly - all changes made but not save should be reflected
+            // ToDo: schemas should be taken from current model changes, for now we take originals
+            ctx.Schemas = Model.Schemas.ToDictionary(m => m.Schema.Name, m => m.Schema);
+            ctx.Queries = Model.Queries.ToDictionary(m => m.Query.Name, m => m.Query);
+
+            // forms on the fly generation reflecting not saved changes
+            ctx.Forms = new Dictionary<string, StoreForm>();
+            ValidationResult.Clear();
+
+            foreach (var formDetails in Model.Forms)
+            {
+                StoreForm storeForm = formDetails.Form;
+                var formModel = (formDetails)?.Model;
+
+                if (formModel != null)
+                {
+                    var formsValidations = _formBuilderController.Validate(formModel);
+                    formModel.Validated = !formsValidations.Any(v => v.Type == ValidationResultTypes.Error);
+
+                    if (formModel.Validated)
+                    {
+                        // use changes if pass validation
+                        storeForm = formModel.ToStore();
+                    }
+                    else
+                    {
+                        // validation failed - use original form
+                        var formItems = formsValidations.Select(r => new ValidationOutputItem(r, ValidationLocationType.Form)).ToList();
+                        ValidationResult.AddRange(formItems);
+                    }
+                }
+
+                ctx.Forms[storeForm.Name] = storeForm;
+            }
+
+            return ctx;
+        }
+
+        private StoreDefinition FindTable(string schema, string name)
+        {
+            var storeSchema = Model.Schemas.FirstOrDefault(q => q.Schema.Name == schema)?.Schema;
+
+            if (storeSchema != null && storeSchema.Definitions.ContainsKey(name))
+            {
+                return storeSchema.Definitions[name];
+            }
+
+            return null;
         }
 
         public void SaveAll()

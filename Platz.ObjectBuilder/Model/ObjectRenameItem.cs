@@ -1,7 +1,7 @@
 ﻿
 using Platz.SqlForms;
 
-namespace SqlForms.DevSpace.Model;
+namespace Platz.ObjectBuilder;
 public class ObjectRenameItem
 {
     public string OrignalName { get; set; }

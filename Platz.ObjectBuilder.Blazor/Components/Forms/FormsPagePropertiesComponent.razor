@@ -13,6 +13,14 @@
             <input id="BindingInput" value="@FormsPageController.Model.Name" @onchange="FormNameChanged" class="form-control" />
         </div>
     </div>
+    <div class="row-nospace-sm">
+        <div class="col-sm-4 forms-nospace">
+            Namespace
+        </div>
+        <div class="col-sm-8 forms-nospace">
+            <input id="BindingInput" value="@FormsPageController.Model.Namespace" @onchange="FormNamespaceChanged" class="form-control" />
+        </div>
+    </div>
 
     <div class="row-nospace-sm">
         <div class="col-sm-4 forms-nospace">
@@ -69,6 +77,14 @@
 
     <div class="row-nospace-sm">
         <b>Page Properties</b>
+    </div>
+    <div class="row-nospace-sm">
+        <div class="col-sm-4 forms-nospace">
+            Caption
+        </div>
+        <div class="col-sm-8 forms-nospace">
+            <input id="BindingInput" value="@FormsPageController.Model.Caption" @onchange="FormCaptionChanged" class="form-control" />
+        </div>
     </div>
     <div class="row-nospace-sm">
         <div class="col-sm-4 forms-nospace">
@@ -156,6 +172,16 @@
     private async Task FormNameChanged(ChangeEventArgs a)
     {
         _ctrl.UpdateFormName(a.Value.ToString());
+        await Change();
+    }
+    private async Task FormNamespaceChanged(ChangeEventArgs a)
+    {
+        _ctrl.UpdateFormNamespace(a.Value.ToString());
+        await Change();
+    }
+    private async Task FormCaptionChanged(ChangeEventArgs a)
+    {
+        _ctrl.UpdateFormCaption(a.Value.ToString());
         await Change();
     }
 
