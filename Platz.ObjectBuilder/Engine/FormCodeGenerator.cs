@@ -125,7 +125,7 @@ public class {form.Name} : DynamicEditFormBase<{schema.DbContextName}>
         {
             sb.AppendLine();
             sb.Append($"            e.Property(p => p.{field.BindingProperty.Replace("$.", "")})");
-            sb.Append($".Label({field.Label})");
+            sb.Append(@$".Label(""{field.Label}"")");
 
             if (field.PrimaryKey == true)
             {
@@ -154,7 +154,7 @@ public class {form.Name} : DynamicEditFormBase<{schema.DbContextName}>
 
             if (!string.IsNullOrWhiteSpace(field.Format))
             {
-                sb.Append($".Format({field.Format})");
+                sb.Append(@$".Format(""{field.Format}"")");
             }
 
             foreach (var rule in field.Rules)
