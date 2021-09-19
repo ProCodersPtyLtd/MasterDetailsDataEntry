@@ -55,7 +55,7 @@
             <div class="col-md-10">
 
                 <BottomButtonsComponent Form="_form" ButtonActionClicked="ButtonActionClicked" NavigateFormatParameters="_controller.NavigateFormatParameters"
-                                        ModelValueChanged="LocalModelValueChanged" ForDelete="ForDelete" Buttons="_controller.Buttons"
+                                        FormParameters="_controller.FormParameters" ModelValueChanged="LocalModelValueChanged" ForDelete="ForDelete" Buttons="_controller.Buttons"
                                         ButtonNavigations="_controller.ButtonNavigations" ButtonClicked="ButtonClicked" />
 
             </div>
@@ -77,7 +77,7 @@
 
     // if FormParameters specified then Id and ServiceParameters ignored
     [Parameter]
-    public object[] FormParameters { get; set; }
+    public FormParameter[] FormParameters { get; set; }
 
     [Parameter]
     public bool ReadOnly { get; set; }
@@ -114,30 +114,36 @@
             throw new SqlFormException($"Cannot create IDynamicEditForm of type '{typeof(TForm).FullName}'");
         }
 
-        var id = GetId();
-        var parameters = GetParameters();
-        _controller.SetParameters(_form, id, parameters, ControllerDataChanged);
-    }
-
-    private int GetId()
-    {
-        if (FormParameters != null && FormParameters.Any())
+        if (FormParameters != null)
         {
-            return (int)FormParameters[0];
+            // new named parameters approach
+            _controller.SetParameters(_form, FormParameters, ControllerDataChanged);
         }
-
-        return Id;
-    }
-
-    private object[] GetParameters()
-    {
-        if (FormParameters != null && FormParameters.Any())
+        else
         {
-            return FormParameters.Skip(1).ToArray();
+            _controller.SetParameters(_form, Id, ServiceParameters, ControllerDataChanged);
         }
-
-        return ServiceParameters;
     }
+
+    //private int GetId()
+    //{
+    //    if (FormParameters != null && FormParameters.Any())
+    //    {
+    //        return (int)FormParameters[0].Value;
+    //    }
+
+    //    return Id;
+    //}
+
+    //private object[] GetParameters()
+    //{
+    //    if (FormParameters != null && FormParameters.Any())
+    //    {
+    //        return FormParameters.Skip(1).ToArray();
+    //    }
+
+    //    return ServiceParameters;
+    //}
 
     private bool AllowEdit()
     {

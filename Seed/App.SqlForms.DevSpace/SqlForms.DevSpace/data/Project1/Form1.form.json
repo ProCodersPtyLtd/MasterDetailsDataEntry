@@ -47,7 +47,31 @@
       ]
     }
   ],
-  "ActionButtons": [],
+  "ActionButtons": [
+    {
+      "Action": "Submit",
+      "Text": "Submit",
+      "Hint": "Submit changes",
+      "Order": 2,
+      "Hidden": false,
+      "ReadOnly": null,
+      "NavigationTargetForm": "Form2",
+      "NavigationParameterMapping": [
+        {
+          "Name": "addressId",
+          "DataType": null,
+          "Order": 0,
+          "SupplyingParameterMapping": "id"
+        },
+        {
+          "Name": "myId",
+          "DataType": null,
+          "Order": 0,
+          "SupplyingParameterMapping": "id2"
+        }
+      ]
+    }
+  ],
   "Caption": "Form1",
   "PagePath": "AddressForm",
   "PageParameters": [
@@ -55,6 +79,13 @@
       "Name": "id",
       "DataType": "int",
       "Order": 0,
+      "DatasourceQueryParameterMapping": null,
+      "HeaderFormParameterMapping": null
+    },
+    {
+      "Name": "id2",
+      "DataType": "int",
+      "Order": 1,
       "DatasourceQueryParameterMapping": null,
       "HeaderFormParameterMapping": null
     }

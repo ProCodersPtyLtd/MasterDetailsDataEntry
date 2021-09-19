@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlForms.DevSpace", "SqlFor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Platz.SqlForms.Blazor", "..\..\Platz.SqlForms.Blazor\Platz.SqlForms.Blazor.csproj", "{62622CDF-CDE8-41CB-8A36-D70AF5C9D1A3}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MasterDetailsDataEntry.Tests", "..\..\MasterDetailsDataEntry.Tests\MasterDetailsDataEntry.Tests.csproj", "{9B5D366F-F1EF-456C-98C1-DEE37D00A301}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +67,10 @@ Global
 		{62622CDF-CDE8-41CB-8A36-D70AF5C9D1A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62622CDF-CDE8-41CB-8A36-D70AF5C9D1A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62622CDF-CDE8-41CB-8A36-D70AF5C9D1A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B5D366F-F1EF-456C-98C1-DEE37D00A301}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B5D366F-F1EF-456C-98C1-DEE37D00A301}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B5D366F-F1EF-456C-98C1-DEE37D00A301}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B5D366F-F1EF-456C-98C1-DEE37D00A301}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,6 +82,7 @@ Global
 		{B1EF87C8-EA7F-4E23-B025-64BF21627234} = {D26A3CBA-9EB5-4633-978B-9EDADDF05C4E}
 		{BA4470B8-19A7-44F0-AFE2-84A855CCB5CC} = {D26A3CBA-9EB5-4633-978B-9EDADDF05C4E}
 		{62622CDF-CDE8-41CB-8A36-D70AF5C9D1A3} = {D26A3CBA-9EB5-4633-978B-9EDADDF05C4E}
+		{9B5D366F-F1EF-456C-98C1-DEE37D00A301} = {D26A3CBA-9EB5-4633-978B-9EDADDF05C4E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6B5B9857-BE0F-4D81-BDCF-0EEEE498B9C5}

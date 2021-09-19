@@ -20,6 +20,20 @@ namespace Platz.SqlForms
                 throw new NavigationLinkException($"Link pattern '{pattern}' doesn't correspond to supplied parameters: {p}");
             }
         }
+
+        public static string GetLink(string pattern, FormParameter[] parameters)
+        {
+            var result = pattern;
+
+            foreach (var p in parameters)
+            {
+                var mark = $"{{{p.Name}}}";
+                // ToDo: add data type support to convert p.Value to String in a proper way
+                result = result.Replace(mark, p.Value.ToString());
+            }
+
+            return result;
+        }
     }
 
     public class NavigationLinkException : Exception

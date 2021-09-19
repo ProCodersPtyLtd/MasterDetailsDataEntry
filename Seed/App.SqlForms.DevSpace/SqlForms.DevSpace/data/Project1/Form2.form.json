@@ -21,7 +21,7 @@
       "Order": 0,
       "Filter": false,
       "FilterType": 0,
-      "Rules": null
+      "Rules": []
     }
   ],
   "ActionButtons": [
@@ -50,6 +50,13 @@
       "Name": "addressId",
       "DataType": "int",
       "Order": 0,
+      "DatasourceQueryParameterMapping": null,
+      "HeaderFormParameterMapping": null
+    },
+    {
+      "Name": "myId",
+      "DataType": "int",
+      "Order": 1,
       "DatasourceQueryParameterMapping": null,
       "HeaderFormParameterMapping": null
     }

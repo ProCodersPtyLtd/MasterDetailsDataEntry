@@ -3,7 +3,7 @@
 <h1>Customer Address Edit</h1>
 
 <FormDynamicEditComponent TForm="MyCustomerHeaderForm" Id="@CustomerId" />
-<FormDynamicEditComponent TForm="MyCustomerAddrEditForm" Id="@AddressId" ServiceParameters="@(new object[] { CustomerId })" />
+<FormDynamicEditComponent TForm="MyCustomerAddrEditForm" Id="@AddressId" FormParameters="GetParameters()" ServiceParameters="@(new object[] { CustomerId })" />
 
 @code {
     [Parameter]
@@ -12,12 +12,21 @@
     [Parameter]
     public int CustomerId { get; set; }
 
-    private Dictionary<string, object> GetPatameters()
+    //private Dictionary<string, object> GetPatameters()
+    //{
+    //    return new Dictionary<string, object>()
+    //    {
+    //        { "AddressId", AddressId },
+    //        { "CustomerId", CustomerId },
+    //    };
+    //}
+
+    private FormParameter[] GetParameters()
     {
-        return new Dictionary<string, object>()
+        return new FormParameter[]
         {
-            { "AddressId", AddressId },
-            { "CustomerId", CustomerId },
+            new FormParameter("AddressId", AddressId),
+            new FormParameter("CustomerId", CustomerId),
         };
     }
 }

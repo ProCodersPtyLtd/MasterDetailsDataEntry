@@ -53,7 +53,8 @@ public class FormCodeGenerator
             sb.AppendLine();
         }
 
-        sb.AppendLine($@"<FormDynamicEditComponent TForm = ""{form.Name}"" FormParameters = ""new object[] {{ {fpsb.ToString()} }}"" /> ");
+        //sb.AppendLine($@"<FormDynamicEditComponent TForm = ""{form.Name}"" FormParameters = ""new object[] {{ {fpsb.ToString()} }}"" /> ");
+        sb.AppendLine($@"<FormDynamicEditComponent TForm=""{form.Name}"" FormParameters=""GetParameters()"" /> ");
 
         sb.AppendLine(@"
 @code {");
@@ -65,20 +66,32 @@ public class FormCodeGenerator
         }
 
         sb.AppendLine();
-        sb.AppendLine($@"    private Dictionary<string, object> GetPatameters()");
+        sb.AppendLine($@"    private FormParameter[] GetParameters()");
         sb.AppendLine($@"    {{");
-        sb.AppendLine($@"       return new Dictionary<string, object>()");
-        sb.AppendLine($@"       {{");
+        sb.AppendLine($@"        return new FormParameter[]");
+        sb.AppendLine($@"        {{");
 
         foreach (var p in form.PageParameters)
         {
-            sb.AppendLine(@$"           {{ ""{p.Name}"", {p.Name} }},");
+            sb.AppendLine(@$"           new FormParameter(""{p.Name}"", {p.Name}),");
         }
 
-        sb.AppendLine($@"       }}");
-
+        sb.AppendLine($@"        }}");
         sb.AppendLine($@"    }}");
 
+        //sb.AppendLine();
+        //sb.AppendLine($@"    private Dictionary<string, object> GetParameters()");
+        //sb.AppendLine($@"    {{");
+        //sb.AppendLine($@"       return new Dictionary<string, object>()");
+        //sb.AppendLine($@"        {{");
+
+        //foreach (var p in form.PageParameters)
+        //{
+        //    sb.AppendLine(@$"           {{ ""{p.Name}"", {p.Name} }},");
+        //}
+
+        //sb.AppendLine($@"        }}");
+        //sb.AppendLine($@"    }}");
         sb.AppendLine(@"}");
 
         result.Code = sb.ToString();
@@ -107,6 +120,7 @@ public class {form.Name} : DynamicEditFormBase<{schema.DbContextName}>
         builder.Entity<{form.Datasource}>(e =>
         {{");
 
+        // Fields
         foreach (var field in form.Fields.OrderBy(f => f.Order))
         {
             sb.AppendLine();
@@ -151,11 +165,45 @@ public class {form.Name} : DynamicEditFormBase<{schema.DbContextName}>
             sb.Append(";");
         }
 
+        // Buttons
+        foreach (var btn in form.ActionButtons.OrderBy(f => f.Order))
+        {
+            sb.AppendLine();
+            sb.Append($"            e.DialogButton(ButtonActionTypes.{btn.Action}");
+
+            if (!string.IsNullOrWhiteSpace(btn.Text))
+            {
+                sb.Append(@$", text: ""{btn.Text}""");
+            }
+
+            if (!string.IsNullOrWhiteSpace(btn.Hint))
+            {
+                sb.Append(@$", hint: ""{btn.Hint}""");
+            }
+
+            if (!string.IsNullOrWhiteSpace(btn.NavigationTargetForm))
+            {
+                var ps = new StringBuilder();
+                var targetForm = ctx.Forms[btn.NavigationTargetForm];
+                
+                targetForm.PageParameters.OrderBy(p => p.Order).ToList().ForEach(p => 
+                {
+                    var btnParam = btn.NavigationParameterMapping.First(b => b.Name == p.Name);
+                    ps.Append(@$"/{{{btnParam.SupplyingParameterMapping}}}");
+                });
+
+                sb.Append(@$", actionLink: ""{btn.NavigationTargetForm}{ps}""");
+            }
+
+            sb.Append(");");
+        }
+
         sb.Append(@$"
         }});");
         sb.AppendLine(@$"
     }}");
 
+        // Rules
         foreach (var field in form.Fields.OrderBy(f => f.Order))
         {
             foreach (var rule in field.Rules)

@@ -38,6 +38,9 @@
     public IEnumerable<DialogButtonDetails> Buttons { get; set; }
 
     [Parameter]
+    public FormParameter[] FormParameters { get; set; }
+
+    [Parameter]
     public object[] NavigateFormatParameters { get; set; }
 
     [Parameter]
@@ -114,7 +117,17 @@
             if (btn.LinkText != null)
             {
                 //var route = string.Format(btn.LinkText, NavigateFormatParameters);
-                var route = NaviLinkHelper.GetLink(btn.LinkText, NavigateFormatParameters);
+                string route;
+
+                if (FormParameters != null)
+                {
+                    route = NaviLinkHelper.GetLink(btn.LinkText, FormParameters);
+                }
+                else
+                {
+                    route = NaviLinkHelper.GetLink(btn.LinkText, NavigateFormatParameters);
+                }
+
                 _navi.NavigateTo(route);
                 return;
             }
