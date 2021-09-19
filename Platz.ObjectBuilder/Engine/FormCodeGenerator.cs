@@ -64,6 +64,21 @@ public class FormCodeGenerator
             sb.AppendLine(@$"    public {p.DataType} {p.Name} {{ get; set; }}");
         }
 
+        sb.AppendLine();
+        sb.AppendLine($@"    private Dictionary<string, object> GetPatameters()");
+        sb.AppendLine($@"    {{");
+        sb.AppendLine($@"       return new Dictionary<string, object>()");
+        sb.AppendLine($@"       {{");
+
+        foreach (var p in form.PageParameters)
+        {
+            sb.AppendLine(@$"           {{ ""{p.Name}"", {p.Name} }},");
+        }
+
+        sb.AppendLine($@"       }}");
+
+        sb.AppendLine($@"    }}");
+
         sb.AppendLine(@"}");
 
         result.Code = sb.ToString();

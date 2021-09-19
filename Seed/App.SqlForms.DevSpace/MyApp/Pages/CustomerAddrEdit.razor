@@ -11,4 +11,13 @@
 
     [Parameter]
     public int CustomerId { get; set; }
+
+    private Dictionary<string, object> GetPatameters()
+    {
+        return new Dictionary<string, object>()
+        {
+            { "AddressId", AddressId },
+            { "CustomerId", CustomerId },
+        };
+    }
 }
