@@ -40,7 +40,7 @@ public class FormCodeGenerator
             comma = ", ";
         }
 
-        sb.AppendLine(@$"@page ""/{form.PagePath}{psb.ToString()}""");
+        sb.AppendLine(@$"@page ""/{form.RoutingPath}{psb.ToString()}""");
 
         sb.AppendLine(@$"@using Platz.SqlForms");
 

@@ -88,17 +88,17 @@
     </div>
     <div class="row-nospace-sm">
         <div class="col-sm-4 forms-nospace">
-            Navigation Path
+            Routing Path
         </div>
         <div class="col-sm-8 forms-nospace">
-            <input id="PagePathInput" value="@FormsPageController.Model.PagePath" @onchange="PagePathChanged" class="form-control" />
+            <input id="PagePathInput" value="@FormsPageController.Model.RoutingPath" @onchange="PagePathChanged" class="form-control" />
         </div>
     </div>
     <div class="row-nospace-sm">
         <div class="col-sm-4 forms-nospace">
-            Header form
+            Show Header form
         </div>
-        <div class="col-sm-8 forms-nospace">
+        <div class="col-sm-5 forms-nospace">
             <select class="form-control selectpicker" value="@_ctrl.Model.PageHeaderForm" @onchange="PageHeaderFormChanged">
                 <option value=""></option>
 
@@ -108,8 +108,17 @@
                 }
             </select>
         </div>
+        <div class="col-sm-3 forms-nospace">
+            &nbsp;
+            @if (!string.IsNullOrWhiteSpace(_ctrl.Model.PageHeaderForm))
+            {
+                <input type="checkbox" class="" checked="@_ctrl.Model.PageHeaderFormReadOnly" @onchange="FormReadOnlyChanged" id="checkFc" />
+                <label for="checkFc">Read only</label>
+            }
+        </div>
     </div>
-    <div class="row-nospace-sm">
+    
+   <div class="row-nospace-sm">
         <div class="col-sm-4 forms-nospace">
             Parameters
         </div>
@@ -190,13 +199,20 @@
 
     private async Task PagePathChanged(ChangeEventArgs a)
     {
-        FormsPageController.Model.PagePath = a.Value.ToString();
+        FormsPageController.Model.RoutingPath = a.Value.ToString();
         await Change();
     }
     private async Task PageHeaderFormChanged(ChangeEventArgs a)
     {
         _ctrl.Model.PageHeaderForm = a.Value.ToString();
         _ctrl.RefreshHeaderParams();
+        _ctrl.Change();
+        await Change();
+    }
+    private async Task FormReadOnlyChanged(ChangeEventArgs a)
+    {
+        _ctrl.Model.PageHeaderFormReadOnly = Convert.ToBoolean(a.Value);
+        _ctrl.Change();
         await Change();
     }
 

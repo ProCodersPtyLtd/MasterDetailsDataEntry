@@ -44,7 +44,7 @@
     }
   ],
   "Caption": null,
-  "PagePath": null,
+  "RoutingPath": null,
   "PageParameters": [
     {
       "Name": "addressId",
@@ -61,6 +61,7 @@
       "HeaderFormParameterMapping": null
     }
   ],
-  "PageHeaderForm": null,
+  "PageHeaderForm": "",
+  "PageHeaderFormReadOnly": false,
   "Validated": true
 }

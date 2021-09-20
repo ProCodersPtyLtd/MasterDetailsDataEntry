@@ -288,7 +288,9 @@ namespace SqlForms.DevSpace.Controlers
         private void ApplyNewFormDefaults(FormDetails formDetails)
         {
             formDetails.Form.Name = GetNextFormName();
-            formDetails.Form.Caption = "Default";
+            formDetails.Form.Caption = formDetails.Form.Name;
+            formDetails.Form.Namespace = _currentProject.Settings.DefaultFormNamespace ?? _currentProject.Settings.DefaultNamespace;
+            formDetails.Form.PageHeaderFormReadOnly = true;
 
             if (Model.Schemas.Count == 1)
             {

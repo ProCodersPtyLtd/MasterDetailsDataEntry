@@ -35,9 +35,10 @@ namespace Platz.ObjectBuilder.Blazor.Model
 
         // Page Properties
         public string Caption { get; set; }
-        public string PagePath { get; set; }
+        public string RoutingPath { get; set; }
         public List<PageParameterModel> PageParameters { get; set; } = new List<PageParameterModel>();
         public string PageHeaderForm { get; set; }
+        public bool PageHeaderFormReadOnly { get; set; }
 
         public string DisplayName
         {
@@ -46,6 +47,16 @@ namespace Platz.ObjectBuilder.Blazor.Model
                 string dirty = IsDirty ? "*" : "";
                 return $"{Name}{dirty}";
             }
+        }
+
+        public string GetRoutingPath()
+        {
+            if (!string.IsNullOrWhiteSpace(RoutingPath))
+            {
+                return RoutingPath;
+            }
+
+            return Name;
         }
 
         public static void CopyFrom(FormBuilderModel model, StoreForm form)
@@ -61,9 +72,10 @@ namespace Platz.ObjectBuilder.Blazor.Model
             var buttons = form.ActionButtons.OrderBy(x => x.Order).Select(f => new FieldComponentModel(f)).ToList();
             model.Fields.AddRange(buttons);
             model.Caption = form.Caption;
-            model.PagePath = form.PagePath;
+            model.RoutingPath = form.RoutingPath;
             //model.PageHeaderForm = form.PageHeaderForm?.Name;
             model.PageHeaderForm = form.PageHeaderForm;
+            model.PageHeaderFormReadOnly = form.PageHeaderFormReadOnly;
             model.PageParameters = form.PageParameters.OrderBy(x => x.Order).Select(f => new PageParameterModel(f)).ToList();
         }
 
@@ -80,8 +92,9 @@ namespace Platz.ObjectBuilder.Blazor.Model
             form.Fields = src.Fields.Where(f => f.ComponentType != FieldComponentType.ActionButton).Select(f => f.ToStore()).ToList(); 
             form.ActionButtons = src.Fields.Where(f => f.ComponentType == FieldComponentType.ActionButton).Select(f => f.ToStoreButton()).ToList();
             form.Caption = src.Caption;
-            form.PagePath = src.PagePath;
+            form.RoutingPath = src.RoutingPath;
             form.PageHeaderForm = src.PageHeaderForm;
+            form.PageHeaderFormReadOnly = src.PageHeaderFormReadOnly;
             form.PageParameters = src.PageParameters.Select(p => p.ToStore()).ToList();
             return form;
         }

@@ -1,0 +1,24 @@
+{
+  "Name": "NewForm",
+  "Namespace": null,
+  "IsDynamicContext": false,
+  "IsListForm": false,
+  "Schema": "Crm2",
+  "Datasource": null,
+  "Fields": [],
+  "ActionButtons": [],
+  "Caption": "New Form",
+  "RoutingPath": null,
+  "PageParameters": [
+    {
+      "Name": "id",
+      "DataType": "int",
+      "Order": 0,
+      "DatasourceQueryParameterMapping": null,
+      "HeaderFormParameterMapping": "id"
+    }
+  ],
+  "PageHeaderForm": "AddressForm",
+  "PageHeaderFormReadOnly": true,
+  "Validated": true
+}

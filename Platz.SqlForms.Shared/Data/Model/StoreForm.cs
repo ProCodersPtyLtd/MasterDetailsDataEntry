@@ -22,11 +22,22 @@ namespace Platz.SqlForms
 
         // Page Properties
         public string Caption { get; set; }
-        public string PagePath { get; set; }
+        public string RoutingPath { get; set; }
         public List<StorePageParameter> PageParameters { get; set; } = new List<StorePageParameter> ();
         public string PageHeaderForm { get; set; }
+        public bool PageHeaderFormReadOnly { get; set; }
 
         public bool Validated { get; set; }
+
+        public string GetRoutingPath()
+        {
+            if (!string.IsNullOrWhiteSpace(RoutingPath))
+            {
+                return RoutingPath;
+            }
+
+            return Name;
+        }
     }
 
     public class StorePageParameter

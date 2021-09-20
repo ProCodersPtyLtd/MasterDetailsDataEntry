@@ -73,7 +73,7 @@
     }
   ],
   "Caption": "Form1",
-  "PagePath": "AddressForm",
+  "RoutingPath": "AddressForm",
   "PageParameters": [
     {
       "Name": "id",
@@ -91,5 +91,6 @@
     }
   ],
   "PageHeaderForm": null,
+  "PageHeaderFormReadOnly": false,
   "Validated": true
 }
