@@ -25,6 +25,11 @@ namespace Platz.SqlForms
 
     public class StoreProjectSettings
     {
+        public string DefaultNamespace { get; set; }
+        public string DefaultSchemaNamespace { get; set; }
+        public string DefaultQueryNamespace { get; set; }
+        public string DefaultFormNamespace { get; set; }
+
         public List<string> EditWindows { get; set; } = new List<string>();
     }
 

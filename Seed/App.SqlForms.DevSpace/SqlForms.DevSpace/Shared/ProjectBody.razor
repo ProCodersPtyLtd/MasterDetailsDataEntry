@@ -105,7 +105,7 @@
     {
         var ws = _spaceController.GetEditWindows()[index];
 
-        if (ws.StoreObjectDetails.DisplayName.EndsWith("*"))
+        if (ws.StoreObjectDetails != null && ws.StoreObjectDetails.DisplayName.EndsWith("*"))
         {
             // are you sure
             var canClose = await JS.InvokeAsync<bool>("confirm", $"Your changes not saved. Are you sure you want to close '{ws.StoreObjectDetails.DisplayName}' ?");

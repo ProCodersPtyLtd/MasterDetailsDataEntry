@@ -54,6 +54,8 @@ namespace Platz.ObjectBuilder
         List<string> GetEntityBindings();
         void SwitchModel(FormBuilderModel model);
         void UpdateFormName(string name);
+        void UpdateFormNamespace(string name);
+        void UpdateFormCaption(string name);
         List<string> GetAvailableFormReferences();
         void PreloadButtonParameters(FieldComponentModel field);
         List<string> GetAvailableFormParameters();
@@ -92,6 +94,7 @@ namespace Platz.ObjectBuilder
         public void SwitchModel(FormBuilderModel model)
         {
             Model = model;
+            RefreshHeaderParams();
         }
 
         public List<FieldComponentModel> GetPageFieldComponents()
@@ -292,6 +295,16 @@ namespace Platz.ObjectBuilder
             Model.Name = name;
             Change();
         }
+        public void UpdateFormNamespace(string name)
+        {
+            Model.Namespace = name;
+            Change();
+        }
+        public void UpdateFormCaption(string name)
+        {
+            Model.Caption = name;
+            Change();
+        }
 
         public void PrepareActiveFieldRulesForEdit()
         {
@@ -449,11 +462,12 @@ namespace Platz.ObjectBuilder
         {
             rules.ForEach(r => r.IsDirty = false);
             rules.CopyListTo(ActiveField.Rules);
+            Change();
         }
 
         public List<string> GetAvailableFormReferences()
         {
-            var result = _storeForms.Where(m => m.Name != Model.Name && m.Name != Model.OriginalName).Select(f => f.PagePath ?? f.Name).ToList();
+            var result = _storeForms.Where(m => m.Name != Model.Name && m.Name != Model.OriginalName).Select(f => f.GetRoutingPath()).ToList();
             return result;
         }
 
@@ -475,8 +489,12 @@ namespace Platz.ObjectBuilder
 
             if (!string.IsNullOrWhiteSpace(Model.PageHeaderForm))
             {
-                var form = _storeForms.First(f => f.Name == Model.PageHeaderForm);
-                Model.HeaderParams = form.PageParameters.OrderBy(x => x.Order).Select(x => x.Name).ToList();
+                var form = _storeForms.FirstOrDefault(f => f.GetRoutingPath() == Model.PageHeaderForm);
+
+                if (form != null)
+                {
+                    Model.HeaderParams = form.PageParameters.OrderBy(x => x.Order).Select(x => x.Name).ToList();
+                }
             }
         }
 
@@ -491,7 +509,7 @@ namespace Platz.ObjectBuilder
 
             if (!string.IsNullOrWhiteSpace(field.StoreButton.NavigationTargetForm))
             {
-                var form = _storeForms.First(f => f.Name == field.StoreButton.NavigationTargetForm || f.PagePath == field.StoreButton.NavigationTargetForm);
+                var form = _storeForms.First(f => f.Name == field.StoreButton.NavigationTargetForm || f.RoutingPath == field.StoreButton.NavigationTargetForm);
                 field.StoreButton.NavigationParameterMapping = form.PageParameters.OrderBy(x => x.Order).Select(x => new StoreNavigationParameter { Name = x.Name }).ToList();
             }
         }

@@ -1,0 +1,12 @@
+﻿@page "/OrderEditCopy/{Id:int}"
+@using Platz.SqlForms.Demo.SchemaForms
+
+<h1>Order Edit</h1>
+
+<FormDynamicEditComponent TForm="OrderForm" FormParameters="new object[] { Id }" />
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+}
+

@@ -100,21 +100,22 @@ namespace Platz.SqlForms
             return result;
         }
 
-        public virtual void InlineButton(string buttonText, string hint = null)
+        public virtual void InlineButton(string text, string hint = null)
         {
-            var bindingProperty = buttonText;
+            var bindingProperty = text;
             _fields[bindingProperty] = new DataField { Button = true, BindingProperty = bindingProperty, Label = hint };
         }
 
-        public virtual FormEntityTypeBuilder<TEntity> ContextButton(string buttonText, string actionLinkText)
+        public virtual FormEntityTypeBuilder<TEntity> ContextButton(string text, string actionLink)
         {
-            _contextLinks.Add(new ActionRouteLink { Text = buttonText, LinkText = actionLinkText });
+            _contextLinks.Add(new ActionRouteLink { Text = text, LinkText = actionLink });
             return this;
         }
 
-        public virtual FormEntityTypeBuilder<TEntity> DialogButton(ButtonActionTypes actionType, string buttonText = null, string hint = null, string actionLinkText = null)
+        // ToDo: add support of named format parameters like actionLink: "Form2/{id}/{id2}", where id, id2 - named page parameters
+        public virtual FormEntityTypeBuilder<TEntity> DialogButton(ButtonActionTypes actionType, string text = null, string hint = null, string actionLink = null)
         {
-            DialogButtons.Add(new DialogButtonDetails { Action = actionType, Text = buttonText, Hint = hint, LinkText = actionLinkText });
+            DialogButtons.Add(new DialogButtonDetails { Action = actionType, Text = text, Hint = hint, LinkText = actionLink });
             return this;
         }
 
@@ -128,15 +129,15 @@ namespace Platz.SqlForms
         }
         #endregion
 
-        public virtual FormEntityTypeBuilder<TEntity> DialogButton(string actionLinkText, ButtonActionTypes actionType, string buttonText = null, string hint = null)
+        public virtual FormEntityTypeBuilder<TEntity> DialogButton(string actionLink, ButtonActionTypes actionType, string text = null, string hint = null)
         {
-            DialogButtons.Add(new DialogButtonDetails { Action = actionType, Text = buttonText, Hint = hint, LinkText = actionLinkText });
+            DialogButtons.Add(new DialogButtonDetails { Action = actionType, Text = text, Hint = hint, LinkText = actionLink });
             return this;
         }
 
-        public virtual FormEntityTypeBuilder<TEntity> DialogButtonNavigation(string actionLinkText, params ButtonActionTypes[] actions)
+        public virtual FormEntityTypeBuilder<TEntity> DialogButtonNavigation(string actionLink, params ButtonActionTypes[] actions)
         {
-            DialogButtonNavigations.Add(new DialogButtonNavigationDetails { LinkText = actionLinkText, Actions = actions.ToList() });
+            DialogButtonNavigations.Add(new DialogButtonNavigationDetails { LinkText = actionLink, Actions = actions.ToList() });
             return this;
         }
 

@@ -1,4 +1,5 @@
-﻿using Platz.SqlForms;
+﻿using Platz.ObjectBuilder.Model;
+using Platz.SqlForms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,7 @@ namespace SqlForms.DevSpace.Model
     {
         Unknown = 0,
         Output = 1,
+        CodePreview = 2,
         ProjectSettings = 10,
         Schema = 20,
         Query = 30,
@@ -29,5 +31,22 @@ namespace SqlForms.DevSpace.Model
     {
         public string Name { get; set; }
         public bool Validated { get; set; }
+        public SpecialWindowContent Content { get; set; }
     }
+
+    public abstract class SpecialWindowContent
+    {
+    }
+
+    public class CodePreviewSpecialWindowContent : SpecialWindowContent
+    {
+        public List<CodeGenerationSection> Sections { get; set; } = new List<CodeGenerationSection>();
+
+        public CodePreviewSpecialWindowContent(IEnumerable<CodeGenerationSection> sections)
+        {
+            Sections.AddRange(sections);
+        }
+    }
+
+    
 }

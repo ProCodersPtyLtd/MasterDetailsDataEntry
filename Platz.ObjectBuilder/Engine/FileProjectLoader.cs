@@ -1,6 +1,5 @@
 ﻿using Platz.ObjectBuilder;
 using Platz.SqlForms;
-using SqlForms.DevSpace.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +7,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace SqlForms.DevSpace.Logic
+namespace Platz.ObjectBuilder.Engine
 {
     public class FileProjectLoader : IProjectLoader
     {
@@ -51,7 +50,7 @@ namespace SqlForms.DevSpace.Logic
             }
 
             var projectJson = File.ReadAllText(name);
-            result.Name = name;
+            result.Name = Path.GetFileName(name).Replace(".project.json", "");
             result.Settings = JsonSerializer.Deserialize<StoreProjectSettings>(projectJson);
 
             var files = Directory.GetFiles(dir, "*.schema.json");
@@ -144,6 +143,16 @@ namespace SqlForms.DevSpace.Logic
             }
 
             return "";
+        }
+
+        public StoreSchema LoadSchema(string folderName, string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public StoreQuery LoadQuery(string folderName, string name)
+        {
+            throw new NotImplementedException();
         }
     }
 }

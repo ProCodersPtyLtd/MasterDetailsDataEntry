@@ -9,4 +9,8 @@
     <ProjectReference Include="..\SqlForms.Demo.Database\SqlForms.Demo.Database.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Logic\" />
+  </ItemGroup>
+
 </Project>
