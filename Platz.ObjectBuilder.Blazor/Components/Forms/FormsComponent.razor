@@ -15,16 +15,28 @@
     @*<div class="container" style="margin-left: 0; margin-right: 0">*@
     <div class="forms-big" style="padding: 5px 0 0 0;">
         <div class="row">
+            <div class="col-lg-12">
+                @if (_formsPageController.Model.IsListForm)
+                {
+                    <DesignPageContentListFormComponent ModelChanged="ModelChanged" />
+                }
+            </div>
+        </div>
+        <div class="row">
             <div class="col-lg-6" style="padding: 0 0 0 15px;">
-                <DesignPageContentComponent Height="Height" ModelChanged="ModelChanged" />
+                @if (!_formsPageController.Model.IsListForm)
+                {
+                    <DesignPageContentComponent Height="Height" ModelChanged="ModelChanged" />
+                }
             </div>
             <div class="col-lg-1" style="padding: 0 5px 0 5px;">
                 <FormsPageToolbarComponent Height="Height" ModelChanged="ModelChanged" />
             </div>
             <div class="col-lg-5" style="padding: 0 15px 0 0;">
-                <FormsPropertiesComponent ModelChanged="ModelChanged" />
 
-                <FormsInfoComponent ModelChanged="ModelChanged" />
+                    <FormsPropertiesComponent ModelChanged="ModelChanged" />
+
+                @*<FormsInfoComponent ModelChanged="ModelChanged" />*@
             </div>
         </div>
     </div>

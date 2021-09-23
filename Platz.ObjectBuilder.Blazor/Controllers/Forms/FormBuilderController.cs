@@ -60,6 +60,8 @@ namespace Platz.ObjectBuilder
         void PreloadButtonParameters(FieldComponentModel field);
         List<string> GetAvailableFormParameters();
         List<string> GetAvailableFormParameters(string form);
+
+        void SetListFormType(bool isList);
     }
     public class FormBuilderController : IFormBuilderController
     {
@@ -528,6 +530,13 @@ namespace Platz.ObjectBuilder
             }
 
             return new List<string>();
+        }
+
+        public void SetListFormType(bool isList)
+        {
+            Model.IsListForm = isList;
+            Model.Fields.Clear();
+            Change();
         }
     }
 }

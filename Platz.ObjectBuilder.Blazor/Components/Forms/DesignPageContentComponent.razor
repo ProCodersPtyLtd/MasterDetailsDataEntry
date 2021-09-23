@@ -8,7 +8,7 @@
     @*<div @onclick="PageClicked" @onmouseover="@(e => { FormController.GetPageFieldComponents().ForEach(f => f.FullView = false); })">*@
     <div @onclick="PageClicked">
         <div class="@GetPageClass()">
-            <h5>Control Flow</h5>
+            <h5>Edit Form Control Flow</h5>
         </div>
 
         <div class="grid-container overflow-auto" style="min-height: 600px; height: @(Height)px; width: auto; background-color: aliceblue;" @onscroll="() => Refresh()">

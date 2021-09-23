@@ -1,0 +1,120 @@
+﻿@using Platz.ObjectBuilder.Blazor
+@using Platz.ObjectBuilder.Blazor.Controllers
+@using Platz.ObjectBuilder.Blazor.Model
+
+@namespace Platz.ObjectBuilder.Blazor.Forms
+
+@if (Field != null)
+{
+<div>
+    @if (Field.Active || Field.FullView)
+    {
+    <div class="list-widget-preview widget-relative" @onclick="CaptionClick" @onclick:stopPropagation="true">
+        <div class="list-widget @GetCaptionClass()">
+            @($"{Field.Order}: {@GetLabelText()}")
+
+                <button class="btn btn-danger btn-sm widget-close-btn" title="Cancel" @onclick="@(async (args) => await DeleteClick(args, Field.StoreField.BindingProperty))">
+                    <span class="oi oi-x"></span>
+                </button>
+        </div>
+
+        <div class="list-widget-body">
+        
+            <DesignColumnEditComponent Field="@Field" ModelChanged="@ModelChanged" />
+
+        </div>
+    </div>
+    }
+    else
+    {
+            
+        <div @onclick="CaptionClick" @onclick:stopPropagation="true">
+            <div class="list-widget-preview">
+
+                <label>@GetLabelText()</label>
+
+                <div>
+                    <small >
+                        @GetBindingText()
+                    </small>
+                </div>
+            </div>
+        </div>
+    }
+    </div>
+}
+
+
+@code {
+    [CascadingParameter]
+    public IFormBuilderController FormsPageController { get; set; }
+
+    [Parameter]
+    public FieldComponentModel Field { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    //private bool _fullView;
+
+    private string GetCaptionClass()
+    {
+        return Field.Active ? "forms-cap-active" : "forms-cap";
+    }
+
+    private string GetBindingText()
+    {
+        var s = Field.StoreField.BindingProperty;
+        return string.IsNullOrWhiteSpace(s) ? "(No binding)" : s;
+    }
+    private string GetLabelText()
+    {
+        var s = Field.StoreField.Label;
+        return string.IsNullOrWhiteSpace(s) ? "(No name)" : s;
+    }
+
+    private string GetButtonClass()
+    {
+        switch (Field.StoreButton.Action)
+        {
+            case "Submit":
+                return "btn btn-primary";
+            case "Cancel":
+            case "Close":
+                return "btn btn-info";
+            case "Delete":
+                return "btn btn-danger";
+            default:
+                return "btn btn-secondary";
+        }
+    }
+
+    private async Task DeleteClick(MouseEventArgs e, string binding)
+    {
+        FormsPageController.DeleteField(Field);
+        await ModelChanged.InvokeAsync();
+    }
+
+    private async Task CaptionClick(MouseEventArgs e)
+    {
+        FormsPageController.SetActive(Field);
+        await ModelChanged.InvokeAsync();
+    }
+
+    private string GetControlName()
+    {
+        return Field.ComponentType.ToString();
+
+        switch (Field.ComponentType)
+        {
+            case FieldComponentType.Dropdown:
+                return "Dropdown";
+            case FieldComponentType.DateEdit:
+                return "Date Edit";
+
+            case FieldComponentType.TextEdit:
+            default:
+                return "Text Edit";
+        }
+    }
+}

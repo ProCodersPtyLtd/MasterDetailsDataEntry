@@ -1,0 +1,54 @@
+﻿@using Platz.ObjectBuilder.Blazor
+@using Platz.ObjectBuilder.Blazor.Controllers
+@using Platz.ObjectBuilder.Blazor.Model
+@using Plk.Blazor.DragDrop
+
+@namespace Platz.ObjectBuilder.Blazor.Forms
+
+    <div @onclick="PageClicked">
+        <div class="@GetPageClass()">
+            <h5>List Form Columns Flow</h5>
+        </div>
+
+        <div class="plk-flex overflow-auto form-light" style="height: 160px; width: 100%; max-width: 1622px; background-color: aliceblue;" @onscroll="() => Refresh()">
+
+            <Dropzone @ref="_dropzone" Class="flex-container form-light" Items="FormController.GetPageFieldComponents()" ItemWrapperClass="list-widget-flex-item"
+                      TItem="FieldComponentModel" OnItemDrop="@ItemDropped">
+                <div>
+                    <DesignColumnFieldComponent Field="@context" ModelChanged="ModelChanged" />
+                </div>
+            </Dropzone>
+        </div>
+    </div>
+
+
+    @code {
+        [CascadingParameter]
+        public IFormBuilderController FormController { get; set; }
+
+
+        [Parameter]
+        public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+        private Dropzone<FieldComponentModel> _dropzone;
+
+        private void Refresh()
+        {
+        }
+
+        private string GetPageClass()
+        {
+            return FormController.PageActive ? "forms-cap-active" : "forms-cap";
+        }
+
+        private async Task ItemDropped(FieldComponentModel item)
+        {
+            FormController.ReOrderFields(_dropzone.Items);
+        }
+
+        private async Task PageClicked(MouseEventArgs args)
+        {
+            FormController.SetActive(null);
+            await ModelChanged.InvokeAsync();
+        }
+    }
