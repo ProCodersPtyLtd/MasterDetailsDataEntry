@@ -10,7 +10,7 @@
             <h5>List Form Columns Flow</h5>
         </div>
 
-        <div class="plk-flex overflow-auto form-light" style="height: 160px; width: 100%; max-width: 1622px; background-color: aliceblue;" @onscroll="() => Refresh()">
+        <div class="plk-flex overflow-auto form-light" style="height: @(GetFlexHeight())px; width: 100%; max-width: 1622px; background-color: aliceblue;" @onscroll="() => Refresh()">
 
             <Dropzone @ref="_dropzone" Class="flex-container form-light" Items="FormController.GetPageFieldComponents()" ItemWrapperClass="list-widget-flex-item"
                       TItem="FieldComponentModel" OnItemDrop="@ItemDropped">
@@ -23,7 +23,7 @@
 
 
     @code {
-        [CascadingParameter]
+    [CascadingParameter]
         public IFormBuilderController FormController { get; set; }
 
 
@@ -34,6 +34,11 @@
 
         private void Refresh()
         {
+        }
+
+        private int GetFlexHeight()
+        {
+            return FormController.PageActive ? 100 : 220;
         }
 
         private string GetPageClass()

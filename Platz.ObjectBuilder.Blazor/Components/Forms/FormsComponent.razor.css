@@ -136,8 +136,14 @@
 
 ::deep .widget-close-btn {
     position: absolute;
-    top: 1px;
-    right: 1px;
+    top: 0px;
+    right: 0px;
+}
+
+::deep .widget-label-sign {
+    position: absolute;
+    top: -3px;
+    right: 3px;
 }
 
 

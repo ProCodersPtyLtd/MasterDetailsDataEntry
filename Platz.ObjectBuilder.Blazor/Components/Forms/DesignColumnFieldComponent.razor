@@ -29,15 +29,15 @@
     {
             
         <div @onclick="CaptionClick" @onclick:stopPropagation="true">
-            <div class="list-widget-preview">
+            <div class="list-widget-preview widget-relative">
+
+                <small class="widget-preview-sign">
+                        @GetBindingText()
+                </small>
+
+                <br/>
 
                 <label>@GetLabelText()</label>
-
-                <div>
-                    <small >
-                        @GetBindingText()
-                    </small>
-                </div>
             </div>
         </div>
     }
