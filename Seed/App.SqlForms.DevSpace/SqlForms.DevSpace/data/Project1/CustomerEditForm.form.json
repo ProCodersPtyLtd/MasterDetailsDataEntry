@@ -1,5 +1,5 @@
 {
-  "Name": "Form2",
+  "Name": "CustomerEditForm",
   "Namespace": null,
   "IsDynamicContext": false,
   "IsListForm": false,
@@ -43,20 +43,13 @@
       ]
     }
   ],
-  "Caption": null,
-  "RoutingPath": null,
+  "Caption": "Customer Edit",
+  "RoutingPath": "CustomerEdit",
   "PageParameters": [
     {
-      "Name": "addressId",
+      "Name": "customerId",
       "DataType": "int",
       "Order": 0,
-      "DatasourceQueryParameterMapping": null,
-      "HeaderFormParameterMapping": null
-    },
-    {
-      "Name": "myId",
-      "DataType": "int",
-      "Order": 1,
       "DatasourceQueryParameterMapping": null,
       "HeaderFormParameterMapping": null
     }

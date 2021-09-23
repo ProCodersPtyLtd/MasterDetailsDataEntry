@@ -1,0 +1,90 @@
+{
+  "Name": "AddressEditForm",
+  "Namespace": "X2",
+  "IsDynamicContext": false,
+  "IsListForm": false,
+  "Schema": "Crm2",
+  "Datasource": "Address",
+  "Fields": [
+    {
+      "BindingProperty": "$.Suburb",
+      "DataType": null,
+      "ControlType": "TextEdit",
+      "ViewModeControlType": null,
+      "Label": "Suburb",
+      "Required": false,
+      "Hidden": false,
+      "ReadOnly": null,
+      "PrimaryKey": false,
+      "Unique": false,
+      "Format": null,
+      "Order": 0,
+      "Filter": false,
+      "FilterType": 0,
+      "Rules": []
+    },
+    {
+      "BindingProperty": "$.State",
+      "DataType": null,
+      "ControlType": "TextEdit",
+      "ViewModeControlType": null,
+      "Label": "State2",
+      "Required": false,
+      "Hidden": false,
+      "ReadOnly": null,
+      "PrimaryKey": false,
+      "Unique": false,
+      "Format": null,
+      "Order": 0,
+      "Filter": false,
+      "FilterType": 0,
+      "Rules": [
+        {
+          "Name": "StateRule1",
+          "Trigger": "ChangeSubmit",
+          "Code": "var result = new FormRuleResult(); \nreturn result;"
+        }
+      ]
+    }
+  ],
+  "ActionButtons": [
+    {
+      "Action": "Submit",
+      "Text": "Submit",
+      "Hint": "Submit changes",
+      "Order": 2,
+      "Hidden": false,
+      "ReadOnly": null,
+      "NavigationTargetForm": "NewForm",
+      "NavigationParameterMapping": [
+        {
+          "Name": "id",
+          "DataType": null,
+          "Order": 0,
+          "SupplyingParameterMapping": "customerId"
+        }
+      ]
+    }
+  ],
+  "Caption": "Address Edit",
+  "RoutingPath": "AddressEditForm",
+  "PageParameters": [
+    {
+      "Name": "customerId",
+      "DataType": "int",
+      "Order": 0,
+      "DatasourceQueryParameterMapping": null,
+      "HeaderFormParameterMapping": "customerId"
+    },
+    {
+      "Name": "addressId",
+      "DataType": "int",
+      "Order": 1,
+      "DatasourceQueryParameterMapping": null,
+      "HeaderFormParameterMapping": null
+    }
+  ],
+  "PageHeaderForm": "CustomerEditForm",
+  "PageHeaderFormReadOnly": true,
+  "Validated": true
+}

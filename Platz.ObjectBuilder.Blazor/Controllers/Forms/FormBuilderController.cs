@@ -467,7 +467,7 @@ namespace Platz.ObjectBuilder
 
         public List<string> GetAvailableFormReferences()
         {
-            var result = _storeForms.Where(m => m.Name != Model.Name && m.Name != Model.OriginalName).Select(f => f.GetRoutingPath()).ToList();
+            var result = _storeForms.Where(m => m.Name != Model.Name && m.Name != Model.OriginalName).Select(f => f.Name).ToList();
             return result;
         }
 
@@ -489,7 +489,7 @@ namespace Platz.ObjectBuilder
 
             if (!string.IsNullOrWhiteSpace(Model.PageHeaderForm))
             {
-                var form = _storeForms.FirstOrDefault(f => f.GetRoutingPath() == Model.PageHeaderForm);
+                var form = _storeForms.FirstOrDefault(f => f.Name == Model.PageHeaderForm);
 
                 if (form != null)
                 {
