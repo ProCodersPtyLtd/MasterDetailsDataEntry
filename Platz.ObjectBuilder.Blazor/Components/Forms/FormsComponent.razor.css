@@ -130,6 +130,26 @@
     height: fit-content;
 }
 
+::deep .list-widget-panel {
+    opacity: 0.8;
+}
+
+::deep .list-flex-container {
+    display: flex;
+    background-color: dodgerblue;
+    min-height: 100px;
+    opacity: 0.8;
+
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+
+
+
 ::deep .widget-relative {
     position: relative;
 }
@@ -144,6 +164,26 @@
     position: absolute;
     top: -3px;
     right: 3px;
+}
+
+::deep .widget-label {
+    position: absolute;
+    top: -15px;
+    left: 2px;
+}
+
+::deep .widget-control {
+    height: 30px;
+    margin-top: 14px;
+}
+
+::deep .forms-widget-small {
+    padding: 5px 2px 0 2px;
+    margin: 0 0 0 0;
+}
+
+::deep .widget-check-small {
+    height: 23px;
 }
 
 
