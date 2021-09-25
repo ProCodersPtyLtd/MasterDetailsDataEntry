@@ -1,5 +1,5 @@
 {
-  "Name": "Form1",
+  "Name": "AddressEditForm",
   "Namespace": "X2",
   "IsDynamicContext": false,
   "IsListForm": false,
@@ -55,42 +55,36 @@
       "Order": 2,
       "Hidden": false,
       "ReadOnly": null,
-      "NavigationTargetForm": "Form2",
+      "NavigationTargetForm": "NewForm",
       "NavigationParameterMapping": [
         {
-          "Name": "addressId",
+          "Name": "id",
           "DataType": null,
           "Order": 0,
-          "SupplyingParameterMapping": "id"
-        },
-        {
-          "Name": "myId",
-          "DataType": null,
-          "Order": 0,
-          "SupplyingParameterMapping": "id2"
+          "SupplyingParameterMapping": "customerId"
         }
       ]
     }
   ],
-  "Caption": "Form1",
-  "RoutingPath": "AddressForm",
+  "Caption": "Address Edit",
+  "RoutingPath": "AddressEditForm",
   "PageParameters": [
     {
-      "Name": "id",
+      "Name": "customerId",
       "DataType": "int",
       "Order": 0,
       "DatasourceQueryParameterMapping": null,
-      "HeaderFormParameterMapping": null
+      "HeaderFormParameterMapping": "customerId"
     },
     {
-      "Name": "id2",
+      "Name": "addressId",
       "DataType": "int",
       "Order": 1,
       "DatasourceQueryParameterMapping": null,
       "HeaderFormParameterMapping": null
     }
   ],
-  "PageHeaderForm": null,
-  "PageHeaderFormReadOnly": false,
+  "PageHeaderForm": "CustomerEditForm",
+  "PageHeaderFormReadOnly": true,
   "Validated": true
 }

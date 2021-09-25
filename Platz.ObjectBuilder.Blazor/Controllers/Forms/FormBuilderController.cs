@@ -50,6 +50,8 @@ namespace Platz.ObjectBuilder
         void MoveDown();
         void Clear();
         void GenerateFromEntity();
+        void AddColumn();
+        void AddColumnAction();
 
         List<string> GetEntityBindings();
         void SwitchModel(FormBuilderModel model);
@@ -60,6 +62,8 @@ namespace Platz.ObjectBuilder
         void PreloadButtonParameters(FieldComponentModel field);
         List<string> GetAvailableFormParameters();
         List<string> GetAvailableFormParameters(string form);
+
+        void SetListFormType(bool isList);
     }
     public class FormBuilderController : IFormBuilderController
     {
@@ -72,7 +76,7 @@ namespace Platz.ObjectBuilder
         private List<StoreQuery> _storeQueries;
         private List<StoreForm> _storeForms;
 
-        public bool PageActive { get; set; }
+        public bool PageActive { get { return Model.PageActive; } private set { Model.PageActive = value; } } 
         public FieldComponentModel ActiveField { get; set; }
         public List<FieldRuleModel> ActiveFieldRules { get; private set; } = new List<FieldRuleModel>();
         public int SelectedRuleIndex { get; set; } = -1;
@@ -159,7 +163,10 @@ namespace Platz.ObjectBuilder
                 return;
             }
 
-            Model.Datasources.AddRange(_storeQueries.Where(x => x.SchemaName == Model.Schema).Select(x => $"{DS_QUERY_START}{x.Name}").OrderBy(x => x));
+            if (Model.IsListForm)
+            {
+                Model.Datasources.AddRange(_storeQueries.Where(x => x.SchemaName == Model.Schema).Select(x => $"{DS_QUERY_START}{x.Name}").OrderBy(x => x));
+            }
 
             Model.Datasources.AddRange(_storeSchemas.First(x => x.Name == Model.Schema).Definitions.Keys.OrderBy(x => x));
 
@@ -467,7 +474,7 @@ namespace Platz.ObjectBuilder
 
         public List<string> GetAvailableFormReferences()
         {
-            var result = _storeForms.Where(m => m.Name != Model.Name && m.Name != Model.OriginalName).Select(f => f.GetRoutingPath()).ToList();
+            var result = _storeForms.Where(m => m.Name != Model.Name && m.Name != Model.OriginalName).Select(f => f.Name).ToList();
             return result;
         }
 
@@ -489,7 +496,7 @@ namespace Platz.ObjectBuilder
 
             if (!string.IsNullOrWhiteSpace(Model.PageHeaderForm))
             {
-                var form = _storeForms.FirstOrDefault(f => f.GetRoutingPath() == Model.PageHeaderForm);
+                var form = _storeForms.FirstOrDefault(f => f.Name == Model.PageHeaderForm);
 
                 if (form != null)
                 {
@@ -528,6 +535,27 @@ namespace Platz.ObjectBuilder
             }
 
             return new List<string>();
+        }
+
+        public void SetListFormType(bool isList)
+        {
+            Model.IsListForm = isList;
+            Model.Fields.Clear();
+            Change();
+        }
+
+        public void AddColumn()
+        {
+            var f = new FieldComponentModel { ComponentType = FieldComponentType.Column };
+            Model.Fields.Add(f);
+            Change();
+        }
+
+        public void AddColumnAction()
+        {
+            var f = new FieldComponentModel { ComponentType = FieldComponentType.ColumnAction };
+            Model.Fields.Add(f);
+            Change();
         }
     }
 }

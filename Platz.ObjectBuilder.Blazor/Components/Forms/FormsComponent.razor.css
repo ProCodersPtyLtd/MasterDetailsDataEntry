@@ -22,6 +22,13 @@
     margin: 0 0 5px 0;
 }
 
+::deep .forms-tb-buttons-hor {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0 5px 0;
+}
+
 ::deep .forms-toolbar {
     padding: 0 0 0 0;
     margin: 0 0 0 0;
@@ -67,20 +74,24 @@
     padding: 0 0 0 10px;
     background-color: dodgerblue;
     height: 32px;
+    border-radius: 4px;
 }
 
 ::deep .forms-cap {
     padding: 0 0 0 10px;
     background-color: gray;
     height: 32px;
+    border-radius: 4px;
 }
 
 ::deep .forms-uncap {
     padding: 0 0 0 10px;
     background-color: lightgray;
     height: 32px;
+    border-radius: 4px;
 }
 
+/* forms widget */
 ::deep .forms-widget {
     width: 500px;
 }
@@ -100,6 +111,97 @@
     border-width: 1px;
 }
 
+::deep .forms-edit-control {
+}
+
+/* list widget */
+::deep .list-widget {
+    width: 120px;
+}
+
+::deep .list-widget-preview {
+    padding: 0 0 0 0;
+    width: 122px;
+    background-color: lightgray;
+    border-style: dashed;
+    border-radius: 5px;
+    border-width: 1px;
+}
+
+::deep .list-widget-body {
+    width: 120px;
+    min-height: 50px;
+    background-color: lightgray
+}
+
+::deep .list-widget-flex-item {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: lightgray;
+    align-items: center;
+    justify-content: center;
+    height: fit-content;
+}
+
+::deep .list-widget-panel {
+    opacity: 0.8;
+}
+
+::deep .list-flex-container {
+    display: flex;
+    background-color: dodgerblue;
+    min-height: 100px;
+    opacity: 0.8;
+
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+
+
+
+::deep .widget-relative {
+    position: relative;
+}
+
+::deep .widget-close-btn {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+
+::deep .widget-label-sign {
+    position: absolute;
+    top: -3px;
+    right: 3px;
+}
+
+::deep .widget-label {
+    position: absolute;
+    top: -15px;
+    left: 2px;
+}
+
+::deep .widget-control {
+    height: 30px;
+    margin-top: 14px;
+}
+
+::deep .forms-widget-small {
+    padding: 5px 2px 0 2px;
+    margin: 0 0 0 0;
+}
+
+::deep .widget-check-small {
+    height: 23px;
+}
+
+
+
+
 ::deep .widget-preview {
     position: relative;
 }
@@ -109,3 +211,35 @@
     top: 0px;
     right: 20px;
 }
+
+::deep .form-light {
+    background-color: aliceblue;
+}
+
+
+/*body {
+    min-height: 100vh;
+    margin: 0 20px;
+    background: repeating-linear-gradient(-45deg, #888, #888 30px, #999 30px, #999 60px);
+}*/
+
+::deep .designer-border {
+    /*float: left;*/
+    margin-bottom: 8px;
+    /*padding-top: 4px;
+    padding-bottom: 9px;*/
+    padding: 4px 1px 9px 1px;
+    border: 1px solid transparent; /* нужен для работы в Edge, ну и как фолбэк сгодится */
+    border-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cdefs%3E%3Cfilter id='blurMe'%3E%3CfeGaussianBlur in='SourceGraphic' stdDeviation='3' /%3E%3C/filter%3E%3Csymbol id='card' viewBox='0 0 80 80' width='80' height='80'%3E%3Cpath d='M10,0h60q10,0+10,10v60h-10v10h-60a10,10+0,00-10-10v-60Z'/%3E%3C/symbol%3E%3C/defs%3E%3Cuse xlink:href='%23card' style='fill:%23000; opacity: 0.4; filter:url(%23blurMe);' x='10' y='15' width='80' height='80'/%3E%3Cuse xlink:href='%23card' style='fill:%23ffc' x='10' y='10' width='80' height='80'/%3E%3C/svg%3E%0A") 20 fill / 20px / 10px stretch;
+}
+
+    ::deep .designer-border:hover {
+        border-image: none;
+        background: #ffc;
+        border-radius: 10px;
+        box-shadow: 0 5px 5px rgba(0,0,0,0.4);
+    }
+
+/*p {
+    clear: left;
+}*/

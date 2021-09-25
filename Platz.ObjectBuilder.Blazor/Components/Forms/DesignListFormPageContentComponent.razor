@@ -1,0 +1,150 @@
+﻿@using Platz.ObjectBuilder.Blazor
+@using Platz.ObjectBuilder.Blazor.Controllers
+@using Platz.ObjectBuilder.Blazor.Model
+@using Plk.Blazor.DragDrop
+
+@namespace Platz.ObjectBuilder.Blazor.Forms
+
+    <div class="designer-border" @onclick="PageClicked">
+        <div class="@GetPageClass()">
+            <h5>List Form Columns Flow</h5>
+        </div>
+
+        <div style="height: @(GetFlexHeight()+0)px; width: 100%; max-width:@(MinPageWidth)px; overflow-x: auto; overflow-y: hidden;">
+
+            <div class="plk-flex list-widget-panel widget-relative form-light" 
+                style="height: @(GetFlexHeight())px; width: @(GetFlexWidth())px; background-color: aliceblue;" 
+                @onscroll="() => Refresh()">
+
+                <div class="svg-panel-container2" style="z-index: -1; position: absolute; width: 100%;">
+                    <svg @ref="_svgRef" width="auto" height="@(GetFlexHeight())">
+                        @if (_lines != null)
+                        {
+                            @foreach (var l in _lines)
+                            {
+                                <line x1="@l.X1" y1="@l.Y1" x2="@l.X2" y2="@l.Y2" stroke="black" stroke-width="2px" stroke-dasharray="5,5" stroke-linecap="round" />
+                            }
+                        }
+    @*                    <line x1="0" y1="0" x2="300" y2="500" stroke="black" stroke-width="2px" stroke-dasharray="5,5" stroke-linecap="round" />
+    *@                </svg>
+                </div>
+
+                <Dropzone @ref="_dropzone" Class="list-flex-container form-light" Items="FormController.GetPageFieldComponents()" ItemWrapperClass="list-widget-flex-item"
+                          TItem="FieldComponentModel" OnItemDrop="@ItemDropped">
+                    <div>
+                        <DesignColumnFieldComponent Field="@context" ModelChanged="MyModelChanged" />
+                    </div>
+                </Dropzone>
+            </div>
+        </div>
+    </div>
+
+    @code {
+    [CascadingParameter]
+        public IFormBuilderController FormController { get; set; }
+
+        [Parameter]
+        public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+        private Dropzone<FieldComponentModel> _dropzone;
+        private ElementReference _svgRef;
+        private List<LinePoints> _lines { get; set; }
+        private int _tableHeight;
+        private readonly int _tableWidth = 122;
+        private readonly int LongPageHeight = 216;
+        private readonly int ShortPageHeight = 98;
+        private readonly int MinPageWidth = 1618;
+
+        private async Task MyModelChanged(ChangeEventArgs args)
+        {
+            RefreshLines();
+            StateHasChanged();
+            await ModelChanged.InvokeAsync(args);
+        }
+
+        private void Refresh()
+        {
+        }
+
+        private void RefreshTableHeight()
+        {
+            var ym = 10;
+            _tableHeight = FormController.PageActive ? (58 + ym) : (174 + ym);
+        }
+
+        private int GetFlexHeight()
+        {
+            RefreshLines();
+            return FormController.PageActive ? ShortPageHeight : LongPageHeight;
+        }
+
+        private int GetFlexWidth()
+        {
+            RefreshTableHeight();
+            var n = FormController.GetPageFieldComponents().Count;
+            var xm = 20;
+            var w = _tableWidth;
+            var tw = (w + xm) * n + xm;
+            tw = Math.Max(tw, MinPageWidth);
+
+            return tw;
+        }
+
+        private string GetPageClass()
+        {
+            return FormController.PageActive ? "forms-cap-active" : "forms-cap";
+        }
+
+        private async Task ItemDropped(FieldComponentModel item)
+        {
+            FormController.ReOrderFields(_dropzone.Items);
+        }
+
+        private async Task PageClicked(MouseEventArgs args)
+        {
+            FormController.SetActive(null);
+            RefreshLines();
+            await ModelChanged.InvokeAsync();
+        }
+
+        private void RefreshLines()
+        {
+            var l = new List<LinePoints>();
+            _lines = l;
+            RefreshTableHeight();
+
+            var n = FormController.GetPageFieldComponents().Count;
+            var xm = 20;
+            var xmHalve = xm/2;
+            var ym = 10;
+            var ymHalve = ym/2;
+            var w = _tableWidth;
+            var tw = (w + xm) * n;
+
+            if (n == 0)
+            {
+                // write empty cell
+                tw = (w + xm);
+            }
+
+            // hor top
+            l.Add(new LinePoints { X1 = xmHalve, Y1 = ymHalve, X2 = tw + xmHalve, Y2 = ymHalve });
+
+            // ver left
+            l.Add(new LinePoints { X1 = xmHalve, Y1 = ymHalve, X2 = xmHalve, Y2 = _tableHeight + ymHalve + ym * 2 });
+
+            // ver right
+            l.Add(new LinePoints { X1 = tw + xmHalve, Y1 = ymHalve, X2 = tw + xmHalve, Y2 = _tableHeight + ymHalve + ym * 2 });
+
+            // hor bottom
+            l.Add(new LinePoints { X1 = xmHalve, Y1 = _tableHeight + ymHalve, X2 = tw + xmHalve, Y2 = _tableHeight + ymHalve });
+
+            // hor bottom bottom
+            l.Add(new LinePoints { X1 = xmHalve, Y1 = _tableHeight + ymHalve + ym * 2, X2 = tw + xmHalve, Y2 = _tableHeight + ymHalve + ym * 2 });
+
+            for (int i = 1; i < n; i++)
+            {
+                 l.Add(new LinePoints { X1 = xmHalve + (w + xm) * (i), Y1 = ymHalve, X2 = xmHalve + (w + xm) * (i), Y2 = _tableHeight + ymHalve + ym*2 });
+            }
+        }
+    }

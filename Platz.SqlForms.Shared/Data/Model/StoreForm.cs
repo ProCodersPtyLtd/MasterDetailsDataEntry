@@ -29,15 +29,15 @@ namespace Platz.SqlForms
 
         public bool Validated { get; set; }
 
-        public string GetRoutingPath()
-        {
-            if (!string.IsNullOrWhiteSpace(RoutingPath))
-            {
-                return RoutingPath;
-            }
+        //public string GetRoutingPath()
+        //{
+        //    if (!string.IsNullOrWhiteSpace(RoutingPath))
+        //    {
+        //        return RoutingPath;
+        //    }
 
-            return Name;
-        }
+        //    return Name;
+        //}
     }
 
     public class StorePageParameter

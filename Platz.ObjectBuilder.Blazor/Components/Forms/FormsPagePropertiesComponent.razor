@@ -1,5 +1,7 @@
 ﻿@using Platz.ObjectBuilder.Blazor.Model
 
+@inject IJSRuntime JS
+
 @namespace Platz.ObjectBuilder.Blazor.Forms
 
 <div class="forms-uncap">Form</div>
@@ -176,7 +178,34 @@
     }
 
     private async Task EditFormChanged(ChangeEventArgs a)
-    { }
+    {
+        if (await AllowFormTypeSwitch())
+        {
+            _ctrl.SetListFormType(false);
+        }
+
+        await Change();
+    }
+    private async Task ListFormChanged(ChangeEventArgs a)
+    {
+        if (await AllowFormTypeSwitch())
+        {
+            _ctrl.SetListFormType(true);
+        }
+
+        await Change();
+    }
+
+    private async Task<bool> AllowFormTypeSwitch()
+    {
+        if (_ctrl.Model.Fields.Any())
+        {
+            bool confirmed = await JS.InvokeAsync<bool>("confirm", "The form contains fields. Changing form type will delete all fields. Are you sure?");
+            return confirmed;
+        }
+
+        return true;
+    }
 
     private async Task FormNameChanged(ChangeEventArgs a)
     {
@@ -194,8 +223,6 @@
         await Change();
     }
 
-    private async Task ListFormChanged(ChangeEventArgs a)
-    { }
 
     private async Task PagePathChanged(ChangeEventArgs a)
     {

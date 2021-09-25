@@ -103,6 +103,8 @@ namespace Platz.ObjectBuilder.Blazor.Model
         NumberEdit,
         Checkbox,
         Dropdown,
-        ActionButton
+        ActionButton,
+        Column,
+        ColumnAction
     }
 }
