@@ -20,6 +20,8 @@ namespace Platz.ObjectBuilder.Blazor.Model
         }
 
         public bool IsDirty { get; set; }
+        public bool PageActive { get; set; }
+
         public string Name { get; set; }
         public string Namespace { get; set; }
         public string OriginalName { get; set; }

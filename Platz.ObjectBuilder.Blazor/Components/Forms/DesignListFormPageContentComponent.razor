@@ -5,12 +5,12 @@
 
 @namespace Platz.ObjectBuilder.Blazor.Forms
 
-    <div @onclick="PageClicked">
+    <div class="designer-border" @onclick="PageClicked">
         <div class="@GetPageClass()">
             <h5>List Form Columns Flow</h5>
         </div>
 
-        <div style="height: @(GetFlexHeight()+22)px; width: 100%; max-width: 1622px; overflow-x: auto; overflow-y: hidden;">
+        <div style="height: @(GetFlexHeight()+0)px; width: 100%; max-width:@(MinPageWidth)px; overflow-x: auto; overflow-y: hidden;">
 
             <div class="plk-flex list-widget-panel widget-relative form-light" 
                 style="height: @(GetFlexHeight())px; width: @(GetFlexWidth())px; background-color: aliceblue;" 
@@ -39,7 +39,6 @@
         </div>
     </div>
 
-
     @code {
     [CascadingParameter]
         public IFormBuilderController FormController { get; set; }
@@ -51,6 +50,10 @@
         private ElementReference _svgRef;
         private List<LinePoints> _lines { get; set; }
         private int _tableHeight;
+        private readonly int _tableWidth = 122;
+        private readonly int LongPageHeight = 216;
+        private readonly int ShortPageHeight = 98;
+        private readonly int MinPageWidth = 1618;
 
         private async Task MyModelChanged(ChangeEventArgs args)
         {
@@ -72,7 +75,7 @@
         private int GetFlexHeight()
         {
             RefreshLines();
-            return FormController.PageActive ? 100 : 220;
+            return FormController.PageActive ? ShortPageHeight : LongPageHeight;
         }
 
         private int GetFlexWidth()
@@ -80,9 +83,9 @@
             RefreshTableHeight();
             var n = FormController.GetPageFieldComponents().Count;
             var xm = 20;
-            var w = 122;
+            var w = _tableWidth;
             var tw = (w + xm) * n + xm;
-            tw = Math.Max(tw, 1622);
+            tw = Math.Max(tw, MinPageWidth);
 
             return tw;
         }
@@ -108,15 +111,14 @@
         {
             var l = new List<LinePoints>();
             _lines = l;
+            RefreshTableHeight();
 
             var n = FormController.GetPageFieldComponents().Count;
             var xm = 20;
             var xmHalve = xm/2;
             var ym = 10;
             var ymHalve = ym/2;
-            var w = 122;
-            //var h = GetFlexHeight() - ym * 2;
-            RefreshTableHeight();
+            var w = _tableWidth;
             var tw = (w + xm) * n;
 
             if (n == 0)
@@ -129,21 +131,19 @@
             l.Add(new LinePoints { X1 = xmHalve, Y1 = ymHalve, X2 = tw + xmHalve, Y2 = ymHalve });
 
             // ver left
-            //l.Add(new LinePoints { X1 = xmHalve, Y1 = ymHalve, X2 = xmHalve, Y2 = th + ymHalve });
             l.Add(new LinePoints { X1 = xmHalve, Y1 = ymHalve, X2 = xmHalve, Y2 = _tableHeight + ymHalve + ym * 2 });
 
             // ver right
-            //l.Add(new LinePoints { X1 = tw + xmHalve, Y1 = ymHalve, X2 = tw + xmHalve, Y2 = th + ymHalve });
             l.Add(new LinePoints { X1 = tw + xmHalve, Y1 = ymHalve, X2 = tw + xmHalve, Y2 = _tableHeight + ymHalve + ym * 2 });
 
             // hor bottom
             l.Add(new LinePoints { X1 = xmHalve, Y1 = _tableHeight + ymHalve, X2 = tw + xmHalve, Y2 = _tableHeight + ymHalve });
 
+            // hor bottom bottom
             l.Add(new LinePoints { X1 = xmHalve, Y1 = _tableHeight + ymHalve + ym * 2, X2 = tw + xmHalve, Y2 = _tableHeight + ymHalve + ym * 2 });
 
             for (int i = 1; i < n; i++)
             {
-                 //l.Add(new LinePoints { X1 = xmHalve + (w + xm) * (i), Y1 = ymHalve, X2 = xmHalve + (w + xm) * (i), Y2 = th + ymHalve });
                  l.Add(new LinePoints { X1 = xmHalve + (w + xm) * (i), Y1 = ymHalve, X2 = xmHalve + (w + xm) * (i), Y2 = _tableHeight + ymHalve + ym*2 });
             }
         }

@@ -6,7 +6,7 @@
 @namespace Platz.ObjectBuilder.Blazor.Forms
 
     @*<div @onclick="PageClicked" @onmouseover="@(e => { FormController.GetPageFieldComponents().ForEach(f => f.FullView = false); })">*@
-    <div @onclick="PageClicked">
+    <div class="designer-border" @onclick="PageClicked">
         <div class="@GetPageClass()">
             <h5>Edit Form Control Flow</h5>
         </div>

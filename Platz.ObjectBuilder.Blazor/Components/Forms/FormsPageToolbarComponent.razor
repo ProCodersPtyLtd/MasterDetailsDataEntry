@@ -3,38 +3,63 @@
     <div class="forms-uncap">Controls</div>
 
     <div class="forms-toolbar forms-grid">
-        <div class="forms-tb-buttons">
-            <div>
-                <button class="btn btn-secondary tb-wide" type="button" @onclick="TextEditClick">TextEdit</button>
-            </div>
-            <div>
-                <button class="btn btn-secondary tb-wide" type="button" @onclick="DropdownClick">Dropdown</button>
-            </div>
-            <div>
-                <button class="btn btn-secondary tb-wide" type="button" @onclick="CheckboxClick">Checkbox</button>
-            </div>
-            <div>
-                <button class="btn btn-secondary tb-wide" type="button" @onclick="DateEditClick">DateEdit</button>
-            </div>
-            <div>
-                <button class="btn btn-secondary tb-wide" type="button" @onclick="NumberEditClick">NumberEdit</button>
-            </div>
-            <div>
-                <button class="btn btn-secondary tb-wide" type="button" @onclick="ActionButtonClick">ActionButton</button>
-            </div>
-        </div>
 
-        <div class="forms-tb-buttons-field">
-            <button class="btn btn-primary" type="button" @onclick="UpClick">
-                <span class="oi oi-arrow-circle-top"></span>
-            </button>
-        </div>
+        @if (!FormController.Model.IsListForm)
+        {
+            <div class="forms-tb-buttons">
+                <div>
+                    <button class="btn btn-secondary tb-wide" type="button" @onclick="TextEditClick">TextEdit</button>
+                </div>
+                <div>
+                    <button class="btn btn-secondary tb-wide" type="button" @onclick="DropdownClick">Dropdown</button>
+                </div>
+                <div>
+                    <button class="btn btn-secondary tb-wide" type="button" @onclick="CheckboxClick">Checkbox</button>
+                </div>
+                <div>
+                    <button class="btn btn-secondary tb-wide" type="button" @onclick="DateEditClick">DateEdit</button>
+                </div>
+                <div>
+                    <button class="btn btn-secondary tb-wide" type="button" @onclick="NumberEditClick">NumberEdit</button>
+                </div>
+                <div>
+                    <button class="btn btn-secondary tb-wide" type="button" @onclick="ActionButtonClick">ActionButton</button>
+                </div>
+            </div>
 
-        <div class="forms-tb-buttons-field">
-            <button class="btn btn-primary" type="button" @onclick="Downlick">
-                <span class="oi oi-arrow-circle-bottom"></span>
-            </button>
-        </div>
+            <div class="forms-tb-buttons-field">
+                <button class="btn btn-primary" type="button" @onclick="UpClick">
+                    <span class="oi oi-arrow-circle-top"></span>
+                </button>
+            </div>
+
+            <div class="forms-tb-buttons-field">
+                <button class="btn btn-primary" type="button" @onclick="Downlick">
+                    <span class="oi oi-arrow-circle-bottom"></span>
+                </button>
+            </div>
+        }
+        else
+        {
+            <div class="forms-tb-buttons">
+                <div>
+                    <button class="btn btn-secondary tb-wide" type="button" @onclick="ColumnClick">Column</button>
+                </div>
+                <div>
+                    <button class="btn btn-secondary tb-wide" type="button" @onclick="ActionClick">Action</button>
+                </div>
+            </div>
+
+            <div class="forms-tb-buttons-hor">
+                <button class="btn btn-primary" type="button" @onclick="UpClick">
+                    <span class="oi oi-arrow-circle-left"></span>
+                </button>
+                &nbsp;
+                <button class="btn btn-primary" type="button" @onclick="Downlick">
+                    <span class="oi oi-arrow-circle-right"></span>
+                </button>
+            </div>
+        }
 
         <div class="forms-tb-buttons">
             <button class="btn btn-secondary" type="button" @onclick="GenerateClick">
@@ -114,6 +139,17 @@
         private async Task ClearClick(MouseEventArgs a)
         {
             FormController.Clear();
+            await ModelChanged.InvokeAsync();
+        }
+
+        private async Task ColumnClick(MouseEventArgs a)
+        {
+            FormController.AddColumn();
+            await ModelChanged.InvokeAsync();
+        }
+        private async Task ActionClick(MouseEventArgs a)
+        {
+            FormController.AddColumnAction();
             await ModelChanged.InvokeAsync();
         }
     }
