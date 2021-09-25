@@ -548,6 +548,7 @@ namespace Platz.ObjectBuilder
         {
             var f = new FieldComponentModel { ComponentType = FieldComponentType.Column };
             Model.Fields.Add(f);
+            SortActionsToRight();
             Change();
         }
 
@@ -555,7 +556,26 @@ namespace Platz.ObjectBuilder
         {
             var f = new FieldComponentModel { ComponentType = FieldComponentType.ColumnAction };
             Model.Fields.Add(f);
+            SortActionsToRight();
             Change();
+        }
+
+        private void SortActionsToRight()
+        {
+            Model.Fields.Sort((a, b) => 
+            {
+                if (a.ComponentType == FieldComponentType.Column && b.ComponentType == FieldComponentType.ColumnAction)
+                {
+                    return -1;
+                }
+
+                if (a.ComponentType == b.ComponentType)
+                {
+                    return 0;
+                }
+
+                return 1;
+            });
         }
     }
 }

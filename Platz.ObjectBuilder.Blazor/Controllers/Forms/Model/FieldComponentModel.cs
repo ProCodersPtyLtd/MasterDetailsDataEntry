@@ -80,19 +80,20 @@ namespace Platz.ObjectBuilder.Blazor.Model
             return button;
         }
 
-        private static Dictionary<string, FieldComponentType> FieldComponentTypeMap = new Dictionary<string, FieldComponentType> 
-        {
-            { "TextEdit", FieldComponentType.TextEdit },
-            { "DateEdit", FieldComponentType.DateEdit },
-            { "NumberEdit", FieldComponentType.NumberEdit },
-            { "Checkbox", FieldComponentType.Checkbox },
-            { "Dropdown", FieldComponentType.Dropdown },
-            { "ActionButton", FieldComponentType.ActionButton },
-        };
+        //private static Dictionary<string, FieldComponentType> FieldComponentTypeMap = new Dictionary<string, FieldComponentType> 
+        //{
+        //    { "TextEdit", FieldComponentType.TextEdit },
+        //    { "DateEdit", FieldComponentType.DateEdit },
+        //    { "NumberEdit", FieldComponentType.NumberEdit },
+        //    { "Checkbox", FieldComponentType.Checkbox },
+        //    { "Dropdown", FieldComponentType.Dropdown },
+        //    { "ActionButton", FieldComponentType.ActionButton },
+        //};
 
         private static FieldComponentType GetComponentType(string controlType)
         {
-            return FieldComponentTypeMap[controlType];
+            return Enum.Parse<FieldComponentType>(controlType);
+            //return FieldComponentTypeMap[controlType];
         }
     }
 

@@ -190,6 +190,10 @@
     margin-top: 14px;
 }
 
+::deep .widget-control-top {
+    height: 32px;
+}
+
 ::deep .forms-widget-small {
     padding: 5px 2px 0 2px;
     margin: 0 0 0 0;
@@ -209,7 +213,13 @@
 ::deep .widget-preview-sign {
     position: absolute;
     top: 0px;
-    right: 20px;
+    right: 14px;
+}
+
+::deep .widget-preview-sign-left {
+    position: absolute;
+    top: 0px;
+    left: 4px;
 }
 
 ::deep .form-light {

@@ -41,6 +41,26 @@
           "SupplyingParameterMapping": "addressId"
         }
       ]
+    },
+    {
+      "Action": "Submit",
+      "Text": "Submit",
+      "Hint": null,
+      "Order": 2,
+      "Hidden": false,
+      "ReadOnly": null,
+      "NavigationTargetForm": null,
+      "NavigationParameterMapping": []
+    },
+    {
+      "Action": "Submit",
+      "Text": "Submit",
+      "Hint": null,
+      "Order": 3,
+      "Hidden": false,
+      "ReadOnly": null,
+      "NavigationTargetForm": null,
+      "NavigationParameterMapping": []
     }
   ],
   "Caption": "Customer Edit",

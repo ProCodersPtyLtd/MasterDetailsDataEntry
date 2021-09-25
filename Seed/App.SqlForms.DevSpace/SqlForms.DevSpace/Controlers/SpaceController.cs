@@ -460,8 +460,9 @@ namespace SqlForms.DevSpace.Controlers
             // Forms
             foreach (var form in Model.Forms)
             {
-                if (form.Model?.IsDirty == true)
+                if (form.Model != null)
                 {
+                    form.Form = form.Model.ToStore();
                     form.Model.IsDirty = false;
                 }
             }

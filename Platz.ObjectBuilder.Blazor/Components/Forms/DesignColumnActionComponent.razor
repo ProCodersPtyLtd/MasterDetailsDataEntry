@@ -7,26 +7,13 @@
 <div class="forms-widget-small">
     
     <div class="widget-relative">
-        <small class="widget-label">Column header</small> 
+        <small class="widget-label">Label</small> 
         <input id="LabelInput" value="@Field.StoreField.Label" class="form-control widget-control" @onchange="LabelChanged" />
     </div>
 
-    <div class="widget-relative">
-        <small class="widget-label">Binding</small> 
-        
-        <select id="BindingInput" value="@Field.StoreField.BindingProperty" class="form-control widget-control" @onchange="BindingChanged">
-            <option value=""></option>
-
-            @foreach (var b in FormsPageController.GetEntityBindings())
-            {
-                <option value="@b">@b</option>
-            }
-        </select>
-    </div>
-
     <div class="widget-check-small">
-        <input type="checkbox" class="" checked="@Field.StoreField.PrimaryKey" @onchange="PrimaryKeyChanged" id="check2" />
-        <label for="check2">Primary Key</label>
+        <input type="checkbox" class="" checked="@Field.StoreField.ReadOnly" @onchange="ReadOnlyChanged" id="check2" />
+        <label for="check2">Disabled</label>
     </div>
     <div class="widget-check-small">
         <input type="checkbox" class="" checked="@Field.StoreField.Hidden" @onchange="HiddenChanged" id="check3" />
