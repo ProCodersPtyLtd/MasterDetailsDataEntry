@@ -3,18 +3,26 @@
     pointer-events: none;
 }
 
+.plk-dd-draggable{
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 16px;
+}
+
 /*dropzone style style*/
 .plk-dd-dropzone {
     min-height: 50px;
+    border-style: none;
+    border-width: 1px;
+
 }
 
 /*drag drop styles*/
 
 .plk-dd-spacing {
-    height: 10px;
+    height: 20px;
 }
 
-.plk-dd-spacing-dragged-over {
+ .plk-dd-spacing-dragged-over {
     padding: 25px;
 }
 
@@ -37,11 +45,11 @@
 }
 
 .plk-dd-in-transit {
-    opacity: 0;
+    opacity: 0.5;
 }
 
     .plk-dd-in-transit > div {
-        opacity: 0;
+        opacity: 0.5;
     }
 
 @keyframes blinker {
@@ -108,8 +116,6 @@
 
 .drag-item {
     margin-left: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
     background-color: lightgray;
     align-items: center;
     justify-content: center;
