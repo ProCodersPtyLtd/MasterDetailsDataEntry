@@ -1,0 +1,203 @@
+﻿@using Platz.ObjectBuilder.Blazor.Model
+@using Platz.SqlForms 
+
+@namespace Platz.ObjectBuilder.Blazor.Forms
+
+<div class="forms-uncap">Column properties</div>
+<div class="forms-grid">
+    <div class="row-nospace-sm">
+        <div class="col-sm-4 forms-nospace">
+            @if (Field.ComponentType == FieldComponentType.Column)
+            {
+                @:Column header
+            }
+            else
+            {
+                @:Label
+            }
+        </div>
+        <div class="col-sm-8 forms-nospace">
+            <input id="BindingInput" value="@Field.StoreField.Label" @onchange="LabelChanged" class="form-control" />
+        </div>
+    </div>
+
+    <div class="row-nospace-sm">
+        <div class="col-sm-4 forms-nospace">
+            Binding
+        </div>
+        <div class="col-sm-8 forms-nospace">
+            <select id="BindingInput" value="@Field.StoreField.BindingProperty" class="form-control" @onchange="BindingChanged">
+                <option value=""></option>
+
+                @foreach (var b in FormsPageController.GetEntityBindings())
+                {
+                    <option value="@b">@b</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="row-nospace-sm">
+        <div class="col-sm-4 forms-nospace">
+            Format
+        </div>
+        <div class="col-sm-8 forms-nospace">
+            <input id="BindingInput" @bind-value="Field.StoreField.Format" class="form-control" />
+        </div>
+    </div>
+
+    <div class="row-nospace-sm">
+        <div class="col-sm-4 forms-nospace">
+            Attributes
+        </div>
+        <div class="col-sm-8 forms-nospace">
+            <input type="checkbox" class="" checked="@Field.StoreField.PrimaryKey" @onchange="PrimaryKeyChanged" id="check1" />
+            <label for="check1">Primary Key</label>
+            <br />
+            <input type="checkbox" class="" checked="@Field.StoreField.Hidden" @onchange="HiddenChanged" id="check3" />
+            <label for="check3">Hidden</label>
+        </div>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    public IFormBuilderController FormsPageController { get; set; }
+
+    [Parameter]
+    public FieldComponentModel Field { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    private IFormBuilderController _ctrl { get { return FormsPageController; } }
+
+    private async Task SchemaChanged(ChangeEventArgs a)
+    {
+        _ctrl.Model.Schema = a.Value.ToString();
+        _ctrl.RefreshDatasources();
+    }
+
+    private async Task DatasourceChanged(ChangeEventArgs a)
+    {
+        _ctrl.Model.Datasource = a.Value.ToString();
+    }
+
+    private async Task EditFormChanged(ChangeEventArgs a)
+    { }
+
+    private async Task ListFormChanged(ChangeEventArgs a)
+    { }
+
+    private async Task Change()
+    {
+        FormsPageController.Change();
+        await ModelChanged.InvokeAsync();
+    }
+
+    private string GetNavigationLinkText()
+    {
+        var result = $"{Field.StoreButton.NavigationTargetForm}";
+
+        foreach (var p in Field.StoreButton.NavigationParameterMapping)
+        {
+            result += $"/{{{p.SupplyingParameterMapping}}}";
+        }
+
+        return result;
+    }
+
+    private List<ButtonActionTypes> GetButtonActionTypes()
+    {
+        var result = Enum.GetValues(typeof(ButtonActionTypes)).Cast<ButtonActionTypes>().ToList();
+        return result;
+    }
+
+    private async Task ButtonTextChanged(ChangeEventArgs args)
+    {
+        Field.StoreButton.Text = args.Value.ToString();
+        await Change();
+    }
+    private async Task ButtonActionChanged(ChangeEventArgs args)
+    {
+        Field.StoreButton.Action = args.Value.ToString();
+        var actions = GetButtonActionTypes();
+
+        // if empty or equal to action from list - was set automatically
+        if (string.IsNullOrWhiteSpace(Field.StoreButton.Text) || actions.Any(a => a.ToString() == Field.StoreButton.Text))
+        {
+            Field.StoreButton.Text = Field.StoreButton.Action;
+        }
+
+        await Change();
+    }
+    private async Task ButtonHintChanged(ChangeEventArgs args)
+    {
+        Field.StoreButton.Hint = args.Value.ToString();
+        await Change();
+    }
+    //private async Task ButtonLinkChanged(ChangeEventArgs args)
+    //{
+    //    Field.StoreButton.LinkText = args.Value.ToString();
+    //    FormsPageController.Change();
+    //}
+    private async Task NavigationTargetFormChanged(ChangeEventArgs args)
+    {
+        Field.StoreButton.NavigationTargetForm = args.Value.ToString();
+        FormsPageController.PreloadButtonParameters(Field);
+        await Change();
+    }
+    private async Task NavigationParameterChanged(ChangeEventArgs args, int row)
+    {
+        Field.StoreButton.NavigationParameterMapping[row].SupplyingParameterMapping = args.Value.ToString();
+        await Change();
+    }
+    private async Task ButtonReadOnlyChanged(ChangeEventArgs args)
+    {
+        Field.StoreButton.ReadOnly = Convert.ToBoolean(args.Value);
+        await Change();
+    }
+    private async Task ButtonHiddenChanged(ChangeEventArgs args)
+    {
+        Field.StoreButton.Hidden = Convert.ToBoolean(args.Value);
+        await Change();
+    }
+        
+    private async Task LabelChanged(ChangeEventArgs args)
+    {
+        Field.StoreField.Label = args.Value.ToString();
+        await Change();
+    }
+    private async Task BindingChanged(ChangeEventArgs args)
+    {
+        Field.StoreField.BindingProperty = args.Value.ToString();
+
+        if (string.IsNullOrWhiteSpace(Field.StoreField.Label))
+        {
+            Field.StoreField.Label = Field.StoreField.BindingProperty.Replace("$.", "");
+        }
+
+        await Change();
+    }
+
+    private async Task RequiredChanged(ChangeEventArgs args)
+    {
+        Field.StoreField.Required = Convert.ToBoolean(args.Value);
+        await Change();
+    }
+    private async Task ReadOnlyChanged(ChangeEventArgs args)
+    {
+        Field.StoreField.ReadOnly = Convert.ToBoolean(args.Value);
+        await Change();
+    }
+    private async Task HiddenChanged(ChangeEventArgs args)
+    {
+        Field.StoreField.Hidden = Convert.ToBoolean(args.Value);
+        await Change();
+    }
+    private async Task PrimaryKeyChanged(ChangeEventArgs args)
+    {
+        Field.StoreField.PrimaryKey = Convert.ToBoolean(args.Value);
+        await Change();
+    }
+}

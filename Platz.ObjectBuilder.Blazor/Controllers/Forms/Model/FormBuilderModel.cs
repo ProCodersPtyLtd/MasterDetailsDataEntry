@@ -91,14 +91,21 @@ namespace Platz.ObjectBuilder.Blazor.Model
             form.Schema = src.Schema;
             form.Datasource = src.Datasource;
             form.IsListForm = src.IsListForm;
-            form.Fields = src.Fields.Where(f => f.ComponentType != FieldComponentType.ActionButton).Select(f => f.ToStore()).ToList(); 
-            form.ActionButtons = src.Fields.Where(f => f.ComponentType == FieldComponentType.ActionButton).Select(f => f.ToStoreButton()).ToList();
+            
+            form.Fields = src.Fields.Where(f => !IsButton(f.ComponentType)).Select(f => f.ToStore()).ToList(); 
+            form.ActionButtons = src.Fields.Where(f => IsButton(f.ComponentType)).Select(f => f.ToStoreButton()).ToList();
+
             form.Caption = src.Caption;
             form.RoutingPath = src.RoutingPath;
             form.PageHeaderForm = src.PageHeaderForm;
             form.PageHeaderFormReadOnly = src.PageHeaderFormReadOnly;
             form.PageParameters = src.PageParameters.Select(p => p.ToStore()).ToList();
             return form;
+        }
+
+        private bool IsButton(FieldComponentType type)
+        {
+            return type == FieldComponentType.ActionButton || type == FieldComponentType.ColumnAction;
         }
     }
 

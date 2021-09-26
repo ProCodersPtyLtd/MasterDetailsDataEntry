@@ -1,0 +1,59 @@
+﻿@using Platz.ObjectBuilder.Blazor
+@using Platz.ObjectBuilder.Blazor.Controllers
+@using Platz.ObjectBuilder.Blazor.Model
+
+@namespace Platz.ObjectBuilder.Blazor.Forms
+
+<div class="forms-widget-small">
+    
+    <div class="widget-relative">
+        <small class="widget-label">Label</small> 
+        <input id="LabelInput" value="@Field.StoreButton.Text" class="form-control widget-control" @onchange="LabelChanged" />
+    </div>
+
+    <div class="widget-check-small">
+        <input type="checkbox" class="" checked="@Field.StoreButton.ReadOnly" @onchange="ReadOnlyChanged" id="check2" />
+        <label for="check2">Disabled</label>
+    </div>
+    <div class="widget-check-small">
+        <input type="checkbox" class="" checked="@Field.StoreButton.Hidden" @onchange="HiddenChanged" id="check3" />
+        <label for="check3">Hidden</label>
+    </div>
+
+</div>
+
+
+@code {
+    [CascadingParameter]
+    public IFormBuilderController FormsPageController { get; set; }
+
+    [Parameter]
+    public FieldComponentModel Field { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    private async Task LabelChanged(ChangeEventArgs args)
+    {
+        Field.StoreButton.Text = args.Value.ToString();
+        FormsPageController.Change();
+        await Change();
+    }
+
+    private async Task ReadOnlyChanged(ChangeEventArgs args)
+    {
+        Field.StoreButton.ReadOnly = Convert.ToBoolean(args.Value);
+        await Change();
+    }
+    private async Task HiddenChanged(ChangeEventArgs args)
+    {
+        Field.StoreButton.Hidden = Convert.ToBoolean(args.Value);
+        await Change();
+    }
+
+    private async Task Change()
+    {
+        FormsPageController.Change();
+        await ModelChanged.InvokeAsync();
+    }
+}

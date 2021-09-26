@@ -7,7 +7,7 @@
 <div class="forms-widget-small">
     
     <div class="widget-relative">
-        <small class="widget-label">Label</small> 
+        <small class="widget-label">Column header</small> 
         <input id="LabelInput" value="@Field.StoreField.Label" class="form-control widget-control" @onchange="LabelChanged" />
     </div>
 
@@ -25,12 +25,12 @@
     </div>
 
     <div class="widget-check-small">
-        <input type="checkbox" class="" checked="@Field.StoreField.Hidden" @onchange="HiddenChanged" id="check3" />
-        <label for="check3">Hidden</label>
+        <input type="checkbox" class="" checked="@Field.StoreField.PrimaryKey" @onchange="PrimaryKeyChanged" id="check2" />
+        <label for="check2">Primary Key</label>
     </div>
     <div class="widget-check-small">
-        <input type="checkbox" class="" checked="@Field.StoreField.ReadOnly" @onchange="ReadOnlyChanged" id="check2" />
-        <label for="check2">Primary Key</label>
+        <input type="checkbox" class="" checked="@Field.StoreField.Hidden" @onchange="HiddenChanged" id="check3" />
+        <label for="check3">Hidden</label>
     </div>
 
 </div>
@@ -95,6 +95,7 @@
     {
         Field.StoreField.Label = args.Value.ToString();
         FormsPageController.Change();
+        await Change();
     }
     private async Task BindingChanged(ChangeEventArgs args)
     {
@@ -121,6 +122,11 @@
     private async Task HiddenChanged(ChangeEventArgs args)
     {
         Field.StoreField.Hidden = Convert.ToBoolean(args.Value);
+        await Change();
+    }
+    private async Task PrimaryKeyChanged(ChangeEventArgs args)
+    {
+        Field.StoreField.PrimaryKey = Convert.ToBoolean(args.Value);
         await Change();
     }
 

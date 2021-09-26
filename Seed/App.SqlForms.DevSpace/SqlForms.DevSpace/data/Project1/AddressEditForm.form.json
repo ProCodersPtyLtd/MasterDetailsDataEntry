@@ -51,6 +51,7 @@
     {
       "Action": "Submit",
       "Text": "Submit",
+      "ControlType": null,
       "Hint": "Submit changes",
       "Order": 2,
       "Hidden": false,

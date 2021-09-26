@@ -56,7 +56,7 @@ namespace Platz.ObjectBuilder.Blazor.Model
         {
             model.StoreButton = button.GetCopy();
             model.Order = button.Order;
-            model.ComponentType = FieldComponentType.ActionButton;
+            model.ComponentType = GetComponentType(button.ControlType);
             model.StoreButton.NavigationParameterMapping = new List<StoreNavigationParameter>();
             button.NavigationParameterMapping.CopyListTo(model.StoreButton.NavigationParameterMapping);
         }
@@ -73,6 +73,7 @@ namespace Platz.ObjectBuilder.Blazor.Model
         {
             var button = StoreButton.GetCopy();
             button.Order = Order;
+            button.ControlType = ComponentType.ToString();
             // prepare new collection as target for copy operation
             button.NavigationParameterMapping = new List<StoreNavigationParameter>();
             StoreButton.NavigationParameterMapping.CopyListTo(button.NavigationParameterMapping);
@@ -80,19 +81,24 @@ namespace Platz.ObjectBuilder.Blazor.Model
             return button;
         }
 
-        private static Dictionary<string, FieldComponentType> FieldComponentTypeMap = new Dictionary<string, FieldComponentType> 
-        {
-            { "TextEdit", FieldComponentType.TextEdit },
-            { "DateEdit", FieldComponentType.DateEdit },
-            { "NumberEdit", FieldComponentType.NumberEdit },
-            { "Checkbox", FieldComponentType.Checkbox },
-            { "Dropdown", FieldComponentType.Dropdown },
-            { "ActionButton", FieldComponentType.ActionButton },
-        };
+        //private static Dictionary<string, FieldComponentType> FieldComponentTypeMap = new Dictionary<string, FieldComponentType> 
+        //{
+        //    { "TextEdit", FieldComponentType.TextEdit },
+        //    { "DateEdit", FieldComponentType.DateEdit },
+        //    { "NumberEdit", FieldComponentType.NumberEdit },
+        //    { "Checkbox", FieldComponentType.Checkbox },
+        //    { "Dropdown", FieldComponentType.Dropdown },
+        //    { "ActionButton", FieldComponentType.ActionButton },
+        //};
 
         private static FieldComponentType GetComponentType(string controlType)
         {
-            return FieldComponentTypeMap[controlType];
+            if (string.IsNullOrEmpty(controlType))
+            {
+                return FieldComponentType.TextEdit;
+            }
+
+            return Enum.Parse<FieldComponentType>(controlType);
         }
     }
 

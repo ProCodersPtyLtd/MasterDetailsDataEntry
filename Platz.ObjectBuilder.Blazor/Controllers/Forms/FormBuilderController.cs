@@ -523,7 +523,14 @@ namespace Platz.ObjectBuilder
 
         public List<string> GetAvailableFormParameters()
         {
-            return Model.PageParameters.OrderBy(x => x.Order).Select(x => x.Name).ToList();
+            var result = Model.PageParameters.OrderBy(x => x.Order).Select(x => x.Name).ToList();
+
+            if (ActiveField.ComponentType == FieldComponentType.ColumnAction)
+            {
+                result.Insert(0, "[Item PK]");
+            }
+
+            return result;
         }
 
         public List<string> GetAvailableFormParameters(string name)
@@ -548,14 +555,35 @@ namespace Platz.ObjectBuilder
         {
             var f = new FieldComponentModel { ComponentType = FieldComponentType.Column };
             Model.Fields.Add(f);
+            SortActionsToRight();
             Change();
         }
 
         public void AddColumnAction()
         {
             var f = new FieldComponentModel { ComponentType = FieldComponentType.ColumnAction };
+            //f.StoreButton.NavigationParameterMapping
             Model.Fields.Add(f);
+            SortActionsToRight();
             Change();
+        }
+
+        private void SortActionsToRight()
+        {
+            Model.Fields.Sort((a, b) => 
+            {
+                if (a.ComponentType == FieldComponentType.Column && b.ComponentType == FieldComponentType.ColumnAction)
+                {
+                    return -1;
+                }
+
+                if (a.ComponentType == b.ComponentType)
+                {
+                    return 0;
+                }
+
+                return 1;
+            });
         }
     }
 }

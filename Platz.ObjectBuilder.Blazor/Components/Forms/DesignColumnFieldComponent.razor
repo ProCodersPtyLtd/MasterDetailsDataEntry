@@ -11,33 +11,60 @@
     {
     <div class="list-widget-preview widget-relative" @onclick="CaptionClick" @onclick:stopPropagation="true">
         <div class="list-widget @GetCaptionClass()">
-            @($"{Field.Order}: {@GetLabelText()}")
+            @if (Field.ComponentType == FieldComponentType.Column)
+            {
+                @($"{Field.Order}: {@GetLabelText()}")
+            }
+            else
+            {
+                @($"Menu item")
+            }
 
-                <button class="btn btn-danger btn-sm widget-close-btn" title="Cancel" @onclick="@(async (args) => await DeleteClick(args, Field.StoreField.BindingProperty))">
-                    <span class="oi oi-x"></span>
-                </button>
+            <button class="btn btn-danger btn-sm widget-close-btn" title="Cancel" @onclick="@(async (args) => await DeleteClick(args, Field.StoreField.BindingProperty))">
+                <span class="oi oi-x"></span>
+            </button>
         </div>
 
-        <div class="list-widget-body">
-        
-            <DesignColumnEditComponent Field="@Field" ModelChanged="@ModelChanged" />
+        @if (Field.ComponentType == FieldComponentType.Column)
+        {
+            <div class="list-widget-body">
+                <DesignColumnEditComponent Field="@Field" ModelChanged="@ModelChanged" />
+            </div>
+        }
+        else
+        {
+            <div class="list-widget-body">
+                <DesignColumnActionComponent Field="@Field" ModelChanged="@ModelChanged" />
+            </div>
+        }
 
-        </div>
     </div>
     }
     else
     {
-            
-        <div @onclick="CaptionClick" @onclick:stopPropagation="true">
-            <div class="list-widget-preview widget-relative">
 
-                <small class="widget-preview-sign">
-                        @GetBindingText()
-                </small>
+            <div @onclick="CaptionClick" @onclick:stopPropagation="true">
+                <div class="list-widget-preview widget-relative">
+                    @if (Field.ComponentType == FieldComponentType.Column)
+                    {
+                        <small class="widget-preview-sign">
+                            @GetBindingText()
+                        </small>
 
-                <br/>
+                        <br/>
 
-                <label>&nbsp; @GetLabelText()</label>
+                        <label style="font-weight:bold">&nbsp; @GetLabelText()</label>
+                    }
+                    else
+                    {
+                        <small class="widget-preview-sign-left">
+                            Menu item
+                        </small>
+
+                        <br/>
+
+                        <input id="LabelInput" value="@GetLabelText()" class="form-control widget-control-top" readonly="readonly">
+                    }
             </div>
         </div>
     }
@@ -69,7 +96,7 @@
     }
     private string GetLabelText()
     {
-        var s = Field.StoreField.Label;
+        var s = Field.ComponentType == FieldComponentType.ColumnAction ? Field.StoreButton.Text : Field.StoreField.Label;
         return string.IsNullOrWhiteSpace(s) ? "(No name)" : s;
     }
 

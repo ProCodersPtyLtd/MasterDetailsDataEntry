@@ -28,17 +28,24 @@
     {
       "Action": "Submit",
       "Text": "Submit",
+      "ControlType": "ActionButton",
       "Hint": null,
       "Order": 1,
       "Hidden": false,
       "ReadOnly": true,
-      "NavigationTargetForm": "AddressForm",
+      "NavigationTargetForm": "AddressEditForm",
       "NavigationParameterMapping": [
         {
-          "Name": "id",
+          "Name": "customerId",
           "DataType": null,
           "Order": 0,
-          "SupplyingParameterMapping": "addressId"
+          "SupplyingParameterMapping": "customerId"
+        },
+        {
+          "Name": "addressId",
+          "DataType": null,
+          "Order": 0,
+          "SupplyingParameterMapping": "customerId"
         }
       ]
     }
