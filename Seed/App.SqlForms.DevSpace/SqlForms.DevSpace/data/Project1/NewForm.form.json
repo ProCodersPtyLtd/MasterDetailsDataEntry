@@ -39,43 +39,56 @@
       "Filter": false,
       "FilterType": 0,
       "Rules": []
-    },
-    {
-      "BindingProperty": null,
-      "DataType": null,
-      "ControlType": "Column",
-      "ViewModeControlType": null,
-      "Label": null,
-      "Required": false,
-      "Hidden": false,
-      "ReadOnly": null,
-      "PrimaryKey": false,
-      "Unique": false,
-      "Format": null,
-      "Order": 0,
-      "Filter": false,
-      "FilterType": 0,
-      "Rules": []
-    },
-    {
-      "BindingProperty": null,
-      "DataType": null,
-      "ControlType": "ColumnAction",
-      "ViewModeControlType": null,
-      "Label": null,
-      "Required": false,
-      "Hidden": false,
-      "ReadOnly": null,
-      "PrimaryKey": false,
-      "Unique": false,
-      "Format": null,
-      "Order": 0,
-      "Filter": false,
-      "FilterType": 0,
-      "Rules": []
     }
   ],
-  "ActionButtons": [],
+  "ActionButtons": [
+    {
+      "Action": null,
+      "Text": "Edit",
+      "ControlType": "ColumnAction",
+      "Hint": null,
+      "Order": 2,
+      "Hidden": true,
+      "ReadOnly": null,
+      "NavigationTargetForm": "AddressEditForm",
+      "NavigationParameterMapping": [
+        {
+          "Name": "customerId",
+          "DataType": null,
+          "Order": 0,
+          "SupplyingParameterMapping": "[Item PK]"
+        },
+        {
+          "Name": "addressId",
+          "DataType": null,
+          "Order": 0,
+          "SupplyingParameterMapping": "id"
+        }
+      ]
+    },
+    {
+      "Action": null,
+      "Text": "Delete",
+      "ControlType": "ColumnAction",
+      "Hint": null,
+      "Order": 3,
+      "Hidden": true,
+      "ReadOnly": null,
+      "NavigationTargetForm": null,
+      "NavigationParameterMapping": []
+    },
+    {
+      "Action": null,
+      "Text": null,
+      "ControlType": "ColumnAction",
+      "Hint": null,
+      "Order": 4,
+      "Hidden": false,
+      "ReadOnly": null,
+      "NavigationTargetForm": null,
+      "NavigationParameterMapping": []
+    }
+  ],
   "Caption": "New Form",
   "RoutingPath": null,
   "PageParameters": [

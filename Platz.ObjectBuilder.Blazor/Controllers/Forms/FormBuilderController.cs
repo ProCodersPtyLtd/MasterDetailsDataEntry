@@ -523,7 +523,14 @@ namespace Platz.ObjectBuilder
 
         public List<string> GetAvailableFormParameters()
         {
-            return Model.PageParameters.OrderBy(x => x.Order).Select(x => x.Name).ToList();
+            var result = Model.PageParameters.OrderBy(x => x.Order).Select(x => x.Name).ToList();
+
+            if (ActiveField.ComponentType == FieldComponentType.ColumnAction)
+            {
+                result.Insert(0, "[Item PK]");
+            }
+
+            return result;
         }
 
         public List<string> GetAvailableFormParameters(string name)
@@ -555,6 +562,7 @@ namespace Platz.ObjectBuilder
         public void AddColumnAction()
         {
             var f = new FieldComponentModel { ComponentType = FieldComponentType.ColumnAction };
+            //f.StoreButton.NavigationParameterMapping
             Model.Fields.Add(f);
             SortActionsToRight();
             Change();

@@ -96,7 +96,7 @@
     }
     private string GetLabelText()
     {
-        var s = Field.StoreField.Label;
+        var s = Field.ComponentType == FieldComponentType.ColumnAction ? Field.StoreButton.Text : Field.StoreField.Label;
         return string.IsNullOrWhiteSpace(s) ? "(No name)" : s;
     }
 
