@@ -11,9 +11,9 @@
       "DataType": null,
       "ControlType": "Column",
       "ViewModeControlType": null,
-      "Label": "Line1",
+      "Label": "Id",
       "Required": false,
-      "Hidden": false,
+      "Hidden": true,
       "ReadOnly": null,
       "PrimaryKey": true,
       "Unique": false,
@@ -24,11 +24,11 @@
       "Rules": []
     },
     {
-      "BindingProperty": null,
+      "BindingProperty": "$.Suburb",
       "DataType": null,
       "ControlType": "Column",
       "ViewModeControlType": null,
-      "Label": null,
+      "Label": "Suburb",
       "Required": false,
       "Hidden": false,
       "ReadOnly": null,
@@ -76,31 +76,27 @@
       "ReadOnly": null,
       "NavigationTargetForm": null,
       "NavigationParameterMapping": []
-    },
-    {
-      "Action": null,
-      "Text": null,
-      "ControlType": "ColumnAction",
-      "Hint": null,
-      "Order": 4,
-      "Hidden": false,
-      "ReadOnly": null,
-      "NavigationTargetForm": null,
-      "NavigationParameterMapping": []
     }
   ],
   "Caption": "New Form",
-  "RoutingPath": null,
+  "RoutingPath": "AddressList",
   "PageParameters": [
     {
       "Name": "id",
       "DataType": "int",
       "Order": 0,
       "DatasourceQueryParameterMapping": null,
-      "HeaderFormParameterMapping": "id"
+      "HeaderFormParameterMapping": "customerId"
+    },
+    {
+      "Name": "id2",
+      "DataType": "int",
+      "Order": 1,
+      "DatasourceQueryParameterMapping": null,
+      "HeaderFormParameterMapping": "addressId"
     }
   ],
-  "PageHeaderForm": "AddressForm",
+  "PageHeaderForm": "AddressEditForm",
   "PageHeaderFormReadOnly": true,
   "Validated": true
 }

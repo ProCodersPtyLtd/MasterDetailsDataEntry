@@ -15,8 +15,103 @@ public class FormCodeGenerator
     //{
     //    _loader = projectLoader;
     //}
+    public CodeGenerationSection GenerateListFormRazorPage(StoreForm form, StoreCodeGeneratorContext ctx)
+    {
+        var result = new CodeGenerationSection() { FileName = form.Name + ".razor.cs" };
+        var sb = new StringBuilder();
+        var psb = new StringBuilder();
+        var fpsb = new StringBuilder();
+        var comma = "";
 
-    public CodeGenerationSection GenerateEditRazorPageForm(StoreForm form, StoreCodeGeneratorContext ctx)
+        foreach (var p in form.PageParameters)
+        {
+            string pt = "";
+
+            switch (p.DataType)
+            {
+                case "int":
+                    pt = ":int";
+                    break;
+            }
+
+            psb.Append($"/{{{p.Name}{pt}}}");
+            fpsb.Append($"{comma}{p.Name}");
+            comma = ", ";
+        }
+
+        sb.AppendLine(@$"@page ""/{form.RoutingPath}{psb.ToString()}""");
+
+        sb.AppendLine(@$"@using Platz.SqlForms");
+
+        sb.AppendLine(@$"@using {form.Namespace}");
+        sb.AppendLine();
+
+        if (!string.IsNullOrWhiteSpace(form.Caption))
+        {
+            sb.AppendLine(@$"<h1>{form.Caption}</h1>");
+            sb.AppendLine();
+        }
+
+        // Header
+        if (!string.IsNullOrWhiteSpace(form.PageHeaderForm))
+        {
+            var readOnly = "";
+
+            if (form.PageHeaderFormReadOnly)
+            {
+                readOnly = @"ReadOnly=""true"" ";
+            }
+
+            sb.AppendLine($@"<FormDynamicEditComponent TForm=""{form.PageHeaderForm}"" FormParameters=""GetHeaderParameters()"" {readOnly}/> ");
+        }
+
+        var serviceParams = string.Join(", ", form.PageParameters.Select(p => p.Name));
+
+        sb.AppendLine($@"<FormDataServiceListComponent TForm=""{form.Name}"" ServiceParameters=""@(new object[] {{ {serviceParams} }})"" /> ");
+
+        sb.AppendLine(@"
+@code {");
+
+        foreach (var p in form.PageParameters)
+        {
+            sb.AppendLine(@$"    [Parameter]");
+            sb.AppendLine(@$"    public {p.DataType} {p.Name} {{ get; set; }}");
+        }
+
+        // Header Parameters
+        if (!string.IsNullOrWhiteSpace(form.PageHeaderForm))
+        {
+            sb.AppendLine();
+            sb.AppendLine($@"    private FormParameter[] GetHeaderParameters()");
+            sb.AppendLine($@"    {{");
+            sb.AppendLine($@"        return new FormParameter[]");
+            sb.AppendLine($@"        {{");
+
+            var headerForm = ctx.Forms[form.PageHeaderForm];
+
+            foreach (var headerParameter in headerForm.PageParameters)
+            {
+                var parameter = form.PageParameters.First(p => p.HeaderFormParameterMapping == headerParameter.Name);
+                sb.AppendLine(@$"           new FormParameter(""{parameter.Name}"", {parameter.Name}),");
+            }
+
+            sb.AppendLine($@"        }}");
+            sb.AppendLine($@"    }}");
+        }
+
+        sb.AppendLine(@"}");
+
+        result.Code = sb.ToString();
+        return result;
+    }
+    public CodeGenerationSection GenerateListForm(StoreForm form, StoreCodeGeneratorContext ctx)
+    {
+        var result = new CodeGenerationSection() { FileName = form.Name + ".cs" };
+        var sb = new StringBuilder();
+
+        return result;
+    }
+    public CodeGenerationSection GenerateEditFormRazorPage(StoreForm form, StoreCodeGeneratorContext ctx)
     {
         var result = new CodeGenerationSection() { FileName = form.Name + ".razor.cs" };
         var sb = new StringBuilder();
