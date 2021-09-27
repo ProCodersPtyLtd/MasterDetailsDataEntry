@@ -16,7 +16,7 @@ public class FormCodeGenerator
     //    _loader = projectLoader;
     //}
 
-    public CodeGenerationSection GenerateEditRazorPageForm(StoreForm form)
+    public CodeGenerationSection GenerateEditRazorPageForm(StoreForm form, StoreCodeGeneratorContext ctx)
     {
         var result = new CodeGenerationSection() { FileName = form.Name + ".razor.cs" };
         var sb = new StringBuilder();
@@ -53,7 +53,19 @@ public class FormCodeGenerator
             sb.AppendLine();
         }
 
-        //sb.AppendLine($@"<FormDynamicEditComponent TForm = ""{form.Name}"" FormParameters = ""new object[] {{ {fpsb.ToString()} }}"" /> ");
+        // Header
+        if (!string.IsNullOrWhiteSpace(form.PageHeaderForm))
+        {
+            var readOnly = "";
+
+            if (form.PageHeaderFormReadOnly)
+            {
+                readOnly = @"ReadOnly=""true"" ";
+            }
+
+            sb.AppendLine($@"<FormDynamicEditComponent TForm=""{form.PageHeaderForm}"" FormParameters=""GetHeaderParameters()"" {readOnly}/> ");
+        }
+
         sb.AppendLine($@"<FormDynamicEditComponent TForm=""{form.Name}"" FormParameters=""GetParameters()"" /> ");
 
         sb.AppendLine(@"
@@ -79,19 +91,27 @@ public class FormCodeGenerator
         sb.AppendLine($@"        }}");
         sb.AppendLine($@"    }}");
 
-        //sb.AppendLine();
-        //sb.AppendLine($@"    private Dictionary<string, object> GetParameters()");
-        //sb.AppendLine($@"    {{");
-        //sb.AppendLine($@"       return new Dictionary<string, object>()");
-        //sb.AppendLine($@"        {{");
+        // Header Parameters
+        if (!string.IsNullOrWhiteSpace(form.PageHeaderForm))
+        {
+            sb.AppendLine();
+            sb.AppendLine($@"    private FormParameter[] GetHeaderParameters()");
+            sb.AppendLine($@"    {{");
+            sb.AppendLine($@"        return new FormParameter[]");
+            sb.AppendLine($@"        {{");
 
-        //foreach (var p in form.PageParameters)
-        //{
-        //    sb.AppendLine(@$"           {{ ""{p.Name}"", {p.Name} }},");
-        //}
+            var headerForm = ctx.Forms[form.PageHeaderForm];
 
-        //sb.AppendLine($@"        }}");
-        //sb.AppendLine($@"    }}");
+            foreach (var headerParameter in headerForm.PageParameters)
+            {
+                var parameter = form.PageParameters.First(p => p.HeaderFormParameterMapping == headerParameter.Name);
+                sb.AppendLine(@$"           new FormParameter(""{parameter.Name}"", {parameter.Name}),");
+            }
+
+            sb.AppendLine($@"        }}");
+            sb.AppendLine($@"    }}");
+        }
+
         sb.AppendLine(@"}");
 
         result.Code = sb.ToString();

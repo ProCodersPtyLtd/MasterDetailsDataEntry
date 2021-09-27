@@ -364,7 +364,7 @@ namespace SqlForms.DevSpace.Controlers
 
 
                 var ctx = GetCodeGenerationContext();
-                var pageCode = _formCodeGenerator.GenerateEditRazorPageForm(storeForm);
+                var pageCode = _formCodeGenerator.GenerateEditRazorPageForm(storeForm, ctx);
                 var formCode = _formCodeGenerator.GenerateEditForm(storeForm, ctx);
                 var code = new CodeGenerationSection[] { pageCode, formCode };
                 OpenSpecialWindow($"Code preview: {ActiveWindow.StoreObject.Name}", EditWindowType.CodePreview, new CodePreviewSpecialWindowContent(code));
@@ -460,8 +460,9 @@ namespace SqlForms.DevSpace.Controlers
             // Forms
             foreach (var form in Model.Forms)
             {
-                if (form.Model?.IsDirty == true)
+                if (form.Model != null)
                 {
+                    form.Form = form.Model.ToStore();
                     form.Model.IsDirty = false;
                 }
             }

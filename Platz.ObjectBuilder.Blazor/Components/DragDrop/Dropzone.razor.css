@@ -107,7 +107,7 @@
 .flex-container {
     display: flex;
     background-color: dodgerblue;
-    min-height: 300px;
+    min-height: 100px;
     opacity: 0.8;
 }
 

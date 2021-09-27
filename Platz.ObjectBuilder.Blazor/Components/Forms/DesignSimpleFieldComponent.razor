@@ -118,12 +118,12 @@
     private string GetBindingText()
     {
         var s = Field.StoreField.BindingProperty;
-        return string.IsNullOrWhiteSpace(s) ? "Empty binding" : s;
+        return string.IsNullOrWhiteSpace(s) ? "(No binding)" : s;
     }
     private string GetLabelText()
     {
         var s = Field.StoreField.Label;
-        return string.IsNullOrWhiteSpace(s) ? "Empty label" : s;
+        return string.IsNullOrWhiteSpace(s) ? "(No name)" : s;
     }
 
     private string GetButtonClass()

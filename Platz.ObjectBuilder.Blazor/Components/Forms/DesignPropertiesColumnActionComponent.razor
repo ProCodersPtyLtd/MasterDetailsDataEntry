@@ -3,42 +3,13 @@
 
 @namespace Platz.ObjectBuilder.Blazor.Forms
 
-
-
-    @if (Field.ComponentType == FieldComponentType.Column)
-    {
-        <DesignPropertiesColumnComponent Field="Field" ModelChanged="ModelChanged"/>
-
-    } else if (Field.ComponentType == FieldComponentType.ColumnAction)
-    {
-        <DesignPropertiesColumnActionComponent Field="Field" ModelChanged="ModelChanged"/>
-    }
-    else
-    {
-
-    <div class="forms-uncap">Field @($"{Field.ComponentType.ToString()}") properties</div>
-
+<div class="forms-uncap">Context menu item properties</div>
         <div class="forms-grid">
-            @if (Field.ComponentType == FieldComponentType.ActionButton)
-            {
-                <div class="row-nospace-sm">
-                    <div class="col-sm-4 forms-nospace">
-                        Action
-                    </div>
-                    <div class="col-sm-8 forms-nospace">
-                        <select id="ActionInput" value="@Field.StoreButton.Action" class="form-control" @onchange="ButtonActionChanged">
-
-                            @foreach (var b in GetButtonActionTypes())
-                            {
-                                <option value="@b">@b</option>
-                            }
-                        </select>
-                    </div>
-                </div>
+            
 
                 <div class="row-nospace-sm">
                     <div class="col-sm-4 forms-nospace">
-                        Text
+                        Label
                     </div>
                     <div class="col-sm-8 forms-nospace">
                         <input id="BindingInput" value="@Field.StoreButton.Text" @onchange="ButtonTextChanged" class="form-control" />
@@ -47,23 +18,14 @@
 
                 <div class="row-nospace-sm">
                     <div class="col-sm-4 forms-nospace">
-                        Hint
-                    </div>
-                    <div class="col-sm-8 forms-nospace">
-                        <input id="BindingInput" value="@Field.StoreButton.Hint" @onchange="ButtonHintChanged" class="form-control" />
-                    </div>
-                </div>
-
-                <div class="row-nospace-sm">
-                    <div class="col-sm-4 forms-nospace">
                         Attributes
                     </div>
                     <div class="col-sm-8 forms-nospace">
+                        <input type="checkbox" class="" checked="@Field.StoreButton.ReadOnly" @onchange="ButtonReadOnlyChanged" id="check22" />
+                        <label for="check22">Disabled</label>
+                        <br />
                         <input type="checkbox" class="" checked="@Field.StoreButton.Hidden" @onchange="ButtonHiddenChanged" id="check33" />
                         <label for="check33">Hidden</label>
-                        <br />
-                        <input type="checkbox" class="" checked="@Field.StoreButton.ReadOnly" @onchange="ButtonReadOnlyChanged" id="check22" />
-                        <label for="check22">Read only</label>
                     </div>
                 </div>
 
@@ -138,90 +100,12 @@
                                         }
                                     </table>
                                 </div>
-                            @*</div>*@
+
                         </div>
                     }
                 </div>
-            }
-            else
-            {
-                <div class="row-nospace-sm">
-                    <div class="col-sm-4 forms-nospace">
-                        @if (Field.ComponentType == FieldComponentType.Column)
-                        {
-                            @:Column header
-                        }
-                        else
-                        {
-                            @:Label
-                        }
-                    </div>
-                    <div class="col-sm-8 forms-nospace">
-                        <input id="BindingInput" value="@Field.StoreField.Label" @onchange="LabelChanged" class="form-control" />
-                    </div>
-                </div>
 
-                <div class="row-nospace-sm">
-                    <div class="col-sm-4 forms-nospace">
-                        Binding
-                    </div>
-                    <div class="col-sm-8 forms-nospace">
-                        <select id="BindingInput" value="@Field.StoreField.BindingProperty" class="form-control" @onchange="BindingChanged">
-                            <option value=""></option>
-
-                            @foreach (var b in FormsPageController.GetEntityBindings())
-                            {
-                                <option value="@b">@b</option>
-                            }
-                        </select>
-                    </div>
-                </div>
-
-                <div class="row-nospace-sm">
-                    <div class="col-sm-4 forms-nospace">
-                        Format
-                    </div>
-                    <div class="col-sm-8 forms-nospace">
-                        <input id="BindingInput" @bind-value="Field.StoreField.Format" class="form-control" />
-                    </div>
-                </div>
-
-                @if (Field.ComponentType == FieldComponentType.Column)
-                {
-                    <div class="row-nospace-sm">
-                        <div class="col-sm-4 forms-nospace">
-                            Attributes
-                        </div>
-                        <div class="col-sm-8 forms-nospace">
-                            <input type="checkbox" class="" checked="@Field.StoreField.PrimaryKey" @onchange="PrimaryKeyChanged" id="check1" />
-                            <label for="check1">Primary Key</label>
-                            <br />
-                            <input type="checkbox" class="" checked="@Field.StoreField.Hidden" @onchange="HiddenChanged" id="check3" />
-                            <label for="check3">Hidden</label>
-                        </div>
-                    </div>
-                }
-                else
-                {
-                    <div class="row-nospace-sm">
-                        <div class="col-sm-4 forms-nospace">
-                            Attributes
-                        </div>
-                        <div class="col-sm-8 forms-nospace">
-                            <input type="checkbox" class="" checked="@Field.StoreField.Required" @onchange="RequiredChanged" id="check1" />
-                            <label for="check1">Required</label>
-                            <br />
-                            <input type="checkbox" class="" checked="@Field.StoreField.Hidden" @onchange="HiddenChanged" id="check3" />
-                            <label for="check3">Hidden</label>
-                            <br />
-                            <input type="checkbox" class="" checked="@Field.StoreField.ReadOnly" @onchange="ReadOnlyChanged" id="check2" />
-                            <label for="check2">Read only</label>
-                        </div>
-                    </div>
-                }
-            }
         </div>
-    }
 
 @code {
     [CascadingParameter]

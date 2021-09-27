@@ -6,10 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Components\Forms\DesignListFormPageContentComponent.razor.css" />
     <None Remove="Components\Forms\FormsComponent.razor.css" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Components\Forms\DesignListFormPageContentComponent.razor.css" />
     <Content Include="Components\Forms\FormsComponent.razor.css" />
   </ItemGroup>
 
