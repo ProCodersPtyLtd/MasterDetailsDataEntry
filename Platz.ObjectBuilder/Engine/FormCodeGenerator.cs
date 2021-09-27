@@ -187,8 +187,11 @@ public class {form.Name} : {query.DataService}
             sb.Append(");");
         }
 
-        sb.Append(@$"
+        sb.AppendLine(@$"
         }});");
+        sb.AppendLine();
+        sb.Append($@"        builder.SetListMethod({dataSource});");
+
         sb.AppendLine(@$"
     }}");
 

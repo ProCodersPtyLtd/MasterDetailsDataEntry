@@ -56,7 +56,7 @@
           "Name": "customerId",
           "DataType": null,
           "Order": 0,
-          "SupplyingParameterMapping": "[Item PK]"
+          "SupplyingParameterMapping": "[PK]"
         },
         {
           "Name": "addressId",
@@ -74,8 +74,39 @@
       "Order": 3,
       "Hidden": true,
       "ReadOnly": null,
-      "NavigationTargetForm": null,
-      "NavigationParameterMapping": []
+      "NavigationTargetForm": "CustomerEditForm",
+      "NavigationParameterMapping": [
+        {
+          "Name": "customerId",
+          "DataType": null,
+          "Order": 0,
+          "SupplyingParameterMapping": "[PK]"
+        }
+      ]
+    },
+    {
+      "Action": "Delete",
+      "Text": "Delete",
+      "ControlType": "ActionButton",
+      "Hint": null,
+      "Order": 4,
+      "Hidden": false,
+      "ReadOnly": null,
+      "NavigationTargetForm": "AddressEditForm",
+      "NavigationParameterMapping": [
+        {
+          "Name": "customerId",
+          "DataType": null,
+          "Order": 0,
+          "SupplyingParameterMapping": "id"
+        },
+        {
+          "Name": "addressId",
+          "DataType": null,
+          "Order": 0,
+          "SupplyingParameterMapping": "id2"
+        }
+      ]
     }
   ],
   "Caption": "New Form",

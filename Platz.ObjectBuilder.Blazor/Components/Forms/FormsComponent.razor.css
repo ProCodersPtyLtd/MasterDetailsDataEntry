@@ -126,6 +126,7 @@
     border-style: dashed;
     border-radius: 5px;
     border-width: 1px;
+    min-height: 62px;
 }
 
 ::deep .list-widget-body {

@@ -527,7 +527,7 @@ namespace Platz.ObjectBuilder
 
             if (ActiveField.ComponentType == FieldComponentType.ColumnAction)
             {
-                result.Insert(0, "[Item PK]");
+                result.Insert(0, ObjectBuilderConstants.DS_FORM_ITEM_PK);
             }
 
             return result;

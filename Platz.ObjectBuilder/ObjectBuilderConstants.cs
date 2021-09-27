@@ -9,5 +9,6 @@ namespace Platz.ObjectBuilder
     public class ObjectBuilderConstants
     {
         public const string DS_QUERY_START = "q: ";
+        public const string DS_FORM_ITEM_PK = "[PK]";
     }
 }

@@ -15,9 +15,13 @@
             {
                 @($"{Field.Order}: {@GetLabelText()}")
             }
-            else
+            else if (Field.ComponentType == FieldComponentType.ColumnAction)
             {
                 @($"Menu item")
+            }
+            else
+            {
+                @($"Button")
             }
 
             <button class="btn btn-danger btn-sm widget-close-btn" title="Cancel" @onclick="@(async (args) => await DeleteClick(args, Field.StoreField.BindingProperty))">
@@ -31,10 +35,16 @@
                 <DesignColumnEditComponent Field="@Field" ModelChanged="@ModelChanged" />
             </div>
         }
-        else
+        else if (Field.ComponentType == FieldComponentType.ColumnAction)
         {
             <div class="list-widget-body">
                 <DesignColumnActionComponent Field="@Field" ModelChanged="@ModelChanged" />
+            </div>
+        }
+        else 
+        {
+            <div class="list-widget-body">
+                <DesignListFormButtonComponent Field="@Field" ModelChanged="@ModelChanged" />
             </div>
         }
 
@@ -55,7 +65,7 @@
 
                         <label style="font-weight:bold">&nbsp; @GetLabelText()</label>
                     }
-                    else
+                    else if (Field.ComponentType == FieldComponentType.ColumnAction)
                     {
                         <small class="widget-preview-sign-left">
                             Menu item
@@ -65,7 +75,19 @@
 
                         <input id="LabelInput" value="@GetLabelText()" class="form-control widget-control-top" readonly="readonly">
                     }
-            </div>
+                    else
+                    {
+                        <small class="widget-preview-sign-left">
+                            Bottom Button
+                        </small>
+
+                        <br/>
+
+                        <div class="forms-tb-buttons-hor">
+                            <button class="@GetButtonClass() btn-sm">@Field.StoreButton.Text</button>
+                        </div>
+                    }
+                </div>
         </div>
     }
     </div>
