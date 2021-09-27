@@ -12,20 +12,21 @@
 
         if (Items.IndexOf(item) == 0 && MaxItems == null || MaxItems > 1)
         {
-            <div @ondrop="()=>OnDropItemOnSpacing(0)" @ondragenter="()=>DragDropService.ActiveSpacerId =  0" @ondragleave="()=>DragDropService.ActiveSpacerId = null" class="@GetClassesForSpacing(0)"></div>
+            <div @ondragenter="()=>DragDropService.ActiveSpacerId =  0" @ondragleave="()=>DragDropService.ActiveSpacerId = null" class="@GetClassesForSpacing(0)"></div>
         }
 
         <div draggable="@IsItemDragable(item)"
-             @ondragstart="()=>OnDragStart(item)"
-             @ondragend="()=>OnDragEnd()"
-             @ondragenter="()=>OnDragEnter(item)"
-             @ondragleave="()=>OnDragLeave()"
-             class="@GetClassesForDraggable() @CheckIfItemIsInTransit(item) @CheckIfItemIsDragTarget(item) @CheckIfDragOperationIsInProgess() @CheckIfDraggable(item)">
+         @ondragstart="()=>OnDragStart(item)"
+         @ondragend="()=>OnDragEnd()"
+         @ondragenter="()=>OnDragEnter(item)"
+         @ondragleave="()=>OnDragLeave()"
+         class="@GetClassesForDraggable() @CheckIfItemIsInTransit(item) @CheckIfItemIsDragTarget(item) @CheckIfDragOperationIsInProgess() @CheckIfDraggable(item)">
 
             @{
                 if (ChildContent != null)
                 {
-                    @ChildContent(item);
+                    @ChildContent(item)
+                    ;
                 }
             }
 
@@ -33,52 +34,13 @@
 
         @if (MaxItems == null || MaxItems > 1)
         {
-            <div @ondrop="()=>OnDropItemOnSpacing(Items.IndexOf(item)+1)" @ondragenter="()=>DragDropService.ActiveSpacerId = Items.IndexOf(item)+1" @ondragleave="()=>DragDropService.ActiveSpacerId = null" class="@CheckIfDragOperationIsInProgess() @GetClassesForSpacing(Items.IndexOf(item)+1)"></div>
+            <div @ondragenter="()=>DragDropService.ActiveSpacerId = Items.IndexOf(item)+1" @ondragleave="()=>DragDropService.ActiveSpacerId = null" class="@CheckIfDragOperationIsInProgess() @GetClassesForSpacing(Items.IndexOf(item)+1)"></div>
         }
     }
 
 </div>
 
 @code {
-
-    private void OnDropItemOnSpacing(int newIndex)
-    {
-        if (!IsDropAllowed())
-        {
-                DragDropService.Reset();
-                return;
-            }
-            
-        var activeItem = DragDropService.ActiveItem;
-        var oldIndex = Items.IndexOf(activeItem);
-
-        if(oldIndex == -1) // item not present in target dropzone
-        {
-            if(CopyItem == null)
-            {
-                DragDropService.Items.Remove(activeItem);
-            }
-        }
-        else // same dropzone drop
-        {
-            Items.RemoveAt(oldIndex);
-            // the actual index could have shifted due to the removal
-            if (newIndex > oldIndex) newIndex--;
-        }
-
-        if(CopyItem == null)
-        {
-            Items.Insert(newIndex, activeItem);
-        }
-        else
-        {
-            Items.Insert(newIndex, CopyItem(activeItem));
-        }
-
-        //Operation is finished
-        DragDropService.Reset();
-        OnItemDrop.InvokeAsync(activeItem);
-    }
 
     private bool IsMaxItemLimitReached()
     {
@@ -201,7 +163,7 @@
 
         if (item.Equals(DragDropService.DragTargetItem))
         {
-            return IsItemAccepted() ? " plk-dd-dragged-over" : "plk-dd-dragged-over-denied";
+            return IsItemAccepted() ? "plk-dd-dragged-over" : "plk-dd-dragged-over-denied";
         }
 
         return "";
@@ -235,21 +197,10 @@
         return builder.ToString();
     }
 
-    private string GetClassesForSpacing(int spacerId)
+        private string GetClassesForSpacing(int spacerId)
     {
         var builder = new StringBuilder();
-
         builder.Append("plk-dd-spacing");
-
-        //if active space id and item is from another dropzone -> always create insert space
-        if (DragDropService.ActiveSpacerId == spacerId && Items.IndexOf(DragDropService.ActiveItem) == -1)
-        {
-            builder.Append(" plk-dd-spacing-dragged-over");
-        } // else -> check if active space id and that it is an item that needs space
-        else if (DragDropService.ActiveSpacerId == spacerId && (spacerId != Items.IndexOf(DragDropService.ActiveItem)) && (spacerId != Items.IndexOf(DragDropService.ActiveItem) + 1))
-        {
-            builder.Append(" plk-dd-spacing-dragged-over");
-        }
 
         return builder.ToString();
     }
@@ -315,7 +266,7 @@
     /// <summary>
     /// If set items dropped are copied to this dropzone and are not removed from their source.
     /// </summary>
-    [Parameter] public Func<TItem,TItem> CopyItem { get; set; }
+    [Parameter] public Func<TItem, TItem> CopyItem { get; set; }
 
     private bool IsDropAllowed()
     {
@@ -346,7 +297,7 @@
         DragDropService.ShouldRender = true;
 
         if (!IsDropAllowed())
-        {   
+        {
             DragDropService.Reset();
             return;
         }
@@ -357,7 +308,7 @@
         {
             if (!Items.Contains(activeItem)) //if dragged to another dropzone
             {
-                if(CopyItem == null)
+                if (CopyItem == null)
                 {
                     Items.Insert(Items.Count, activeItem); //insert item to new zone
                     DragDropService.Items.Remove(activeItem); //remove from old zone
@@ -375,7 +326,7 @@
         }
         else // we have a direct target
         {
-                Swap(DragDropService.DragTargetItem, activeItem); //swap target with active item
+            Swap(DragDropService.DragTargetItem, activeItem); //swap target with active item
         }
 
         DragDropService.Reset();
@@ -404,7 +355,7 @@
             Items[indexDraggedOverItem] = Items[indexActiveItem];
             Items[indexActiveItem] = tmp;
         }
-        else //no instant replace, just insert it after 
+        else //no instant replace, just insert it after
         {
             if (indexDraggedOverItem == indexActiveItem) return;
             var tmp = Items[indexActiveItem];
