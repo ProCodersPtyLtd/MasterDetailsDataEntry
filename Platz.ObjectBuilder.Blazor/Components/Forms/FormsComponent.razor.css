@@ -50,7 +50,7 @@
     display: flex;
     flex-wrap: wrap;
     margin: 0 2px 2px 2px;
-    padding: 0 0 0 0;
+    padding: 1px 1px 1px 1px;
 }
 
 ::deep .nospace-sm {
@@ -95,7 +95,7 @@
     padding: 0 0 0 0;
     width: 502px;
     background-color: lightgray;
-    border-style: none;
+    border-style: dashed;
     border-radius: 5px;
     border-width: 1px;
 }

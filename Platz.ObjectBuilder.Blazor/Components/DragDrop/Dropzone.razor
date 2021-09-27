@@ -45,10 +45,10 @@
     {
         if (!IsDropAllowed())
         {
-            DragDropService.Reset();
-            return;
-        }
-
+                DragDropService.Reset();
+                return;
+            }
+            
         var activeItem = DragDropService.ActiveItem;
         var oldIndex = Items.IndexOf(activeItem);
 
@@ -161,6 +161,7 @@
 
         DragDropService.DragTargetItem = item;
 
+        Swap(DragDropService.DragTargetItem, activeItem);
         if (InstantReplace)
         {
             Swap(DragDropService.DragTargetItem, activeItem);
@@ -345,7 +346,7 @@
         DragDropService.ShouldRender = true;
 
         if (!IsDropAllowed())
-        {
+        {   
             DragDropService.Reset();
             return;
         }
@@ -374,10 +375,7 @@
         }
         else // we have a direct target
         {
-            if (!InstantReplace)
-            {
                 Swap(DragDropService.DragTargetItem, activeItem); //swap target with active item
-            }
         }
 
         DragDropService.Reset();

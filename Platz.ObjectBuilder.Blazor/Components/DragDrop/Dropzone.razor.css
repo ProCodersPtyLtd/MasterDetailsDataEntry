@@ -11,15 +11,12 @@
 /*dropzone style style*/
 .plk-dd-dropzone {
     min-height: 50px;
-    border-style: none;
-    border-width: 1px;
-
 }
 
 /*drag drop styles*/
 
 .plk-dd-spacing {
-    height: 20px;
+    height: 10px;
 }
 
  .plk-dd-spacing-dragged-over {
@@ -29,19 +26,19 @@
 .plk-dd-dragged-over {
     background-color: lightgray;
     opacity: 0.6;
-    animation: blinker 1s linear infinite;
+    /*animation: blinker 1s linear infinite;*/
 }
 
     .plk-dd-dragged-over > div {
         background-color: lightgray;
         opacity: 0.6;
-        animation: blinker 1s linear infinite;
+        /*animation: blinker 1s linear infinite;*/
     }
 
 .plk-dd-dragged-over-denied {
     background-color: red;
     opacity: 0.6;
-    animation: blinker 1s linear infinite;
+    /*animation: blinker 1s linear infinite;*/
 }
 
 .plk-dd-in-transit {
@@ -59,7 +56,7 @@
 }
 
 .blink_me {
-    animation: blinker 1s linear infinite;
+    /*animation: blinker 1s linear infinite;*/
 }
 
 /*for flex demo*/
@@ -72,13 +69,13 @@
 .plk-flex .plk-dd-dragged-over {
     background-color: lightgray;
     opacity: 0.6;
-    animation: blinker 1s linear infinite;
+    /*animation: blinker 1s linear infinite;*/
 }
 
     .plk-flex .plk-dd-dragged-over > div {
         background-color: lightgray;
         opacity: 0.9;
-        animation: blinker 1s linear infinite;
+        /*animation: blinker 1s linear infinite;*/
     }
 
 .plk-flex .plk-dd-in-transit {
@@ -116,6 +113,8 @@
 
 .drag-item {
     margin-left: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
     background-color: lightgray;
     align-items: center;
     justify-content: center;
@@ -124,6 +123,6 @@
 
 .drag-container {
     /*background-color: dodgerblue;*/
-    min-height: 300px;
+    min-height: inherit;
     opacity: 0.8;
 }
