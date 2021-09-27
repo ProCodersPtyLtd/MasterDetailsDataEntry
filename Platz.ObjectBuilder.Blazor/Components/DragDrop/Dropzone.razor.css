@@ -49,6 +49,11 @@
 
 
 /*for flex demo*/
+.plk-flex .plk-dd-spacing {
+    width: 20px;
+    height: auto;
+}
+
 .plk-flex .plk-dd-dragged-over {
     background-color: lightgray;
     opacity: 0.6;
