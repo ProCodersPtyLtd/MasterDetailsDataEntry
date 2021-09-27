@@ -1,10 +1,10 @@
 {
   "Name": "NewForm",
-  "Namespace": null,
+  "Namespace": "Default2",
   "IsDynamicContext": false,
   "IsListForm": true,
   "Schema": "Crm2",
-  "Datasource": "Address",
+  "Datasource": "q: GetPersonAddressList",
   "Fields": [
     {
       "BindingProperty": "$.Id",

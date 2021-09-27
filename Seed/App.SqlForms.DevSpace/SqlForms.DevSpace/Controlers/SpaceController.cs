@@ -360,7 +360,15 @@ namespace SqlForms.DevSpace.Controlers
                 ? new CodeGenerationSection[] { _formCodeGenerator.GenerateListFormRazorPage(storeForm, ctx), _formCodeGenerator.GenerateListForm(storeForm, ctx) }
                 : new CodeGenerationSection[] { _formCodeGenerator.GenerateEditFormRazorPage(storeForm, ctx), _formCodeGenerator.GenerateEditForm(storeForm, ctx) };
 
-            OpenSpecialWindow($"Code preview: {ActiveWindow.StoreObject.Name}", EditWindowType.CodePreview, new CodePreviewSpecialWindowContent(code));
+            var name = $"Code preview: {ActiveWindow.StoreObject.Name}";
+            var w = Model.EditWindows.FirstOrDefault(x => x.Type == EditWindowType.CodePreview && x.StoreObject.Name == name);
+
+            if (w != null)
+            {
+                w.StoreObject = new SpecialWindowStoreObject { Name = name, Content = new CodePreviewSpecialWindowContent(code) };
+            }
+
+            OpenSpecialWindow(name, EditWindowType.CodePreview, new CodePreviewSpecialWindowContent(code));
         }
 
         private StoreCodeGeneratorContext GetCodeGenerationContext()

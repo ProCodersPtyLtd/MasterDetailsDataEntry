@@ -104,11 +104,97 @@ public class FormCodeGenerator
         result.Code = sb.ToString();
         return result;
     }
+
+    // ToDo: Add tables datasource support, currently supports only queires
     public CodeGenerationSection GenerateListForm(StoreForm form, StoreCodeGeneratorContext ctx)
     {
         var result = new CodeGenerationSection() { FileName = form.Name + ".cs" };
         var sb = new StringBuilder();
+        var schema = ctx.Schemas[form.Schema];
+        var dataSource = form.Datasource.Replace(ObjectBuilderConstants.DS_QUERY_START, "");
+        var query = ctx.Queries[dataSource];
+        var usingList = new List<string>();
 
+        usingList.Add(schema.Namespace);
+        usingList.Add(query.Namespace);
+        usingList = usingList.Distinct().ToList();
+
+        sb.AppendLine(@$"using Platz.SqlForms;");
+
+        foreach (var u in usingList)
+        {
+            sb.AppendLine(@$"using {u};");
+        }
+
+        sb.AppendLine();
+        sb.AppendLine(@$"namespace {form.Namespace};");
+
+        sb.Append(@$"
+public class {form.Name} : {query.DataService}
+{{");
+        sb.Append(@$"
+    protected override void Define(DataServiceFormBuilder builder)
+    {{");
+        sb.Append(@$"
+        builder.Entity<{query.ReturnTypeName}>(e =>
+        {{");
+
+        sb.AppendLine();
+        sb.AppendLine("            e.ExcludeAll();");
+
+        // Fields
+        foreach (var field in form.Fields.OrderBy(f => f.Order))
+        {
+            sb.AppendLine();
+            sb.Append($"            e.Property(p => p.{field.BindingProperty.Replace("$.", "")})");
+            sb.Append(@$".Label(""{field.Label}"")");
+
+            if (field.PrimaryKey == true)
+            {
+                sb.Append(".IsPrimaryKey()");
+            }
+
+            if (field.Hidden == true)
+            {
+                sb.Append(".IsHidden()");
+            }
+
+            sb.Append(";");
+        }
+
+        sb.AppendLine();
+
+        // Buttons
+        foreach (var btn in form.ActionButtons.OrderBy(f => f.Order))
+        {
+            sb.AppendLine();
+            sb.Append(@$"            e.ContextButton(""{btn.Text}""");
+
+            if (!string.IsNullOrWhiteSpace(btn.NavigationTargetForm))
+            {
+                var ps = new StringBuilder();
+                var targetForm = ctx.Forms[btn.NavigationTargetForm];
+
+                targetForm.PageParameters.OrderBy(p => p.Order).ToList().ForEach(p =>
+                {
+                    var btnParam = btn.NavigationParameterMapping.First(b => b.Name == p.Name);
+                    ps.Append(@$"/{{{btnParam.SupplyingParameterMapping}}}");
+                });
+
+                sb.Append(@$", ""{btn.NavigationTargetForm}{ps}""");
+            }
+
+            sb.Append(");");
+        }
+
+        sb.Append(@$"
+        }});");
+        sb.AppendLine(@$"
+    }}");
+
+        sb.AppendLine(@$"}}");
+
+        result.Code = sb.ToString();
         return result;
     }
     public CodeGenerationSection GenerateEditFormRazorPage(StoreForm form, StoreCodeGeneratorContext ctx)
