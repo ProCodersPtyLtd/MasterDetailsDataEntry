@@ -1,7 +1,8 @@
 ﻿using Platz.ObjectBuilder;
 using Platz.ObjectBuilder.Blazor.Model;
+using Platz.ObjectBuilder.Engine;
+using Platz.ObjectBuilder.Model;
 using Platz.SqlForms;
-using SqlForms.DevSpace.Logic;
 using SqlForms.DevSpace.Model;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,7 @@ namespace SqlForms.DevSpace.Controlers
         void SaveAll();
         void CreateNewProject();
         void CreateNewForm();
+        void PreviewCode();
         List<StoreSchema> GetProjectSchemas();
         List<StoreQuery> GetProjectQueries();
         List<StoreForm> GetProjectForms();
@@ -40,6 +42,7 @@ namespace SqlForms.DevSpace.Controlers
     {
         private readonly IProjectLoader _projectLoader;
         private readonly IFormBuilderController _formBuilderController;
+        private readonly FormCodeGenerator _formCodeGenerator;
 
         private string _projectPath;
         private StoreProject _currentProject;
@@ -64,6 +67,7 @@ namespace SqlForms.DevSpace.Controlers
         {
             _projectLoader = projectLoader;
             _formBuilderController = formBuilderController;
+            _formCodeGenerator = new FormCodeGenerator();
             CreateNewProject();
 
             // ToDo: remove demo data initialization
@@ -184,13 +188,13 @@ namespace SqlForms.DevSpace.Controlers
             return d;
         }
 
-        public void OpenSpecialWindow(string name, EditWindowType type)
+        public void OpenSpecialWindow(string name, EditWindowType type, SpecialWindowContent content = null)
         {
             var w = Model.EditWindows.FirstOrDefault(x => x.Type == type && x.StoreObject.Name == name);
 
             if (w == null)
             {
-                w = new EditWindowDetails { StoreObject = new SpecialWindowStoreObject { Name = name }, Type = type };
+                w = new EditWindowDetails { StoreObject = new SpecialWindowStoreObject { Name = name, Content = content }, Type = type };
                 Model.EditWindows.Add(w);
             }
 
@@ -284,6 +288,9 @@ namespace SqlForms.DevSpace.Controlers
         private void ApplyNewFormDefaults(FormDetails formDetails)
         {
             formDetails.Form.Name = GetNextFormName();
+            formDetails.Form.Caption = formDetails.Form.Name;
+            formDetails.Form.Namespace = _currentProject.Settings.DefaultFormNamespace ?? _currentProject.Settings.DefaultNamespace;
+            formDetails.Form.PageHeaderFormReadOnly = true;
 
             if (Model.Schemas.Count == 1)
             {
@@ -309,7 +316,7 @@ namespace SqlForms.DevSpace.Controlers
         public void CloseWindow(int index)
         {
             var w = Model.EditWindows[index];
-            w.StoreObjectDetails.DiscardChanges();
+            w.StoreObjectDetails?.DiscardChanges();
             Model.EditWindows.RemoveAt(index);
 
             if (Model.EditWindows.Any())
@@ -317,6 +324,104 @@ namespace SqlForms.DevSpace.Controlers
                 var newIndex = Math.Min(index, Model.EditWindows.Count-1);
                 ActivateWindow(newIndex);
             }
+        }
+        public void PreviewCode()
+        {
+            // Forms
+            if (ActiveWindow != null && ActiveWindow.Type == EditWindowType.Form)
+            {
+                ShowGeneratedFormCode(ActiveWindow);
+            }
+        }
+
+        private void ShowGeneratedFormCode(EditWindowDetails wnd)
+        {
+            // Validate form before generateion
+            var formDetails = wnd.StoreObjectDetails as FormDetails;
+            var formModel = (formDetails)?.Model;
+
+            var formsValidations = _formBuilderController.Validate(formModel);
+            formModel.Validated = !formsValidations.Any(v => v.Type == ValidationResultTypes.Error);
+
+            if (!formModel.Validated)
+            {
+                var formItems = formsValidations.Select(r => new ValidationOutputItem(r, ValidationLocationType.Form)).ToList();
+                ValidationResult.Clear();
+                ValidationResult.AddRange(formItems);
+                OpenSpecialWindow("Output", EditWindowType.Output);
+                return;
+            }
+
+            // Edit form
+            if (!formModel.IsListForm)
+            {
+                var storeForm = formModel.ToStore();
+                
+                //var storeQuery = Model.Queries.FirstOrDefault(q => q.Query.Name == storeForm.Datasource)?.Query;
+                //var storeSchema = Model.Schemas.FirstOrDefault(q => q.Schema.Name == storeForm.Schema)?.Schema;
+                //var storeTable = FindTable(storeForm.Schema, storeForm.Datasource);
+                //var storeTableName = Model.Schemas.FirstOrDefault(q => q.Schema.Name == storeForm.Schema).Schema.Definitions.Keys.FirstOrDefault(k => k == storeForm.Datasource);
+
+
+                var ctx = GetCodeGenerationContext();
+                var pageCode = _formCodeGenerator.GenerateEditRazorPageForm(storeForm);
+                var formCode = _formCodeGenerator.GenerateEditForm(storeForm, ctx);
+                var code = new CodeGenerationSection[] { pageCode, formCode };
+                OpenSpecialWindow($"Code preview: {ActiveWindow.StoreObject.Name}", EditWindowType.CodePreview, new CodePreviewSpecialWindowContent(code));
+            }
+        }
+
+        private StoreCodeGeneratorContext GetCodeGenerationContext()
+        {
+            var ctx = new StoreCodeGeneratorContext();
+            // ToDo: we implement code generation of the fly - all changes made but not save should be reflected
+            // ToDo: schemas should be taken from current model changes, for now we take originals
+            ctx.Schemas = Model.Schemas.ToDictionary(m => m.Schema.Name, m => m.Schema);
+            ctx.Queries = Model.Queries.ToDictionary(m => m.Query.Name, m => m.Query);
+
+            // forms on the fly generation reflecting not saved changes
+            ctx.Forms = new Dictionary<string, StoreForm>();
+            ValidationResult.Clear();
+
+            foreach (var formDetails in Model.Forms)
+            {
+                StoreForm storeForm = formDetails.Form;
+                var formModel = (formDetails)?.Model;
+
+                if (formModel != null)
+                {
+                    var formsValidations = _formBuilderController.Validate(formModel);
+                    formModel.Validated = !formsValidations.Any(v => v.Type == ValidationResultTypes.Error);
+
+                    if (formModel.Validated)
+                    {
+                        // use changes if pass validation
+                        storeForm = formModel.ToStore();
+                    }
+                    else
+                    {
+                        // validation failed - use original form
+                        var formItems = formsValidations.Select(r => new ValidationOutputItem(r, ValidationLocationType.Form)).ToList();
+                        ValidationResult.AddRange(formItems);
+                    }
+                }
+
+                ctx.Forms[storeForm.Name] = storeForm;
+            }
+
+            return ctx;
+        }
+
+        private StoreDefinition FindTable(string schema, string name)
+        {
+            var storeSchema = Model.Schemas.FirstOrDefault(q => q.Schema.Name == schema)?.Schema;
+
+            if (storeSchema != null && storeSchema.Definitions.ContainsKey(name))
+            {
+                return storeSchema.Definitions[name];
+            }
+
+            return null;
         }
 
         public void SaveAll()
@@ -346,6 +451,7 @@ namespace SqlForms.DevSpace.Controlers
                     Type = ValidationResultTypes.Error };
                 
                 ValidationResult.Add(cr);
+                OpenSpecialWindow("Output", EditWindowType.Output);
             }
         }
 
@@ -377,6 +483,7 @@ namespace SqlForms.DevSpace.Controlers
         private StoreProject AssembleStoreProject()
         {
             var result = new StoreProject();
+            result.Name = _currentProject.Name;
             result.Schemas = new Dictionary<string, StoreSchema>();
             result.SchemaMigrations = new Dictionary<string, StoreSchemaMigrations>();
             result.Queries = new Dictionary<string, StoreQuery>();
@@ -396,6 +503,7 @@ namespace SqlForms.DevSpace.Controlers
         {
             ValidationResult.Clear();
 
+            // Forms
             foreach (var fm in Model.Forms.Select(f => f.Model).Where(f => f != null))
             {
                 var formsValidations = _formBuilderController.Validate(fm);

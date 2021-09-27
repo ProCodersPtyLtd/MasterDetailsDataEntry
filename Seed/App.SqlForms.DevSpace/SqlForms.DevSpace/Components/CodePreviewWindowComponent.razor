@@ -1,0 +1,68 @@
+﻿@using Platz.ObjectBuilder.Model
+@using SqlForms.DevSpace.Model
+
+@inject IJSRuntime JS
+
+<br/>
+
+@foreach (var item in GetData())
+{
+    <label>@item.FileName</label>
+    
+    <div class="float-right">
+        <button class="btn btn-info" title="Cancel" @onclick="@(async (args) => await CopyClick(item))"
+                style="width: 120px; display: block; margin-left: auto; margin-right: 0;">
+            <span class="oi oi-clipboard">&nbsp; Copy</span>
+        </button>
+    </div>
+
+    <textarea id="exampleFormControlTextarea1" class="form-control" 
+        style="width: 100%; height: @(GetHeight())px; color: darkblue; font-family: 'Cascadia Mono'; font-size: smaller" 
+        value="@item.Code" readonly="readonly" />
+}
+
+@code {
+    [CascadingParameter]
+    public ISpaceController _spaceController { get; set; }
+
+    [Parameter]
+    public double Height { get; set; } = 780;
+
+    [Parameter]
+    public EditWindowDetails Details { get; set; } 
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    private int GetHeight()
+    {
+        int h = ((int)Height / GetData().Count) - 32;
+        return h;
+    }
+
+    private ValueTask WriteTextAsync(string text)
+    {
+        return JS.InvokeVoidAsync("navigator.clipboard.writeText", text);
+    }
+
+    private List<CodeGenerationSection> GetData()
+    {
+        return ((Details.StoreObject as SpecialWindowStoreObject).Content as CodePreviewSpecialWindowContent).Sections;
+    }    private async Task CopyClick(CodeGenerationSection item)
+    {
+        await WriteTextAsync(item.Code);        
+    }
+    @*private string GetText()
+    {
+        return (Details.StoreObject as SpecialWindowStoreObject).Content.Code;
+        return @"
+function setHeight(jq_in){
+    jq_in.each(function(index, elem){
+        // This line will work with pure Javascript (taken from NicB's answer):
+        elem.style.height = elem.scrollHeight+'px'; 
+    });
+}
+setHeight($('<put selector here>'));
+";
+    }*@
+}

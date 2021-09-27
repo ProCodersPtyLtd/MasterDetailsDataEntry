@@ -9,6 +9,10 @@ namespace Platz.SqlForms
     public class StoreForm : IStoreObject
     {
         public string Name { get; set; }
+        public string Namespace { get; set; }
+
+        // EF DbContext or DynamicContext is used, DynamicContext is generated from StoreSchema
+        public bool IsDynamicContext { get; set; }
         public bool IsListForm { get; set; }
         public string Schema { get; set; }
         public string Datasource { get; set; }
@@ -17,10 +21,23 @@ namespace Platz.SqlForms
         public List<StoreFormButton> ActionButtons { get; set; } = new List<StoreFormButton>();
 
         // Page Properties
-        public string PagePath { get; set; }
+        public string Caption { get; set; }
+        public string RoutingPath { get; set; }
         public List<StorePageParameter> PageParameters { get; set; } = new List<StorePageParameter> ();
         public string PageHeaderForm { get; set; }
+        public bool PageHeaderFormReadOnly { get; set; }
+
         public bool Validated { get; set; }
+
+        public string GetRoutingPath()
+        {
+            if (!string.IsNullOrWhiteSpace(RoutingPath))
+            {
+                return RoutingPath;
+            }
+
+            return Name;
+        }
     }
 
     public class StorePageParameter
@@ -53,6 +70,7 @@ namespace Platz.SqlForms
         public int Order { get; set; }
         public bool Filter { get; set; }
         public FieldFilterType FilterType { get; set; }
+        public List<StoreFieldRule> Rules { get; set; }
     }
 
     public class StoreFormButton
@@ -75,5 +93,12 @@ namespace Platz.SqlForms
         public int Order { get; set; }
         public string SupplyingParameterMapping { get; set; }
 
+    }
+
+    public class StoreFieldRule
+    {
+        public string Name { get; set; }
+        public string Trigger { get; set; }
+        public string Code { get; set; }
     }
 }

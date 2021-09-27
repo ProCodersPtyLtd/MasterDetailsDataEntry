@@ -41,6 +41,15 @@ namespace Platz.ObjectBuilder.Blazor.Model
             model.StoreField = field.GetCopy();
             model.Order = field.Order;
             model.ComponentType = GetComponentType(field.ControlType);
+
+            if (field.Rules != null)
+            {
+                model.Rules = field.Rules.Select(x => new FieldRuleModel { Name = x.Name, Code = x.Code, Trigger = Enum.Parse<FormRuleTriggers>(x.Trigger) }).ToList();
+            }
+            else
+            {
+                model.Rules = new List<FieldRuleModel>();
+            }
         }
 
         public static void CopyFrom(FieldComponentModel model, StoreFormButton button)
@@ -56,7 +65,7 @@ namespace Platz.ObjectBuilder.Blazor.Model
         {
             var field = StoreField.GetCopy();
             field.ControlType = ComponentType.ToString();
-
+            field.Rules = Rules.Select(x => new StoreFieldRule { Name = x.Name, Code = x.Code, Trigger = x.Trigger.ToString() }).ToList();
             return field;
         }
 

@@ -1,5 +1,7 @@
 {
   "Name": "Form2",
+  "Namespace": null,
+  "IsDynamicContext": false,
   "IsListForm": false,
   "Schema": "Crm2",
   "Datasource": "Person",
@@ -18,7 +20,8 @@
       "Format": null,
       "Order": 0,
       "Filter": false,
-      "FilterType": 0
+      "FilterType": 0,
+      "Rules": []
     }
   ],
   "ActionButtons": [
@@ -40,7 +43,8 @@
       ]
     }
   ],
-  "PagePath": null,
+  "Caption": null,
+  "RoutingPath": null,
   "PageParameters": [
     {
       "Name": "addressId",
@@ -48,8 +52,16 @@
       "Order": 0,
       "DatasourceQueryParameterMapping": null,
       "HeaderFormParameterMapping": null
+    },
+    {
+      "Name": "myId",
+      "DataType": "int",
+      "Order": 1,
+      "DatasourceQueryParameterMapping": null,
+      "HeaderFormParameterMapping": null
     }
   ],
-  "PageHeaderForm": null,
+  "PageHeaderForm": "",
+  "PageHeaderFormReadOnly": false,
   "Validated": true
 }

@@ -6,7 +6,7 @@
     <ul class="nav nav-pills" id="mainNav">
         <li class="nav-item">
             @*<a class="nav-link " href="#">Active</a>*@
-            <button class="btn btn-light" type="button">
+            <button class="btn btn-light" type="button" disabled="disabled">
                 <span class="oi oi-file"></span>
                 New Project
             </button>
@@ -18,7 +18,7 @@
             </button>
         </li>
         <li class="nav-item">
-            <button class="btn btn-light" type="button">
+            <button class="btn btn-light" type="button" disabled="disabled">
                 <span class="oi oi-data-transfer-upload"></span>
                 Save Project
             </button>
@@ -31,14 +31,21 @@
         </li>
 
         <li class="nav-item">
-            <button class="btn btn-light" type="button">
+            <button class="btn btn-light" type="button" @onclick="PreviewCodeClick">
+                <span class="oi oi-code"></span>
+                Preview Code
+            </button>
+        </li>
+
+        <li class="nav-item">
+            <button class="btn btn-light" type="button" disabled="disabled">
                 <span class="oi oi-layers"></span>
                 New Schema
             </button>
         </li>
 
         <li class="nav-item">
-            <button class="btn btn-light" type="button">
+            <button class="btn btn-light" type="button" disabled="disabled">
                 <span class="oi oi-command"></span>
                 New Query
             </button>
@@ -145,6 +152,12 @@
     private async Task SaveAllClick(MouseEventArgs args)
     {
         _spaceController.SaveAll();
+         await ModelChanged.InvokeAsync();
+    }
+
+    private async Task PreviewCodeClick(MouseEventArgs args)
+    {
+        _spaceController.PreviewCode();
          await ModelChanged.InvokeAsync();
     }
 

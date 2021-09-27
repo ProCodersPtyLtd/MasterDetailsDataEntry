@@ -23,12 +23,21 @@ namespace Platz.SqlForms.Blazor
         public IEnumerable<DialogButtonDetails> Buttons { get; private set; }
         public IEnumerable<DialogButtonNavigationDetails> ButtonNavigations { get; private set; }
         public object[] NavigateFormatParameters { get; private set; }
+        public FormParameter[] FormParameters { get; private set; }
         public string Error { get; private set; }
 
         public DynamicEditController(IDynamicEditFormDataProvider dataProvider, IDataValidationProvider dataValidationProvider)
         {
             _dataProvider = dataProvider;
             _dataValidationProvider = dataValidationProvider;
+        }
+
+        public void SetParameters(IDynamicEditForm form, FormParameter[] formParameters, Func<Task> dataChanged)
+        {
+            FormParameters = formParameters;
+            int id = (int)formParameters[0].Value;
+            var serviceParameters = formParameters.Skip(1).Select(p => p.Value).ToArray();
+            SetParameters(form, id, serviceParameters, dataChanged);
         }
 
         public void SetParameters(IDynamicEditForm form, int id, object[] serviceParameters, Func<Task> dataChanged)
