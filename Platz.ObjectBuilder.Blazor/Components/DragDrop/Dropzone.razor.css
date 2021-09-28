@@ -3,45 +3,42 @@
     pointer-events: none;
 }
 
+.plk-dd-draggable{
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 16px;
+}
+
 /*dropzone style style*/
 .plk-dd-dropzone {
     min-height: 50px;
 }
 
 /*drag drop styles*/
-
 .plk-dd-spacing {
     height: 10px;
-}
-
-.plk-dd-spacing-dragged-over {
-    padding: 25px;
 }
 
 .plk-dd-dragged-over {
     background-color: lightgray;
     opacity: 0.6;
-    animation: blinker 1s linear infinite;
 }
 
     .plk-dd-dragged-over > div {
         background-color: lightgray;
         opacity: 0.6;
-        animation: blinker 1s linear infinite;
     }
 
 .plk-dd-dragged-over-denied {
     background-color: red;
     opacity: 0.6;
-    animation: blinker 1s linear infinite;
 }
 
 .plk-dd-in-transit {
-    opacity: 0;
+    opacity: 0.5;
 }
 
     .plk-dd-in-transit > div {
-        opacity: 0;
+        opacity: 0.5;
     }
 
 @keyframes blinker {
@@ -50,12 +47,8 @@
     }
 }
 
-.blink_me {
-    animation: blinker 1s linear infinite;
-}
 
 /*for flex demo*/
-
 .plk-flex .plk-dd-spacing {
     width: 20px;
     height: auto;
@@ -64,13 +57,11 @@
 .plk-flex .plk-dd-dragged-over {
     background-color: lightgray;
     opacity: 0.6;
-    animation: blinker 1s linear infinite;
 }
 
     .plk-flex .plk-dd-dragged-over > div {
         background-color: lightgray;
         opacity: 0.9;
-        animation: blinker 1s linear infinite;
     }
 
 .plk-flex .plk-dd-in-transit {
@@ -117,7 +108,6 @@
 }
 
 .drag-container {
-    /*background-color: dodgerblue;*/
-    min-height: 300px;
+    min-height: inherit;
     opacity: 0.8;
 }
