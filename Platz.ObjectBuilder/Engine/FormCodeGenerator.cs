@@ -164,8 +164,8 @@ public class {form.Name} : {query.DataService}
 
         sb.AppendLine();
 
-        // Buttons
-        foreach (var btn in form.ActionButtons.OrderBy(f => f.Order))
+        // ContextButton
+        foreach (var btn in form.ActionButtons.Where(b => b.ControlType == ObjectBuilderConstants.CONTROL_TYPE_COLUMN_ACTION).OrderBy(f => f.Order))
         {
             sb.AppendLine();
             sb.Append(@$"            e.ContextButton(""{btn.Text}""");
@@ -182,6 +182,41 @@ public class {form.Name} : {query.DataService}
                 });
 
                 sb.Append(@$", ""{btn.NavigationTargetForm}{ps}""");
+            }
+
+            sb.Append(");");
+        }
+
+        sb.AppendLine();
+
+        // DialogButton
+        foreach (var btn in form.ActionButtons.Where(b => b.ControlType == ObjectBuilderConstants.CONTROL_TYPE_ACTION_BUTTON).OrderBy(f => f.Order))
+        {
+            sb.AppendLine();
+            sb.Append($"            e.DialogButton(ButtonActionTypes.{btn.Action}");
+
+            if (!string.IsNullOrWhiteSpace(btn.Text))
+            {
+                sb.Append(@$", text: ""{btn.Text}""");
+            }
+
+            if (!string.IsNullOrWhiteSpace(btn.Hint))
+            {
+                sb.Append(@$", hint: ""{btn.Hint}""");
+            }
+
+            if (!string.IsNullOrWhiteSpace(btn.NavigationTargetForm))
+            {
+                var ps = new StringBuilder();
+                var targetForm = ctx.Forms[btn.NavigationTargetForm];
+
+                targetForm.PageParameters.OrderBy(p => p.Order).ToList().ForEach(p =>
+                {
+                    var btnParam = btn.NavigationParameterMapping.First(b => b.Name == p.Name);
+                    ps.Append(@$"/{{{btnParam.SupplyingParameterMapping}}}");
+                });
+
+                sb.Append(@$", actionLink: ""{btn.NavigationTargetForm}{ps}""");
             }
 
             sb.Append(");");

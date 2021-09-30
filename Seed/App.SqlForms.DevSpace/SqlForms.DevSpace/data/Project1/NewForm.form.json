@@ -86,7 +86,7 @@
     },
     {
       "Action": "Delete",
-      "Text": "Delete",
+      "Text": "Delete Me",
       "ControlType": "ActionButton",
       "Hint": null,
       "Order": 4,
