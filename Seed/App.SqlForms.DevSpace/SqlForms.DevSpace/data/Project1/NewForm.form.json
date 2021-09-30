@@ -1,19 +1,19 @@
 {
   "Name": "NewForm",
-  "Namespace": null,
+  "Namespace": "Default2",
   "IsDynamicContext": false,
   "IsListForm": true,
   "Schema": "Crm2",
-  "Datasource": "Address",
+  "Datasource": "q: GetPersonAddressList",
   "Fields": [
     {
       "BindingProperty": "$.Id",
       "DataType": null,
       "ControlType": "Column",
       "ViewModeControlType": null,
-      "Label": "Line1",
+      "Label": "Id",
       "Required": false,
-      "Hidden": false,
+      "Hidden": true,
       "ReadOnly": null,
       "PrimaryKey": true,
       "Unique": false,
@@ -24,11 +24,11 @@
       "Rules": []
     },
     {
-      "BindingProperty": null,
+      "BindingProperty": "$.Suburb",
       "DataType": null,
       "ControlType": "Column",
       "ViewModeControlType": null,
-      "Label": null,
+      "Label": "Suburb",
       "Required": false,
       "Hidden": false,
       "ReadOnly": null,
@@ -56,7 +56,7 @@
           "Name": "customerId",
           "DataType": null,
           "Order": 0,
-          "SupplyingParameterMapping": "[Item PK]"
+          "SupplyingParameterMapping": "[PK]"
         },
         {
           "Name": "addressId",
@@ -74,33 +74,60 @@
       "Order": 3,
       "Hidden": true,
       "ReadOnly": null,
-      "NavigationTargetForm": null,
-      "NavigationParameterMapping": []
+      "NavigationTargetForm": "CustomerEditForm",
+      "NavigationParameterMapping": [
+        {
+          "Name": "customerId",
+          "DataType": null,
+          "Order": 0,
+          "SupplyingParameterMapping": "[PK]"
+        }
+      ]
     },
     {
-      "Action": null,
-      "Text": null,
-      "ControlType": "ColumnAction",
+      "Action": "Delete",
+      "Text": "Delete Me",
+      "ControlType": "ActionButton",
       "Hint": null,
       "Order": 4,
       "Hidden": false,
       "ReadOnly": null,
-      "NavigationTargetForm": null,
-      "NavigationParameterMapping": []
+      "NavigationTargetForm": "AddressEditForm",
+      "NavigationParameterMapping": [
+        {
+          "Name": "customerId",
+          "DataType": null,
+          "Order": 0,
+          "SupplyingParameterMapping": "id"
+        },
+        {
+          "Name": "addressId",
+          "DataType": null,
+          "Order": 0,
+          "SupplyingParameterMapping": "id2"
+        }
+      ]
     }
   ],
   "Caption": "New Form",
-  "RoutingPath": null,
+  "RoutingPath": "AddressList",
   "PageParameters": [
     {
       "Name": "id",
       "DataType": "int",
       "Order": 0,
       "DatasourceQueryParameterMapping": null,
-      "HeaderFormParameterMapping": "id"
+      "HeaderFormParameterMapping": "customerId"
+    },
+    {
+      "Name": "id2",
+      "DataType": "int",
+      "Order": 1,
+      "DatasourceQueryParameterMapping": null,
+      "HeaderFormParameterMapping": "addressId"
     }
   ],
-  "PageHeaderForm": "AddressForm",
+  "PageHeaderForm": "AddressEditForm",
   "PageHeaderFormReadOnly": true,
   "Validated": true
 }

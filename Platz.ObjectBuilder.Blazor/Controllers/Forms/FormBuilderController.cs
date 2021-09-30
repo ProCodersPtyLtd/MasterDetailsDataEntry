@@ -67,7 +67,7 @@ namespace Platz.ObjectBuilder
     }
     public class FormBuilderController : IFormBuilderController
     {
-        public const string DS_QUERY_START = "q: ";
+        
 
         private readonly IBuilderRuleFactory<IFormBuilderRule, FormBuilderModel> _ruleEngine;
 
@@ -165,7 +165,7 @@ namespace Platz.ObjectBuilder
 
             if (Model.IsListForm)
             {
-                Model.Datasources.AddRange(_storeQueries.Where(x => x.SchemaName == Model.Schema).Select(x => $"{DS_QUERY_START}{x.Name}").OrderBy(x => x));
+                Model.Datasources.AddRange(_storeQueries.Where(x => x.SchemaName == Model.Schema).Select(x => $"{ObjectBuilderConstants.DS_QUERY_START}{x.Name}").OrderBy(x => x));
             }
 
             Model.Datasources.AddRange(_storeSchemas.First(x => x.Name == Model.Schema).Definitions.Keys.OrderBy(x => x));
@@ -275,9 +275,9 @@ namespace Platz.ObjectBuilder
                 return new List<string>();
             }
 
-            if (Model.Datasource.StartsWith(DS_QUERY_START))
+            if (Model.Datasource.StartsWith(ObjectBuilderConstants.DS_QUERY_START))
             {
-                var name = Model.Datasource.Replace(DS_QUERY_START, "");
+                var name = Model.Datasource.Replace(ObjectBuilderConstants.DS_QUERY_START, "");
                 var q = _storeQueries.First(x => x.SchemaName == Model.Schema && x.Name == name);
                 var result = q.Query.Fields.Values.Select(f => $"$.{f.FieldAlias ?? f.Field.FieldName}").ToList();
                 return result;
@@ -374,16 +374,16 @@ namespace Platz.ObjectBuilder
     using System;
     using Platz.SqlForms;");
 
-            if (Model.Datasource.StartsWith(DS_QUERY_START))
+            if (Model.Datasource.StartsWith(ObjectBuilderConstants.DS_QUERY_START))
             {
-                var ds = Model.Datasource.Replace(DS_QUERY_START, "");
+                var ds = Model.Datasource.Replace(ObjectBuilderConstants.DS_QUERY_START, "");
                 var q = _storeQueries.First(x => x.SchemaName == Model.Schema && x.Name == ds);
                 AppendQueryReturnType(sb, _storeSchemas.First(x => x.Name == Model.Schema), q);
             }
             else
             {
                 JsonStoreSchemaParser parser = new JsonStoreSchemaParser();
-                var className = Model.Datasource.Replace(DS_QUERY_START, "");
+                var className = Model.Datasource.Replace(ObjectBuilderConstants.DS_QUERY_START, "");
                 var table = _storeSchemas.First(x => x.Name == Model.Schema).Definitions[Model.Datasource];
 
                 sb.AppendLine($@"
@@ -402,7 +402,7 @@ namespace Platz.ObjectBuilder
 
         private void AddRuleCode(StringBuilder sb, FieldRuleModel rule)
         {
-            var className = Model.Datasource.Replace(DS_QUERY_START, "");
+            var className = Model.Datasource.Replace(ObjectBuilderConstants.DS_QUERY_START, "");
 
             sb.AppendLine($@"
         public FormRuleResult {rule.Name}(RuleArgs<{className}> a)
@@ -482,9 +482,9 @@ namespace Platz.ObjectBuilder
         {
             Model.QueryParams.Clear();
 
-            if (!string.IsNullOrWhiteSpace(Model.Datasource) && Model.Datasource.StartsWith(DS_QUERY_START))
+            if (!string.IsNullOrWhiteSpace(Model.Datasource) && Model.Datasource.StartsWith(ObjectBuilderConstants.DS_QUERY_START))
             {
-                var name = Model.Datasource.Replace(DS_QUERY_START, "");
+                var name = Model.Datasource.Replace(ObjectBuilderConstants.DS_QUERY_START, "");
                 var q = _storeQueries.First(x => x.SchemaName == Model.Schema && x.Name == name);
                 Model.QueryParams = q.Query.Parameters.Values.OrderBy(x => x.Order).Select(x => x.Name).ToList();
             }
@@ -527,7 +527,7 @@ namespace Platz.ObjectBuilder
 
             if (ActiveField.ComponentType == FieldComponentType.ColumnAction)
             {
-                result.Insert(0, "[Item PK]");
+                result.Insert(0, ObjectBuilderConstants.DS_FORM_ITEM_PK);
             }
 
             return result;

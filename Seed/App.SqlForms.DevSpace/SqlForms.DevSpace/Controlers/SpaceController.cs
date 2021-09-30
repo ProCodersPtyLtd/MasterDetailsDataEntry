@@ -168,7 +168,7 @@ namespace SqlForms.DevSpace.Controlers
 
         private FormDetails FormBuilderControllerSwitchModel(StoreForm item)
         {
-            var d = Model.Forms.First(f => f.Form == item);
+            var d = Model.Forms.FirstOrDefault(f => f.Form == item) ?? Model.Forms.FirstOrDefault(f => f.Form.Name == item.Name);
             var newModel = d.Model == null;
 
             if (d.Model == null)
@@ -352,23 +352,23 @@ namespace SqlForms.DevSpace.Controlers
                 return;
             }
 
-            // Edit form
-            if (!formModel.IsListForm)
+            
+            var storeForm = formModel.ToStore();
+            var ctx = GetCodeGenerationContext();
+
+            var code = formModel.IsListForm
+                ? new CodeGenerationSection[] { _formCodeGenerator.GenerateListFormRazorPage(storeForm, ctx), _formCodeGenerator.GenerateListForm(storeForm, ctx) }
+                : new CodeGenerationSection[] { _formCodeGenerator.GenerateEditFormRazorPage(storeForm, ctx), _formCodeGenerator.GenerateEditForm(storeForm, ctx) };
+
+            var name = $"Code preview: {ActiveWindow.StoreObject.Name}";
+            var w = Model.EditWindows.FirstOrDefault(x => x.Type == EditWindowType.CodePreview && x.StoreObject.Name == name);
+
+            if (w != null)
             {
-                var storeForm = formModel.ToStore();
-                
-                //var storeQuery = Model.Queries.FirstOrDefault(q => q.Query.Name == storeForm.Datasource)?.Query;
-                //var storeSchema = Model.Schemas.FirstOrDefault(q => q.Schema.Name == storeForm.Schema)?.Schema;
-                //var storeTable = FindTable(storeForm.Schema, storeForm.Datasource);
-                //var storeTableName = Model.Schemas.FirstOrDefault(q => q.Schema.Name == storeForm.Schema).Schema.Definitions.Keys.FirstOrDefault(k => k == storeForm.Datasource);
-
-
-                var ctx = GetCodeGenerationContext();
-                var pageCode = _formCodeGenerator.GenerateEditRazorPageForm(storeForm, ctx);
-                var formCode = _formCodeGenerator.GenerateEditForm(storeForm, ctx);
-                var code = new CodeGenerationSection[] { pageCode, formCode };
-                OpenSpecialWindow($"Code preview: {ActiveWindow.StoreObject.Name}", EditWindowType.CodePreview, new CodePreviewSpecialWindowContent(code));
+                w.StoreObject = new SpecialWindowStoreObject { Name = name, Content = new CodePreviewSpecialWindowContent(code) };
             }
+
+            OpenSpecialWindow(name, EditWindowType.CodePreview, new CodePreviewSpecialWindowContent(code));
         }
 
         private StoreCodeGeneratorContext GetCodeGenerationContext()

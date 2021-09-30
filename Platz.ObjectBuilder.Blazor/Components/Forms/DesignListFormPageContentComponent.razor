@@ -52,8 +52,9 @@
         private int _tableHeight;
         private readonly int _tableWidth = 122;
         private readonly int LongPageHeight = 216;
-        private readonly int ShortPageHeight = 98;
+        private readonly int ShortPageHeight = 102;
         private readonly int MinPageWidth = 1618;
+        private readonly int MinComponentHeight = 62;
 
         private async Task MyModelChanged(ChangeEventArgs args)
         {
@@ -69,7 +70,7 @@
         private void RefreshTableHeight()
         {
             var ym = 10;
-            _tableHeight = FormController.PageActive ? (58 + ym) : (174 + ym);
+            _tableHeight = FormController.PageActive ? (MinComponentHeight + ym) : (174 + ym);
         }
 
         private int GetFlexHeight()

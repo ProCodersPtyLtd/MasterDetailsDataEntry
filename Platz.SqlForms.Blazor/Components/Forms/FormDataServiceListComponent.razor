@@ -121,6 +121,10 @@
     [Parameter]
     public object[] ServiceParameters { get; set; }
 
+    // if FormParameters specified then Id and ServiceParameters ignored
+    [Parameter]
+    public FormParameter[] FormParameters { get; set; }
+
     [Parameter]
     public bool? AllowSort { get; set; }
 
@@ -164,10 +168,7 @@
     {
         _form = Activator.CreateInstance<TForm>() as DataServiceBase;
         _fields = _form.GetDetailsFields().Where(f => f.Hidden == false);
-
-        _queryOptions = GetQueryOptions();
-        _modelItems = _form.ExecuteListQuery(_queryOptions, ServiceParameters);
-        _contextMenu = _form.GetContextLinks();
+        LoadPage();
     }
 
     private int GetPageSize()
@@ -177,6 +178,7 @@
 
     private void LoadPage()
     {
+        _queryOptions = GetQueryOptions();
         _modelItems = _form.ExecuteListQuery(_queryOptions, ServiceParameters);
         _contextMenu = _form.GetContextLinks();
     }

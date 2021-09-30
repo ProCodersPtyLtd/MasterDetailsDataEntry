@@ -16,7 +16,7 @@
     else
     {
 
-    <div class="forms-uncap">Field @($"{Field.ComponentType.ToString()}") properties</div>
+    <div class="forms-uncap">Field @($"{GetComponentTypeName()}") properties</div>
 
         <div class="forms-grid">
             @if (Field.ComponentType == FieldComponentType.ActionButton)
@@ -234,6 +234,17 @@
     public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 
     private IFormBuilderController _ctrl { get { return FormsPageController; } }
+
+    private string GetComponentTypeName()
+    {
+        switch (Field.ComponentType)
+        {
+            case FieldComponentType.ActionButton:
+                return "Button";
+            default:
+                return Field.ComponentType.ToString();
+        }
+    }
 
     private async Task SchemaChanged(ChangeEventArgs a)
     {
