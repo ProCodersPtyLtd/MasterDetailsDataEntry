@@ -19,8 +19,8 @@
       "Unique": false,
       "Format": null,
       "Order": 0,
-      "Filter": false,
-      "FilterType": 0,
+      "Filter": true,
+      "FilterType": "TextContains",
       "Rules": []
     },
     {
@@ -37,7 +37,7 @@
       "Format": null,
       "Order": 0,
       "Filter": false,
-      "FilterType": 0,
+      "FilterType": "None",
       "Rules": []
     }
   ],

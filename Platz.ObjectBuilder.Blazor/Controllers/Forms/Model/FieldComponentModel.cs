@@ -30,6 +30,7 @@ namespace Platz.ObjectBuilder.Blazor.Model
         public bool FullView { get; set; } 
         public int Order { get; set; }
         public FieldComponentType ComponentType { get; set; }
+        public FieldFilterType FilterType { get; set; }
 
         public StoreFormField StoreField { get; set; } = new StoreFormField();
         public StoreFormButton StoreButton { get; set; } = new StoreFormButton();
@@ -41,6 +42,7 @@ namespace Platz.ObjectBuilder.Blazor.Model
             model.StoreField = field.GetCopy();
             model.Order = field.Order;
             model.ComponentType = GetComponentType(field.ControlType);
+            model.FilterType = string.IsNullOrWhiteSpace(field.FilterType) ? FieldFilterType.None : Enum.Parse<FieldFilterType>(field.FilterType);
 
             if (field.Rules != null)
             {
@@ -65,6 +67,7 @@ namespace Platz.ObjectBuilder.Blazor.Model
         {
             var field = StoreField.GetCopy();
             field.ControlType = ComponentType.ToString();
+            field.FilterType = FilterType.ToString();
             field.Rules = Rules.Select(x => new StoreFieldRule { Name = x.Name, Code = x.Code, Trigger = x.Trigger.ToString() }).ToList();
             return field;
         }

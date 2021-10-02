@@ -20,7 +20,7 @@
       "Format": null,
       "Order": 0,
       "Filter": false,
-      "FilterType": 0,
+      "FilterType": null,
       "Rules": []
     },
     {
@@ -37,7 +37,7 @@
       "Format": null,
       "Order": 0,
       "Filter": false,
-      "FilterType": 0,
+      "FilterType": null,
       "Rules": [
         {
           "Name": "StateRule1",
