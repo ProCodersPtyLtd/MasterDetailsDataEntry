@@ -121,6 +121,7 @@ namespace Platz.SqlForms
 
         public virtual FieldBuilder<TProperty, TEntity> Filter(FieldFilterType type)
         {
+            _field.Filter = true;
             _field.FilterType = type;
             return this;
         }

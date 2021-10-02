@@ -69,7 +69,7 @@ namespace Platz.SqlForms
         public string Format { get; set; }
         public int Order { get; set; }
         public bool Filter { get; set; }
-        public FieldFilterType FilterType { get; set; }
+        public string FilterType { get; set; }
         public List<StoreFieldRule> Rules { get; set; }
     }
 

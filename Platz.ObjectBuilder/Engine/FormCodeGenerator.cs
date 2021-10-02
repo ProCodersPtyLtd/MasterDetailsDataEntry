@@ -159,6 +159,11 @@ public class {form.Name} : {query.DataService}
                 sb.Append(".IsHidden()");
             }
 
+            if (field.Filter == true)
+            {
+                sb.Append($".Filter(FieldFilterType.{field.FilterType.ToString()})");
+            }
+
             sb.Append(";");
         }
 

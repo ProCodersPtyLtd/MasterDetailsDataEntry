@@ -1,5 +1,6 @@
 ﻿@using Platz.ObjectBuilder.Blazor.Model
 @using Platz.SqlForms 
+@using Platz.SqlForms.Shared 
 
 @namespace Platz.ObjectBuilder.Blazor.Forms
 
@@ -58,6 +59,22 @@
             <label for="check3">Hidden</label>
         </div>
     </div>
+
+    <div class="row-nospace-sm">
+        <div class="col-sm-4 forms-nospace">
+            Filter
+        </div>
+        <div class="col-sm-8 forms-nospace">
+            <select id="BindingInput" value="@GetFilterType()" class="form-control" @onchange="FilterChanged">
+                <option value=""></option>
+
+                @foreach (var b in GetFilterTypes())
+                {
+                    <option value="@b">@b</option>
+                }
+            </select>
+        </div>
+    </div>
 </div>
 
 @code {
@@ -71,6 +88,42 @@
     public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
 
     private IFormBuilderController _ctrl { get { return FormsPageController; } }
+    private Dictionary<string, int> _filterMap = new Dictionary<string, int>();
+
+    protected override void OnInitialized()
+    {
+        _filterMap = typeof(FieldFilterType).GetEnumItems().ToDictionary(e => e.Description, e => e.Value);
+    }
+
+    private string[] GetFilterTypes()
+    {
+        var result = typeof(FieldFilterType).GetDescriptions();
+        return result;
+    }
+
+    private string GetFilterType()
+    {
+        var descr = Field.FilterType.GetDescription();
+        return descr;
+    }
+
+    private async Task FilterChanged(ChangeEventArgs a)
+    {
+        var descr = a.Value.ToString();
+
+        if (!string.IsNullOrWhiteSpace(descr))
+        {
+            Field.FilterType = (FieldFilterType)_filterMap[descr];
+            Field.StoreField.Filter = true;
+        }
+        else
+        {
+            Field.FilterType = FieldFilterType.None;
+            Field.StoreField.Filter = false;
+        }
+
+        await Change();
+    }
 
     private async Task SchemaChanged(ChangeEventArgs a)
     {
