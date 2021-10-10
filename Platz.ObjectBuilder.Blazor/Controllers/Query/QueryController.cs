@@ -34,6 +34,16 @@ namespace Platz.ObjectBuilder
         public IQueryModel MainQuery { get; set; }
         public List<IQueryModel> SubQueryList { get; set; }
         public StringBuilder ErrorLog { get; set; } = new StringBuilder();
+        public bool IsDirty { get; set; }
+
+        public string DisplayName
+        {
+            get
+            {
+                string dirty = IsDirty ? "*" : "";
+                return $"{MainQuery.Name}{dirty}";
+            }
+        }
     }
 
     public interface IQueryController : IQueryControllerModel
@@ -155,6 +165,11 @@ namespace Platz.ObjectBuilder
 
         public List<DesignQueryObject> GetAvailableQueryObjects()
         {
+            if (Schema == null)
+            {
+                return new List<DesignQueryObject>();
+            }
+
             var list = Schema.Definitions.Values.Select(d => new DesignQueryObject(d)).ToList();
 
             for (int i = 1; i < SubQueryList.Count; i++)

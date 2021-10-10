@@ -1,0 +1,24 @@
+﻿@using Platz.ObjectBuilder.Blazor.Controllers
+
+@namespace Platz.ObjectBuilder.Blazor
+
+<div style="border-width: 1px; border-style: solid;">
+
+    
+</div>
+
+@code {
+    [CascadingParameter]
+    public IQueryController Controller { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    private IQueryController _ctrl {  get { return Controller; } }
+
+    private async Task SchemaChanged(ChangeEventArgs a)
+    {
+        //_ctrl.Model.Schema = a.Value.ToString();
+        //_ctrl.RefreshDatasources();
+    }
+}

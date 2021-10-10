@@ -1,4 +1,5 @@
-﻿using Platz.ObjectBuilder;
+﻿using Microsoft.EntityFrameworkCore;
+using Platz.ObjectBuilder;
 using Platz.ObjectBuilder.Blazor.Model;
 using Platz.ObjectBuilder.Engine;
 using Platz.ObjectBuilder.Model;
@@ -43,7 +44,8 @@ namespace SqlForms.DevSpace.Controlers
         private readonly IProjectLoader _projectLoader;
         private readonly IFormBuilderController _formBuilderController;
         private readonly FormCodeGenerator _formCodeGenerator;
-
+        private IEnumerable<Type> _registeredContexts;
+        
         private string _projectPath;
         private StoreProject _currentProject;
 
@@ -63,11 +65,13 @@ namespace SqlForms.DevSpace.Controlers
             }
         }
 
-        public SpaceController(IProjectLoader projectLoader, IFormBuilderController formBuilderController)
+        public SpaceController(IProjectLoader projectLoader, IFormBuilderController formBuilderController, IDbContextRegistry dbContextRegistry)
         {
             _projectLoader = projectLoader;
             _formBuilderController = formBuilderController;
+            _registeredContexts = dbContextRegistry.GetContexts();
             _formCodeGenerator = new FormCodeGenerator();
+
             CreateNewProject();
 
             // ToDo: remove demo data initialization
