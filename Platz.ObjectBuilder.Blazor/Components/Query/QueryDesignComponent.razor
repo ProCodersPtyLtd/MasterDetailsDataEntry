@@ -8,45 +8,97 @@
 
 <CascadingValue Value="@_queryController">
 
-    <div style="vertical-align: top">
-        <ul class="nav nav-tabs query-nav-tabs" role="tablist">
-            @for (int i = 0; i < GetTabQueries().Count(); i++)
-            {
-                var index = i;
+    <div class="forms-big" style="padding: 5px 0 0 0;">
+        <div class="row">
+            <div class="col-lg-12">
+                <div style="vertical-align: top">
+                    <ul class="nav nav-tabs query-nav-tabs" role="tablist">
+                        @for (int i = 0; i < GetTabQueries().Count(); i++)
+                        {
+                            var index = i;
 
-                <li class="nav-item">
-                    <a class="nav-link @GetQueryTabActive(index) query-nav-item" data-toggle="tab" href="#m1"
-                       @onclick="() => QueryTabClick(index)">
+                            <li class="nav-item">
+                                <a class="nav-link @GetQueryTabActive(index) query-nav-item" data-toggle="tab" href="#m1"
+                                   @onclick="() => QueryTabClick(index)">
                         
-                       <button class="close closeTab" type="button" @onclick="@(async (args) => await SubQueryDeleteClick(index))"
-                           hidden="@(index == 0 || index == GetTabQueries().Count()-1)">×</button>
+                                   <button class="close closeTab" type="button" @onclick="@(async (args) => await SubQueryDeleteClick(index))"
+                                       hidden="@(index == 0 || index == GetTabQueries().Count()-1)">×</button>
 
-                        @GetTabQueries()[index]
-                    </a>
-                </li>
+                                    @GetTabQueries()[index]
+                                </a>
+                            </li>
 
-                @*<li class="nav-item query-nav-item">
+                            @*<li class="nav-item query-nav-item">
 
-                    <table>
-                        <tr>
-                            <td>
-                                <a class="nav-link @GetQueryTabActive(index)" data-toggle="tab" href="#m1" @onclick="() => QueryTabClick(index)">@GetTabQueries()[index]</a>
-                            </td>
-                            <td>
-                                <button class="btn btn-light btn-sm" title="Delete" @onclick="@(async (args) => await SubQueryDeleteClick(index))"
-                                        hidden="@(index == 0 || index == GetTabQueries().Count()-1)">
-                                    <span class="oi oi-x"></span>
-                                </button>
-                            </td>
-                        </tr>
-                    </table>
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <a class="nav-link @GetQueryTabActive(index)" data-toggle="tab" href="#m1" @onclick="() => QueryTabClick(index)">@GetTabQueries()[index]</a>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-light btn-sm" title="Delete" @onclick="@(async (args) => await SubQueryDeleteClick(index))"
+                                                    hidden="@(index == 0 || index == GetTabQueries().Count()-1)">
+                                                <span class="oi oi-x"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </table>
 
-                </li>*@
-            }
-        </ul>
+                            </li>*@
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div style="vertical-align: top">
+                    <div>
+                        <QuerySelectPanelComponent ModelChanged="ModelChanged" />
+                    </div>
+                    <div>
+                        <QueryFromPanelComponent ModelChanged="ModelChanged" Height="300" />
+                    </div>
+                    <div>
+                        <QueryWherePanelComponent ModelChanged="ModelChanged" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div style="vertical-align: top">
+
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#settings">Settings</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#tables">Entities</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#joins">Relationships</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div id="settings" class="container tab-pane active">
+                            <QueryPropertiesComponent ModelChanged="ModelChanged" />
+                        </div>
+                        <div id="tables" class="container tab-pane active">
+                            <QueryTableListComponent ModelChanged="ModelChanged" />
+                        </div>
+                        <div id="joins" class="container tab-pane fade">
+                            <QueryJoinListComponent ModelChanged="ModelChanged" />
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
     </div>
 
-    <table style="width: 100%">
+    @*<table style="width: 100%">
         <tr>
             <th style="width: auto"></th>
             <th style="width: 300px"></th>
@@ -57,7 +109,6 @@
                     <QuerySelectPanelComponent ModelChanged="ModelChanged" />
                 </div>
                 <div>
-                    @*<QueryFromPanelComponent QueryController="_queryController" />*@
                     <QueryFromPanelComponent ModelChanged="ModelChanged" Height="300" />
                 </div>
                 <div>
@@ -80,10 +131,6 @@
                     </ul>
 
 
-                    @*<ul class="nav nav-tabs">
-                            <li class="active"><a data-toggle="tab" href="#tables">Entities</a></li>
-                            <li><a data-toggle="tab" href="#joins">Relationships</a></li>
-                        </ul>*@
 
                     <div class="tab-content">
                         <div id="settings" class="container tab-pane active">
@@ -101,7 +148,7 @@
                 </div>
             </td>
         </tr>
-    </table>
+    </table>*@
 </CascadingValue>
 
 @code {
