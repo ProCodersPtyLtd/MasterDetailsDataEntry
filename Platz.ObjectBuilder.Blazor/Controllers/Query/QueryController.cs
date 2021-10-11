@@ -133,36 +133,7 @@ namespace Platz.ObjectBuilder
             SetNewQuery();
         }
 
-        public void LoadFromFile(string path, string fileName)
-        {
-            var parameters = new StorageParameters { FileName = fileName, Path = path };
-            var q = _storage.LoadQuery(parameters);
-            Clear();
-            var fullQuery = _engine.LoadQueryFromStoreQuery(Schema, q);
-            StoreParameters = fullQuery.StoreParameters;
-            MainQuery = fullQuery.MainQuery;
-            //MainQuery.FromTables = fullQuery.MainQuery.FromTables;
-            SubQueryList = fullQuery.SubQueryList;
-            SubQueryList.Insert(0, fullQuery.MainQuery);
-
-            //RegenerateTableLinks();
-            UpdateLinksFromTableJoins();
-            
-            //MainQuery.SelectionProperties = fullQuery.MainQuery.SelectionProperties;
-
-            foreach (var sp in MainQuery.SelectionProperties)
-            {
-                // var t = FindFromTable(sp.);
-                var prop = sp.FromTable.Properties.SingleOrDefault(p => p.Name == sp.StoreProperty.Name);
-
-                if (prop != null)
-                {
-                    prop.Selected = true;
-                }
-            }
-
-            //MainQuery.WhereClause = fullQuery.MainQuery.WhereClause;
-        }
+        
 
         public bool FileExists(string path)
         {
@@ -613,7 +584,49 @@ namespace Platz.ObjectBuilder
             var schema = _storeSchemas.FirstOrDefault(s => s.Name == item.SchemaName);
             Schema = schema;
             var fullQuery = _engine.LoadQueryFromStoreQuery(schema, item);
+            ReloadControllerModels(fullQuery);
             return fullQuery;
+        }
+
+        public void LoadFromFile(string path, string fileName)
+        {
+            var parameters = new StorageParameters { FileName = fileName, Path = path };
+            var q = _storage.LoadQuery(parameters);
+            Clear();
+            var fullQuery = _engine.LoadQueryFromStoreQuery(Schema, q);
+            ReloadControllerModels(fullQuery);
+        }
+
+        private void ReloadControllerModels(QueryControllerModel fullQuery)
+        {
+            StoreParameters = fullQuery.StoreParameters;
+            MainQuery = fullQuery.MainQuery;
+            //MainQuery.FromTables = fullQuery.MainQuery.FromTables;
+            SubQueryList = fullQuery.SubQueryList;
+            SubQueryList.Insert(0, fullQuery.MainQuery);
+
+            //RegenerateTableLinks();
+            UpdateLinksFromTableJoins();
+
+            //MainQuery.SelectionProperties = fullQuery.MainQuery.SelectionProperties;
+
+            foreach (var sp in MainQuery.SelectionProperties)
+            {
+                // var t = FindFromTable(sp.);
+                var prop = sp.FromTable.Properties.SingleOrDefault(p => p.Name == sp.StoreProperty.Name);
+
+                if (prop != null)
+                {
+                    prop.Selected = true;
+                }
+            }
+
+            //MainQuery.WhereClause = fullQuery.MainQuery.WhereClause;
+        }
+
+        public void SwitchModel(QueryControllerModel model)
+        {
+            ReloadControllerModels(model);
         }
     }
 

@@ -26,7 +26,7 @@ namespace Platz.ObjectBuilder
             services.AddTransient<ISqlExpressionEngine, SqlExpressionEngine>();
             services.AddTransient<IQueryBuilderEngine, QueryBuilderEngine>();
 
-            services.AddScoped<IQueryController, QueryController>();
+            services.AddTransient<IQueryController, QueryController>();
             
             services.AddTransient<IFormBuilderController, FormBuilderController>();
             services.AddTransient<ISchemaController, SchemaController>();

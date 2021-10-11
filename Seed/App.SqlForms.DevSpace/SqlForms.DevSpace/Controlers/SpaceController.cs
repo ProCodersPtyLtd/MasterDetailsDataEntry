@@ -212,11 +212,11 @@ namespace SqlForms.DevSpace.Controlers
             if (d.Model == null)
             {
                 d.Model = _queryController.LoadStoreQuery(item);
-                //d.Model = new QueryControllerModel(item);
             }
-
-            //_queryController.SwitchModel(d.Model);
-            //_formBuilderController.RefreshDatasources();
+            else
+            {
+                _queryController.SwitchModel(d.Model);
+            }
 
             if (newModel)
             {

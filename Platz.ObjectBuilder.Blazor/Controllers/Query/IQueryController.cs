@@ -65,5 +65,6 @@ namespace Platz.ObjectBuilder
         void Clear();
         List<string> GetSchemas();
         QueryControllerModel LoadStoreQuery(StoreQuery item);
+        void SwitchModel(QueryControllerModel model);
     }
 }

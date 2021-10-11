@@ -84,7 +84,7 @@
                         <div id="settings" class="container tab-pane active">
                             <QueryPropertiesComponent ModelChanged="ModelChanged" />
                         </div>
-                        <div id="tables" class="container tab-pane active">
+                        <div id="tables" class="container tab-pane">
                             <QueryTableListComponent ModelChanged="ModelChanged" />
                         </div>
                         <div id="joins" class="container tab-pane fade">
@@ -215,10 +215,11 @@
         _queryController.LoadSchema();
     }
 
-    
+    private bool _closingTab;
 
     private async Task SubQueryDeleteClick(int index)
     {
+        _closingTab = true;
         _queryController.RemoveSubQuery(index);
         StateHasChanged();
     }
@@ -231,7 +232,7 @@
     private string[] GetTabQueries()
     {
         var list = _queryController.SubQueryList.Select(q => q.Name).ToList();
-        list.Add("+");
+        list.Add("new");
         return list.ToArray();
     }
 
@@ -242,6 +243,12 @@
 
     private void QueryTabClick(int index)
     {
+        if (_closingTab)
+        {
+            _closingTab = false;
+            return;
+        }
+
         if (index == _queryController.SubQueryList.Count)
         {
             _queryController.CreateSubQuery(index);

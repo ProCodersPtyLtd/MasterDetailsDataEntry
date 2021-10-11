@@ -17,6 +17,7 @@ namespace SqlForms.DevSpace
             services.AddScoped<ISpaceController, SpaceController>();
             services.AddScoped<IProjectLoader, FileProjectLoader>();
             services.AddScoped<IFormBuilderController, FormBuilderController>();
+            services.AddScoped<IQueryController, QueryController>();
 
             return services;
         }
