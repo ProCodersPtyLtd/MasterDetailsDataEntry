@@ -16,87 +16,15 @@ using System.Text;
 
 namespace Platz.ObjectBuilder
 {
-    public interface IQueryControllerModel
-    {
-        StoreQueryParameters StoreParameters { get; }
-        //string Name { get; set; }
-        StoreSchema Schema { get; }
-        IQueryModel MainQuery { get; }
-        List<IQueryModel> SubQueryList { get; }
-        StringBuilder ErrorLog { get; }
-    }
-
-    public class QueryControllerModel : IQueryControllerModel
-    {
-        public StoreQueryParameters StoreParameters { get; set; }
-        //string Name { get; set; }
-        public StoreSchema Schema { get; set; }
-        public IQueryModel MainQuery { get; set; }
-        public List<IQueryModel> SubQueryList { get; set; }
-        public StringBuilder ErrorLog { get; set; } = new StringBuilder();
-    }
-
-    public interface IQueryController : IQueryControllerModel
-    {
-        //StoreQueryParameters StoreParameters { get; }
-        //StoreSchema Schema { get; }
-        string Errors { get; set; }
-        string LinqQuery { get; set; }
-        string SqlQuery { get; set; }
-        //List<IQueryModel> SubQueryList { get; }
-        int SelectedQueryIndex { get; set; }
-        // used for UI
-        IQueryModel SelectedQuery { get; }
-        // used only for load/save/validate
-        //IQueryModel MainQuery { get; }
-
-        List<TableLink> FromTableLinks { get; }
-        List<TableJoinModel> FromTableJoins { get; }
-        List<RuleValidationResult> ValidationResults { get; }
-        List<QueryFromTable> FromTables { get; }
-        List<QuerySelectProperty> SelectionProperties { get; }
-        string WhereClause { get; }
-
-        bool NeedRedrawLinks { get; set; }
-
-        void RemoveSubQuery(int index);
-        List<DesignQueryObject> GetAvailableQueryObjects();
-        void CreateSubQuery(int index);
-        void Configure(IQueryControllerConfiguration config);
-        void LoadSchema();
-        void AddFromTable(DesignQueryObject table);
-        void RemoveFromTable(string tableName, string alias);
-        QueryFromTable FindFromTable(string tableName, string alias);
-        void AddSelectionProperty(QueryFromTable table, QueryFromProperty property);
-        void RemoveSelectionProperty(QueryFromTable table, QueryFromProperty property);
-        void ApplySelectPropertyFilter(QuerySelectProperty property, string filter);
-        string ReviewSelectPropertyFilter(QuerySelectProperty property, string filterText);
-        void SetGroupByFunction(QuerySelectProperty property, string filter);
-        void SetWhereClause(string text);
-
-        StoreQuery GenerateQuery();
-        bool SaveQuery(string path);
-        void SaveSchema(string path);
-        void LoadFromFile(string path, string fileName);
-
-        string GenerateObjectId(string sfx, int objId, int propId = 0);
-
-        void AliasChanged(string oldAlias, string newAlias);
-        //void RegenerateTableLinks();
-        void UpdateLinksFromTableJoins();
-        void Validate();
-        List<string> GetFileList(string path);
-        bool FileExists(string path);
-        string GenerateFileName(string path);
-        void Clear();
-    }
- 
     public class QueryController : IQueryController
     {
+        private List<StoreSchema> _storeSchemas;
+
         public StringBuilder ErrorLog { get; set; } = new StringBuilder();
         public bool NeedRedrawLinks { get; set; }
         public StoreQueryParameters StoreParameters { get; set; } = new StoreQueryParameters();
         public StoreSchema Schema { get; private set; }
+        public QueryControllerModel FullQuery { get; private set; }
         public List<QueryFromTable> FromTables { get { return SelectedQuery.FromTables; } }
         public List<QuerySelectProperty> SelectionProperties { get { return SelectedQuery.SelectionProperties; } }
         public List<TableLink> FromTableLinks { get { return SelectedQuery.FromTableLinks; } }
@@ -155,6 +83,11 @@ namespace Platz.ObjectBuilder
 
         public List<DesignQueryObject> GetAvailableQueryObjects()
         {
+            if (Schema == null)
+            {
+                return new List<DesignQueryObject>();
+            }
+
             var list = Schema.Definitions.Values.Select(d => new DesignQueryObject(d)).ToList();
 
             for (int i = 1; i < SubQueryList.Count; i++)
@@ -201,36 +134,7 @@ namespace Platz.ObjectBuilder
             SetNewQuery();
         }
 
-        public void LoadFromFile(string path, string fileName)
-        {
-            var parameters = new StorageParameters { FileName = fileName, Path = path };
-            var q = _storage.LoadQuery(parameters);
-            Clear();
-            var fullQuery = _engine.LoadQueryFromStoreQuery(Schema, q);
-            StoreParameters = fullQuery.StoreParameters;
-            MainQuery = fullQuery.MainQuery;
-            //MainQuery.FromTables = fullQuery.MainQuery.FromTables;
-            SubQueryList = fullQuery.SubQueryList;
-            SubQueryList.Insert(0, fullQuery.MainQuery);
-
-            //RegenerateTableLinks();
-            UpdateLinksFromTableJoins();
-            
-            //MainQuery.SelectionProperties = fullQuery.MainQuery.SelectionProperties;
-
-            foreach (var sp in MainQuery.SelectionProperties)
-            {
-                // var t = FindFromTable(sp.);
-                var prop = sp.FromTable.Properties.SingleOrDefault(p => p.Name == sp.StoreProperty.Name);
-
-                if (prop != null)
-                {
-                    prop.Selected = true;
-                }
-            }
-
-            //MainQuery.WhereClause = fullQuery.MainQuery.WhereClause;
-        }
+        
 
         public bool FileExists(string path)
         {
@@ -661,7 +565,76 @@ namespace Platz.ObjectBuilder
                 SelectedQuery.SelectionProperties.ToList().ForEach(p => p.GroupByFunction = "");
             }
         }
+
+        public void Changed()
+        {
+            if (FullQuery != null)
+            {
+                FullQuery.IsDirty = true;
+            }
+        }
+
+        public void SetSchemas(List<StoreSchema> storeSchemas)
+        {
+            _storeSchemas = storeSchemas;
+        }
+
+        public List<string> GetSchemas()
+        {
+            return _storeSchemas.Select(x => x.Name).ToList();
+        }
+
+        public QueryControllerModel LoadStoreQuery(StoreQuery item)
+        {
+            var schema = _storeSchemas.FirstOrDefault(s => s.Name == item.SchemaName);
+            Schema = schema;
+            var fullQuery = _engine.LoadQueryFromStoreQuery(schema, item);
+            ReloadControllerModels(fullQuery);
+            return fullQuery;
+        }
+
+        public void LoadFromFile(string path, string fileName)
+        {
+            var parameters = new StorageParameters { FileName = fileName, Path = path };
+            var q = _storage.LoadQuery(parameters);
+            Clear();
+            var fullQuery = _engine.LoadQueryFromStoreQuery(Schema, q);
+            ReloadControllerModels(fullQuery);
+        }
+
+        private void ReloadControllerModels(QueryControllerModel fullQuery)
+        {
+            StoreParameters = fullQuery.StoreParameters;
+            MainQuery = fullQuery.MainQuery;
+            //MainQuery.FromTables = fullQuery.MainQuery.FromTables;
+            SubQueryList = fullQuery.SubQueryList;
+            SubQueryList.Insert(0, fullQuery.MainQuery);
+
+            //RegenerateTableLinks();
+            UpdateLinksFromTableJoins();
+
+            //MainQuery.SelectionProperties = fullQuery.MainQuery.SelectionProperties;
+
+            foreach (var sp in MainQuery.SelectionProperties)
+            {
+                // var t = FindFromTable(sp.);
+                var prop = sp.FromTable.Properties.SingleOrDefault(p => p.Name == sp.StoreProperty.Name);
+
+                if (prop != null)
+                {
+                    prop.Selected = true;
+                }
+            }
+
+            FullQuery = fullQuery;
+            //MainQuery.WhereClause = fullQuery.MainQuery.WhereClause;
+        }
+
+        public void SwitchModel(QueryControllerModel model)
+        {
+            ReloadControllerModels(model);
+        }
     }
 
-    
+
 }

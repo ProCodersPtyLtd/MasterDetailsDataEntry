@@ -1,0 +1,261 @@
+﻿@using Platz.ObjectBuilder.Blazor
+@using Platz.ObjectBuilder.Blazor.Controllers
+@using System.IO
+
+@namespace Platz.ObjectBuilder
+
+@inject IQueryController _queryController
+
+<CascadingValue Value="@_queryController">
+
+    <div class="forms-big" style="padding: 5px 0 0 0;">
+        <div class="row">
+            <div class="col-lg-12">
+                <div style="vertical-align: top">
+                    <ul class="nav nav-tabs query-nav-tabs" role="tablist">
+                        @for (int i = 0; i < GetTabQueries().Count(); i++)
+                        {
+                            var index = i;
+
+                            <li class="nav-item">
+                                <a class="nav-link @GetQueryTabActive(index) query-nav-item" data-toggle="tab" href="#m1"
+                                   @onclick="() => QueryTabClick(index)">
+                        
+                                   <button class="close closeTab" type="button" @onclick="@(async (args) => await SubQueryDeleteClick(index))"
+                                       hidden="@(index == 0 || index == GetTabQueries().Count()-1)">×</button>
+
+                                    @GetTabQueries()[index]
+                                </a>
+                            </li>
+
+                            @*<li class="nav-item query-nav-item">
+
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <a class="nav-link @GetQueryTabActive(index)" data-toggle="tab" href="#m1" @onclick="() => QueryTabClick(index)">@GetTabQueries()[index]</a>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-light btn-sm" title="Delete" @onclick="@(async (args) => await SubQueryDeleteClick(index))"
+                                                    hidden="@(index == 0 || index == GetTabQueries().Count()-1)">
+                                                <span class="oi oi-x"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                            </li>*@
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div style="vertical-align: top">
+                    <div>
+                        <QuerySelectPanelComponent ModelChanged="ModelChanged" />
+                    </div>
+                    <div>
+                        <QueryFromPanelComponent ModelChanged="ModelChanged" Height="300" />
+                    </div>
+                    <div>
+                        <QueryWherePanelComponent ModelChanged="ModelChanged" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div style="vertical-align: top">
+
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#settings">Settings</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#tables">Entities</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#joins">Relationships</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div id="settings" class="container tab-pane active">
+                            <QueryPropertiesComponent ModelChanged="ModelChanged" />
+                        </div>
+                        <div id="tables" class="container tab-pane">
+                            <QueryTableListComponent ModelChanged="ModelChanged" />
+                        </div>
+                        <div id="joins" class="container tab-pane fade">
+                            <QueryJoinListComponent ModelChanged="ModelChanged" />
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*<table style="width: 100%">
+        <tr>
+            <th style="width: auto"></th>
+            <th style="width: 300px"></th>
+        </tr>
+        <tr>
+            <td style="vertical-align: top">
+                <div>
+                    <QuerySelectPanelComponent ModelChanged="ModelChanged" />
+                </div>
+                <div>
+                    <QueryFromPanelComponent ModelChanged="ModelChanged" Height="300" />
+                </div>
+                <div>
+                    <QueryWherePanelComponent ModelChanged="ModelChanged" />
+                </div>
+            </td>
+            <td style="vertical-align: top">
+                <div style="vertical-align: top">
+
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#settings">Settings</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#tables">Entities</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#joins">Relationships</a>
+                        </li>
+                    </ul>
+
+
+
+                    <div class="tab-content">
+                        <div id="settings" class="container tab-pane active">
+                            <QueryPropertiesComponent ModelChanged="ModelChanged" />
+                        </div>
+                        <div id="tables" class="container tab-pane active">
+                            <QueryTableListComponent ModelChanged="ModelChanged" />
+                        </div>
+                        <div id="joins" class="container tab-pane fade">
+                            <QueryJoinListComponent ModelChanged="ModelChanged" />
+                        </div>
+                    </div>
+
+
+                </div>
+            </td>
+        </tr>
+    </table>*@
+</CascadingValue>
+
+@code {
+    [Parameter]
+    public double Height { get; set; } = 780;
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+
+    private async Task ModelChangedLocal(ChangeEventArgs args)
+    {
+        StateHasChanged();
+    }
+
+
+
+
+
+
+
+
+    [Parameter]
+    public Type DbContextType { get; set; }
+
+    [Parameter]
+    public string SourceSchemaFile { get; set; }
+
+    [Parameter]
+    public string StoreDataPath { get; set; }
+
+    [Parameter]
+    public string Namespace { get; set; }
+
+    [Parameter]
+    public string DataService { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        //InitController();
+    }
+
+    private void InitController()
+    {
+        if (DbContextType != null)
+        {
+            var p = new QueryControllerParameters { DbContextType = DbContextType };
+            //_queryController.SetParameters(p);
+            var cfg = new EntityFrameworkQueryControllerConfiguration(p);
+            _queryController.Configure(cfg);
+        }
+        else if (SourceSchemaFile != null)
+        {
+            var fullPath = Path.Combine(Directory.GetCurrentDirectory(), SourceSchemaFile);
+            var p = new QueryControllerParameters { SchemaFilename = fullPath };
+            var cfg = new JsonSchemaQueryControllerConfiguration(p);
+            _queryController.Configure(cfg);
+            _queryController.StoreParameters.SetSchemaFileName(fullPath);
+        }
+
+        _queryController.LoadSchema();
+    }
+
+    private bool _closingTab;
+
+    private async Task SubQueryDeleteClick(int index)
+    {
+        _closingTab = true;
+        _queryController.RemoveSubQuery(index);
+        StateHasChanged();
+    }
+
+    private void Click()
+    {
+        StateHasChanged();
+    }
+
+    private string[] GetTabQueries()
+    {
+        var list = _queryController.SubQueryList.Select(q => q.Name).ToList();
+        list.Add("new");
+        return list.ToArray();
+    }
+
+    private string GetQueryTabActive(int index)
+    {
+        return index == _queryController.SelectedQueryIndex ? "active" : "";
+    }
+
+    private void QueryTabClick(int index)
+    {
+        if (_closingTab)
+        {
+            _closingTab = false;
+            return;
+        }
+
+        if (index == _queryController.SubQueryList.Count)
+        {
+            _queryController.CreateSubQuery(index);
+        }
+
+        _queryController.SelectedQueryIndex = index;
+        StateHasChanged();
+    }
+
+}

@@ -1,0 +1,94 @@
+﻿@using Platz.ObjectBuilder.Blazor.Controllers
+
+@namespace Platz.ObjectBuilder.Blazor
+
+<div class="forms-grid">
+    <div class="row-nospace-sm">
+        <div class="col-sm-4 forms-nospace">
+            Name
+        </div>
+        <div class="col-sm-8 forms-nospace">
+            <input id="BindingInput" value="@_ctrl.StoreParameters.QueryName" @onchange="NameChanged" class="form-control" />
+        </div>
+    </div>
+
+    <div class="row-nospace-sm">
+        <div class="col-sm-4 forms-nospace">
+            Schema
+        </div>
+        <div class="col-sm-8 forms-nospace">
+            <select class="form-control selectpicker" value="@_ctrl.Schema?.Name" @onchange="SchemaChanged">
+                <option value=""></option>
+
+                @foreach (var item in _ctrl.GetSchemas())
+                {
+                    <option value="@item">@item</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="row-nospace-sm">
+        <div class="col-sm-4 forms-nospace">
+            Namespace
+        </div>
+        <div class="col-sm-8 forms-nospace">
+            <input id="BindingInput" value="@_ctrl.StoreParameters.Namespace" @onchange="NamespaceChanged" class="form-control" />
+        </div>
+    </div>
+    <div class="row-nospace-sm">
+        <div class="col-sm-4 forms-nospace">
+            Data Service
+        </div>
+        <div class="col-sm-8 forms-nospace">
+            <input id="BindingInput" value="@_ctrl.StoreParameters.DataService" @onchange="DataServiceChanged" class="form-control" />
+        </div>
+    </div>
+    <div class="row-nospace-sm">
+        <div class="col-sm-4 forms-nospace">
+            Return Type
+        </div>
+        <div class="col-sm-8 forms-nospace">
+            <input id="BindingInput" value="@_ctrl.StoreParameters.QueryReturnType" @onchange="QueryReturnTypeChanged" class="form-control" />
+        </div>
+    </div>
+    
+</div>
+
+@code {
+    [CascadingParameter]
+    public IQueryController Controller { get; set; }
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ModelChanged { get; set; }
+
+    private IQueryController _ctrl {  get { return Controller; } }
+
+    private async Task SchemaChanged(ChangeEventArgs a)
+    {
+        await Changed();
+    }
+    private async Task NameChanged(ChangeEventArgs a)
+    {
+        await Changed();
+    }
+    private async Task NamespaceChanged(ChangeEventArgs a)
+    {
+        await Changed();
+    }
+    private async Task DataServiceChanged(ChangeEventArgs a)
+    {
+        await Changed();
+    }
+    private async Task QueryReturnTypeChanged(ChangeEventArgs a)
+    {
+        await Changed();
+    }
+
+    private async Task Changed()
+    {
+        await ModelChanged.InvokeAsync();
+        _ctrl.Changed();
+        StateHasChanged();
+    }
+}

@@ -43,7 +43,13 @@ namespace SqlForms.DevSpace.Model
         public StoreQuery Query { get; set; }
         public QueryControllerModel Model { get; set; }
 
-        public string DisplayName => throw new NotImplementedException();
+        public string DisplayName
+        {
+            get
+            {
+                return Model?.DisplayName ?? Query.Name;
+            }
+        }
 
         public void DiscardChanges()
         {

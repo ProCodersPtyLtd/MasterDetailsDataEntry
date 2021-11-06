@@ -1,4 +1,5 @@
-﻿using Platz.ObjectBuilder;
+﻿using Microsoft.EntityFrameworkCore;
+using Platz.ObjectBuilder;
 using Platz.ObjectBuilder.Blazor.Model;
 using Platz.ObjectBuilder.Engine;
 using Platz.ObjectBuilder.Model;
@@ -42,8 +43,10 @@ namespace SqlForms.DevSpace.Controlers
     {
         private readonly IProjectLoader _projectLoader;
         private readonly IFormBuilderController _formBuilderController;
+        private readonly IQueryController _queryController;
         private readonly FormCodeGenerator _formCodeGenerator;
-
+        private IEnumerable<Type> _registeredContexts;
+        
         private string _projectPath;
         private StoreProject _currentProject;
 
@@ -63,11 +66,15 @@ namespace SqlForms.DevSpace.Controlers
             }
         }
 
-        public SpaceController(IProjectLoader projectLoader, IFormBuilderController formBuilderController)
+        public SpaceController(IProjectLoader projectLoader, IDbContextRegistry dbContextRegistry, IFormBuilderController formBuilderController,
+            IQueryController queryController)
         {
             _projectLoader = projectLoader;
             _formBuilderController = formBuilderController;
+            _queryController = queryController;
+            _registeredContexts = dbContextRegistry.GetContexts();
             _formCodeGenerator = new FormCodeGenerator();
+
             CreateNewProject();
 
             // ToDo: remove demo data initialization
@@ -95,6 +102,10 @@ namespace SqlForms.DevSpace.Controlers
             _formBuilderController.SetSchemas(GetProjectSchemas());
             _formBuilderController.SetQueries(GetProjectQueries());
             _formBuilderController.SetForms(GetProjectForms());
+        }
+        private void UpdateQueryBuilder()
+        {
+            _queryController.SetSchemas(GetProjectSchemas());
         }
 
         public void CreateNewProject()
@@ -159,6 +170,10 @@ namespace SqlForms.DevSpace.Controlers
                     FormBuilderControllerSwitchModel(item as StoreForm); 
                     //_formBuilderController.SwitchModel(form.Model);
                 }
+                else if (GetStoreObjectType(item) == EditWindowType.Query)
+                {
+                    QueryControllerSwitchModel(item as StoreQuery); 
+                }
 
                 return true;
             }
@@ -183,6 +198,29 @@ namespace SqlForms.DevSpace.Controlers
             if (newModel)
             {
                 _formBuilderController.SetActive(null);
+            }
+
+            return d;
+        }
+
+        private QueryDetails QueryControllerSwitchModel(StoreQuery item)
+        {
+            UpdateQueryBuilder();
+            var d = Model.Queries.FirstOrDefault(f => f.Query == item) ?? Model.Queries.FirstOrDefault(f => f.Query.Name == item.Name);
+            var newModel = d.Model == null;
+
+            if (d.Model == null)
+            {
+                d.Model = _queryController.LoadStoreQuery(item);
+            }
+            else
+            {
+                _queryController.SwitchModel(d.Model);
+            }
+
+            if (newModel)
+            {
+                //_queryController.SetActive(null);
             }
 
             return d;

@@ -1,0 +1,29 @@
+﻿::deep .forms-grid {
+    margin: 5px 0 0 0;
+}
+
+::deep .forms-nospace {
+    margin: 2px 0 0 0;
+    padding: 0 0 0 0;
+}
+
+::deep .row-nospace-sm {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 2px 2px 2px;
+    padding: 1px 1px 1px 1px;
+}
+
+::deep .query-nav-item {
+    height: 30px;
+    /*background-color: lightslategrey;*/
+}
+
+::deep .query-nav-item.active {
+    height: 30px;
+    /*background-color: lightgrey;*/
+}
+
+::deep .query-nav-tabs {
+    /*padding: 8px 0 0 0;*/
+}
