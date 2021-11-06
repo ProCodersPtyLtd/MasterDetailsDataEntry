@@ -24,6 +24,7 @@ namespace Platz.ObjectBuilder
         public bool NeedRedrawLinks { get; set; }
         public StoreQueryParameters StoreParameters { get; set; } = new StoreQueryParameters();
         public StoreSchema Schema { get; private set; }
+        public QueryControllerModel FullQuery { get; private set; }
         public List<QueryFromTable> FromTables { get { return SelectedQuery.FromTables; } }
         public List<QuerySelectProperty> SelectionProperties { get { return SelectedQuery.SelectionProperties; } }
         public List<TableLink> FromTableLinks { get { return SelectedQuery.FromTableLinks; } }
@@ -567,6 +568,10 @@ namespace Platz.ObjectBuilder
 
         public void Changed()
         {
+            if (FullQuery != null)
+            {
+                FullQuery.IsDirty = true;
+            }
         }
 
         public void SetSchemas(List<StoreSchema> storeSchemas)
@@ -621,6 +626,7 @@ namespace Platz.ObjectBuilder
                 }
             }
 
+            FullQuery = fullQuery;
             //MainQuery.WhereClause = fullQuery.MainQuery.WhereClause;
         }
 
